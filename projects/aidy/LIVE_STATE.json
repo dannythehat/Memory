@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "project": "aidy",
+  "verified_at_utc": "2026-09-06T11:28:52Z",
+  "source_repo": "dannythehat/Aidy-Gold-Signals",
+  "authoritative_branch": "main",
+  "branch_head_sha": "38ceebe38a3b9754dedbd9977e5595ae332656fe",
+  "latest_completed_build": {
+    "sequence": "2026-09-06-production-hardening",
+    "day": 5,
+    "status": "PRODUCTION VERIFIED",
+    "delivery_pr": 90,
+    "evidence_pr": 91,
+    "evidence_file": "ops/day5-archive-outbox-watchdog-evidence-20260906.md"
+  },
+  "next_build": {
+    "day": 6,
+    "title": "bounded archive retry and dead-letter hardening"
+  },
+  "formal_forward_expected": false,
+  "notes": "Repository/runtime verification is mandatory before relying on this snapshot."
+}
