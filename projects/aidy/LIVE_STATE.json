@@ -1,20 +1,21 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T15:15:09Z",
+  "verified_at_utc": "2026-09-06T15:56:00Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
   "branch_head_sha": "bf5bd10a9ccb31f007bea9da04ffa077132c5500",
   "latest_completed_build": {
     "sequence": "2026-09-06-provider-intelligence",
-    "day": 7,
+    "day": 8,
     "status": "PRODUCTION VERIFIED",
-    "title": "provider identity, style and behavioural-profile versioning",
+    "title": "forward-only provider learning boundary and legacy closure",
     "implementation_repo": "dannythehat/super-signals",
     "implementation_branch": "feature/day-10-shared-telegram-sources",
-    "implementation_sha": "43eddfde8d584b26be807c4ff998f7fd7afad050",
-    "render_deploy": "dep-daenlsh42hec73chgsf0",
-    "migration_head": "0056_provider_profile_versions"
+    "implementation_sha": "0ea04e9a118b7ae2782cb890a35d9725e1f16746",
+    "delivery_pr": 141,
+    "render_deploy": "dep-daeoomp5efls73a5134g",
+    "migration_head": "0057_provider_pit_boundary"
   },
   "runtime": {
     "capture_enabled": true,
@@ -31,30 +32,39 @@
       "poison_count": 0,
       "alert": false
     },
-    "day7_provider_history": {
-      "current_profiles": 48,
-      "versioned_sources": 48,
-      "observed_versions": 130,
-      "duplicate_source_versions": 0,
-      "unversioned_profiles": 0,
-      "sources_with_version_gaps": 0,
-      "append_only_trigger_enabled": true,
-      "pit_asof_proven": true,
-      "pre_bootstrap_history_rows_proven_zero": true,
-      "no_op_refresh_suppression_proven": true
+    "day8_provider_pit_boundary": {
+      "research_trades": 144,
+      "legacy_unresolvable": 144,
+      "legacy_score_eligible": 0,
+      "quarantined_formerly_eligible": 6,
+      "invalid_legacy_provenance": 0,
+      "resolved_provenance_mismatches": 0,
+      "provenance_trigger_enabled": true,
+      "mutable_profile_fallback_removed_from_historical_ai_context": true,
+      "new_enrollment_stamps_immutable_profile_provenance": true
     }
   },
+  "production_quality": {
+    "github_api_gate": "PASS",
+    "github_postgres_version": 18,
+    "github_web_gate": "PASS",
+    "render_api_tests_passed": 752,
+    "render_api_tests_skipped": 67,
+    "render_secret_scan": "PASS",
+    "post_deploy_error_logs_observed": 0,
+    "provider_lab_aidy_resolver_failures": 0
+  },
   "next_build": {
-    "day": 8,
-    "title": "forward-only learning boundary and legacy closure",
+    "day": 9,
+    "title": "canonical AIDY context join",
     "constraints": [
-      "use only provider state knowable at the evaluation timestamp",
-      "do not project Day 7 bootstrap state backward",
-      "shadow-safe until later evidence gates authorize more",
+      "join only PIT-clean provider state",
+      "use only AIDY context knowable at the evaluation timestamp",
+      "preserve separate provider and market truth ownership",
       "formal-forward remains off",
       "no broker execution authority"
     ]
   },
   "formal_forward_expected": false,
-  "notes": "Day 7 provider history lives in Super Signals by design; AIDY remains the independent market/context truth service. Verify both systems before Day 8 changes."
+  "notes": "Day 8 is implemented in Super Signals by design. All pre-Day-7 research trades were explicitly legacy_unresolvable rather than backfilled from future/current provider knowledge. AIDY main was unchanged."
 }

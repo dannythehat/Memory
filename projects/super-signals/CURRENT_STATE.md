@@ -4,9 +4,10 @@ Last verified: **2026-09-06**
 
 Authoritative repo: `dannythehat/super-signals`
 Production branch: `feature/day-10-shared-telegram-sources`
-Live production SHA: `43eddfde8d584b26be807c4ff998f7fd7afad050`
+Live production SHA: `0ea04e9a118b7ae2782cb890a35d9725e1f16746`
 Render service: `super-signals-day-8`
-Live deploy: `dep-daenlsh42hec73chgsf0`
+Live deploy: `dep-daeoomp5efls73a5134g`
+Alembic head: `0057_provider_pit_boundary`
 
 ## Provider populations
 
@@ -17,35 +18,51 @@ Live deploy: `dep-daenlsh42hec73chgsf0`
 
 Never mix the 40 shadow discovery providers with the 5 real/testing providers.
 
-## Day 7 — GREEN / PRODUCTION VERIFIED
+## Provider Intelligence sequence
 
-Day 7 added append-only point-in-time provider identity/style/behavioural-profile history without changing execution semantics.
+- Day 7 — provider identity/style/behavioural-profile versioning — GREEN / PRODUCTION VERIFIED.
+- Day 8 — forward-only learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
 
-Production proof:
+## Day 8 production proof
 
-- Alembic head `0056_provider_profile_versions`;
-- 48 current research profiles and 48 versioned sources;
-- 130 immutable versions observed;
-- 0 duplicate `(source_id, version_no)` groups;
-- 0 unversioned profiles;
-- 0 version-sequence gaps;
-- 82 real profile-update versions across 42 sources;
-- no adjacent duplicate semantic fingerprints;
-- append-only UPDATE/DELETE trigger enabled;
-- as-of reader proved older-version retrieval and zero fabricated pre-bootstrap history;
-- generated-at-only/no-op adaptive refreshes do not append fake versions;
-- Render API quality gate: 745 passed, 67 skipped;
-- post-deploy error-level logs: none during verification;
-- AIDY Provider Lab resolver startup reported failures=0.
+Day 8 made the immutable Day 7 provider-profile ledger operationally authoritative for historical/forward research.
 
-The Day 7 production diff contains exactly three files: the migration, its tests and its gate document. No execution/parser/risk/MetaAPI/member-routing code changed.
+Production facts:
+
+- PR `#141` merged to the production branch;
+- live SHA `0ea04e9a118b7ae2782cb890a35d9725e1f16746`;
+- Render deploy `dep-daeoomp5efls73a5134g` is live;
+- migration `0057_provider_pit_boundary` applied successfully;
+- production API quality: **752 passed, 67 skipped**;
+- GitHub API gate passed against PostgreSQL 18 with the migration chain upgraded through Day 8;
+- web typecheck/lint/tests/build passed;
+- secret scan passed;
+- `/health` returned 200 on the new instance;
+- Provider Lab AIDY resolver startup reported `processed=0 failures=0`;
+- no error-level Render events were observed after the new instance became live during verification.
+
+Real production Postgres PIT/legacy closure:
+
+- research trades: **144**;
+- `legacy_unresolvable`: **144**;
+- legacy score-eligible trades: **0**;
+- formerly score-eligible legacy rows quarantined: **6**;
+- invalid legacy provenance rows: **0**;
+- resolved-profile provenance mismatches: **0**;
+- provenance trigger `trg_shadow_trade_provider_profile_pit`: enabled.
+
+Every pre-Day-7 research trade predates its source's immutable provider-profile history origin. Day 8 therefore does not manufacture historical provider knowledge. Those rows remain available as legacy research records but cannot count as PIT-clean fair-score evidence.
+
+New research enrollment stamps the immutable provider profile version already effective at `signal_posted_at`; unresolved timestamps fail closed. Provider-aware historical AI context now resolves only provider-profile history as of the actual message timestamp and no longer falls back to today's mutable profile/adaptive grammar.
 
 ## Cross-project boundary
 
-Super Signals owns provider identity, interpretation, profile history, benchmark/replay and broker/member execution. AIDY supplies bounded independent point-in-time Gold market/context truth. The databases remain separate. Shadow research does not gain broker authority.
+Super Signals owns provider identity, interpretation, profile history, benchmark/replay and broker/member execution. AIDY supplies bounded independent point-in-time Gold market/context truth. The databases remain separate. Shadow research does not gain broker authority. Formal-forward remains OFF.
 
 ## Next
 
-**Day 8 — forward-only learning boundary and legacy closure.** Historical/provider evaluation must use only the provider profile version actually knowable at that timestamp. Day 7 bootstrap/current state must never be projected backward.
+**Day 9 — canonical AIDY context join.**
+
+Join each PIT-clean provider setup to only the independent market/session/regime context that AIDY itself knew at that timestamp. Both temporal boundaries must remain clean: provider knowledge from Super Signals and market/context knowledge from AIDY.
 
 Before production work, verify Render, the production branch, Postgres and AIDY runtime again. Runtime truth overrides Memory.
