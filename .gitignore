@@ -1,0 +1,23 @@
+# Never commit authentication exports or local secrets
+.env
+.env.*
+*.pem
+*.key
+curl.txt
+cookies.txt
+*token*
+*credentials*
+
+# Do not store raw conversation exports by default
+conversations.json
+projects.json
+chatgpt-export/
+claude-export/
+exports/
+
+# Local tooling
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
