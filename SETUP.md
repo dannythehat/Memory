@@ -12,14 +12,15 @@ GitHub's normal `GITHUB_TOKEN` is scoped to this repository and cannot read othe
 
 Minimum recommended access:
 
-- repository access: only `Memory`, `Aidy-Gold-Signals`, `super-signals`;
+- repository access: only `Aidy-Gold-Signals` and `super-signals`;
 - `Aidy-Gold-Signals`: Contents **Read-only**, Pull requests **Read-only**;
-- `super-signals`: Contents **Read-only**, Pull requests **Read-only**;
-- `Memory`: Contents **Read and write**.
+- `super-signals`: Contents **Read-only**, Pull requests **Read-only**.
+
+The token does **not** need write access to `Memory`; the workflow's own repository-scoped `GITHUB_TOKEN` performs the Memory commit/push.
 
 Do not paste the token into chat, files, commits, workflow logs or PR descriptions. Add it through GitHub repository settings as an Actions secret.
 
-Once configured, `.github/workflows/sync-live-state.yml` can refresh the source-repository branch heads and latest merged PR metadata.
+Once configured, `.github/workflows/sync-live-state.yml` refreshes observed source-repository branch heads and latest merged PR metadata every six hours. These observations do not claim that the same SHA is deployed in production; runtime/deploy verification remains mandatory.
 
 ## Claude usage
 
