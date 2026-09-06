@@ -1,70 +1,48 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T15:56:00Z",
+  "verified_at_utc": "2026-09-06T17:06:00Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "bf5bd10a9ccb31f007bea9da04ffa077132c5500",
-  "latest_completed_build": {
-    "sequence": "2026-09-06-provider-intelligence",
-    "day": 8,
-    "status": "PRODUCTION VERIFIED",
-    "title": "forward-only provider learning boundary and legacy closure",
-    "implementation_repo": "dannythehat/super-signals",
-    "implementation_branch": "feature/day-10-shared-telegram-sources",
-    "implementation_sha": "0ea04e9a118b7ae2782cb890a35d9725e1f16746",
-    "delivery_pr": 141,
-    "render_deploy": "dep-daeoomp5efls73a5134g",
-    "migration_head": "0057_provider_pit_boundary"
-  },
+  "branch_head_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
+  "live_worker_version": "d124b317-708d-4f57-afbb-3bd6844a32cf",
   "runtime": {
     "capture_enabled": true,
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
     "formal_forward_enabled": false,
-    "archive_watchdog": {
-      "run_id": 34038831088,
-      "checked_at_utc": "2026-09-06T14:20:13.984288Z",
-      "status": "PASS",
-      "gold_pending_count": 0,
-      "cross_market_pending_count": 0,
-      "retrying_count": 0,
-      "poison_count": 0,
-      "alert": false
-    },
-    "day8_provider_pit_boundary": {
-      "research_trades": 144,
-      "legacy_unresolvable": 144,
-      "legacy_score_eligible": 0,
-      "quarantined_formerly_eligible": 6,
-      "invalid_legacy_provenance": 0,
-      "resolved_provenance_mismatches": 0,
-      "provenance_trigger_enabled": true,
-      "mutable_profile_fallback_removed_from_historical_ai_context": true,
-      "new_enrollment_stamps_immutable_profile_provenance": true
-    }
+    "provider_context_route_live": true,
+    "provider_context_bearer_protected": true,
+    "provider_market_bearer_secret_unchanged": true
   },
-  "production_quality": {
-    "github_api_gate": "PASS",
-    "github_postgres_version": 18,
-    "github_web_gate": "PASS",
-    "render_api_tests_passed": 752,
-    "render_api_tests_skipped": 67,
-    "render_secret_scan": "PASS",
-    "post_deploy_error_logs_observed": 0,
-    "provider_lab_aidy_resolver_failures": 0
+  "latest_completed_build": {
+    "sequence": "2026-09-06-provider-intelligence",
+    "day": 10,
+    "status": "PRODUCTION VERIFIED",
+    "title": "immutable provider-profile plus AIDY context attachment",
+    "implementation_repo": "dannythehat/super-signals",
+    "implementation_sha": "634838b5a559a425a1fe54af5bf7c022763f2743",
+    "delivery_pr": 143,
+    "migration_head": "0058_provider_aidy_context"
+  },
+  "day9": {
+    "title": "canonical AIDY point-in-time context join",
+    "status": "PRODUCTION VERIFIED",
+    "source_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
+    "code_only_rollout_run": 34047042761,
+    "context_route": "/provider/context",
+    "formal_forward_enabled": false
+  },
+  "day10": {
+    "attachment_runtime_live": true,
+    "attachment_resolver_failures": 0,
+    "eligible_forward_signals_waiting": 0,
+    "first_genuine_attachment": "WAITING_FOR_NEXT_REAL_PIT_CLEAN_SIGNAL"
   },
   "next_build": {
-    "day": 9,
-    "title": "canonical AIDY context join",
-    "constraints": [
-      "join only PIT-clean provider state",
-      "use only AIDY context knowable at the evaluation timestamp",
-      "preserve separate provider and market truth ownership",
-      "formal-forward remains off",
-      "no broker execution authority"
-    ]
+    "day": 11,
+    "title": "execution-cost and paper-broker calibration"
   },
   "formal_forward_expected": false,
-  "notes": "Day 8 is implemented in Super Signals by design. All pre-Day-7 research trades were explicitly legacy_unresolvable rather than backfilled from future/current provider knowledge. AIDY main was unchanged."
+  "notes": "Day 10 is production-ready and running. Zero attachment rows is currently correct because production has zero PIT-resolved forward signals eligible for attachment; no historical record was fabricated."
 }
