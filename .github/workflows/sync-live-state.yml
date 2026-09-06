@@ -1,0 +1,60 @@
+name: Sync Live State
+
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check whether cross-repo sync is configured
+        id: configured
+        env:
+          MEMORY_SYNC_TOKEN: ${{ secrets.MEMORY_SYNC_TOKEN }}
+        shell: bash
+        run: |
+          if [ -n "${MEMORY_SYNC_TOKEN:-}" ]; then
+            echo 'enabled=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'enabled=false' >> "$GITHUB_OUTPUT"
+            echo 'MEMORY_SYNC_TOKEN is not configured; sync is intentionally skipped.'
+          fi
+
+      - uses: actions/setup-python@v5
+        if: steps.configured.outputs.enabled == 'true'
+        with:
+          python-version: '3.13'
+
+      - name: Refresh repository observations
+        if: steps.configured.outputs.enabled == 'true'
+        env:
+          MEMORY_SYNC_TOKEN: ${{ secrets.MEMORY_SYNC_TOKEN }}
+        run: python scripts/sync_live_state.py --project all
+
+      - name: Validate refreshed memory
+        if: steps.configured.outputs.enabled == 'true'
+        run: python scripts/validate_memory.py
+
+      - name: Commit changed observations
+        if: steps.configured.outputs.enabled == 'true'
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No state changes.'
+            exit 0
+          fi
+          git config user.name 'memory-sync[bot]'
+          git config user.email 'memory-sync[bot]@users.noreply.github.com'
+          git add projects/aidy/LIVE_STATE.json projects/super-signals/LIVE_STATE.json
+          git commit -m 'Sync observed project repository state'
+          git push
