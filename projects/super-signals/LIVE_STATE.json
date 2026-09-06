@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "project": "super-signals",
+  "verified_at_utc": "2026-09-05T09:57:00Z",
+  "source_repo": "dannythehat/super-signals",
+  "default_branch": "main",
+  "production_branch": "feature/day-10-shared-telegram-sources",
+  "known_live_sha": "9a0080acc06ebc8783ec0b5f44405ee01303fa27",
+  "render_service": "super-signals-day-8",
+  "provider_roster": {
+    "shadow_discovery": 40,
+    "testing_real": 5,
+    "paused": 14,
+    "revoked": 4
+  },
+  "latest_provider_lab_prs": [133, 135, 136, 137, 138],
+  "notes": "This snapshot must be refreshed from the production branch/Render/database before production claims or changes."
+}
