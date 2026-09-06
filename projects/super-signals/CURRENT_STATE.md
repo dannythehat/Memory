@@ -1,55 +1,51 @@
 # Super Signals — Current State
 
-Last verified project snapshot: **2026-09-06**
+Last verified: **2026-09-06**
 
-Authoritative source repo: `dannythehat/super-signals`
+Authoritative repo: `dannythehat/super-signals`
+Production branch: `feature/day-10-shared-telegram-sources`
+Live production SHA: `43eddfde8d584b26be807c4ff998f7fd7afad050`
+Render service: `super-signals-day-8`
+Live deploy: `dep-daenlsh42hec73chgsf0`
 
-## Production branch warning
+## Provider populations
 
-The repository default branch is `main`, but the live Super Signals production line has been the long-lived branch:
+- 40 shadow discovery providers — research only, broker-isolated.
+- 5 testing providers — current real execution population.
+- 14 paused.
+- 4 revoked.
 
-`feature/day-10-shared-telegram-sources`
+Never mix the 40 shadow discovery providers with the 5 real/testing providers.
 
-Do not assume `main` is production. Verify the live Render deploy and production branch before changing or describing production.
+## Day 7 — GREEN / PRODUCTION VERIFIED
 
-Last known live production SHA from the Sept 5 verification: `9a0080acc06ebc8783ec0b5f44405ee01303fa27`.
+Day 7 added append-only point-in-time provider identity/style/behavioural-profile history without changing execution semantics.
 
-Live service at that verification: Render `super-signals-day-8`.
+Production proof:
 
-## What Super Signals does
+- Alembic head `0056_provider_profile_versions`;
+- 48 current research profiles and 48 versioned sources;
+- 130 immutable versions observed;
+- 0 duplicate `(source_id, version_no)` groups;
+- 0 unversioned profiles;
+- 0 version-sequence gaps;
+- 82 real profile-update versions across 42 sources;
+- no adjacent duplicate semantic fingerprints;
+- append-only UPDATE/DELETE trigger enabled;
+- as-of reader proved older-version retrieval and zero fabricated pre-bootstrap history;
+- generated-at-only/no-op adaptive refreshes do not append fake versions;
+- Render API quality gate: 745 passed, 67 skipped;
+- post-deploy error-level logs: none during verification;
+- AIDY Provider Lab resolver startup reported failures=0.
 
-Private Gold/XAUUSD app that reads Telegram provider signals/instructions, interprets entries/SL/TP/management, and can execute/manage trades through the MetaAPI/Vantage MT5 path for authorized users.
+The Day 7 production diff contains exactly three files: the migration, its tests and its gate document. No execution/parser/risk/MetaAPI/member-routing code changed.
 
-Provider Lab runs alongside production to learn/evaluate providers without giving discovery sources broker authority.
+## Cross-project boundary
 
-## Critical provider split
+Super Signals owns provider identity, interpretation, profile history, benchmark/replay and broker/member execution. AIDY supplies bounded independent point-in-time Gold market/context truth. The databases remain separate. Shadow research does not gain broker authority.
 
-Never confuse these populations:
+## Next
 
-- **40 shadow providers** = discovery/research pool. They must remain broker-isolated.
-- **5 testing providers** = current real execution providers with broker-deal history.
-- 14 paused and 4 revoked sources were also present in the latest roster audit.
+**Day 8 — forward-only learning boundary and legacy closure.** Historical/provider evaluation must use only the provider profile version actually knowable at that timestamp. Day 7 bootstrap/current state must never be projected backward.
 
-The active research universe is 45, but **40 shadow + 5 real/testing are not interchangeable**.
-
-## Provider Lab state
-
-Recent production work added:
-
-- adaptive provider language/behaviour profiles;
-- deterministic AIDY M1 Provider Lab replay for eligible intraday/swing evidence;
-- explicit shadow-safe routing;
-- app-owned AIDY resolver startup independent of broker credentials;
-- production logs proving resolver batch outcomes.
-
-Recent delivery PRs on the production branch include #133, #135, #136, #137 and #138.
-
-## Cross-project relationship
-
-AIDY supplies bounded, PIT-safe Gold market evidence/context to Provider Lab. Super Signals owns provider interpretation, benchmark/replay and broker/member execution. AIDY does not own the broker path.
-
-## Current priority
-
-AIDY hardening/intelligence build is being completed first through Day 6, then the broader provider-intelligence roadmap continues. Super Signals production must remain protected while research intelligence is improved.
-
-Before acting, verify the production branch, latest Render deploy, database state and relevant runtime logs.
+Before production work, verify Render, the production branch, Postgres and AIDY runtime again. Runtime truth overrides Memory.

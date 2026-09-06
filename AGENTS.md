@@ -31,6 +31,19 @@ Use these statuses consistently:
 - `WAITING` — the required real-world evidence cannot exist yet.
 - `RED` — an acceptance condition is failing.
 
+## Build-day completion gate
+
+A build day or major milestone is **not complete** until all of the following are true:
+
+1. the authoritative repository/runtime acceptance evidence has been checked;
+2. `CURRENT_STATE.md` and `LIVE_STATE.json` reflect the verified state;
+3. a dated handover records the completed work and exact next step;
+4. `DECISIONS.jsonl` is updated when an architectural/product/safety decision changed;
+5. the Memory validation workflow/script passes; and
+6. the merged Memory `main` state is re-read to confirm the update landed.
+
+An agent must not call a day `GREEN`, `complete`, or `finished` before this gate is satisfied. If a previous agent forgot to update Memory, repair Memory from the real repositories/runtime first; never alter production merely to make it match stale Memory.
+
 ## Production safety
 
 - Protect live Super Signals real-money execution above research convenience.
