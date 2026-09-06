@@ -1,18 +1,45 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-05T09:57:00Z",
+  "verified_at_utc": "2026-09-06T15:15:09Z",
   "source_repo": "dannythehat/super-signals",
   "default_branch": "main",
   "production_branch": "feature/day-10-shared-telegram-sources",
-  "known_live_sha": "9a0080acc06ebc8783ec0b5f44405ee01303fa27",
+  "known_live_sha": "43eddfde8d584b26be807c4ff998f7fd7afad050",
   "render_service": "super-signals-day-8",
+  "render_deploy": "dep-daenlsh42hec73chgsf0",
+  "alembic_head": "0056_provider_profile_versions",
   "provider_roster": {
     "shadow_discovery": 40,
     "testing_real": 5,
     "paused": 14,
     "revoked": 4
   },
-  "latest_provider_lab_prs": [133, 135, 136, 137, 138],
-  "notes": "This snapshot must be refreshed from the production branch/Render/database before production claims or changes."
+  "provider_profile_history": {
+    "status": "PRODUCTION VERIFIED",
+    "current_profiles": 48,
+    "versioned_sources": 48,
+    "observed_versions": 130,
+    "duplicate_source_versions": 0,
+    "unversioned_profiles": 0,
+    "sources_with_version_gaps": 0,
+    "profile_update_versions": 82,
+    "sources_with_profile_updates": 42,
+    "adjacent_duplicate_fingerprints": 0,
+    "non_monotonic_effective_times": 0,
+    "append_only_trigger_enabled": true,
+    "pit_asof_proven": true,
+    "pre_bootstrap_history_rows_proven_zero": true,
+    "no_op_refresh_suppression_proven": true
+  },
+  "production_quality": {
+    "api_tests_passed": 745,
+    "api_tests_skipped": 67,
+    "post_deploy_error_logs_observed": 0
+  },
+  "next_build": {
+    "day": 8,
+    "title": "forward-only learning boundary and legacy closure"
+  },
+  "notes": "Day 7 changed only migration/test/gate-document files; execution/parser/risk/MetaAPI/member-routing code was unchanged. Verify live state again before production changes."
 }
