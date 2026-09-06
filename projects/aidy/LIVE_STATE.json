@@ -1,19 +1,20 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T14:20:32Z",
+  "verified_at_utc": "2026-09-06T15:15:09Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
   "branch_head_sha": "bf5bd10a9ccb31f007bea9da04ffa077132c5500",
   "latest_completed_build": {
-    "sequence": "2026-09-06-production-hardening",
-    "day": 6,
+    "sequence": "2026-09-06-provider-intelligence",
+    "day": 7,
     "status": "PRODUCTION VERIFIED",
-    "delivery_pr": 92,
-    "rollout_fix_pr": 93,
-    "evidence_pr": 94,
-    "evidence_file": "ops/day6-archive-dead-letter-evidence-20260906.md",
-    "production_rollout_run": 34038324207
+    "title": "provider identity, style and behavioural-profile versioning",
+    "implementation_repo": "dannythehat/super-signals",
+    "implementation_branch": "feature/day-10-shared-telegram-sources",
+    "implementation_sha": "43eddfde8d584b26be807c4ff998f7fd7afad050",
+    "render_deploy": "dep-daenlsh42hec73chgsf0",
+    "migration_head": "0056_provider_profile_versions"
   },
   "runtime": {
     "capture_enabled": true,
@@ -22,32 +23,38 @@
     "formal_forward_enabled": false,
     "archive_watchdog": {
       "run_id": 34038831088,
-      "checked_at_utc": "2026-09-06T14:20:32Z",
+      "checked_at_utc": "2026-09-06T14:20:13.984288Z",
       "status": "PASS",
-      "pending_count": 0,
+      "gold_pending_count": 0,
+      "cross_market_pending_count": 0,
       "retrying_count": 0,
-      "stale_count": 0,
-      "dead_letter_count": 0,
-      "total_count": 28
+      "poison_count": 0,
+      "alert": false
     },
-    "capture_freshness": {
-      "run_id": 34036528221,
-      "observed_at_utc": "2026-09-06T13:35:07Z",
-      "status": "session_closed",
-      "alert": false,
-      "live_d1_query": "PASS"
+    "day7_provider_history": {
+      "current_profiles": 48,
+      "versioned_sources": 48,
+      "observed_versions": 130,
+      "duplicate_source_versions": 0,
+      "unversioned_profiles": 0,
+      "sources_with_version_gaps": 0,
+      "append_only_trigger_enabled": true,
+      "pit_asof_proven": true,
+      "pre_bootstrap_history_rows_proven_zero": true,
+      "no_op_refresh_suppression_proven": true
     }
   },
   "next_build": {
-    "day": 7,
-    "title": "provider identity, style and behavioural-profile versioning",
+    "day": 8,
+    "title": "forward-only learning boundary and legacy closure",
     "constraints": [
-      "forward-only learning",
-      "shadow-safe use until later evidence gates authorize more",
+      "use only provider state knowable at the evaluation timestamp",
+      "do not project Day 7 bootstrap state backward",
+      "shadow-safe until later evidence gates authorize more",
       "formal-forward remains off",
       "no broker execution authority"
     ]
   },
   "formal_forward_expected": false,
-  "notes": "Repository/runtime verification is mandatory before relying on this snapshot. Historical August Day 7 files are not the active September Day 7 build."
+  "notes": "Day 7 provider history lives in Super Signals by design; AIDY remains the independent market/context truth service. Verify both systems before Day 8 changes."
 }
