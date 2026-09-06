@@ -1,22 +1,53 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T11:28:52Z",
+  "verified_at_utc": "2026-09-06T14:20:32Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "38ceebe38a3b9754dedbd9977e5595ae332656fe",
+  "branch_head_sha": "bf5bd10a9ccb31f007bea9da04ffa077132c5500",
   "latest_completed_build": {
     "sequence": "2026-09-06-production-hardening",
-    "day": 5,
+    "day": 6,
     "status": "PRODUCTION VERIFIED",
-    "delivery_pr": 90,
-    "evidence_pr": 91,
-    "evidence_file": "ops/day5-archive-outbox-watchdog-evidence-20260906.md"
+    "delivery_pr": 92,
+    "rollout_fix_pr": 93,
+    "evidence_pr": 94,
+    "evidence_file": "ops/day6-archive-dead-letter-evidence-20260906.md",
+    "production_rollout_run": 34038324207
+  },
+  "runtime": {
+    "capture_enabled": true,
+    "market_data_source": "twelve_data",
+    "market_data_ownership": "public_independent",
+    "formal_forward_enabled": false,
+    "archive_watchdog": {
+      "run_id": 34038831088,
+      "checked_at_utc": "2026-09-06T14:20:32Z",
+      "status": "PASS",
+      "pending_count": 0,
+      "retrying_count": 0,
+      "stale_count": 0,
+      "dead_letter_count": 0,
+      "total_count": 28
+    },
+    "capture_freshness": {
+      "run_id": 34036528221,
+      "observed_at_utc": "2026-09-06T13:35:07Z",
+      "status": "session_closed",
+      "alert": false,
+      "live_d1_query": "PASS"
+    }
   },
   "next_build": {
-    "day": 6,
-    "title": "bounded archive retry and dead-letter hardening"
+    "day": 7,
+    "title": "provider identity, style and behavioural-profile versioning",
+    "constraints": [
+      "forward-only learning",
+      "shadow-safe use until later evidence gates authorize more",
+      "formal-forward remains off",
+      "no broker execution authority"
+    ]
   },
   "formal_forward_expected": false,
-  "notes": "Repository/runtime verification is mandatory before relying on this snapshot."
+  "notes": "Repository/runtime verification is mandatory before relying on this snapshot. Historical August Day 7 files are not the active September Day 7 build."
 }
