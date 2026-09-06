@@ -9,14 +9,14 @@ This is the current September continuation roadmap. Older Day-numbered milestone
 - Day 5 — archive-outbox durability watchdog — GREEN.
 - Day 6 — bounded archive retry/backoff + explicit dead-letter state — GREEN / PRODUCTION VERIFIED.
 - Day 7 — provider identity + behavioural-profile versioning — GREEN / PRODUCTION VERIFIED.
+- Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
 
-Day 7 is implemented in Super Signals because provider identity/profile state belongs there. AIDY remains the independent market/context truth service.
+Days 7–8 are implemented in Super Signals because provider identity/profile state belongs there. AIDY remains the independent market/context truth service.
 
 ## Intelligence sequence
 
-- **Day 8 — forward-only learning boundary + legacy closure — NEXT.** Enforce exactly what provider state was knowable at each timestamp; block backwards projection of Day 7 bootstrap/current state.
-- **Day 9 — canonical AIDY context join.** Match provider setups to the market/session/regime context AIDY knew then.
-- **Day 10 — immutable context attached to each signal.** Make provider outcome research conditional on contemporaneous context.
+- **Day 9 — canonical AIDY context join — NEXT.** Match PIT-clean provider setups to only the market/session/regime context AIDY itself knew at that timestamp.
+- **Day 10 — immutable context attached to each signal.** Persist the contemporaneous AIDY context/provenance on each qualifying provider setup.
 - **Day 11 — execution-cost calibration.** Compare theoretical/paper outcomes against realistic spread/slippage/broker effects.
 - **Day 12 — hierarchical provider fingerprints.** Build statistically shrunk provider identities rather than naive leaderboards.
 - **Day 13 — conditional fingerprints.** Discover where a provider is strong/weak by side/session/regime with preregistration/FDR controls.
