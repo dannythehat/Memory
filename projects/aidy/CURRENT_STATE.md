@@ -2,79 +2,48 @@
 
 Last verified: **2026-09-06**
 
-Authoritative AIDY source repo: `dannythehat/Aidy-Gold-Signals`
-Authoritative AIDY branch: `main`
-Verified AIDY `main` SHA: `bf5bd10a9ccb31f007bea9da04ffa077132c5500`
+Authoritative repo: `dannythehat/Aidy-Gold-Signals`
+Authoritative branch: `main`
+Verified source `main` SHA: `b860e1b83e9f5bbfd52c94453c86443e2c16b276`
+Live Worker: `aidy-signals-test`
+Verified live Worker version: `d124b317-708d-4f57-afbb-3bd6844a32cf`
 
-## Where we are
+## Provider Intelligence sequence
 
-The September Provider Intelligence sequence is complete through **Day 8**.
+The September Provider Intelligence sequence is complete through **Day 10**.
 
-- Day 3: D1 read-budget monitoring, bounded retries, diagnostics and alert path — GREEN.
-- Day 4: market-calendar-aware scheduled-capture freshness watchdog — GREEN.
-- Day 5: D1 -> R2 archive-outbox durability watchdog — GREEN.
-- Day 6: bounded archive retry/backoff and explicit dead-letter handling — GREEN / PRODUCTION VERIFIED.
-- Day 7: provider identity, style and behavioural-profile versioning — GREEN / PRODUCTION VERIFIED.
-- Day 8: forward-only provider learning boundary and legacy closure — GREEN / PRODUCTION VERIFIED.
+- Day 7 — immutable provider identity/style/behaviour history — GREEN / PRODUCTION VERIFIED.
+- Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
+- Day 9 — canonical AIDY point-in-time context join — GREEN / PRODUCTION VERIFIED.
+- Day 10 — immutable per-signal provider + AIDY context attachment — GREEN / PRODUCTION VERIFIED.
 
-Days 7–8 are intentionally implemented in **Super Signals**, because Super Signals owns Telegram provider identity and Provider Lab research. AIDY remains the separate independent point-in-time Gold market/context truth service and gained no provider database or broker authority.
+## Day 9
 
-## Day 8 verified production state
+AIDY now exposes an authenticated read-only `/provider/context` route. It resolves only a scheduled Gold snapshot that existed at or before the requested provider-signal timestamp and rebuilds the existing Architecture V2 context/regime from point-in-time evidence. The route is research/private-forward only and has no broker or live-money authority.
 
-Super Signals production:
+Day 9 source is merged at `b860e1b83e9f5bbfd52c94453c86443e2c16b276`. The live code-only rollout preserved the existing bearer secret, capture configuration, scheduler and D1 schema. Verification proved `/provider/context` and `/market/ohlc` remain bearer protected, capture remains ON, Twelve Data remains the source and formal-forward remains OFF.
 
-- production branch: `feature/day-10-shared-telegram-sources`;
-- live SHA: `0ea04e9a118b7ae2782cb890a35d9725e1f16746`;
-- PR: `#141`;
-- migration head: `0057_provider_pit_boundary`;
-- Render deploy: `dep-daeoomp5efls73a5134g` — live;
-- Render API quality: **752 passed, 67 skipped**;
-- GitHub API gate: success against PostgreSQL 18 with the Alembic chain upgraded through the Day 8 head;
-- GitHub web typecheck/lint/tests/build: success;
-- secret scan: pass;
-- post-startup `/health`: 200;
-- post-deploy error-level logs observed during verification: 0;
-- Provider Lab AIDY resolver startup: `processed=0 failures=0`.
+## Day 10
 
-Provider PIT/legacy closure in the real production Postgres database:
+Super Signals now persists one immutable context attachment per qualifying forward provider signal. Each record freezes the exact provider profile version plus the exact AIDY point-in-time context/snapshot identity used for that signal. AIDY itself does not gain provider ownership or broker authority.
 
-- existing research trades: **144**;
-- `legacy_unresolvable`: **144**;
-- legacy score-eligible trades: **0**;
-- the **6** formerly score-eligible pre-Day-7 rows are quarantined as `legacy_profile_unresolvable`;
-- invalid legacy provenance rows: **0**;
-- resolved-provenance mismatches: **0**;
-- database provenance trigger `trg_shadow_trade_provider_profile_pit`: enabled.
-
-Every legacy trade predates its source's Day 7 immutable profile-history origin, so Day 8 deliberately does **not** manufacture a provider profile for those old signals. They remain historical/research records but cannot count as PIT-clean fair-score evidence. New research enrollment resolves and stores the exact immutable provider profile version already effective at the signal timestamp; unresolved timestamps fail closed.
-
-Provider-aware AI historical context now resolves only `provider_research_profile_versions` as of the actual message timestamp. It no longer reads the mutable current provider profile or rebuilds today's adaptive profile when interpreting an old message.
-
-The Day 8 production diff changes only the Provider Intelligence PIT helper, provider-aware research/AI context, shadow research enrollment, migration, tests and gate documentation. It does not change risk sizing, MetaAPI/member routing, live broker execution authority or AIDY source/runtime.
-
-## AIDY state through Day 8
-
-AIDY `main` remained exactly `bf5bd10a9ccb31f007bea9da04ffa077132c5500` throughout Day 8. The latest available archive-outbox watchdog on that unchanged SHA is run `34038831088`, which completed successfully with Gold pending 0, cross-market pending 0, poison 0 and alert false. Formal-forward remains OFF.
+The first genuine attachment row is **waiting for the next real PIT-clean provider signal**. This is not a build blocker: production currently has zero eligible resolved forward signals waiting for attachment, and the live attachment resolver reports `attached=0 failures=0`.
 
 ## Exact next step
 
-**Day 9 — canonical AIDY context join.**
+**Day 11 — execution-cost and paper ↔ broker calibration.**
 
-Join each PIT-clean provider setup to the independent market/session/regime context that AIDY itself knew at that timestamp. Day 9 must preserve both sides of the temporal boundary: provider state must be PIT-safe under Day 8, and AIDY context must independently be PIT-safe. No current/future market state may leak into older provider evaluation.
+Measure how theoretical/provider-research performance differs from executable reality: spread, slippage, actual fill/entry differences, broker costs and paper-vs-broker divergence. This remains research/calibration work and must not change live provider sizing or broker authority without a later evidence/owner gate.
 
-## Runtime/safety posture
+## Safety posture
 
-- AIDY is independent Gold market/context intelligence, not the provider or broker database.
-- Super Signals owns provider interpretation/profile history, benchmark/replay and broker/member execution.
-- Formal-forward authority remains OFF unless explicitly graduated with evidence and owner approval.
+- AIDY remains independent Gold market/context intelligence.
+- Super Signals owns provider identity, interpretation, Provider Lab research and broker/member execution.
+- Formal-forward remains OFF.
 - 40 shadow discovery providers remain broker-isolated and distinct from the 5 real/testing providers.
-- Historical entry/SL/TP values must never contaminate new current signals.
+- No historical/future information may leak into point-in-time provider evidence.
 - Runtime/source/database evidence overrides Memory if they disagree.
-
-## Naming warning
-
-Older August AIDY milestones also use Day 8/Day 9 numbering. The active sequence here is the **6 September 2026 Provider Intelligence sequence**. Resolve by current Memory handover and live repository/runtime evidence.
 
 ## Session rule
 
-Before starting Day 9, read the newest Day 8 handover, then verify AIDY `main`, the Super Signals live branch/deploy and the relevant production database state. If Memory is stale, repair Memory from reality first.
+Before Day 11, read the latest Day 10 handover, then verify AIDY source/live Worker, Super Signals live branch/deploy and production databases. Repair Memory first if reality differs.

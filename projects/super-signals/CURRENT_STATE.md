@@ -4,10 +4,10 @@ Last verified: **2026-09-06**
 
 Authoritative repo: `dannythehat/super-signals`
 Production branch: `feature/day-10-shared-telegram-sources`
-Live production SHA: `0ea04e9a118b7ae2782cb890a35d9725e1f16746`
+Live production SHA: `634838b5a559a425a1fe54af5bf7c022763f2743`
 Render service: `super-signals-day-8`
-Live deploy: `dep-daeoomp5efls73a5134g`
-Alembic head: `0057_provider_pit_boundary`
+Live deploy: `dep-daepomp7lnhs73f213eg`
+Alembic head: `0058_provider_aidy_context`
 
 ## Provider populations
 
@@ -20,49 +20,46 @@ Never mix the 40 shadow discovery providers with the 5 real/testing providers.
 
 ## Provider Intelligence sequence
 
-- Day 7 — provider identity/style/behavioural-profile versioning — GREEN / PRODUCTION VERIFIED.
-- Day 8 — forward-only learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
+- Day 7 — immutable provider identity/style/behaviour history — GREEN / PRODUCTION VERIFIED.
+- Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
+- Day 9 — canonical AIDY point-in-time context join — GREEN / PRODUCTION VERIFIED.
+- Day 10 — immutable per-signal provider + AIDY context attachment — GREEN / PRODUCTION VERIFIED.
 
-## Day 8 production proof
+## Day 9
 
-Day 8 made the immutable Day 7 provider-profile ledger operationally authoritative for historical/forward research.
+Super Signals can request the canonical AIDY market/session/regime context for a provider signal timestamp, but only after Day 8 has proved the provider profile itself is PIT-clean. Legacy/unresolvable provider history is rejected before the context join.
 
-Production facts:
+Day 9 production SHA was `a5798a60af30a5c4e051aa90540e2a3ea1ae6779`; Render health was 200, M1 research was `processed=0 failures=0`, and no post-cutover error-level events were observed.
 
-- PR `#141` merged to the production branch;
-- live SHA `0ea04e9a118b7ae2782cb890a35d9725e1f16746`;
-- Render deploy `dep-daeoomp5efls73a5134g` is live;
-- migration `0057_provider_pit_boundary` applied successfully;
-- production API quality: **752 passed, 67 skipped**;
-- GitHub API gate passed against PostgreSQL 18 with the migration chain upgraded through Day 8;
-- web typecheck/lint/tests/build passed;
-- secret scan passed;
-- `/health` returned 200 on the new instance;
-- Provider Lab AIDY resolver startup reported `processed=0 failures=0`;
-- no error-level Render events were observed after the new instance became live during verification.
+## Day 10
 
-Real production Postgres PIT/legacy closure:
+Migration `0058_provider_aidy_context` creates `provider_signal_context_attachments`, one immutable record per qualifying signal. It freezes the exact provider-profile version and exact AIDY PIT context/snapshot provenance. Database guards reject future provider/AIDY context, duplicate signal attachments, mutable history and any live-money authority.
 
-- research trades: **144**;
-- `legacy_unresolvable`: **144**;
-- legacy score-eligible trades: **0**;
-- formerly score-eligible legacy rows quarantined: **6**;
-- invalid legacy provenance rows: **0**;
-- resolved-profile provenance mismatches: **0**;
-- provenance trigger `trg_shadow_trade_provider_profile_pit`: enabled.
+Production proof:
 
-Every pre-Day-7 research trade predates its source's immutable provider-profile history origin. Day 8 therefore does not manufacture historical provider knowledge. Those rows remain available as legacy research records but cannot count as PIT-clean fair-score evidence.
+- PR `#143` merged;
+- live SHA `634838b5a559a425a1fe54af5bf7c022763f2743`;
+- Render deploy `dep-daepomp7lnhs73f213eg` is live;
+- Render API quality: **766 passed, 67 skipped**;
+- migration `0058_provider_aidy_context` applied;
+- `/health` returned 200;
+- M1 resolver: `processed=0 failures=0`;
+- context attachment resolver: `attached=0 failures=0`;
+- post-cutover error-level logs: 0;
+- attachment-table invalid future rows: 0;
+- attachment-table live-money rows: 0;
+- duplicate signal attachments: 0;
+- both validation and immutability triggers are enabled;
+- PIT-resolved forward signals currently waiting for attachment: 0.
 
-New research enrollment stamps the immutable provider profile version already effective at `signal_posted_at`; unresolved timestamps fail closed. Provider-aware historical AI context now resolves only provider-profile history as of the actual message timestamp and no longer falls back to today's mutable profile/adaptive grammar.
+There are currently zero attachment rows because no genuine post-boundary PIT-clean provider signal exists yet. Historical/legacy rows were deliberately not backfilled. The next qualifying real signal will be attached automatically.
 
 ## Cross-project boundary
 
-Super Signals owns provider identity, interpretation, profile history, benchmark/replay and broker/member execution. AIDY supplies bounded independent point-in-time Gold market/context truth. The databases remain separate. Shadow research does not gain broker authority. Formal-forward remains OFF.
+Super Signals owns provider identity, interpretation, Provider Lab research and broker/member execution. AIDY supplies independent point-in-time Gold context. Day 10 enrichment is asynchronous and isolated from live execution. A failed context lookup cannot stop M1 research or delay/mutate broker routing.
 
 ## Next
 
-**Day 9 — canonical AIDY context join.**
+**Day 11 — execution-cost and paper ↔ broker calibration.**
 
-Join each PIT-clean provider setup to only the independent market/session/regime context that AIDY itself knew at that timestamp. Both temporal boundaries must remain clean: provider knowledge from Super Signals and market/context knowledge from AIDY.
-
-Before production work, verify Render, the production branch, Postgres and AIDY runtime again. Runtime truth overrides Memory.
+Calibrate Provider Intelligence against executable reality: spread, slippage, actual fill/entry differences, broker costs and paper-vs-broker divergence. No live sizing or execution authority should change merely because Day 11 is built.
