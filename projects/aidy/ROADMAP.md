@@ -1,34 +1,47 @@
-# AIDY — Current Roadmap
+# AIDY — Provider Intelligence Roadmap
 
-This is the current September continuation roadmap. Older Day-numbered milestones exist in the source repos; resolve ambiguity by date, latest Memory handover and verified runtime state.
+Active sequence: **6 September 2026 Provider Intelligence**
 
-## Completed foundation/hardening
+## Completed
 
-- Day 3 — D1 usage/resilience monitoring — GREEN.
+- Day 1 — reality lock / roster / production protection — GREEN.
+- Day 2 — canonical Gold calendar/session truth — GREEN.
+- Day 3 — D1 operational hardening — GREEN.
 - Day 4 — capture freshness watchdog — GREEN.
 - Day 5 — archive-outbox durability watchdog — GREEN.
-- Day 6 — bounded archive retry/backoff + explicit dead-letter state — GREEN / PRODUCTION VERIFIED.
-- Day 7 — provider identity + behavioural-profile versioning — GREEN / PRODUCTION VERIFIED.
-- Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
+- Day 6 — bounded retry/backoff + dead-letter handling — GREEN.
+- Day 7 — provider identity/style/profile versioning — GREEN.
+- Day 8 — forward-only provider boundary + legacy closure — GREEN.
+- Day 9 — canonical AIDY point-in-time context join — GREEN.
+- Day 10 — immutable provider-profile + AIDY context attachment — GREEN.
 
-Days 7–8 are implemented in Super Signals because provider identity/profile state belongs there. AIDY remains the independent market/context truth service.
+## Next
 
-## Intelligence sequence
+### Day 11 — execution-cost and paper ↔ broker calibration
 
-- **Day 9 — canonical AIDY context join — NEXT.** Match PIT-clean provider setups to only the market/session/regime context AIDY itself knew at that timestamp.
-- **Day 10 — immutable context attached to each signal.** Persist the contemporaneous AIDY context/provenance on each qualifying provider setup.
-- **Day 11 — execution-cost calibration.** Compare theoretical/paper outcomes against realistic spread/slippage/broker effects.
-- **Day 12 — hierarchical provider fingerprints.** Build statistically shrunk provider identities rather than naive leaderboards.
-- **Day 13 — conditional fingerprints.** Discover where a provider is strong/weak by side/session/regime with preregistration/FDR controls.
-- **Day 14 — correlation/relay clusters + drift.** Detect copied/correlated sources and behaviour/performance change.
-- **Day 15 — governance harness.** Evidence-backed promotion/demotion/shadow decisions.
-- **Day 16 — veto/filter counterfactual.** Test whether AIDY can improve provider results by rejecting bad contexts.
-- **Day 17 — confidence calibration + dormant sizing.** Test whether calibrated confidence deserves different paper exposure.
-- **Day 18 — combined-book intelligence.** Account for correlated providers and total XAUUSD heat.
-- **Day 19 — explainability.** Explain accepted trades without exposing providers/internal secrets.
-- **Day 20 — active management intelligence.** Research exits, SL/BE, runners and management interventions.
-- **Day 21 — full audit.** Separate BUILT vs ENGINEERING PROVEN vs STATISTICALLY VALIDATED vs any future real-money authority.
+Measure spread, slippage, executable entry differences, broker costs and paper-vs-broker divergence so later provider intelligence is based on achievable rather than theoretical performance.
 
-## Statistical discipline
+### Day 12 — hierarchical provider fingerprint statistics
+Build statistically controlled provider fingerprints with shrinkage/partial pooling.
 
-No provider intelligence should graduate on tiny-N winner picking. Use minimum sample gates, effect sizes, uncertainty/credible intervals, hierarchical shrinkage, multiple-testing control and forward-only evidence.
+### Day 13 — conditional fingerprints
+Measure provider strengths/weaknesses by direction, session, regime and other preregistered contexts.
+
+### Day 14 — correlation / relay clusters / drift
+Detect copied/related provider behaviour and changes over time.
+
+### Day 15 — governance harness
+Promotion/demotion/shadow evidence rules.
+
+### Day 16 — veto/filter counterfactual
+Test whether AIDY can improve provider outcomes by rejecting bad contexts.
+
+### Day 17 — confidence calibration + dormant sizing
+Calibrate confidence before any sizing authority is considered.
+
+### Days 18–21
+Combined-book intelligence, explainability, management intelligence and final audit/graduation.
+
+## Rule
+
+Engineering completion is not statistical validation. Real-money authority requires separate evidence and explicit owner approval. Formal-forward remains OFF until deliberately graduated.
