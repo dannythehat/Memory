@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-07T11:06:21Z",
+  "verified_at_utc": "2026-09-07T13:25:25Z",
   "source_repo": "dannythehat/super-signals",
   "default_branch": "main",
   "production_branch": "feature/day-10-shared-telegram-sources",
-  "known_live_sha": "e4afce8207933339e6745478363228dc75154d51",
+  "known_live_sha": "3b8ac88c5b248c6d9f2fb0718b2062b58d5e77cd",
   "render_service": "super-signals-day-8",
-  "render_deploy": "dep-daf9ipuq1p3s73dn6kn0",
-  "alembic_head": "0062_provider_day13_conditional",
+  "render_deploy": "dep-dafbjhks728c738nrdu0",
+  "alembic_head": "0063_provider_day14_governance",
   "provider_roster": {
     "shadow_discovery": 40,
     "testing_real": 5,
@@ -17,11 +17,10 @@
   },
   "latest_completed_build": {
     "sequence": "2026-09-07-provider-intelligence",
-    "day": 13,
-    "status": "ENGINEERING GREEN / PRODUCTION VERIFIED; STATISTICAL WAITING",
-    "title": "conditional fingerprints, preregistration, BH FDR and shrunken conditional posteriors",
-    "delivery_pr": 148,
-    "runtime_hotfix_pr": 149
+    "day": 14,
+    "status": "ENGINEERING GREEN / PRODUCTION VERIFIED; GOVERNANCE FAIL-CLOSED",
+    "title": "evidence-backed provider research promotion, demotion and re-test governance",
+    "delivery_pr": 150
   },
   "day11": {
     "delivery_pr": 146,
@@ -34,7 +33,6 @@
   },
   "day12": {
     "delivery_pr": 147,
-    "delivery_head_sha": "5eb27148bdbd1512e01269746578d86fb2a3d519",
     "merge_sha": "d48a81744af6dda5e644b929d713d3d1ec95c6d3",
     "deploy_id": "dep-daf8spc9v7es73bpqd30",
     "alembic_head": "0061_provider_day12_fingerprint",
@@ -42,20 +40,14 @@
     "build_complete": true,
     "engineering_status": "ENGINEERING_PROVEN",
     "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
-    "model_version": "provider_day12_v1",
     "minimum_forward_n": 30,
     "research_only": true,
     "live_money_execution_allowed": false
   },
   "day13": {
     "delivery_pr": 148,
-    "delivery_head_sha": "987e2cfe1602a81284c4c620ca0103c687a85e86",
-    "initial_merge_sha": "db5f026a5a289a2c634a8c4037e56ca1072f552c",
     "runtime_hotfix_pr": 149,
-    "runtime_hotfix_head_sha": "80c2e6e1713d8f1a542814e878a706fe268977ea",
     "merge_sha": "e4afce8207933339e6745478363228dc75154d51",
-    "deploy_id": "dep-daf9ipuq1p3s73dn6kn0",
-    "deploy_status": "live",
     "alembic_head": "0062_provider_day13_conditional",
     "build_status": "PRODUCTION_VERIFIED",
     "build_complete": true,
@@ -63,8 +55,6 @@
     "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
     "model_version": "provider_day13_v1",
     "registry_version": "provider_day13_preregistered_v1",
-    "primary_estimate_kind": "posterior_partial_pool",
-    "fdr_family": "provider_day13_v1_global",
     "threshold_approval_status": "PROPOSED_UNAPPROVED",
     "minimum_oos_n": 30,
     "proposed_fdr_q": 0.05,
@@ -74,75 +64,103 @@
     "testing_real_included": false,
     "preregistration": {
       "hypothesis_count": 15360,
-      "unique_digest_count": 15360,
       "frozen_at_utc": "2026-09-07T10:50:52.042190Z",
-      "all_hypotheses_same_oos_boundary": true,
       "append_only": true,
       "research_only": true,
       "live_money_execution_allowed": false
     },
-    "condition_space": {
-      "sides": [
-        "BUY",
-        "SELL"
-      ],
-      "sessions": [
-        "asia",
-        "europe",
-        "ny_early",
-        "other"
-      ],
-      "duration_buckets": [
-        "lt_15m",
-        "15m_to_60m",
-        "1h_to_4h",
-        "gte_4h"
-      ],
-      "duration_semantics": "realized_descriptive_post_entry",
-      "aidy_regime_definition_version": "aidy_gold_regime_v1",
-      "unknown_regime_labels_confirmatory": false
-    },
-    "evidence_boundary": {
-      "post_preregistration_only": true,
-      "closed_only": true,
-      "score_eligible_required": true,
-      "provider_profile_pit_status_required": "resolved",
-      "canonical_aidy_context_column": "aidy_context_as_of_utc",
-      "broker_deals_used": false,
-      "metaapi_used": false,
-      "aidy_d1_writes": 0,
-      "research_only": true,
-      "live_money_execution_allowed": false
-    },
-    "production_run": {
-      "run_id": "717adf78-f8a0-4934-b766-91e15431bb0a",
-      "code_sha": "e4afce8207933339e6745478363228dc75154d51",
-      "evidence_cutoff_utc": "2026-09-07T11:01:52.956320Z",
-      "completed_at_utc": "2026-09-07T11:03:05.742506Z",
-      "provider_count": 40,
-      "preregistered_hypothesis_count": 15360,
+    "latest_refresh_for_day14": {
+      "run_id": "d5012961-b09d-4be3-b1ae-db2486a20e11",
+      "code_sha": "3b8ac88c5b248c6d9f2fb0718b2062b58d5e77cd",
+      "completed_at_utc": "2026-09-07T13:20:55.329761Z",
       "eligible_oos_trade_count": 0,
-      "result_count": 0,
       "tested_hypothesis_count": 0,
       "bh_rejected_count": 0,
       "builder_gate_candidate_count": 0,
       "authoritative_discovery_count": 0,
-      "simulation_acceptance_passed": true,
       "engineering_status": "ENGINEERING_PROVEN",
       "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
       "threshold_approval_status": "PROPOSED_UNAPPROVED",
       "evidence_digest": "8b6873c76b2c1cee5a37866a2048d967865be189ec26e526a0673b88ed61a7ea",
-      "failure_reason": null,
+      "research_only": true,
+      "live_money_execution_allowed": false
+    }
+  },
+  "day14": {
+    "delivery_pr": 150,
+    "delivery_head_sha": "d4eee9db9c07db7f9713fbd480d47fb6bd7e8c94",
+    "merge_sha": "3b8ac88c5b248c6d9f2fb0718b2062b58d5e77cd",
+    "deploy_id": "dep-dafbjhks728c738nrdu0",
+    "deploy_status": "live",
+    "alembic_head": "0063_provider_day14_governance",
+    "build_status": "PRODUCTION_VERIFIED",
+    "build_complete": true,
+    "engineering_status": "ENGINEERING_PROVEN",
+    "model_version": "provider_day14_v1",
+    "policy_version": "provider_day14_policy_v1",
+    "policy_approval_status": "PROPOSED_UNAPPROVED",
+    "governance_status": "WAITING-FOR-OWNER-THRESHOLD-APPROVAL",
+    "research_state_machine": [
+      "learning",
+      "shadow",
+      "qualified"
+    ],
+    "qualified_semantics": "paper_research_eligibility_only",
+    "policy": {
+      "minimum_oos_n": 30,
+      "minimum_tested_fingerprint_cells": 1,
+      "confidence_level": 0.95,
+      "oos_window_mode": "since_day13_preregistration",
+      "human_live_gate_required": true,
+      "owner_approved_at": null,
       "research_only": true,
       "live_money_execution_allowed": false
     },
-    "initial_runtime_failure": {
-      "failed_closed": true,
-      "cause": "loader referenced nonexistent context_as_of_utc alias instead of canonical aidy_context_as_of_utc",
-      "preregistration_preserved": true,
-      "fixed_by_pr": 149,
-      "authority_changed": false
-    }
+    "production_run": {
+      "run_id": "29ccf16a-3da4-41dc-8e09-dfb7ab99be01",
+      "source_day13_run_id": "d5012961-b09d-4be3-b1ae-db2486a20e11",
+      "code_sha": "3b8ac88c5b248c6d9f2fb0718b2062b58d5e77cd",
+      "completed_at_utc": "2026-09-07T13:21:00.927675Z",
+      "provider_count": 40,
+      "hold_count": 39,
+      "promotion_count": 0,
+      "demotion_count": 0,
+      "retest_count": 1,
+      "research_state_transition_count": 0,
+      "paper_qualified_count": 0,
+      "authoritative_live_transition_count": 0,
+      "simulation_acceptance_passed": true,
+      "engineering_status": "ENGINEERING_PROVEN",
+      "governance_status": "WAITING-FOR-OWNER-THRESHOLD-APPROVAL",
+      "evidence_digest": "0e4d697bb2c9629dfee6667c4d102f5b92fb8d780ff53e4216272932a7cce8b6",
+      "research_only": true,
+      "live_money_execution_allowed": false
+    },
+    "result_integrity": {
+      "rows": 40,
+      "research_only_rows": 40,
+      "live_money_false_rows": 40,
+      "authoritative_live_transition_false_rows": 40,
+      "transitioned_rows": 0,
+      "paper_qualified_rows": 0,
+      "disposition": {
+        "learning_insufficient_oos_hold": 39,
+        "duplicate_review_insufficient_oos_retest": 1
+      }
+    },
+    "source_status_unchanged": true,
+    "shadow_research_states_after_run": {
+      "learning": 39,
+      "duplicate_review": 1,
+      "shadow": 0,
+      "qualified": 0,
+      "rejected": 0
+    },
+    "broker_deals_used": false,
+    "metaapi_used": false,
+    "aidy_d1_writes": 0,
+    "research_only": true,
+    "live_money_execution_allowed": false
   },
   "production_quality": {
     "health": "PASS",
@@ -153,13 +171,14 @@
     },
     "render_deploy_status": "live",
     "new_instance_health_200_observed": true,
-    "day13_acceptance_log_observed": true,
-    "day13_acceptance_database_row_verified": true
+    "day14_acceptance_log_observed": true,
+    "day14_acceptance_database_row_verified": true,
+    "known_preexisting_issue": "shadow fallback evaluator can fail safely on legacy provider profile state score-eligibility enforcement; identical error observed before Day 14 deployment"
   },
   "next_build": {
-    "day": 14,
+    "day": 15,
     "status": "NOT_STARTED",
-    "exact_next_step": "Await explicit owner instruction. Preserve the frozen Day 13 registry while genuinely post-preregistration, PIT-resolved, score-eligible shadow evidence accumulates; statistical authority remains WAITING-FOR-FORWARD-EVIDENCE."
+    "exact_next_step": "Await explicit owner instruction. Day 14 policy remains fail-closed until explicit owner threshold approval and sufficient genuinely post-Day-13-preregistration OOS evidence exist."
   },
-  "notes": "Day 13 engineering is GREEN / production verified. No real provider statistical claim is validated yet: immediately after the frozen preregistration there were zero eligible OOS trades, therefore zero tested hypotheses, BH rejections, candidates or authoritative discoveries. Builder statistical thresholds remain PROPOSED_UNAPPROVED."
+  "notes": "Day 14 engineering is GREEN / production verified. This is not a provider-promotion or live-money GREEN: the policy is still PROPOSED_UNAPPROVED, Day 13 has zero eligible OOS trades, and Day 14 correctly made zero promotions, demotions or research-state transitions."
 }
