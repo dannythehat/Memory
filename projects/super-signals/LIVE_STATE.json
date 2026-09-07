@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-07T07:29:52Z",
+  "verified_at_utc": "2026-09-07T09:43:00Z",
   "source_repo": "dannythehat/super-signals",
   "default_branch": "main",
   "production_branch": "feature/day-10-shared-telegram-sources",
-  "known_live_sha": "367ff4076410e7edfa3095295f3964a57d812d7c",
+  "known_live_sha": "9896c78962f06ec5e89403fa55514178c7cbc4a7",
   "render_service": "super-signals-day-8",
-  "render_deploy": "dep-daf6dgp7lnhs73fca1rg",
+  "render_deploy": "dep-daf8ci942hec73cvss3g",
   "alembic_head": "0060_provider_day11_reconcile",
   "provider_roster": {
     "shadow_discovery": 40,
@@ -16,25 +16,39 @@
     "revoked": 4
   },
   "latest_completed_build": {
-    "sequence": "2026-09-06-provider-intelligence",
-    "day": 10,
-    "status": "PRODUCTION VERIFIED",
-    "title": "immutable per-signal provider-profile plus AIDY context attachment",
-    "delivery_pr": 143
+    "sequence": "2026-09-07-provider-intelligence",
+    "day": 11,
+    "status": "PRODUCTION VERIFIED / COMPLETE PARTIAL DISPOSITION",
+    "title": "paper-engine reconciliation fidelity closure",
+    "delivery_pr": 146,
+    "universal_green": false
   },
   "day10": {
     "attachment_table": "provider_signal_context_attachments",
     "status": "PRODUCTION VERIFIED"
   },
   "day11": {
-    "delivery_pr": 144,
-    "delivery_head_sha": "92b8b7368ec87073f1be999e42495883509722f0",
-    "merge_sha": "367ff4076410e7edfa3095295f3964a57d812d7c",
+    "delivery_pr": 146,
+    "delivery_head_sha": "f0c50724dd8f1ce0d28b03b7e7de01ad8898de61",
+    "merge_sha": "9896c78962f06ec5e89403fa55514178c7cbc4a7",
     "deploy_status": "live",
-    "build_status": "WAITING",
-    "build_complete": false,
+    "build_status": "COMPLETE_PARTIAL_DISPOSITION",
+    "build_complete": true,
+    "universal_reconciliation_green": false,
     "research_only": true,
     "live_money_execution_allowed": false,
+    "calibration_evidence": {
+      "aidy_merge_sha": "b17bf78d7c7197aea4864a4ecd340deaf5d8c344",
+      "window_count": 82,
+      "complete_windows": 82,
+      "isolated_m1_bars": 17054,
+      "source_kind": "calibration_backfill",
+      "source_provider": "twelve_data",
+      "pit_eligible": false,
+      "research_only": true,
+      "live_money_execution_allowed": false
+    },
+    "fidelity_mode": "canonical_allocation_keyed_leg_m1",
     "tolerance": {
       "version": "provider_day11_v1",
       "min_provider_signals": 5,
@@ -43,46 +57,64 @@
       "max_p95_abs_r_delta": 1.0,
       "min_lifecycle_agreement_rate": 0.8
     },
-    "broker_cost_model": {
-      "account_environment": "demo",
-      "status": "ENGINEERING_CALIBRATED",
-      "broker_position_samples": 988,
-      "entry_slippage_samples": 467,
-      "exit_slippage_samples": 704,
-      "entry_adverse_p50_points": 0,
-      "entry_adverse_p95_points": 1.088,
-      "exit_adverse_p50_points": 0,
-      "exit_adverse_p95_points": 0,
-      "research_only": true,
-      "live_money_execution_allowed": false
-    },
     "reconciliation": {
-      "run_id": "c5fae236-a63f-4340-99e7-7890e08f782a",
+      "run_id": "00ddf1dc-5bcf-48b4-bab1-7f03d0c6cb88",
       "run_status": "WAITING_RECONCILIATION",
-      "evidence_digest": "0c802cf5f792b3095c6ad7e6f4e8ff3aff0d9d4c324ee3a3d4d1ac1e42ec0449",
+      "evidence_digest": "f4b2f814cb8c845e2390c3e218ffc4006eb2a8a71a59ff63a397d0ef7a909c6c",
       "provider_count": 5,
-      "attempted_signals": 56,
-      "comparable_signals": 0,
-      "attempted_by_provider": [15, 6, 9, 15, 11],
-      "comparable_by_provider": [0, 0, 0, 0, 0],
-      "provider_statuses": [
-        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
-        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
-        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
-        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
-        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES"
+      "attempted_signals": 82,
+      "comparable_signals": 23,
+      "global_sample_floor_met": false,
+      "research_only": true,
+      "live_money_execution_allowed": false,
+      "provider_results": [
+        {
+          "provider": "FXTradingVision l Forex & Crypto Signals 🚀",
+          "attempted": 31,
+          "comparable": 10,
+          "median_abs_r_delta": 0.02468508,
+          "p95_abs_r_delta": 1.23040298,
+          "lifecycle_agreement_rate": 0.9,
+          "verdict": "NOT_TRUSTED_FOR_PAPER",
+          "reason": "p95 exceeds unchanged 1.00 cap by 0.23040298R"
+        },
+        {
+          "provider": "GTMO VIP 🤴🏽",
+          "attempted": 11,
+          "comparable": 0,
+          "verdict": "NOT_M1_RECONCILABLE_EXCLUDED",
+          "reason": "8 signal-minute ambiguities; 3 calibration reads exhausted bounded retry with HTTP 500; zero metrics are sentinels"
+        },
+        {
+          "provider": "SureShot GOLD",
+          "attempted": 6,
+          "comparable": 5,
+          "median_abs_r_delta": 0.0,
+          "p95_abs_r_delta": 2.4,
+          "lifecycle_agreement_rate": 0.8,
+          "verdict": "NOT_M1_RECONCILABLE_EXCLUDED",
+          "reason": "signal 914f83ee-d880-4c29-bb3b-f42fe82e5724 retains independent M1 path/order disagreement: paper +2R vs broker -1R"
+        },
+        {
+          "provider": "TIG’s Asia Trades",
+          "attempted": 25,
+          "comparable": 8,
+          "median_abs_r_delta": 0.0600885,
+          "p95_abs_r_delta": 1.0,
+          "lifecycle_agreement_rate": 1.0,
+          "verdict": "NOT_TRUSTED_FOR_PAPER",
+          "reason": "provider metrics meet numeric limits but unchanged global comparable floor is 23/30"
+        },
+        {
+          "provider": "United Kings™ Signals! 👑",
+          "attempted": 9,
+          "comparable": 0,
+          "verdict": "NOT_M1_RECONCILABLE_EXCLUDED",
+          "reason": "4 signal-minute ambiguities; 3 management-bar ambiguities; 2 deterministic paper/broker leg-key mismatches; zero metrics are sentinels"
+        }
       ],
-      "intelligence_modes": [
-        "SHADOW_WAITING",
-        "SHADOW_WAITING",
-        "SHADOW_WAITING",
-        "SHADOW_WAITING",
-        "SHADOW_WAITING"
-      ],
-      "actual_delta_metrics_available": false,
-      "actual_lifecycle_metrics_available": false,
-      "blocker": "all 56 real replay attempts returned aidy_m1_incomplete",
-      "stored_zero_metrics_are_sentinels": true
+      "trusted_for_paper": [],
+      "trusted_for_paper_reason": "No provider clears all unchanged gates because the completed run has only 23 comparable signals against the unchanged global floor of 30."
     }
   },
   "production_quality": {
@@ -92,15 +124,14 @@
       "web": "success",
       "workers": "success"
     },
-    "day11_acceptance_log_observed": true,
-    "day11_safe_sample_rows": 56,
-    "day11_unsafe_sample_rows": 0
+    "day11_safe_sample_rows": 82,
+    "day11_unsafe_sample_rows": 0,
+    "render_deploy_status": "live"
   },
   "next_build": {
-    "day": 11,
-    "title": "execution-cost and paper-broker calibration",
-    "status": "WAITING",
-    "exact_next_step": "Restore complete PIT AIDY M1 coverage for enough real reconciliation windows and rerun the unchanged Day 11 acceptance against real broker_deals; do not loosen tolerance or fabricate missing outcomes."
+    "day": 12,
+    "status": "NOT_STARTED",
+    "exact_next_step": "Do not start Day 12 under the Day 11 closure task; await explicit owner instruction. Paper trust remains fail-closed under the unchanged Day 11 gates."
   },
-  "notes": "Day 11 code, migration and deployment are production verified, but Day 11 is not GREEN/complete because the real five-provider reconciliation has zero comparable signals due to incomplete AIDY M1 replay evidence."
+  "notes": "Day 11 is complete as an owner-accepted partial fail-closed disposition, not a universal reconciliation GREEN. Trusted for paper on the frozen run: none."
 }
