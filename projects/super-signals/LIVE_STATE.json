@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-06T17:06:00Z",
+  "verified_at_utc": "2026-09-07T07:29:52Z",
   "source_repo": "dannythehat/super-signals",
   "default_branch": "main",
   "production_branch": "feature/day-10-shared-telegram-sources",
-  "known_live_sha": "634838b5a559a425a1fe54af5bf7c022763f2743",
+  "known_live_sha": "367ff4076410e7edfa3095295f3964a57d812d7c",
   "render_service": "super-signals-day-8",
-  "render_deploy": "dep-daepomp7lnhs73f213eg",
-  "alembic_head": "0058_provider_aidy_context",
+  "render_deploy": "dep-daf6dgp7lnhs73fca1rg",
+  "alembic_head": "0060_provider_day11_reconcile",
   "provider_roster": {
     "shadow_discovery": 40,
     "testing_real": 5,
@@ -24,29 +24,83 @@
   },
   "day10": {
     "attachment_table": "provider_signal_context_attachments",
-    "attachment_rows": 0,
-    "future_provider_rows": 0,
-    "future_aidy_rows": 0,
-    "live_money_rows": 0,
-    "non_private_forward_rows": 0,
-    "duplicate_signal_groups": 0,
-    "validation_trigger_enabled": true,
-    "immutability_trigger_enabled": true,
-    "eligible_forward_signals_waiting": 0,
-    "resolver_last_attached": 0,
-    "resolver_last_failures": 0
+    "status": "PRODUCTION VERIFIED"
+  },
+  "day11": {
+    "delivery_pr": 144,
+    "delivery_head_sha": "92b8b7368ec87073f1be999e42495883509722f0",
+    "merge_sha": "367ff4076410e7edfa3095295f3964a57d812d7c",
+    "deploy_status": "live",
+    "build_status": "WAITING",
+    "build_complete": false,
+    "research_only": true,
+    "live_money_execution_allowed": false,
+    "tolerance": {
+      "version": "provider_day11_v1",
+      "min_provider_signals": 5,
+      "min_total_signals": 30,
+      "max_median_abs_r_delta": 0.35,
+      "max_p95_abs_r_delta": 1.0,
+      "min_lifecycle_agreement_rate": 0.8
+    },
+    "broker_cost_model": {
+      "account_environment": "demo",
+      "status": "ENGINEERING_CALIBRATED",
+      "broker_position_samples": 988,
+      "entry_slippage_samples": 467,
+      "exit_slippage_samples": 704,
+      "entry_adverse_p50_points": 0,
+      "entry_adverse_p95_points": 1.088,
+      "exit_adverse_p50_points": 0,
+      "exit_adverse_p95_points": 0,
+      "research_only": true,
+      "live_money_execution_allowed": false
+    },
+    "reconciliation": {
+      "run_id": "c5fae236-a63f-4340-99e7-7890e08f782a",
+      "run_status": "WAITING_RECONCILIATION",
+      "evidence_digest": "0c802cf5f792b3095c6ad7e6f4e8ff3aff0d9d4c324ee3a3d4d1ac1e42ec0449",
+      "provider_count": 5,
+      "attempted_signals": 56,
+      "comparable_signals": 0,
+      "attempted_by_provider": [15, 6, 9, 15, 11],
+      "comparable_by_provider": [0, 0, 0, 0, 0],
+      "provider_statuses": [
+        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
+        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
+        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
+        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES",
+        "WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES"
+      ],
+      "intelligence_modes": [
+        "SHADOW_WAITING",
+        "SHADOW_WAITING",
+        "SHADOW_WAITING",
+        "SHADOW_WAITING",
+        "SHADOW_WAITING"
+      ],
+      "actual_delta_metrics_available": false,
+      "actual_lifecycle_metrics_available": false,
+      "blocker": "all 56 real replay attempts returned aidy_m1_incomplete",
+      "stored_zero_metrics_are_sentinels": true
+    }
   },
   "production_quality": {
-    "render_api_tests_passed": 766,
-    "render_api_tests_skipped": 67,
     "health": "PASS",
-    "post_cutover_error_logs_observed": 0,
-    "provider_lab_m1_failures": 0,
-    "provider_context_failures": 0
+    "delivery_head_checks": {
+      "api": "success",
+      "web": "success",
+      "workers": "success"
+    },
+    "day11_acceptance_log_observed": true,
+    "day11_safe_sample_rows": 56,
+    "day11_unsafe_sample_rows": 0
   },
   "next_build": {
     "day": 11,
-    "title": "execution-cost and paper-broker calibration"
+    "title": "execution-cost and paper-broker calibration",
+    "status": "WAITING",
+    "exact_next_step": "Restore complete PIT AIDY M1 coverage for enough real reconciliation windows and rerun the unchanged Day 11 acceptance against real broker_deals; do not loosen tolerance or fabricate missing outcomes."
   },
-  "notes": "Day 10 is live. Zero attachment rows is expected because no genuine PIT-resolved forward signal exists yet; legacy data was intentionally not backfilled."
+  "notes": "Day 11 code, migration and deployment are production verified, but Day 11 is not GREEN/complete because the real five-provider reconciliation has zero comparable signals due to incomplete AIDY M1 replay evidence."
 }
