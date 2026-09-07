@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-07T10:16:02Z",
+  "verified_at_utc": "2026-09-07T11:06:21Z",
   "source_repo": "dannythehat/super-signals",
   "default_branch": "main",
   "production_branch": "feature/day-10-shared-telegram-sources",
-  "known_live_sha": "d48a81744af6dda5e644b929d713d3d1ec95c6d3",
+  "known_live_sha": "e4afce8207933339e6745478363228dc75154d51",
   "render_service": "super-signals-day-8",
-  "render_deploy": "dep-daf8spc9v7es73bpqd30",
-  "alembic_head": "0061_provider_day12_fingerprint",
+  "render_deploy": "dep-daf9ipuq1p3s73dn6kn0",
+  "alembic_head": "0062_provider_day13_conditional",
   "provider_roster": {
     "shadow_discovery": 40,
     "testing_real": 5,
@@ -17,10 +17,11 @@
   },
   "latest_completed_build": {
     "sequence": "2026-09-07-provider-intelligence",
-    "day": 12,
+    "day": 13,
     "status": "ENGINEERING GREEN / PRODUCTION VERIFIED; STATISTICAL WAITING",
-    "title": "fingerprint core plus hierarchical statistics harness",
-    "delivery_pr": 147
+    "title": "conditional fingerprints, preregistration, BH FDR and shrunken conditional posteriors",
+    "delivery_pr": 148,
+    "runtime_hotfix_pr": 149
   },
   "day11": {
     "delivery_pr": 146,
@@ -36,37 +37,77 @@
     "delivery_head_sha": "5eb27148bdbd1512e01269746578d86fb2a3d519",
     "merge_sha": "d48a81744af6dda5e644b929d713d3d1ec95c6d3",
     "deploy_id": "dep-daf8spc9v7es73bpqd30",
-    "deploy_status": "live",
     "alembic_head": "0061_provider_day12_fingerprint",
     "build_status": "PRODUCTION_VERIFIED",
     "build_complete": true,
     "engineering_status": "ENGINEERING_PROVEN",
     "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
     "model_version": "provider_day12_v1",
-    "primary_estimate_kind": "posterior_partial_pool",
     "minimum_forward_n": 30,
+    "research_only": true,
+    "live_money_execution_allowed": false
+  },
+  "day13": {
+    "delivery_pr": 148,
+    "delivery_head_sha": "987e2cfe1602a81284c4c620ca0103c687a85e86",
+    "initial_merge_sha": "db5f026a5a289a2c634a8c4037e56ca1072f552c",
+    "runtime_hotfix_pr": 149,
+    "runtime_hotfix_head_sha": "80c2e6e1713d8f1a542814e878a706fe268977ea",
+    "merge_sha": "e4afce8207933339e6745478363228dc75154d51",
+    "deploy_id": "dep-daf9ipuq1p3s73dn6kn0",
+    "deploy_status": "live",
+    "alembic_head": "0062_provider_day13_conditional",
+    "build_status": "PRODUCTION_VERIFIED",
+    "build_complete": true,
+    "engineering_status": "ENGINEERING_PROVEN",
+    "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
+    "model_version": "provider_day13_v1",
+    "registry_version": "provider_day13_preregistered_v1",
+    "primary_estimate_kind": "posterior_partial_pool",
+    "fdr_family": "provider_day13_v1_global",
+    "threshold_approval_status": "PROPOSED_UNAPPROVED",
+    "minimum_oos_n": 30,
+    "proposed_fdr_q": 0.05,
+    "proposed_min_effect_r": 0.25,
     "population": "shadow_discovery_only",
     "shadow_provider_count": 40,
     "testing_real_included": false,
-    "dimensions": [
-      "provider",
-      "provider_direction",
-      "provider_session",
-      "provider_direction_session"
-    ],
-    "metrics": [
-      "tp_hit_rates",
-      "stop_rate",
-      "break_even_rate",
-      "duration_seconds",
-      "mae_r",
-      "mfe_r"
-    ],
+    "preregistration": {
+      "hypothesis_count": 15360,
+      "unique_digest_count": 15360,
+      "frozen_at_utc": "2026-09-07T10:50:52.042190Z",
+      "all_hypotheses_same_oos_boundary": true,
+      "append_only": true,
+      "research_only": true,
+      "live_money_execution_allowed": false
+    },
+    "condition_space": {
+      "sides": [
+        "BUY",
+        "SELL"
+      ],
+      "sessions": [
+        "asia",
+        "europe",
+        "ny_early",
+        "other"
+      ],
+      "duration_buckets": [
+        "lt_15m",
+        "15m_to_60m",
+        "1h_to_4h",
+        "gte_4h"
+      ],
+      "duration_semantics": "realized_descriptive_post_entry",
+      "aidy_regime_definition_version": "aidy_gold_regime_v1",
+      "unknown_regime_labels_confirmatory": false
+    },
     "evidence_boundary": {
+      "post_preregistration_only": true,
       "closed_only": true,
       "score_eligible_required": true,
       "provider_profile_pit_status_required": "resolved",
-      "raw_rates_descriptive_only": true,
+      "canonical_aidy_context_column": "aidy_context_as_of_utc",
       "broker_deals_used": false,
       "metaapi_used": false,
       "aidy_d1_writes": 0,
@@ -74,34 +115,51 @@
       "live_money_execution_allowed": false
     },
     "production_run": {
-      "run_id": "92c29d7a-fd65-41ad-bacc-fa082666d870",
+      "run_id": "717adf78-f8a0-4934-b766-91e15431bb0a",
+      "code_sha": "e4afce8207933339e6745478363228dc75154d51",
+      "evidence_cutoff_utc": "2026-09-07T11:01:52.956320Z",
+      "completed_at_utc": "2026-09-07T11:03:05.742506Z",
       "provider_count": 40,
-      "eligible_trade_count": 0,
-      "cell_count": 0,
-      "minimum_forward_n": 30,
+      "preregistered_hypothesis_count": 15360,
+      "eligible_oos_trade_count": 0,
+      "result_count": 0,
+      "tested_hypothesis_count": 0,
+      "bh_rejected_count": 0,
+      "builder_gate_candidate_count": 0,
+      "authoritative_discovery_count": 0,
+      "simulation_acceptance_passed": true,
       "engineering_status": "ENGINEERING_PROVEN",
       "statistical_status": "WAITING-FOR-FORWARD-EVIDENCE",
-      "evidence_digest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "threshold_approval_status": "PROPOSED_UNAPPROVED",
+      "evidence_digest": "8b6873c76b2c1cee5a37866a2048d967865be189ec26e526a0673b88ed61a7ea",
+      "failure_reason": null,
       "research_only": true,
-      "live_money_execution_allowed": false,
-      "zero_evidence_creates_fake_cells": false
+      "live_money_execution_allowed": false
+    },
+    "initial_runtime_failure": {
+      "failed_closed": true,
+      "cause": "loader referenced nonexistent context_as_of_utc alias instead of canonical aidy_context_as_of_utc",
+      "preregistration_preserved": true,
+      "fixed_by_pr": 149,
+      "authority_changed": false
     }
   },
   "production_quality": {
     "health": "PASS",
-    "delivery_head_checks": {
+    "final_delivery_head_checks": {
       "api": "success",
       "web": "success",
       "workers": "success"
     },
     "render_deploy_status": "live",
     "new_instance_health_200_observed": true,
-    "day12_acceptance_log_observed": true
+    "day13_acceptance_log_observed": true,
+    "day13_acceptance_database_row_verified": true
   },
   "next_build": {
-    "day": 13,
+    "day": 14,
     "status": "NOT_STARTED",
-    "exact_next_step": "Await explicit owner instruction. Day 12 statistical authority remains WAITING while genuinely forward, PIT-resolved, score-eligible shadow evidence accumulates."
+    "exact_next_step": "Await explicit owner instruction. Preserve the frozen Day 13 registry while genuinely post-preregistration, PIT-resolved, score-eligible shadow evidence accumulates; statistical authority remains WAITING-FOR-FORWARD-EVIDENCE."
   },
-  "notes": "Day 12 engineering is GREEN / production verified. Its statistical conclusion is intentionally WAITING-FOR-FORWARD-EVIDENCE because the 40 shadow providers currently have zero eligible forward trades under the fairness gates. No D1 writes were made by Day 12."
+  "notes": "Day 13 engineering is GREEN / production verified. No real provider statistical claim is validated yet: immediately after the frozen preregistration there were zero eligible OOS trades, therefore zero tested hypotheses, BH rejections, candidates or authoritative discoveries. Builder statistical thresholds remain PROPOSED_UNAPPROVED."
 }
