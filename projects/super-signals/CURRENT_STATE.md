@@ -4,10 +4,10 @@ Last verified: **2026-09-07**
 
 Authoritative repo: `dannythehat/super-signals`
 Production branch: `feature/day-10-shared-telegram-sources`
-Live production SHA: `9896c78962f06ec5e89403fa55514178c7cbc4a7`
+Live production SHA: `d48a81744af6dda5e644b929d713d3d1ec95c6d3`
 Render service: `super-signals-day-8`
-Live deploy: `dep-daf8ci942hec73cvss3g`
-Alembic head: `0060_provider_day11_reconcile`
+Live deploy: `dep-daf8spc9v7es73bpqd30`
+Alembic head: `0061_provider_day12_fingerprint`
 
 ## Provider populations
 
@@ -24,28 +24,42 @@ Never mix the 40 shadow discovery providers with the 5 real/testing providers.
 - Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
 - Day 9 — canonical AIDY point-in-time context join — GREEN / PRODUCTION VERIFIED.
 - Day 10 — immutable per-signal provider + AIDY context attachment — GREEN / PRODUCTION VERIFIED.
-- Day 11 — execution-cost and paper ↔ broker calibration — **COMPLETE / PRODUCTION VERIFIED as a partial fail-closed provider disposition. This is not a universal reconciliation GREEN.**
+- Day 11 — execution-cost and paper ↔ broker calibration — COMPLETE / PRODUCTION VERIFIED as a partial fail-closed provider disposition; not universal reconciliation GREEN.
+- Day 12 — fingerprint core + hierarchical statistics harness — **ENGINEERING GREEN / PRODUCTION VERIFIED; statistical authority WAITING-FOR-FORWARD-EVIDENCE.**
 
-## Day 11 paper-engine reconciliation fidelity — COMPLETE (partial fail-closed disposition)
+## Day 11
 
-Day 11 is COMPLETE as an owner-accepted partial disposition, not a universal reconciliation GREEN. PR `#146` passed `api`, `web` and Workers checks, merged as `9896c78962f06ec5e89403fa55514178c7cbc4a7`, and Render deploy `dep-daf8ci942hec73cvss3g` is live. The frozen calibration corpus is 82 windows using AIDY `b17bf78d7c7197aea4864a4ecd340deaf5d8c344` with 17,054 isolated Twelve M1 bars. Calibration remains `source_kind=calibration_backfill`, `pit_eligible=false`, `research_only=true`, `live_money_execution_allowed=false`; live-money execution is untouched.
+Day 11 closed under PR `#146`, production SHA `9896c78962f06ec5e89403fa55514178c7cbc4a7`, Render deploy `dep-daf8ci942hec73cvss3g`. The frozen 82-trade paper ↔ broker run produced 23 comparable trades under unchanged gates, so no provider received paper-trust authority. Providers that were not M1-reconcilable remain excluded rather than guessed. This partial fail-closed disposition is complete and remains unchanged by Day 12.
 
-Production reconciliation run `00ddf1dc-5bcf-48b4-bab1-7f03d0c6cb88` completed 82 attempted / 23 comparable with evidence digest `f4b2f814cb8c845e2390c3e218ffc4006eb2a8a71a59ff63a397d0ef7a909c6c`. The unchanged `provider_day11_v1` gates remain: minimum 5 comparable/provider, minimum 30 comparable total, median |R| <= 0.35, p95 |R| <= 1.00, lifecycle agreement >= 0.80. The persisted run status therefore remains `WAITING_RECONCILIATION`; that fail-closed status is intentional and was not loosened for closure.
+## Day 12 — fingerprint core + hierarchical statistics harness
 
-Provider disposition from the completed frozen run:
+PR `#147` passed `api`, `web` and Workers checks at delivery head `5eb27148bdbd1512e01269746578d86fb2a3d519`. It merged as `d48a81744af6dda5e644b929d713d3d1ec95c6d3`; Render deploy `dep-daf8spc9v7es73bpqd30` is live; new-instance `/health` repeatedly returned 200; Alembic is at `0061_provider_day12_fingerprint`.
 
-- `FXTradingVision l Forex & Crypto Signals 🚀`: 31 attempted / 10 comparable; median |R| 0.02468508, p95 |R| 1.23040298, lifecycle 0.90. **NOT trusted for paper** because p95 exceeds the unchanged 1.00 cap by 0.23040298R.
-- `GTMO VIP 🤴🏽`: 11 attempted / 0 comparable. **Not M1-reconcilable on this frozen corpus; excluded from paper-based evaluation.** Eight signals fail closed on signal-minute ambiguity and three calibration reads still returned HTTP 500 after the bounded retry cap. Zero stored metrics are sentinels, not measurements.
-- `SureShot GOLD`: 6 attempted / 5 comparable; median |R| 0, p95 |R| 2.40, lifecycle 0.80. **Not M1-reconcilable for paper evaluation; excluded.** Signal `914f83ee-d880-4c29-bb3b-f42fe82e5724` retains the independently reconstructed M1 path/order disagreement (paper +2R vs broker -1R); broker truth was not used to resolve paper.
-- `TIG’s Asia Trades`: 25 attempted / 8 comparable; median |R| 0.06008850, p95 |R| 1.00000000, lifecycle 1.00. Its provider-level metrics meet the numeric limits, but **it is NOT trusted for paper under the unchanged gate because the global comparable floor is only 23/30**. Official status remains `WAITING_INSUFFICIENT_GLOBAL_RECONCILIATION_SAMPLES`.
-- `United Kings™ Signals! 👑`: 9 attempted / 0 comparable. **Not M1-reconcilable on this frozen corpus; excluded from paper-based evaluation.** The exclusions are 4 signal-minute ambiguities, 3 management-bar ambiguities and 2 deterministic paper/broker leg-key mismatches. Zero stored metrics are sentinels, not measurements.
+Day 12 is intentionally limited to the **40 shadow discovery providers** and does not mix in the five testing/real calibration providers. Only closed paper outcomes that are `score_eligible` and have `provider_profile_pit_status='resolved'` can enter fingerprint evidence. Broker deals, MetaAPI/live execution and AIDY/D1 writes are outside this harness.
 
-**Trusted for paper after this frozen run: none.** This is the required honest partial disposition: providers are trusted only when all unchanged gates clear; providers that cannot be independently reconstructed on M1 are documented/excluded rather than guessed. No broker outcome is used to resolve the paper side.
+The model surfaces provider, provider×direction, provider×session and provider×direction×session fingerprints for TP hit rates, stop/break-even rates, duration, MAE and MFE. Raw rates are descriptive only. The primary statistic is a deterministic empirical-Bayes hierarchical partial-pooling posterior with 95% intervals. The pre-registered minimum forward N is **30 per evaluable cell**; statistical status is structurally locked to `WAITING-FOR-FORWARD-EVIDENCE` until a later explicitly authorised statistical-validation step.
+
+Production run `92c29d7a-fd65-41ad-bacc-fa082666d870` recorded:
+
+- model: `provider_day12_v1`;
+- engineering status: `ENGINEERING_PROVEN`;
+- statistical status: `WAITING-FOR-FORWARD-EVIDENCE`;
+- shadow provider count: **40**;
+- eligible forward trades: **0**;
+- fingerprint cells: **0**;
+- minimum forward N: **30**;
+- evidence digest: `4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945`;
+- `research_only=true`;
+- `live_money_execution_allowed=false`.
+
+Zero evidence creates zero cells: the harness does not manufacture 0/0 statistics. This is the correct production state because the existing closed shadow outcomes are not currently eligible under the forward/PIT fairness gates. Day 12 engineering is therefore GREEN / production verified while its statistical authority correctly remains WAITING.
+
+The Day 12 deployment made **no AIDY/D1 writes**, preserving the Cloudflare D1 free-tier write boundary after the earlier 93% daily-write warning.
 
 ## Cross-project boundary
 
-Super Signals owns provider identity, interpretation, Provider Lab research and broker/member execution. AIDY supplies independent market/context and isolated retrospective calibration evidence. Day 11 calibration is research-only. Research outcomes must not mutate broker/member execution, sizing, provider live status or AIDY authority.
+Super Signals owns provider identity, Provider Lab research and broker/member execution. AIDY supplies bounded independent market/context evidence only. Day 12 is a dormant research harness and cannot mutate broker/member execution, provider live status, sizing or AIDY authority.
 
 ## Exact next step
 
-Day 11 needs no further closure work. Keep paper-based provider trust fail-closed under the unchanged gates; M1-unreconcilable providers remain excluded from paper evaluation unless future independent evidence legitimately resolves them. **Day 12 was not started by this closure.**
+Day 12 needs no further engineering closure work. Accumulate genuinely forward, PIT-resolved, score-eligible shadow evidence; statistical authority remains `WAITING-FOR-FORWARD-EVIDENCE`. **Day 13 is NOT STARTED and requires separate owner instruction.**
