@@ -4,9 +4,9 @@ Last verified: **2026-09-07**
 
 Authoritative repo: `dannythehat/super-signals`
 Production branch: `feature/day-10-shared-telegram-sources`
-Live production SHA: `367ff4076410e7edfa3095295f3964a57d812d7c`
+Live production SHA: `9896c78962f06ec5e89403fa55514178c7cbc4a7`
 Render service: `super-signals-day-8`
-Live deploy: `dep-daf6dgp7lnhs73fca1rg`
+Live deploy: `dep-daf8ci942hec73cvss3g`
 Alembic head: `0060_provider_day11_reconcile`
 
 ## Provider populations
@@ -24,30 +24,28 @@ Never mix the 40 shadow discovery providers with the 5 real/testing providers.
 - Day 8 — forward-only provider learning boundary + legacy closure — GREEN / PRODUCTION VERIFIED.
 - Day 9 — canonical AIDY point-in-time context join — GREEN / PRODUCTION VERIFIED.
 - Day 10 — immutable per-signal provider + AIDY context attachment — GREEN / PRODUCTION VERIFIED.
-- Day 11 — execution-cost and paper ↔ broker calibration — **DEPLOYED / PRODUCTION VERIFIED, but WAITING on a real AIDY M1 evidence blocker. Day 11 is NOT GREEN or complete.**
+- Day 11 — execution-cost and paper ↔ broker calibration — **COMPLETE / PRODUCTION VERIFIED as a partial fail-closed provider disposition. This is not a universal reconciliation GREEN.**
 
-## Day 10
+## Day 11 paper-engine reconciliation fidelity — COMPLETE (partial fail-closed disposition)
 
-Migration `0058_provider_aidy_context` creates `provider_signal_context_attachments`, one immutable record per qualifying signal. It freezes the exact provider-profile version and exact AIDY PIT context/snapshot provenance. Database guards reject future provider/AIDY context, duplicate signal attachments, mutable history and any live-money authority.
+Day 11 is COMPLETE as an owner-accepted partial disposition, not a universal reconciliation GREEN. PR `#146` passed `api`, `web` and Workers checks, merged as `9896c78962f06ec5e89403fa55514178c7cbc4a7`, and Render deploy `dep-daf8ci942hec73cvss3g` is live. The frozen calibration corpus is 82 windows using AIDY `b17bf78d7c7197aea4864a4ecd340deaf5d8c344` with 17,054 isolated Twelve M1 bars. Calibration remains `source_kind=calibration_backfill`, `pit_eligible=false`, `research_only=true`, `live_money_execution_allowed=false`; live-money execution is untouched.
 
-Day 10 production SHA was `634838b5a559a425a1fe54af5bf7c022763f2743`; Render deploy was `dep-daepomp7lnhs73f213eg`.
+Production reconciliation run `00ddf1dc-5bcf-48b4-bab1-7f03d0c6cb88` completed 82 attempted / 23 comparable with evidence digest `f4b2f814cb8c845e2390c3e218ffc4006eb2a8a71a59ff63a397d0ef7a909c6c`. The unchanged `provider_day11_v1` gates remain: minimum 5 comparable/provider, minimum 30 comparable total, median |R| <= 0.35, p95 |R| <= 1.00, lifecycle agreement >= 0.80. The persisted run status therefore remains `WAITING_RECONCILIATION`; that fail-closed status is intentional and was not loosened for closure.
 
-## Day 11
+Provider disposition from the completed frozen run:
 
-PR `#144` was merged from delivery head `92b8b7368ec87073f1be999e42495883509722f0`. The three delivery-head checks (`api`, `web`, Workers) were all successful. Production merge SHA is `367ff4076410e7edfa3095295f3964a57d812d7c`; Render deploy `dep-daf6dgp7lnhs73fca1rg` is live; Alembic is at `0060_provider_day11_reconcile`; `/health` returned 200 repeatedly on the new instance.
+- `FXTradingVision l Forex & Crypto Signals 🚀`: 31 attempted / 10 comparable; median |R| 0.02468508, p95 |R| 1.23040298, lifecycle 0.90. **NOT trusted for paper** because p95 exceeds the unchanged 1.00 cap by 0.23040298R.
+- `GTMO VIP 🤴🏽`: 11 attempted / 0 comparable. **Not M1-reconcilable on this frozen corpus; excluded from paper-based evaluation.** Eight signals fail closed on signal-minute ambiguity and three calibration reads still returned HTTP 500 after the bounded retry cap. Zero stored metrics are sentinels, not measurements.
+- `SureShot GOLD`: 6 attempted / 5 comparable; median |R| 0, p95 |R| 2.40, lifecycle 0.80. **Not M1-reconcilable for paper evaluation; excluded.** Signal `914f83ee-d880-4c29-bb3b-f42fe82e5724` retains the independently reconstructed M1 path/order disagreement (paper +2R vs broker -1R); broker truth was not used to resolve paper.
+- `TIG’s Asia Trades`: 25 attempted / 8 comparable; median |R| 0.06008850, p95 |R| 1.00000000, lifecycle 1.00. Its provider-level metrics meet the numeric limits, but **it is NOT trusted for paper under the unchanged gate because the global comparable floor is only 23/30**. Official status remains `WAITING_INSUFFICIENT_GLOBAL_RECONCILIATION_SAMPLES`.
+- `United Kings™ Signals! 👑`: 9 attempted / 0 comparable. **Not M1-reconcilable on this frozen corpus; excluded from paper-based evaluation.** The exclusions are 4 signal-minute ambiguities, 3 management-bar ambiguities and 2 deterministic paper/broker leg-key mismatches. Zero stored metrics are sentinels, not measurements.
 
-The real broker-cost corpus is healthy enough for engineering calibration: 988 broker-position samples, 467 entry-slippage samples and 704 exit-slippage samples. The production cost model reports `ENGINEERING_CALIBRATED`. This evidence is research-only and cannot grant live-money execution authority.
-
-The required five-provider paper ↔ broker reconciliation ran automatically in production against real `broker_deals`. Run `c5fae236-a63f-4340-99e7-7890e08f782a` attempted **56** real signals across the five providers (15 / 6 / 9 / 15 / 11), but produced **0 comparable signals**. Every attempt was excluded because AIDY returned a valid PIT continuity response with at least one missing M1 open time (`aidy_m1_incomplete`). Therefore no genuine paper R/PnL delta or lifecycle-agreement statistic exists yet. The persisted zero median/p95/lifecycle values for zero-sample provider result rows are sentinel values and must not be reported as measurements.
-
-The versioned reconciliation tolerance remains unchanged: minimum 5 comparable signals per provider, minimum 30 total, maximum median absolute R delta 0.35, maximum p95 absolute R delta 1.00, minimum lifecycle agreement 0.80. Because each provider has 0 comparable samples, all five fail closed as `WAITING_INSUFFICIENT_PROVIDER_RECONCILIATION_SAMPLES` with `SHADOW_WAITING`; the overall run is `WAITING_RECONCILIATION`. All 56 persisted run samples are `research_only=true` and `live_money_execution_allowed=false`.
-
-This is a genuine live evidence blocker, not a CI/migration/auth failure. Day 11 must not be called GREEN until complete PIT AIDY M1 replay evidence exists for enough real broker-grounded signals to calculate the reconciliation metrics without fabrication.
+**Trusted for paper after this frozen run: none.** This is the required honest partial disposition: providers are trusted only when all unchanged gates clear; providers that cannot be independently reconstructed on M1 are documented/excluded rather than guessed. No broker outcome is used to resolve the paper side.
 
 ## Cross-project boundary
 
-Super Signals owns provider identity, interpretation, Provider Lab research and broker/member execution. AIDY supplies independent point-in-time Gold context and M1 evidence. Day 11 calibration is research-only. Missing AIDY evidence must fail closed and must not alter broker/member execution, sizing, provider status or AIDY authority.
+Super Signals owns provider identity, interpretation, Provider Lab research and broker/member execution. AIDY supplies independent market/context and isolated retrospective calibration evidence. Day 11 calibration is research-only. Research outcomes must not mutate broker/member execution, sizing, provider live status or AIDY authority.
 
 ## Exact next step
 
-Restore/provide complete PIT AIDY M1 coverage for the real Day 11 replay windows, then rerun the existing Day 11 acceptance **unchanged** against real `broker_deals`. Do not loosen the tolerance or convert missing evidence into synthetic outcomes. Day 12 must not start until the required real reconciliation metrics exist and Day 11 can be closed with production proof.
+Day 11 needs no further closure work. Keep paper-based provider trust fail-closed under the unchanged gates; M1-unreconcilable providers remain excluded from paper evaluation unless future independent evidence legitimately resolves them. **Day 12 was not started by this closure.**
