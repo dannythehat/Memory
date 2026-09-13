@@ -1,33 +1,56 @@
-# Super Signals — Known Issues / Open Risks
+# Super Signals — Confirmed Open Follow-ups / Regression Watchlist
 
 Updated: **2026-09-13**
 
-## 1. Forward statistical evidence is still sparse
-The B-F intelligence layer is engineering/prod verified, but broad provider ranking/profitability/promotion claims are not statistically validated yet. Use `WAITING-FOR-FORWARD-EVIDENCE` where sample floors are not met.
+This file distinguishes **confirmed open follow-ups** from **historical incidents that are not currently proven active**. Do not describe historical incidents as unresolved unless production evidence re-confirms them.
 
-## 2. Stale settlement errors can keep the fast path hot on weekdays
-Four historical August positions with `broker_filled_position_not_visible` remained in an unsettled/error shape and previously caused repeated deal-history settlement work. Preserve the audit rows but quarantine them from the fast settlement path after bounded retry/repair handling.
+## Confirmed open follow-ups
 
-## 3. Protection polling performs unnecessary broker reads
-The profit-protection path can fetch positions/orders even when there are no protection plans. Compute plans first and return before broker reads when the plan set is empty.
+### 1. Forward statistical evidence is still sparse
+AIDY Provider Intelligence B-F is engineering/prod verified, but broad provider ranking/profitability/promotion claims are not statistically validated yet. Use `WAITING-FOR-FORWARD-EVIDENCE` where sample floors are not met.
 
-## 4. Redundant MetaAPI XAU price read
-The UI Gold quote is sourced from the free Gold feeds, but dashboard broker-state collection still performs a MetaAPI XAU price request alongside account/position reads. Remove that redundant broker read where it is not required for execution logic.
+### 2. Settlement efficiency cleanup
+Four historical August `broker_filled_position_not_visible` rows previously kept the fast settlement/history path active. Preserve audit evidence, but quarantine these stale rows from the fast path after bounded retry/repair handling.
 
-## 5. Usage telemetry is incomplete
-Exact OpenAI token/cost telemetry and consolidated MetaAPI request telemetry are not persisted. Historical decision counts show deterministic-first routing dramatically reduced OpenAI use, but cost/request observability should be made explicit.
+This is an **efficiency/hygiene follow-up**, not evidence that live settlement is currently failing.
 
-## 6. Weekend edited-message replay edge
-Original messages posted during the weekly closure are blocked. A pre-weekend message edited during closure may still have a narrow recovery path after reopen through direct edit/recovery handling. Add an `edited_at` freeze boundary if the owner wants a strict no-weekend-content replay guarantee.
+### 3. Protection polling efficiency
+The protection path can read broker positions/orders even when there are no protection plans. Reorder the path so it returns before broker reads when no plans exist.
 
-## 7. Data Hub not built yet
-The B-F current views exist, but the owner-facing AIDY Data Hub has not yet been implemented. It is the next substantive product build.
+This is an **API-efficiency improvement**, not a known trade-management failure.
 
-## 8. Independent AIDY trader is a strategic destination, not current live authority
-The owner has clarified that AIDY must become capable of understanding Gold and proposing its own trades. That capability is not yet equivalent to validated independent live trading. Own-thesis/setup generation must be built and forward-tested before any authority change.
+### 4. Redundant MetaAPI Gold-price read
+The UI Gold quote already uses free Gold feeds. Dashboard broker-state collection still contains a redundant MetaAPI XAU price read that should be removed where it is not required for execution logic.
 
-## 9. Provider interpretation failures remain a business-critical regression class
-Past incidents include missed new trades, duplicate edited posts, missed `move SL` / `take loss` updates, hidden/open trades not visible in the app and provider-specific grammar failures. New provider fingerprints/adaptation improve the architecture, but forward monitoring must prove actual capture/interpretation quality across the full intended provider roster.
+This is an **API-efficiency improvement**, not a pricing-display failure.
 
-## 10. Runtime/UI reliability issues remain relevant
-Historical issues include notification delay, stats refresh delay, login persistence, empty account state, calendar trade visibility and balance/equity presentation. Do not assume these are fixed solely because provider intelligence advanced.
+### 5. Usage telemetry
+Exact OpenAI token/cost telemetry and consolidated MetaAPI request telemetry are not yet persisted. This is an observability improvement.
+
+### 6. Weekend edited-message edge
+Original weekend messages are blocked and the automatic runtime is frozen. A narrow edge remains where a pre-weekend message edited during closure could potentially be recovered after reopen unless `edited_at` is also freeze-gated.
+
+This is a **specific edge-case hardening item**. The main weekend freeze is already fixed and production verified.
+
+### 7. AIDY Data Hub
+The owner-facing AIDY Data Hub has not yet been built. B-F current views are ready to support it. This is the next planned product build, not a production defect.
+
+### 8. Independent AIDY trader capability
+AIDY's strategic destination is independent Gold/XAUUSD trading intelligence, but own-thesis/setup generation and forward validation are future capability work. This is roadmap work, not an unresolved production bug.
+
+## Historical regression watchlist — not currently proven active
+
+The following are previous incident classes and should only be called active/unresolved if fresh production evidence confirms recurrence:
+
+- missed new trades;
+- duplicate handling from edited Telegram posts;
+- missed `move SL`, BE, take-loss or cancel instructions;
+- hidden/open trades not visible in the app;
+- provider-specific grammar/interpretation failures;
+- notification delays;
+- slow stats refresh;
+- login persistence/account-page issues;
+- calendar trade-visibility issues;
+- balance/equity presentation issues.
+
+These remain useful regression checks, but **Memory must not imply they are still broken merely because they happened historically**.
