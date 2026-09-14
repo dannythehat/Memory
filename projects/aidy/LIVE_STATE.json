@@ -145,7 +145,7 @@
     ]
   },
   "notes": "RUNTIME VERIFIED 2026-09-14 via GET /health and direct D1 queries. Status RED. Earlier source-only caveats are superseded. The database and /health are authoritative over this file if they later differ.",
-  "overall_status": "RED - capture stale, AIDY has never executed a decision cycle",
+  "overall_status": "AMBER - capture healthy and 4 of 5 timeframes complete; 4h history backfill outstanding; AIDY has still never executed a decision cycle",
   "runtime_health_verified": {
     "verified_at": "2026-09-14T10:34:00Z",
     "service_status": "degraded",
@@ -256,5 +256,32 @@
     "result": "CRON RESTORED. First capture since 2026-09-13T10:35 landed at 2026-09-14T10:50:03Z - one Twelve Data request, one market snapshot.",
     "cron_schedule": "*/2 * * * * plus 5,15,25,35,45,55 * * * * ; interval_due fires when epoch %% 300 < 60, so capture is due every 5 minutes. Ticks on non-due minutes correctly skip capture - that is NOT a fault.",
     "still_red": "snapshot capture_status is 'partial'. Cron was necessary but not sufficient."
+  },
+  "m1_publication_lag_fix": {
+    "status": "DEPLOYED AND VERIFIED WORKING",
+    "pr": "dannythehat/Aidy-Gold-Signals#122",
+    "merge_sha": "8e13f922d68396544f1814d2fae8526fb14ffa92",
+    "deployed_by": "phase-b-episode-memory-rollout.yml run 34844193452, success 2026-09-14T12:36:28Z",
+    "root_cause": "Twelve Data publishes each closed M1 bar ~64s after close (63.8-64.0s, zero variance across 9 captures). Market capture ran ~3s past each 5-minute boundary and evaluated the just-closed bucket, whose final minute was not yet published. interval_due's due window closes at +60s; the data arrives at +64s. It missed by four seconds, every time, forever.",
+    "fix": "interval_due gains offset_seconds; market capture uses 120s. Bucket boundaries, coverage thresholds and PIT semantics untouched - only the sampling instant moved.",
+    "cron_change": "Required, not optional. Due windows sit at minute %% 5 == 2 and the old */2 + 5,15,25,35,45,55 schedule had no tick in half of them, so an offset alone would have silently HALVED capture. Now '* * * * *'. Invocations 864 -> 1440/day; useful captures unchanged at 288/day.",
+    "verified_effect": {
+      "before_12_30_and_12_35": {
+        "m5": 0.8
+      },
+      "after_12_37_and_12_42": {
+        "m5": 1.0
+      },
+      "capture_minutes_now_end_in": "2 or 7 - the offset signature",
+      "coverage_now": {
+        "5m": 1.0,
+        "15m": 1.0,
+        "1h": 1.0,
+        "1d": 1.0,
+        "4h": 0.5
+      }
+    },
+    "cohort_impact": "Reset the active forward cohort under the Day 53 evidence-semantic rule. Reset cost was zero - the cohort held no model-resolved decisions. This was the cheapest moment the change could ever be made.",
+    "remaining_blocker": "4h coverage 0.500. NOT a timing fault - the 4h bucket rolled to 08:00-12:00 and needs 240 minutes of M1 history the backfill never finished (the hardened bootstrap failed at 11:21, almost certainly because it could not prove all_timeframes_ready through this very bug). Re-dispatched after the fix."
   }
 }
