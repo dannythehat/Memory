@@ -288,7 +288,8 @@
     "signals_total": 1341,
     "shadow_trades_total": 746,
     "positions_total": 1775,
-    "users_total": 15
+    "users_total": 15,
+    "note": "VERIFIED via production query 2026-09-14"
   },
   "render_workspace_sweep": {
     "verified_at": "2026-09-14",
@@ -317,5 +318,48 @@
     "all_services_ip_allow_list": "0.0.0.0/0",
     "aidy_ci_runner_note": "autoDeploy ON; fires a failing build on every commit to feature/day-26-price-structure-feed-health",
     "open_gap": "Render MCP has no env-var read tool. Whether any dormant service holds production DATABASE_URL/Telegram/MetaAPI credentials is UNRESOLVED - check the dashboard Environment tab per service."
+  },
+  "shadow_scoring_verified": {
+    "verified_at": "2026-09-14",
+    "status": "RED",
+    "shadow_trades_total": 750,
+    "score_eligible": 39,
+    "score_eligible_pct": 5.2,
+    "unobserved_no_market_data": 423,
+    "blocked_by_missing_minutes": 107,
+    "distinct_missing_m1_minutes": 44,
+    "missing_minute_range": "2026-09-04T01:35Z to 2026-09-09T05:40Z",
+    "root_cause": "AIDY M1 history has holes and capture is stale - see projects/aidy handover 2026-09-14",
+    "recoverable": "YES - all 750 trades retain full geometry and timestamps. Twelve Data sells historical M1. Backfill machinery exists (twelve_data_bootstrap.py, /calibration/market/ohlc, provider_day11_calibration_replay). Expect partial not total recovery.",
+    "all_providers_research_state": "learning - not one has reached shadow or qualified"
+  },
+  "real_money_authority": {
+    "database_is_not_authoritative": true,
+    "owner_statement": "Real account is $2,000+ from $1,000 in roughly five weeks; tooling outages left gaps in the recorded ledger.",
+    "db_figures_2026_09_14": {
+      "outcomes_won": 737,
+      "outcomes_won_usd": 6274.32,
+      "outcomes_lost": 440,
+      "outcomes_lost_usd": -5791.36,
+      "breakeven": 130,
+      "open": 4,
+      "broker_deals_net_usd": 471.26,
+      "latest_snapshot_balance_usd": 1471.26,
+      "max_balance_usd": 1795.26,
+      "min_balance_usd": 987.54
+    },
+    "rule": "Never quote database P&L as business truth. The broker is authoritative. Reconcile before any performance claim.",
+    "public_site_discrepancy": "public/data/public-performance.json records current_recorded_balance 1889.04 - customer-facing, needs reconciling against broker truth."
+  },
+  "benchmark_results_directional_only": {
+    "warning": "Must not drive promotion or demotion. 5% scored, tiny non-random sample, all providers still 'learning', floors need 20-45 trading days and only ~12 exist.",
+    "net_all_providers_usd": -1000,
+    "five_real_providers": {
+      "tigs_asia_trades": 29.61,
+      "united_kings": 0.0,
+      "fxtradingvision": -30.0,
+      "gtmo_vip": -160.48,
+      "sureshot_gold": "no closed trades"
+    }
   }
 }

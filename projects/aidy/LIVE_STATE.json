@@ -2,8 +2,8 @@
   "schema_version": 1,
   "project": "aidy",
   "source_verified_at_utc": "2026-09-14T00:00:00Z",
-  "runtime_verified_at_utc": null,
-  "evidence_status": "SOURCE VERIFIED ONLY - Cloudflare Worker, D1 and live environment variables were not inspected in the session that wrote this file",
+  "runtime_verified_at_utc": "2026-09-14T10:34:00Z",
+  "evidence_status": "RUNTIME VERIFIED via GET /health and direct D1 queries 2026-09-14. Status is RED.",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
   "branch_head_sha": "cb0f4bc",
@@ -34,9 +34,8 @@
     "note": "These are the values the Phase B rollout workflow writes at deploy time. They are not a runtime observation."
   },
   "formal_forward": {
-    "status": "WAITING_RUNTIME_UNVERIFIED",
+    "status": "OFF - RUNTIME VERIFIED",
     "previous_memory_claim": false,
-    "why_uncertain": "phase-b-forward-restart.yml runs every 10 minutes on main and is designed to redeploy the Worker with AIDY_FORMAL_FORWARD_ENABLED=true once its gate passes. Neither the Worker variable nor the D1 campaign row was read.",
     "cohort_version": "aidy_formal_forward_cohort_v2_immediate_start",
     "restart_campaign_id": "aidy_phase_b_repaired_forward_restart_20260913",
     "meaning_if_enabled": "private paper evaluation only",
@@ -44,7 +43,11 @@
     "follower_state_allowed": false,
     "super_signals_dependency_allowed": false,
     "live_money_execution_allowed": false,
-    "day54_gate_min_episode_independent_model_resolved_decisions": 300
+    "day54_gate_min_episode_independent_model_resolved_decisions": 300,
+    "runtime_value_verified": "formal_forward_enabled: false via /health 2026-09-14T10:34Z",
+    "restart_campaign_runs": 0,
+    "deadlock": "aidy_forward_restart_runs is empty and cannot populate: the Phase B gate needs >=3 consecutive capture successes plus fresh data health, capture is stale, so the gate never passes and formal forward never arms.",
+    "day54_progress": "0 of 300 episode-independent model-resolved decisions"
   },
   "model": {
     "provider": "openai",
@@ -58,10 +61,22 @@
   "decision_contract": {
     "version": "aidy_master_trader_decision_v2_falsifiable",
     "symbol": "XAUUSD",
-    "actions": ["new_trade", "manage_trade", "close_trade", "no_trade"],
-    "directions": ["long", "short"],
+    "actions": [
+      "new_trade",
+      "manage_trade",
+      "close_trade",
+      "no_trade"
+    ],
+    "directions": [
+      "long",
+      "short"
+    ],
     "entry_type": "market",
-    "management_instructions": ["move_stop", "replace_targets", "move_stop_and_targets"],
+    "management_instructions": [
+      "move_stop",
+      "replace_targets",
+      "move_stop_and_targets"
+    ],
     "v2_falsifiable_fields": [
       "thesis",
       "expected_horizon_minutes",
@@ -119,13 +134,108 @@
     "phase-b-forward-restart": "*/10 * * * *"
   },
   "next_step": {
-    "title": "Runtime verification before any further AIDY claim",
+    "title": "Confirm the Cron rollout restored capture, then fix quota and backfill",
     "checks": [
-      "Worker AIDY_FORMAL_FORWARD_ENABLED, AIDY_CAPTURE_ENABLED, AIDY_MARKET_DATA_SOURCE",
-      "aidy_forward_cohorts active row for cohort_version aidy_formal_forward_cohort_v2_immediate_start",
-      "aidy_forward_restart_runs acceptance_state for campaign aidy_phase_b_repaired_forward_restart_20260913",
-      "count of episode-independent model-resolved decisions against the 300 gate"
+      "/health shows success_lag_seconds falling and data_health leaving stale_capture",
+      "market_snapshots gaining rows with capture_status='complete'",
+      "twelve_data_request_ledger shows requests resuming",
+      "attach a real alert channel to aidy-capture-freshness-watchdog",
+      "raise Twelve Data headroom or cut per-capture request footprint",
+      "backfill 44 missing M1 minutes then full M1 for 1-14 Sept, then re-run the shadow resolver"
     ]
   },
-  "notes": "Do not restate any line in this file as live or production verified. It records what the source repository proves at cb0f4bc and nothing more."
+  "notes": "RUNTIME VERIFIED 2026-09-14 via GET /health and direct D1 queries. Status RED. Earlier source-only caveats are superseded. The database and /health are authoritative over this file if they later differ.",
+  "overall_status": "RED - capture stale, AIDY has never executed a decision cycle",
+  "runtime_health_verified": {
+    "verified_at": "2026-09-14T10:34:00Z",
+    "service_status": "degraded",
+    "capture_enabled": true,
+    "market_data_source": "twelve_data",
+    "scheduler": "direct-cron",
+    "model_gateway_configured": true,
+    "data_health_status": "stale_capture",
+    "alert": true,
+    "session_open": true,
+    "latest_scheduled_success_utc": "2026-09-13T10:35:47Z",
+    "success_lag_seconds": 86525,
+    "latest_provider_context_snapshot_utc": "2026-09-09T04:30:25Z",
+    "provider_context_lag_seconds": 454046
+  },
+  "d1_evidence_verified": {
+    "verified_at": "2026-09-14",
+    "end_to_end_cycles": 0,
+    "memory_episodes": 0,
+    "memory_outcomes": 0,
+    "learning_cards": 0,
+    "forward_restart_runs": 0,
+    "forward_evaluations": 121,
+    "forward_evaluations_known_good": 0,
+    "model_resolved_decisions": 0,
+    "market_snapshots": 227,
+    "market_snapshots_complete": 7,
+    "market_candles": 10092,
+    "twelve_data_feed_observations": 834,
+    "cohorts_total": 7,
+    "cohorts_active": 1,
+    "active_cohort": "aidy_formal_forward_cohort_v2_immediate_start",
+    "active_cohort_activated_at": "2026-09-04T04:25:58Z",
+    "last_forward_evaluation": "2026-09-05",
+    "last_market_snapshot": "2026-09-13T10:35:47Z",
+    "forward_block_reasons": {
+      "market_reference_not_complete": 68,
+      "missing_genuine_live_ohlc_and_spread": 48,
+      "production_decision_context_build_failed": 4,
+      "market_reference_unavailable": 1
+    },
+    "snapshots_by_day": {
+      "2026-09-06": {
+        "n": 83,
+        "complete": 0
+      },
+      "2026-09-07": {
+        "n": 61,
+        "complete": 0
+      },
+      "2026-09-08": {
+        "n": 16,
+        "complete": 4
+      },
+      "2026-09-09": {
+        "n": 14,
+        "complete": 3
+      },
+      "2026-09-10": {
+        "n": 0,
+        "complete": 0,
+        "note": "Twelve Data quota exhausted - owner confirmed"
+      },
+      "2026-09-11": {
+        "n": 0,
+        "complete": 0,
+        "note": "same"
+      },
+      "2026-09-13": {
+        "n": 53,
+        "complete": 0
+      },
+      "2026-09-14": {
+        "n": 0,
+        "complete": 0,
+        "note": "market open since Sun 22:01 UTC, nothing captured"
+      }
+    }
+  },
+  "root_cause": {
+    "primary": "Twelve Data plan too small - provider_minute_credits_left reaches 1; causes partial snapshots (7 of 227 complete) and full-day outages",
+    "secondary": "Cloudflare Cron not firing since 2026-09-13T10:35 despite capture_enabled=true and an open session",
+    "consequence_chain": "partial/absent capture -> market_reference_not_complete -> every forward evaluation pre_model_blocked -> zero decisions -> zero episodes -> Day 54 gate stuck at 0/300; and M1 holes stall Super Signals shadow scoring",
+    "weekend_note": "Sunday capture is CORRECT behaviour - the Worker runs and marks session_closed. Do not treat weekend activity as a fault."
+  },
+  "monitoring_gap": {
+    "watchdog_works": true,
+    "watchdog_failing_since": "2026-09-13T23:08Z",
+    "problem": "alerts surface only as a red X in GitHub Actions with no notification channel",
+    "github_cron_throttling": "aidy-capture-freshness-watchdog is scheduled every 10 minutes but actually ran at 18:50, 21:09, 23:08, 01:01, 06:05 - GitHub heavily throttles scheduled runs. Do not rely on GitHub Actions cron for time-sensitive monitoring. Same applies to phase-b-forward-restart.yml."
+  },
+  "action_taken_2026_09_14": "Dispatched phase-b-episode-memory-rollout.yml on main (owner-approved) to restore the Cloudflare Cron. Runs full tests, rebuilds canonical config (capture on, twelve_data, poll 300s, formal forward OFF), applies D1 migrations, redeploys, and proves Cron schedules survived. Formal forward untouched."
 }
