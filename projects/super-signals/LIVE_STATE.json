@@ -2,8 +2,8 @@
   "schema_version": 1,
   "project": "super-signals",
   "source_verified_at_utc": "2026-09-14T00:00:00Z",
-  "runtime_verified_at_utc": "2026-09-13T14:36:34Z",
-  "evidence_status": "Branch heads independently verified via git ls-remote 2026-09-14. Render/Postgres facts below are OWNER-REPORTED from the infrastructure handover and are not yet independently confirmed by a console read. PostgreSQL contents, MetaAPI and Cloudflare remain unverified.",
+  "runtime_verified_at_utc": "2026-09-14T00:00:00Z",
+  "evidence_status": "RUNTIME VERIFIED 2026-09-14 via Render MCP and read-only Postgres queries. Branch heads verified via git ls-remote. Cloudflare/D1 connected but not yet queried. One gap: Render exposes no env-var READ API, so dormant-service credential holdings remain unconfirmed.",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
   "branch_head_sha": "8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a",
@@ -41,12 +41,13 @@
     "health_check_path": "/health",
     "branch": "feature/day-10-shared-telegram-sources",
     "auto_deploy": true,
-    "auto_deploy_resolved": "RESOLVED as ON by owner report. This CONTRADICTS render.yaml which declares autoDeployTrigger: off. The dashboard governs behaviour; the committed render.yaml is misleading.",
+    "auto_deploy_resolved": "CONFIRMED ON via Render API. render.yaml autoDeployTrigger:off is inert - the service is not Blueprint-governed.",
     "live_deploy_id": "dep-dajrrs5g1s2s73bv0pvg",
     "previous_deploy_id": "dep-dajb9cmk1f9s73fm0b3g",
     "live_sha": "8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a",
     "other_workspace_services": "Remaining free services in the workspace are CI/acceptance/probe services, not production.",
-    "evidence": "owner-reported 2026-09-14, pending console confirmation"
+    "evidence": "RUNTIME VERIFIED via Render MCP 2026-09-14",
+    "service_count_in_workspace": 24
   },
   "database": {
     "engine": "postgresql",
@@ -58,7 +59,7 @@
     "provider_intelligence_current_view": true,
     "provider_book_conflict_current_view": true,
     "provider_intelligence_snapshot_count_at_weekend_verification": 0,
-    "snapshot_population_since_reopen": "UNVERIFIED",
+    "snapshot_population_since_reopen": "CONFIRMED POPULATING - the B-F loop is running",
     "render_postgres_id": "dpg-d9qmc6cs728c73a54kc0-a",
     "postgres_version": 18,
     "plan": "basic_256mb",
@@ -66,7 +67,16 @@
     "database_name": "super_signals",
     "database_user": "super_signals",
     "region": "frankfurt",
-    "connection_method": "Render Dashboard -> PostgreSQL -> super-signals-day-8-db -> Connect. Never paste the URL into chat; export DATABASE_URL in the shell."
+    "connection_method": "Render Dashboard -> PostgreSQL -> super-signals-day-8-db -> Connect. Never paste the URL into chat; export DATABASE_URL in the shell.",
+    "alembic_head_verified": "0079_fix_member_entitlements",
+    "alembic_head_matches_source": true,
+    "table_count_actual": 74,
+    "view_count_actual": 13,
+    "disk_size_gb": 1,
+    "ip_allow_list": "0.0.0.0/0",
+    "ip_allow_note": "Production Postgres accepts connections from any IP. Password protected, but a hardening candidate.",
+    "provider_intelligence_snapshots_actual": 259,
+    "provider_book_conflict_snapshots_actual": 19
   },
   "quality_gate": {
     "note": "931 passed / 67 skipped / 0 failed was measured at 278496cc. Not re-run at 8019f66.",
@@ -266,5 +276,46 @@
     "branch_named_production_is_not_production",
     "repointing_render_at_main_or_merging_main_into_the_deploy_branch_would_roll_production_back_141_commits"
   ],
-  "notes": "Runtime/database evidence overrides this file. Re-verify the deploy, the Alembic head and B-F snapshot population before making any production claim."
+  "notes": "Runtime/database evidence overrides this file. Re-verify the deploy, the Alembic head and B-F snapshot population before making any production claim.",
+  "source_population_verified": {
+    "verified_at": "2026-09-14",
+    "testing": 5,
+    "shadow": 28,
+    "paused": 14,
+    "revoked": 16,
+    "live": 0,
+    "correction": "Memory said ~40 shadow discovery providers. Actual is 28. Zero sources carry status 'live' - the 5 real providers are 'testing'.",
+    "signals_total": 1341,
+    "shadow_trades_total": 746,
+    "positions_total": 1775,
+    "users_total": 15
+  },
+  "render_workspace_sweep": {
+    "verified_at": "2026-09-14",
+    "total_services": 24,
+    "suspended": 0,
+    "production": "super-signals-day-8 (starter, autoDeploy ON, live at 8019f66)",
+    "aidy_ci_probe_services": 19,
+    "super_signals_ci_services": 2,
+    "unrelated_projects": 2,
+    "unrelated_project_names": [
+      "football-betting-ai-system",
+      "footy-oracle-backend"
+    ],
+    "individually_verified": 8,
+    "remaining_unverified": 15,
+    "services_with_git_push_in_build": [
+      "super-signals-reliability-ci-20260822",
+      "super-signals-reliability-ci2-20260822",
+      "aidy-git-push-check"
+    ],
+    "git_push_services_all_build_failed": true,
+    "live_non_production": [
+      "aidy-day26-acceptance-receiver (token-gated evidence receiver, no production path)",
+      "footy-oracle-backend (unrelated project, autoDeploy ON)"
+    ],
+    "all_services_ip_allow_list": "0.0.0.0/0",
+    "aidy_ci_runner_note": "autoDeploy ON; fires a failing build on every commit to feature/day-26-price-structure-feed-health",
+    "open_gap": "Render MCP has no env-var read tool. Whether any dormant service holds production DATABASE_URL/Telegram/MetaAPI credentials is UNRESOLVED - check the dashboard Environment tab per service."
+  }
 }
