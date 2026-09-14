@@ -6,9 +6,12 @@ This file is the orientation map for the whole estate. It answers "what is each 
 what runs where, and how do they talk to each other" in one place so a new session does not
 have to rediscover it.
 
-It is **source-verified only**. Every repository below was read at the stated commit. Render,
-Cloudflare, PostgreSQL and D1 runtime state were **not** inspected in the session that wrote
-this file. Follow `AGENTS.md` precedence: runtime evidence overrides this map.
+Every repository below was read at the stated commit, and the branch heads were independently
+confirmed with `git ls-remote`. Render and Postgres infrastructure facts are **owner-reported**
+from the 2026-09-14 infrastructure handover, pending a console read. PostgreSQL contents,
+Cloudflare, D1, MetaAPI and BigQuery runtime state remain **unverified**.
+
+Follow `AGENTS.md` precedence: runtime evidence overrides this map.
 
 ---
 
@@ -83,7 +86,8 @@ needing providers at all.
 
 ### PostgreSQL
 
-Render PostgreSQL `super-signals-day-8-db` (free plan, Frankfurt) is the single authoritative
+Render PostgreSQL `super-signals-day-8-db` (`dpg-d9qmc6cs728c73a54kc0-a`, PostgreSQL 18,
+`basic_256mb`, Frankfurt) is the single authoritative
 store for the business: users, sources, messages, signals, positions, shadow trades, performance
 ledger and all Provider Intelligence evidence. **67 tables**, Alembic head `0079_fix_member_entitlements`
 at the source head below. AIDY has no access to it.
@@ -177,14 +181,15 @@ README as current architecture.
 
 | Repository | Branch | SHA | Note |
 |---|---|---|---|
-| super-signals | `feature/day-10-shared-telegram-sources` | `8019f66` | **this is production** |
+| super-signals | `feature/day-10-shared-telegram-sources` | `8019f66` | **this is production, auto-deploy ON** |
 | super-signals | `main` | `4bb664b` | **141 commits behind production** |
 | super-signals | `production` | `ade297e` | misleading name, not deployed |
 | super-signals-website | `main` | `088096a` | |
 | Aidy-Gold-Signals | `main` | `cb0f4bc` | |
 | Telegram-Signals-Auto-Trader | `develop` | `84efe74` | dormant since 2026-08-04 |
 
-**The Render deploy branch is not `main`.** `render.yaml` pins
+**The Render deploy branch is not `main`, and it auto-deploys.** A push to it is a production
+release on a real-money system. `render.yaml` pins
 `branch: feature/day-10-shared-telegram-sources`. Anyone who reads `main` and believes it is
 production will be reading code that is 141 commits stale. See the Super Signals known issues.
 
@@ -193,9 +198,9 @@ production will be reading code that is 141 commits stale. See the Super Signals
 Nothing below was checked when this file was written. These are the first things to confirm
 once database/Render/Cloudflare access is available:
 
-1. Render: the live deploy id, that it is built from `8019f66`, and whether auto-deploy is on
-   (`render.yaml` says `autoDeployTrigger: off`; Memory's older `LIVE_STATE.json` said
-   `auto_deploy: true` — these disagree).
+1. ~~Render plan and auto-deploy~~ — **answered 2026-09-14 by owner report:** Starter plan,
+   auto-deploy **ON**, live deploy `dep-dajrrs5g1s2s73bv0pvg` at `8019f66`. Still worth a console
+   read to confirm, but the free-tier concern is withdrawn and the auto-deploy hazard is real.
 2. PostgreSQL: actual Alembic head, the true count of `shadow`/`testing`/`live`/`paused`/`revoked`
    sources, and whether `provider_intelligence_snapshots` / `provider_book_conflict_snapshots`
    have populated since the market reopened.

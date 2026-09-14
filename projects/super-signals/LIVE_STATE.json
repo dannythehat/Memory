@@ -3,38 +3,50 @@
   "project": "super-signals",
   "source_verified_at_utc": "2026-09-14T00:00:00Z",
   "runtime_verified_at_utc": "2026-09-13T14:36:34Z",
-  "evidence_status": "Source verified at 8019f66. Render deploy, PostgreSQL and MetaAPI were NOT inspected in the session that wrote this file; runtime fields below are carried forward from the 2026-09-13 verification and may be stale.",
+  "evidence_status": "Branch heads independently verified via git ls-remote 2026-09-14. Render/Postgres facts below are OWNER-REPORTED from the infrastructure handover and are not yet independently confirmed by a console read. PostgreSQL contents, MetaAPI and Cloudflare remain unverified.",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "8019f66",
+  "branch_head_sha": "8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a",
   "branch_head_subject": "Hotfix Render web API base to same-origin root",
   "branch_divergence": {
-    "main_head_sha": "4bb664b",
+    "main_head_sha": "4bb664bd3adb76d3adbbeff32b495d1d62ce8f5d",
     "main_commits_behind_deployed_branch": 141,
-    "production_branch_head_sha": "ade297e",
+    "production_branch_head_sha": "ade297e77a064d6121b5abadf664be87b9d1cb9e",
     "production_branch_is_deployed": false,
     "commits_added_since_last_memory_sha": 71,
     "previous_memory_sha": "278496ccbe71ec14f4e2e63b0dbd05004ea774b5",
-    "warning": "render.yaml pins feature/day-10-shared-telegram-sources. Reading main as production is a known trap."
+    "warning": "render.yaml pins feature/day-10-shared-telegram-sources. Reading main as production is a known trap.",
+    "heads_verified_by": "git ls-remote 2026-09-14"
   },
   "brand": {
     "repository_name": "super-signals",
     "customer_facing_name": "Smart Signals",
     "public_domain": "smartsignals.site",
-    "env_prefixes_in_use": ["SUPER_SIGNALS_", "SMART_SIGNALS_"]
+    "env_prefixes_in_use": [
+      "SUPER_SIGNALS_",
+      "SMART_SIGNALS_"
+    ]
   },
   "render": {
+    "workspace_name": "My Workspace",
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
+    "account_email": "dannythehat2@gmail.com",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
     "region": "frankfurt",
     "runtime": "docker",
-    "plan": "free",
+    "plan": "starter",
+    "plan_correction": "NOT free. An earlier Memory concern about free-tier spin-down is withdrawn.",
     "health_check_path": "/health",
-    "deploy_id_last_verified": "dep-dajb9cmk1f9s73fm0b3g",
-    "deploy_status_last_verified": "live",
-    "auto_deploy_unresolved": "render.yaml declares autoDeployTrigger: off, but the previous LIVE_STATE recorded auto_deploy true. Resolve against the Render dashboard."
+    "branch": "feature/day-10-shared-telegram-sources",
+    "auto_deploy": true,
+    "auto_deploy_resolved": "RESOLVED as ON by owner report. This CONTRADICTS render.yaml which declares autoDeployTrigger: off. The dashboard governs behaviour; the committed render.yaml is misleading.",
+    "live_deploy_id": "dep-dajrrs5g1s2s73bv0pvg",
+    "previous_deploy_id": "dep-dajb9cmk1f9s73fm0b3g",
+    "live_sha": "8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a",
+    "other_workspace_services": "Remaining free services in the workspace are CI/acceptance/probe services, not production.",
+    "evidence": "owner-reported 2026-09-14, pending console confirmation"
   },
   "database": {
     "engine": "postgresql",
@@ -46,13 +58,26 @@
     "provider_intelligence_current_view": true,
     "provider_book_conflict_current_view": true,
     "provider_intelligence_snapshot_count_at_weekend_verification": 0,
-    "snapshot_population_since_reopen": "UNVERIFIED"
+    "snapshot_population_since_reopen": "UNVERIFIED",
+    "render_postgres_id": "dpg-d9qmc6cs728c73a54kc0-a",
+    "postgres_version": 18,
+    "plan": "basic_256mb",
+    "status_reported": "available",
+    "database_name": "super_signals",
+    "database_user": "super_signals",
+    "region": "frankfurt",
+    "connection_method": "Render Dashboard -> PostgreSQL -> super-signals-day-8-db -> Connect. Never paste the URL into chat; export DATABASE_URL in the shell."
   },
   "quality_gate": {
     "note": "931 passed / 67 skipped / 0 failed was measured at 278496cc. Not re-run at 8019f66.",
     "api_test_file_count": 171,
     "enforced_in_docker_build": true,
-    "docker_build_stages": ["security-scan", "web-quality", "api-quality", "runtime"]
+    "docker_build_stages": [
+      "security-scan",
+      "web-quality",
+      "api-quality",
+      "runtime"
+    ]
   },
   "execution": {
     "instrument": "XAUUSD",
@@ -65,21 +90,56 @@
     "tp3_hit": "move every remaining TP4+/runner stop to the signal TP2 price",
     "move_sl_to_entry_means_close": false,
     "protection_never_loosened": true,
-    "allowed_risk_percent_values": [0.5, 1, 1.5, 2]
+    "allowed_risk_percent_values": [
+      0.5,
+      1,
+      1.5,
+      2
+    ]
   },
   "approved_providers": {
     "source_of_truth": "services/api/app/provider_risk_policy.py",
-    "fxtradingvision": { "buy": true, "sell": true, "tp_limit": 3 },
-    "gtmo": { "buy": true, "sell": false },
-    "tigs_asia_trades": { "buy": true, "sell": true },
-    "sureshot": { "buy": false, "sell": true },
-    "united_kings": { "buy": false, "sell": true }
+    "fxtradingvision": {
+      "buy": true,
+      "sell": true,
+      "tp_limit": 3
+    },
+    "gtmo": {
+      "buy": true,
+      "sell": false
+    },
+    "tigs_asia_trades": {
+      "buy": true,
+      "sell": true
+    },
+    "sureshot": {
+      "buy": false,
+      "sell": true
+    },
+    "united_kings": {
+      "buy": false,
+      "sell": true
+    }
   },
   "source_statuses": {
-    "values": ["testing", "shadow", "paused", "live", "revoked"],
-    "broker_eligible": ["testing", "live"],
-    "research_only": ["shadow"],
-    "inert": ["paused", "revoked"],
+    "values": [
+      "testing",
+      "shadow",
+      "paused",
+      "live",
+      "revoked"
+    ],
+    "broker_eligible": [
+      "testing",
+      "live"
+    ],
+    "research_only": [
+      "shadow"
+    ],
+    "inert": [
+      "paused",
+      "revoked"
+    ],
     "shadow_isolation": "CanonicalExecutionDispatcher branches shadow into _dispatch_shadow and returns before any broker code path exists"
   },
   "shadow_benchmark": {
@@ -88,11 +148,31 @@
     "risk_per_leg_usd": 10,
     "market_truth_for_scalper_intraday_swing": "aidy_m1",
     "minimum_evidence_closed_days_weeks": {
-      "scalper": [100, 20, 4],
-      "intraday": [60, 30, 6],
-      "swing_or_sparse": [30, 45, 8],
-      "mixed": [60, 30, 6],
-      "unknown": [60, 30, 6]
+      "scalper": [
+        100,
+        20,
+        4
+      ],
+      "intraday": [
+        60,
+        30,
+        6
+      ],
+      "swing_or_sparse": [
+        30,
+        45,
+        8
+      ],
+      "mixed": [
+        60,
+        30,
+        6
+      ],
+      "unknown": [
+        60,
+        30,
+        6
+      ]
     }
   },
   "ai": {
@@ -136,8 +216,15 @@
     "transport": "https_bearer",
     "env_url": "AIDY_PROVIDER_MARKET_URL",
     "env_token": "AIDY_PROVIDER_MARKET_TOKEN",
-    "consumed_routes": ["/market/ohlc", "/calibration/market/ohlc", "/provider/context"],
-    "available_but_unconsumed_routes": ["/provider/data-health", "/provider/decision-memory"],
+    "consumed_routes": [
+      "/market/ohlc",
+      "/calibration/market/ohlc",
+      "/provider/context"
+    ],
+    "available_but_unconsumed_routes": [
+      "/provider/data-health",
+      "/provider/decision-memory"
+    ],
     "reverse_flow_allowed": false,
     "reverse_flow_note": "Super Signals broker, follower and provider outcome state must never be fed back into AIDY as market truth"
   },
@@ -151,7 +238,12 @@
     "public_starting_balance_usd": 1517.23,
     "reconstructed_baseline_start": "2026-08-06",
     "reconstructed_baseline_start_balance_usd": 1000,
-    "challenge": { "start_date": "2026-09-10", "from_usd": 100, "to_usd": 1000, "account": "dedicated_funded_subaccount" }
+    "challenge": {
+      "start_date": "2026-09-10",
+      "from_usd": 100,
+      "to_usd": 1000,
+      "account": "dedicated_funded_subaccount"
+    }
   },
   "next_build": {
     "title": "AIDY Data Hub",
@@ -168,9 +260,11 @@
     "consider_weekend_edited_at_replay_gate"
   ],
   "open_governance_items": [
+    "AUTO_DEPLOY_IS_ON - any push to feature/day-10-shared-telegram-sources deploys straight to live real-money trading",
+    "render_yaml_declares_autoDeployTrigger_off_which_contradicts_the_live_dashboard_setting",
     "main_is_141_commits_behind_the_deployed_branch",
     "branch_named_production_is_not_production",
-    "render_auto_deploy_setting_unresolved"
+    "repointing_render_at_main_or_merging_main_into_the_deploy_branch_would_roll_production_back_141_commits"
   ],
   "notes": "Runtime/database evidence overrides this file. Re-verify the deploy, the Alembic head and B-F snapshot population before making any production claim."
 }

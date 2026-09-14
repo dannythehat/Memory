@@ -6,8 +6,10 @@ Last runtime-verified: **not in this session** — Render, PostgreSQL and MetaAP
 Authoritative repo: `dannythehat/super-signals`
 **Deployed branch: `feature/day-10-shared-telegram-sources`**
 Verified source head: `8019f66` — *Hotfix Render web API base to same-origin root* (2026-09-14)
-Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`), Frankfurt, Docker, free plan
-Render database: `super-signals-day-8-db`
+Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`), Frankfurt, Docker, **Starter plan**
+Render database: `super-signals-day-8-db` (`dpg-d9qmc6cs728c73a54kc0-a`), PostgreSQL 18, `basic_256mb`
+Live deploy: `dep-dajrrs5g1s2s73bv0pvg` at `8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a`
+**Auto-deploy: ON** from the deployed branch
 Alembic head in source: `0079_fix_member_entitlements`
 Customer-facing brand: **Smart Signals** (`smartsignals.site`)
 
@@ -28,6 +30,19 @@ event loop, and a rebuilt member MT5 onboarding (Connection V2) that no longer b
 inventory.
 
 Anyone reading `main` and believing it is production will be reading stale code.
+
+### Auto-deploy is ON — the deploy branch is live-fire
+
+A push to `feature/day-10-shared-telegram-sources` deploys to the real-money production service
+with no manual gate. Two consequences follow:
+
+1. Never push to that branch without an explicit go-ahead, and never close to Monday 01:01
+   Europe/Sofia. Work on a separate branch and merge deliberately.
+2. Repointing Render at `main`, or merging `main` into the deploy branch carelessly, would roll
+   production back 141 commits **instantly**.
+
+Note that the committed `render.yaml` declares `autoDeployTrigger: off`. The live dashboard
+setting is ON and governs behaviour; the repository file is misleading and should be corrected.
 
 ## Product north star
 

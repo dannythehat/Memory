@@ -24,9 +24,18 @@ deliberately whether to fast-forward `main` to the deployed head, repoint Render
 misleading `production` branch — none of which should be done casually while real money is being
 traded from that branch.
 
-Related and unresolved: `render.yaml` declares `autoDeployTrigger: off` while the previous
-`LIVE_STATE.json` recorded `auto_deploy: true`. Confirm against the Render dashboard before
-assuming a push does or does not deploy.
+**Resolved and now more serious: auto-deploy is ON.** A push to the deploy branch goes straight
+to live real-money trading with no manual gate. That makes the branch confusion above a live-fire
+hazard rather than a tidiness problem — repointing Render at `main`, or merging `main` into the
+deploy branch, would roll production back 141 commits instantly.
+
+`render.yaml` still declares `autoDeployTrigger: off`, which contradicts the live dashboard. The
+dashboard governs; the committed file is misleading and should be corrected so nobody reasons
+from it.
+
+Withdrawn: an earlier concern that production might be sleeping on Render's free tier. The
+service is on the **Starter** plan. Other free services in the workspace are CI/acceptance/probe
+services, not production.
 
 ### 1. Forward statistical evidence is still sparse
 AIDY Provider Intelligence B-F is engineering/prod verified, but broad provider ranking/profitability/promotion claims are not statistically validated yet. Use `WAITING-FOR-FORWARD-EVIDENCE` where sample floors are not met.
