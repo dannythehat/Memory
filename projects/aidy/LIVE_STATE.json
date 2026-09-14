@@ -145,7 +145,7 @@
     ]
   },
   "notes": "RUNTIME VERIFIED 2026-09-14 via GET /health and direct D1 queries. Status RED. Earlier source-only caveats are superseded. The database and /health are authoritative over this file if they later differ.",
-  "overall_status": "AMBER - capture healthy and 4 of 5 timeframes complete; 4h history backfill outstanding; AIDY has still never executed a decision cycle",
+  "overall_status": "GREEN on data - capture complete and all timeframes ready; AIDY has still executed zero decision cycles",
   "runtime_health_verified": {
     "verified_at": "2026-09-14T10:34:00Z",
     "service_status": "degraded",
@@ -283,5 +283,30 @@
     },
     "cohort_impact": "Reset the active forward cohort under the Day 53 evidence-semantic rule. Reset cost was zero - the cohort held no model-resolved decisions. This was the cheapest moment the change could ever be made.",
     "remaining_blocker": "4h coverage 0.500. NOT a timing fault - the 4h bucket rolled to 08:00-12:00 and needs 240 minutes of M1 history the backfill never finished (the hardened bootstrap failed at 11:21, almost certainly because it could not prove all_timeframes_ready through this very bug). Re-dispatched after the fix."
+  },
+  "capture_repair_complete_2026_09_14": {
+    "result": "capture_status 'complete' from 2026-09-14T13:32Z onward - the first complete snapshots in the system's history",
+    "coverage": {
+      "5m": 1.0,
+      "15m": 1.0,
+      "1h": 1.0,
+      "4h": 1.0,
+      "1d": 1.0
+    },
+    "all_timeframes_ready": 1,
+    "health": "service ok, data health fresh, alert false (was degraded / stale_capture / alert true)",
+    "complete_snapshots_ever": 23,
+    "credits_24h": 153,
+    "ceiling": 720
+  },
+  "INCIDENT_unintended_formal_forward_arming": {
+    "severity": "governance breach, no financial exposure",
+    "what_happened": "Re-dispatching day53-hardened-bootstrap-recovery.yml chained into day53-live-forward-activation.yml, dispatched by github-actions[bot] at 2026-09-14T12:53:28Z. That workflow deploys the Worker with AIDY_FORMAL_FORWARD_ENABLED=true and activated cohort aidy_fwd_v2_acf70bcc581cbd297b61f041cac882aa at 12:55:22Z. The activation run then FAILED at 13:14:44Z and its documented safe-off (redeploy with the flag disabled) did not take effect, leaving formal forward armed by a failed run.",
+    "who": "Not armed directly by the agent. Caused indirectly by the agent re-dispatching the bootstrap without first checking what that workflow chains into.",
+    "contained": "Zero forward evaluations, zero known_good, zero end_to_end_cycles accumulated while armed. No evidence contamination.",
+    "no_financial_exposure": "Formal forward is private paper evaluation only. D1 CHECK constraints still hard-block broker_or_account_state, follower_state, super_signals_dependency and live_money_execution.",
+    "remediation": "Phase B rollout re-dispatched to redeploy with AIDY_FORMAL_FORWARD_ENABLED=false, restoring the owner-consented state.",
+    "PERMANENT_WARNING": "day53-hardened-bootstrap-recovery.yml CHAINS INTO day53-live-forward-activation.yml. Running the data-repair workflow can arm the forward gate. Never dispatch the bootstrap recovery expecting a data-only operation. Check the full workflow chain before dispatching any AIDY ops workflow.",
+    "second_warning": "day53-live-forward-activation.yml's safe-off on failure is NOT reliable - it failed to disarm after its own failure. Do not depend on it."
   }
 }
