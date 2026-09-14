@@ -1,10 +1,32 @@
 # Super Signals — Confirmed Open Follow-ups / Regression Watchlist
 
-Updated: **2026-09-13**
+Updated: **2026-09-14**
 
 This file distinguishes **confirmed open follow-ups** from **historical incidents that are not currently proven active**. Do not describe historical incidents as unresolved unless production evidence re-confirms them.
 
 ## Confirmed open follow-ups
+
+### 0. Branch topology is a live trap — highest priority
+
+`render.yaml` pins the deploy to `feature/day-10-shared-telegram-sources`. At 2026-09-14:
+
+- that branch is at `8019f66` and **is** production;
+- `main` is at `4bb664b` and is **141 commits behind**;
+- the branch literally named `production` is at `ade297e` and is **not** deployed.
+
+Any agent or person who reads `main` or `production` as the live system will draw wrong
+conclusions about what is running. Two separate risks follow: a "fix" written against `main` may
+already exist in production, and a production behaviour may be attributed to code that was never
+deployed.
+
+This is a **repository governance follow-up**, not a runtime defect. Resolving it means deciding
+deliberately whether to fast-forward `main` to the deployed head, repoint Render, or rename the
+misleading `production` branch — none of which should be done casually while real money is being
+traded from that branch.
+
+Related and unresolved: `render.yaml` declares `autoDeployTrigger: off` while the previous
+`LIVE_STATE.json` recorded `auto_deploy: true`. Confirm against the Render dashboard before
+assuming a push does or does not deploy.
 
 ### 1. Forward statistical evidence is still sparse
 AIDY Provider Intelligence B-F is engineering/prod verified, but broad provider ranking/profitability/promotion claims are not statistically validated yet. Use `WAITING-FOR-FORWARD-EVIDENCE` where sample floors are not met.
@@ -36,7 +58,20 @@ This is a **specific edge-case hardening item**. The main weekend freeze is alre
 The owner-facing AIDY Data Hub has not yet been built. B-F current views are ready to support it. This is the next planned product build, not a production defect.
 
 ### 8. Independent AIDY trader capability
-AIDY's strategic destination is independent Gold/XAUUSD trading intelligence, but own-thesis/setup generation and forward validation are future capability work. This is roadmap work, not an unresolved production bug.
+AIDY's strategic destination is independent Gold/XAUUSD trading intelligence. Own-thesis and
+setup generation are **further advanced than this file previously implied** — AIDY's own repo
+carries a falsifiable Master Trader contract, decision ledger, paper simulator, management
+watcher and episode memory. What remains is forward validation and an explicit graduation gate.
+This is roadmap work, not an unresolved production bug.
+
+### 9. Memory drifted materially in one day
+Memory recorded the deployed SHA as `278496cc` on 13 September. By 14 September the deployed
+branch had advanced **71 commits**, the Alembic head had moved `0078` → `0079`, and the recorded
+risk directive ("1% only") no longer matched `provider_risk_policy.py` ("1% per enabled TP/runner
+leg"). Two of those are the kind of drift that changes real-money reasoning.
+
+Treat this as evidence that a build day is not complete until Memory is updated in the same pass,
+per the `AGENTS.md` completion gate — not as a reason to distrust the source repositories.
 
 ## Historical regression watchlist — not currently proven active
 

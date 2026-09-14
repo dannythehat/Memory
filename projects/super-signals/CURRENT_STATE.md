@@ -1,82 +1,190 @@
 # Super Signals — Current State
 
-Last verified: **2026-09-13**
+Last source-verified: **2026-09-14**
+Last runtime-verified: **not in this session** — Render, PostgreSQL and MetaAPI were not inspected.
 
 Authoritative repo: `dannythehat/super-signals`
-Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `278496ccbe71ec14f4e2e63b0dbd05004ea774b5`
-Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dajb9cmk1f9s73fm0b3g`
-Verified migration head: `0078_aidy_intel_bf`
-Quality gate at deployed SHA: **931 passed, 67 skipped, 0 failed**.
+**Deployed branch: `feature/day-10-shared-telegram-sources`**
+Verified source head: `8019f66` — *Hotfix Render web API base to same-origin root* (2026-09-14)
+Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`), Frankfurt, Docker, free plan
+Render database: `super-signals-day-8-db`
+Alembic head in source: `0079_fix_member_entitlements`
+Customer-facing brand: **Smart Signals** (`smartsignals.site`)
+
+## Branch reality — read before touching anything
+
+| Branch | Head | Meaning |
+|---|---|---|
+| `feature/day-10-shared-telegram-sources` | `8019f66` | **This is production.** `render.yaml` pins it. |
+| `main` | `4bb664b` | **141 commits behind production.** |
+| `production` | `ade297e` | Misleadingly named. Not deployed. |
+
+Since Memory was last updated at `278496cc` on 13 September, **71 further commits** have landed
+on the deployed branch, including a merged stability release (`a2ee912` "Keep trading app alive"):
+dashboard polling paused off-screen, gold quote and Today summary preserved while Home is hidden,
+no forced frontend reloads during live sessions, owner account portfolio overview, owner manual
+close on live and demo accounts, retry-hardened manual close, MT5 reconciliation moved off the web
+event loop, and a rebuilt member MT5 onboarding (Connection V2) that no longer blocks on MetaAPI
+inventory.
+
+Anyone reading `main` and believing it is production will be reading stale code.
 
 ## Product north star
 
-Super Signals is not building AIDY merely to classify Telegram providers. Provider signals are evidence and training material. The strategic objective is for AIDY to become an independent Gold/XAUUSD trading intelligence system that can understand Gold market moments, form its own market thesis, identify setups, judge or disagree with providers, and eventually propose and manage its own trades.
+Super Signals is not building AIDY merely to classify Telegram providers. Provider signals are
+evidence and training material. The strategic objective is for AIDY to become an independent
+Gold/XAUUSD trading intelligence system that can understand Gold market moments, form its own
+thesis, identify setups, judge or disagree with providers, and eventually propose and manage its
+own trades.
 
-That strategic objective does **not** grant new broker authority today. Live execution remains governed by the explicit production rules and owner gates below.
+That objective grants **no** new broker authority today.
 
-## Current live execution posture
+## The business
 
-- Trading universe remains Gold/XAUUSD.
-- Owner live risk directive remains **1% only** unless explicitly changed.
-- Approved management semantics remain: TP1 + TP2 hit -> move SL to entry; TP3 hit -> move SL to TP2; `move SL to entry` does not mean close the trade.
-- Research/shadow/provider-intelligence systems cannot silently change risk, promote/demote live providers, place trades, net broker positions or acquire live-money authority.
+Members pay **€99/month or €999/year in USDC on Solana**, are approved by the owner, connect
+their own Vantage MT5 account, and receive approved provider trades mirrored onto that account
+via MetaAPI. Onboarding funnel: account → Vantage → membership payment → owner approval → MT5
+connection. Roles are `owner`, `trading_admin` and `user` (shown as "Member").
 
-## Weekly XAUUSD freeze — PRODUCTION VERIFIED
+Public performance is served from the Owner reference ledger through `/dashboard/public/*`.
+Recorded baseline: reconstructed from $1,000 on 2026-08-06, verified live tracking from
+**$1,517.23 on 2026-08-31**, with per-day P/L published only after reconciliation. A $100→$1,000
+challenge on a dedicated funded subaccount is scheduled from 2026-09-10.
 
-The automatic trading/research runtime now follows the standard XAUUSD weekly closure in `Europe/Sofia` time:
+## Live execution contract — corrected
 
-- Friday from 23:57 -> frozen.
-- Saturday -> frozen.
-- Sunday -> frozen.
-- Monday before 01:01 -> frozen.
-- Monday 01:01 onward -> open.
+Memory previously recorded the risk directive as "1% only". **That phrasing was wrong and is
+corrected here** from `provider_risk_policy.py` (`POLICY_GENERATION =
+"owner-authority-2026-09-09-v2-one-percent-per-tp"`):
 
-During the freeze the automatic MetaAPI read/margin/trade paths are blocked, Telegram provider readers are disconnected, original weekend messages are rejected, settlement and pending reconciliation return idle results, and the AIDY Provider Lab external research loop sleeps. B-F intelligence refresh is inside that paused runtime and therefore sleeps too.
+> Owner authority from 9 September 2026: **every enabled TP/runner broker leg carries exactly 1%
+> planned risk.** Entry sections distribute those target legs; they never multiply the risk
+> budget. Four TP/runner legs therefore mean **4% planned signal risk**, whether the provider
+> supplied one entry or several entry sections.
 
-The web/app itself is not globally powered off: health checks, stored/cached views and the free Gold quote path may remain available, and timer tasks may briefly wake to check the clock. User-initiated MetaAPI provisioning is not claimed to be frozen by this gate.
+Automatic profit protection, from `broker_settlement_canonical.py`:
 
-## AIDY Provider Intelligence A-F
+- **TP2 hit** → cancel every unused entry order for the setup, and move every open TP3+ leg to
+  **its own entry** (true per-leg breakeven).
+- **TP3 hit** → move every remaining TP4+/runner stop to the signal's **TP2 price**.
+- Existing protection is never loosened. Moving SL to entry does **not** mean closing the trade.
 
-The provider-intelligence foundation and B-F integration are built and production verified at the deployed SHA. Statistical/provider-profit claims remain separate and require forward evidence.
+### Approved provider directions
 
-- **A — capture/calendar foundation:** PIT-safe provider capture/research foundation and learning boundary.
-- **B — market-context join:** per-provider signal evidence is summarized against contemporaneous session/regime/context only.
-- **C — provider fingerprints:** provider style, cadence, sequence, vocabulary, entry/order/management habits and drift are consolidated from existing footprint/adaptive profiles.
-- **D — automatic research governance:** providers can be classified `learning`, `healthy_research`, `watch` or `quarantine_candidate`; this cannot mutate live source status.
-- **E — provider-specific adaptation:** interpretation can use provider-specific grammar/behaviour while historical numeric levels remain prohibited as current execution evidence.
-- **F — combined-book conflict intelligence:** current provider BUY/SELL consensus/conflicts are visible in observe-only form; broker netting is explicitly disabled.
+`provider_risk_policy.py` is the single production source of truth. Historical audit rankings and
+old migration comments must never alter live eligibility or risk.
 
-Persistence is append-only through:
+| Provider | Allowed directions | Note |
+|---|---|---|
+| FXTradingVision | BUY and SELL | capped at 3 targets |
+| GTMO | BUY only | |
+| TIG's Asia Trades | BUY and SELL | |
+| SureShot | SELL only | |
+| United Kings | SELL only | |
 
-- `provider_intelligence_snapshots`
-- `provider_book_conflict_snapshots`
-- `provider_intelligence_current`
-- `provider_book_conflict_current`
+A disabled direction returns a zero risk profile and fails closed before broker mutation.
 
-At Sunday verification the new snapshot tables contained zero rows because the weekly market freeze was active. That is expected; do not bypass the freeze to fabricate/populate forward evidence.
+## How signals flow
 
-## Current evidence quality
+1. Telethon reader sessions (private per administrator) capture messages from selected sources.
+2. A deterministic-first canonical pipeline classifies and interprets. OpenAI
+   `gpt-5-mini-2025-08-07` is used through the Responses API only where deterministic rules
+   cannot decide. **AI may identify which trade a message refers to; it may never donate the
+   action, price, TP index or side** — those come only from mechanically explicit current-message
+   evidence (`day27_management_policy.py`).
+3. `CanonicalExecutionDispatcher` routes one durable decision. Source status decides everything:
+   - `shadow` → branches into `_dispatch_shadow` and returns **before any broker path exists**.
+   - `testing` / `live` → MetaAPI execution on the Owner reference account and eligible members.
+   - `paused` / `revoked` → nothing.
+4. Canonical signals are published to the private Smart Signals Telegram channel, shown in the
+   PWA, and settled against broker truth.
 
-Engineering completion is **not** statistical validation. The latest provider-forward evidence remains insufficient for broad promotion/profitability claims. Where Day 13-style evaluation has no eligible OOS trades/results, the correct status is `WAITING-FOR-FORWARD-EVIDENCE`, not profitable/unprofitable.
+## Shadow / Provider Lab
 
-## Immediate next product build
+Shadow providers are measured on a deliberately fair benchmark (`provider_fairness.py`,
+model `fixed_1000_10_per_tp_fair_v2`): the same notional **$1,000** account and **$10** cash risk
+per TP/runner leg for everyone. Scalper, intraday and swing providers must be scored on AIDY M1
+truth (`quote_mode='aidy_m1'`) or the trade is retained for audit but excluded from scoring.
 
-**AIDY Data Hub** — owner/admin daily control centre.
+Minimum evidence before a provider may be judged — closed trades / trading days / calendar weeks:
+scalper 100/20/4, intraday 60/30/6, swing-or-sparse 30/45/8, mixed and unknown 60/30/6.
 
-The Hub should read stored database state/current views rather than trigger OpenAI or MetaAPI simply because the page refreshes. It should expose provider coverage, capture/read quality, context coverage, forward evidence, provider fingerprints/confidence/drift/governance, current provider consensus/conflicts, system health and owner-attention alerts.
+**Provider populations must never be mixed:** ~40 shadow discovery providers versus the 5
+real/testing providers above.
 
-It must also show **AIDY itself**: current Gold bias/thesis, market regime, important levels/setups, confidence, what it is watching and what would invalidate the view as those capabilities become available. Individual providers should be clickable into their detailed AIDY knowledge/profile/evidence.
+## Weekly XAUUSD freeze
+
+`weekend_trading_freeze.py`, `Europe/Sofia`: frozen from Friday **23:57**, all Saturday and
+Sunday, and Monday before **01:01**; open from Monday 01:01.
+
+During the freeze the automatic MetaAPI read/margin/trade paths are blocked, Telegram provider
+readers disconnect, original weekend messages are rejected, settlement and pending reconciliation
+return idle, and the AIDY Provider Lab research loop sleeps — so the B–F refresh sleeps too.
+
+This is an automatic-runtime gate, **not** a claim that the whole app is powered off. Health
+checks, stored/cached views and the free Gold quote path remain available, and user-initiated
+MetaAPI provisioning is not claimed to be frozen.
+
+## AIDY Provider Intelligence A–F
+
+Built and previously production-verified at `278496cc`; still present at `8019f66` in
+`provider_intelligence_bf.py`, contract `aidy-provider-intelligence-bf-v1`.
+
+- **A** capture/calendar foundation and learning boundary.
+- **B** market-context join — PIT session/regime/context coverage only.
+- **C** provider fingerprints — style, cadence, sequence, vocabulary, entry/order/management
+  habits, drift.
+- **D** research governance — `learning`, `healthy_research`, `watch`, `quarantine_candidate`.
+  Cannot mutate `sources.status`.
+- **E** provider-specific adaptation — provider grammar may inform interpretation; historical
+  numeric levels are prohibited as current execution evidence.
+- **F** combined-book conflict — observe-only BUY/SELL consensus and conflicts. Broker netting
+  explicitly disabled.
+
+Persistence is append-only through migration `0078_aidy_intel_bf`:
+`provider_intelligence_snapshots`, `provider_book_conflict_snapshots`, with current views
+`provider_intelligence_current` and `provider_book_conflict_current`. Database triggers reject
+UPDATE and DELETE on the snapshot ledgers. Refresh runs inside `AidyShadowRuntime` on a 5-minute
+loop that sleeps during the weekly freeze.
+
+At the last Sunday verification both snapshot tables held zero rows because the freeze was
+active. Whether they have populated since the market reopened is **unverified** — check it.
+
+## Evidence quality
+
+Engineering completion is not statistical validation. Provider ranking, profitability and
+promotion claims remain `WAITING-FOR-FORWARD-EVIDENCE` wherever sample floors are unmet.
+
+## Immediate next product build — AIDY Data Hub
+
+An owner/admin daily control centre reading stored database state and current views. A browser
+refresh must **not** itself invoke OpenAI, MetaAPI or external AIDY research.
+
+It should show provider coverage, capture/read quality, context coverage, forward evidence,
+fingerprints/confidence/drift/governance, current provider consensus and conflicts, system health
+and owner-attention alerts — with raw activity, scored evidence and statistically sufficient
+evidence clearly separated.
+
+It must also show **AIDY itself**: current Gold bias/thesis, regime, important levels and setups,
+confidence, what it is watching and what would invalidate the view. Providers should be clickable
+into their detailed knowledge/profile/evidence.
+
+**AIDY's two Hub feeds already exist** and are merged on AIDY `main` — `/provider/data-health`
+(Phase A) and `/provider/decision-memory` (Phase B), bearer-authenticated, failing closed with
+503. Nothing consumes them yet. Consuming them is this build.
 
 ## Efficiency work still open
 
-- Quarantine four stale historical `broker_filled_position_not_visible` rows from the fast settlement/history path without deleting audit evidence.
-- Avoid position/order broker reads when there are no protection plans.
-- Remove the redundant dashboard MetaAPI XAU price read where the UI already uses the free Gold quote feeds.
+- Quarantine four stale historical `broker_filled_position_not_visible` rows from the fast
+  settlement/history path without deleting audit evidence.
+- Return before broker position/order reads when there are no protection plans.
+- Remove the redundant dashboard MetaAPI XAU price read; the UI already uses free Gold feeds.
 - Persist OpenAI token/cost and MetaAPI request telemetry.
-- Consider an `edited_at` weekly-freeze gate so a pre-weekend message edited during closure cannot be replayed after reopen.
+- Consider an `edited_at` weekly-freeze gate so a pre-weekend message edited during closure
+  cannot be replayed after reopen.
 
 ## Session rule
 
-Before any production change, verify the live source branch, Render deploy/runtime and relevant production database evidence. Source/runtime truth overrides this Memory file if they disagree.
+Read `NETWORK.md` first. Before any production change, verify the live **deployed branch**
+(not `main`), the Render deploy and the relevant production database evidence. Source and
+runtime truth override this file.

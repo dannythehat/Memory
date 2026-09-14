@@ -1,48 +1,131 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T17:06:00Z",
+  "source_verified_at_utc": "2026-09-14T00:00:00Z",
+  "runtime_verified_at_utc": null,
+  "evidence_status": "SOURCE VERIFIED ONLY - Cloudflare Worker, D1 and live environment variables were not inspected in the session that wrote this file",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
-  "live_worker_version": "d124b317-708d-4f57-afbb-3bd6844a32cf",
-  "runtime": {
+  "branch_head_sha": "cb0f4bc",
+  "branch_head_subject": "Merge guarded Phase B forward restart",
+  "previous_memory_head_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
+  "staleness_note": "Memory previously described AIDY at Day 10. Source is at Day 53 plus AIDY Hub Phase A and Phase B.",
+  "infrastructure": {
+    "runtime": "cloudflare_workers",
+    "worker_name": "aidy-signals-test",
+    "worker_url": "https://aidy-signals-test.dannythehat2.workers.dev",
+    "worker_entrypoint": "src/provider_entry.py",
+    "d1_database_name": "aidy-ops-test",
+    "d1_database_id": "3588d82a-d686-4430-872d-d4c0e62c3d5d",
+    "d1_migration_files_head": "0020_phase_b_forward_restart_guard",
+    "d1_table_count": 27,
+    "r2_bucket": "aidy-memory-test",
+    "bigquery_project": "aidy-signals",
+    "bigquery_dataset": "aidy_analytics_test",
+    "render_dependency": false
+  },
+  "runtime_config_last_recorded_in_source": {
     "capture_enabled": true,
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
-    "formal_forward_enabled": false,
-    "provider_context_route_live": true,
-    "provider_context_bearer_protected": true,
-    "provider_market_bearer_secret_unchanged": true
+    "market_poll_seconds": 300,
+    "scheduler": "direct-cron",
+    "twelve_data_bootstrap_enabled": false,
+    "note": "These are the values the Phase B rollout workflow writes at deploy time. They are not a runtime observation."
   },
-  "latest_completed_build": {
-    "sequence": "2026-09-06-provider-intelligence",
-    "day": 10,
-    "status": "PRODUCTION VERIFIED",
-    "title": "immutable provider-profile plus AIDY context attachment",
-    "implementation_repo": "dannythehat/super-signals",
-    "implementation_sha": "634838b5a559a425a1fe54af5bf7c022763f2743",
-    "delivery_pr": 143,
-    "migration_head": "0058_provider_aidy_context"
+  "formal_forward": {
+    "status": "WAITING_RUNTIME_UNVERIFIED",
+    "previous_memory_claim": false,
+    "why_uncertain": "phase-b-forward-restart.yml runs every 10 minutes on main and is designed to redeploy the Worker with AIDY_FORMAL_FORWARD_ENABLED=true once its gate passes. Neither the Worker variable nor the D1 campaign row was read.",
+    "cohort_version": "aidy_formal_forward_cohort_v2_immediate_start",
+    "restart_campaign_id": "aidy_phase_b_repaired_forward_restart_20260913",
+    "meaning_if_enabled": "private paper evaluation only",
+    "broker_or_account_state_allowed": false,
+    "follower_state_allowed": false,
+    "super_signals_dependency_allowed": false,
+    "live_money_execution_allowed": false,
+    "day54_gate_min_episode_independent_model_resolved_decisions": 300
   },
-  "day9": {
-    "title": "canonical AIDY point-in-time context join",
-    "status": "PRODUCTION VERIFIED",
-    "source_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
-    "code_only_rollout_run": 34047042761,
-    "context_route": "/provider/context",
-    "formal_forward_enabled": false
+  "model": {
+    "provider": "openai",
+    "model_id": "gpt-5.6-sol",
+    "gateway": "openai_gateway_v2",
+    "self_consistency_samples": 3,
+    "output_mode": "strict_structured_outputs",
+    "position_sizing_fields_forbidden": true,
+    "reasoning_trace_fields_forbidden": true
   },
-  "day10": {
-    "attachment_runtime_live": true,
-    "attachment_resolver_failures": 0,
-    "eligible_forward_signals_waiting": 0,
-    "first_genuine_attachment": "WAITING_FOR_NEXT_REAL_PIT_CLEAN_SIGNAL"
+  "decision_contract": {
+    "version": "aidy_master_trader_decision_v2_falsifiable",
+    "symbol": "XAUUSD",
+    "actions": ["new_trade", "manage_trade", "close_trade", "no_trade"],
+    "directions": ["long", "short"],
+    "entry_type": "market",
+    "management_instructions": ["move_stop", "replace_targets", "move_stop_and_targets"],
+    "v2_falsifiable_fields": [
+      "thesis",
+      "expected_horizon_minutes",
+      "counter_argument",
+      "invalidation_condition",
+      "abstention_basis",
+      "shadow_thesis",
+      "shadow_direction",
+      "shadow_horizon_minutes",
+      "shadow_evaluation_condition"
+    ]
   },
-  "next_build": {
-    "day": 11,
-    "title": "execution-cost and paper-broker calibration"
+  "episode_memory": {
+    "phase": "B",
+    "status": "BUILT_AND_MERGED_ON_MAIN",
+    "version": "aidy_episode_memory_v1",
+    "learning_card_version": "aidy_structured_learning_card_v1",
+    "tables": [
+      "aidy_memory_episodes",
+      "aidy_memory_outcomes",
+      "aidy_learning_cards",
+      "aidy_forward_evaluations",
+      "aidy_forward_outcomes",
+      "aidy_forward_cohorts",
+      "aidy_forward_restart_runs"
+    ],
+    "wired_into": "direct-cron scheduled tick, best-effort, cannot undo a successful capture"
   },
-  "formal_forward_expected": false,
-  "notes": "Day 10 is production-ready and running. Zero attachment rows is currently correct because production has zero PIT-resolved forward signals eligible for attachment; no historical record was fabricated."
+  "hub_apis": {
+    "phase_a_data_health": {
+      "route": "/provider/data-health",
+      "status": "BUILT_AND_MERGED_ON_MAIN",
+      "consumed_by_super_signals": false
+    },
+    "phase_b_decision_memory": {
+      "route": "/provider/decision-memory",
+      "status": "BUILT_AND_MERGED_ON_MAIN",
+      "consumed_by_super_signals": false
+    },
+    "auth": "same bearer token as /market/ohlc and /provider/context",
+    "failure_mode": "fail closed with HTTP 503"
+  },
+  "provider_boundary_routes": [
+    "/health",
+    "/market/ohlc",
+    "/calibration/market/ohlc",
+    "/provider/context",
+    "/provider/data-health",
+    "/provider/decision-memory"
+  ],
+  "scheduled_github_workflows": {
+    "aidy-archive-outbox-watchdog": "8,18,28,38,48,58 * * * *",
+    "aidy-capture-freshness-watchdog": "3,13,23,33,43,53 * * * *",
+    "aidy-d1-row-budget-alert": "17 * * * *",
+    "phase-b-forward-restart": "*/10 * * * *"
+  },
+  "next_step": {
+    "title": "Runtime verification before any further AIDY claim",
+    "checks": [
+      "Worker AIDY_FORMAL_FORWARD_ENABLED, AIDY_CAPTURE_ENABLED, AIDY_MARKET_DATA_SOURCE",
+      "aidy_forward_cohorts active row for cohort_version aidy_formal_forward_cohort_v2_immediate_start",
+      "aidy_forward_restart_runs acceptance_state for campaign aidy_phase_b_repaired_forward_restart_20260913",
+      "count of episode-independent model-resolved decisions against the 300 gate"
+    ]
+  },
+  "notes": "Do not restate any line in this file as live or production verified. It records what the source repository proves at cb0f4bc and nothing more."
 }

@@ -1,41 +1,109 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-13T14:36:34Z",
+  "source_verified_at_utc": "2026-09-14T00:00:00Z",
+  "runtime_verified_at_utc": "2026-09-13T14:36:34Z",
+  "evidence_status": "Source verified at 8019f66. Render deploy, PostgreSQL and MetaAPI were NOT inspected in the session that wrote this file; runtime fields below are carried forward from the 2026-09-13 verification and may be stale.",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "278496ccbe71ec14f4e2e63b0dbd05004ea774b5",
+  "branch_head_sha": "8019f66",
+  "branch_head_subject": "Hotfix Render web API base to same-origin root",
+  "branch_divergence": {
+    "main_head_sha": "4bb664b",
+    "main_commits_behind_deployed_branch": 141,
+    "production_branch_head_sha": "ade297e",
+    "production_branch_is_deployed": false,
+    "commits_added_since_last_memory_sha": 71,
+    "previous_memory_sha": "278496ccbe71ec14f4e2e63b0dbd05004ea774b5",
+    "warning": "render.yaml pins feature/day-10-shared-telegram-sources. Reading main as production is a known trap."
+  },
+  "brand": {
+    "repository_name": "super-signals",
+    "customer_facing_name": "Smart Signals",
+    "public_domain": "smartsignals.site",
+    "env_prefixes_in_use": ["SUPER_SIGNALS_", "SMART_SIGNALS_"]
+  },
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dajb9cmk1f9s73fm0b3g",
-    "deploy_status": "live",
-    "auto_deploy": true
+    "region": "frankfurt",
+    "runtime": "docker",
+    "plan": "free",
+    "health_check_path": "/health",
+    "deploy_id_last_verified": "dep-dajb9cmk1f9s73fm0b3g",
+    "deploy_status_last_verified": "live",
+    "auto_deploy_unresolved": "render.yaml declares autoDeployTrigger: off, but the previous LIVE_STATE recorded auto_deploy true. Resolve against the Render dashboard."
   },
   "database": {
-    "migration_head": "0078_aidy_intel_bf",
+    "engine": "postgresql",
+    "render_database_name": "super-signals-day-8-db",
+    "alembic_head_in_source": "0079_fix_member_entitlements",
+    "alembic_head_previously_recorded": "0078_aidy_intel_bf",
+    "migration_file_count": 82,
+    "table_count": 67,
     "provider_intelligence_current_view": true,
     "provider_book_conflict_current_view": true,
     "provider_intelligence_snapshot_count_at_weekend_verification": 0,
-    "provider_book_conflict_snapshot_count_at_weekend_verification": 0
+    "snapshot_population_since_reopen": "UNVERIFIED"
   },
   "quality_gate": {
-    "passed": 931,
-    "skipped": 67,
-    "failed": 0,
-    "warnings": 2
+    "note": "931 passed / 67 skipped / 0 failed was measured at 278496cc. Not re-run at 8019f66.",
+    "api_test_file_count": 171,
+    "enforced_in_docker_build": true,
+    "docker_build_stages": ["security-scan", "web-quality", "api-quality", "runtime"]
   },
   "execution": {
     "instrument": "XAUUSD",
-    "owner_risk_directive": "1_percent_only",
-    "tp1_tp2_management": "move_sl_to_entry",
-    "tp3_management": "move_sl_to_tp2",
-    "move_sl_to_entry_means_close": false
+    "owner_risk_directive": "one_percent_per_enabled_tp_or_runner_leg",
+    "policy_generation": "owner-authority-2026-09-09-v2-one-percent-per-tp",
+    "risk_note": "Four TP/runner legs = 4% planned signal risk. Entry sections distribute legs and never multiply the risk budget.",
+    "previous_memory_claim": "1_percent_only",
+    "previous_memory_claim_corrected": true,
+    "tp2_hit": "cancel unused entry orders and move every open TP3+ leg to its own entry (per-leg breakeven)",
+    "tp3_hit": "move every remaining TP4+/runner stop to the signal TP2 price",
+    "move_sl_to_entry_means_close": false,
+    "protection_never_loosened": true,
+    "allowed_risk_percent_values": [0.5, 1, 1.5, 2]
+  },
+  "approved_providers": {
+    "source_of_truth": "services/api/app/provider_risk_policy.py",
+    "fxtradingvision": { "buy": true, "sell": true, "tp_limit": 3 },
+    "gtmo": { "buy": true, "sell": false },
+    "tigs_asia_trades": { "buy": true, "sell": true },
+    "sureshot": { "buy": false, "sell": true },
+    "united_kings": { "buy": false, "sell": true }
+  },
+  "source_statuses": {
+    "values": ["testing", "shadow", "paused", "live", "revoked"],
+    "broker_eligible": ["testing", "live"],
+    "research_only": ["shadow"],
+    "inert": ["paused", "revoked"],
+    "shadow_isolation": "CanonicalExecutionDispatcher branches shadow into _dispatch_shadow and returns before any broker code path exists"
+  },
+  "shadow_benchmark": {
+    "model": "fixed_1000_10_per_tp_fair_v2",
+    "start_balance_usd": 1000,
+    "risk_per_leg_usd": 10,
+    "market_truth_for_scalper_intraday_swing": "aidy_m1",
+    "minimum_evidence_closed_days_weeks": {
+      "scalper": [100, 20, 4],
+      "intraday": [60, 30, 6],
+      "swing_or_sparse": [30, 45, 8],
+      "mixed": [60, 30, 6],
+      "unknown": [60, 30, 6]
+    }
+  },
+  "ai": {
+    "provider": "openai",
+    "model": "gpt-5-mini-2025-08-07",
+    "api": "responses",
+    "enabled_flag": "SUPER_SIGNALS_AI_SUPERVISOR_ENABLED",
+    "boundary": "AI may link a message to a trade; it may never donate the action, price, TP index or side"
   },
   "weekly_market_freeze": {
-    "status": "PRODUCTION VERIFIED",
+    "status": "PRODUCTION VERIFIED at 278496cc, code unchanged at 8019f66",
     "timezone": "Europe/Sofia",
     "friday_close": "23:57",
     "monday_open": "01:01",
@@ -51,26 +119,46 @@
   "provider_intelligence": {
     "contract_version": "aidy-provider-intelligence-bf-v1",
     "book_contract_version": "aidy-provider-book-conflict-v1",
+    "implementation": "services/api/app/provider_intelligence_bf.py",
+    "refresh_runtime": "AidyShadowRuntime, 300s loop, sleeps during weekly freeze",
     "a_foundation": "BUILT_AND_PREVIOUSLY_VERIFIED",
-    "b_market_context": "PRODUCTION VERIFIED",
-    "c_provider_fingerprint": "PRODUCTION VERIFIED",
-    "d_research_governance": "PRODUCTION VERIFIED",
-    "e_provider_specific_adaptation": "PRODUCTION VERIFIED",
-    "f_combined_book_conflict": "PRODUCTION VERIFIED",
+    "b_market_context": "PRODUCTION VERIFIED at 278496cc",
+    "c_provider_fingerprint": "PRODUCTION VERIFIED at 278496cc",
+    "d_research_governance": "PRODUCTION VERIFIED at 278496cc",
+    "e_provider_specific_adaptation": "PRODUCTION VERIFIED at 278496cc",
+    "f_combined_book_conflict": "PRODUCTION VERIFIED at 278496cc",
     "statistical_validation": "WAITING_FOR_FORWARD_EVIDENCE",
     "live_source_status_mutation_allowed": false,
     "broker_netting_allowed": false,
     "live_money_execution_allowed_by_bf": false
   },
-  "strategic_direction": {
-    "north_star": "AIDY becomes an independent Gold trader: understand Gold market moments, form its own thesis, identify setups, judge or disagree with providers, then graduate through paper/forward evidence before any new live authority.",
-    "providers_are": "training_and_evidence_inputs_not_the_end_product"
+  "aidy_boundary": {
+    "transport": "https_bearer",
+    "env_url": "AIDY_PROVIDER_MARKET_URL",
+    "env_token": "AIDY_PROVIDER_MARKET_TOKEN",
+    "consumed_routes": ["/market/ohlc", "/calibration/market/ohlc", "/provider/context"],
+    "available_but_unconsumed_routes": ["/provider/data-health", "/provider/decision-memory"],
+    "reverse_flow_allowed": false,
+    "reverse_flow_note": "Super Signals broker, follower and provider outcome state must never be fed back into AIDY as market truth"
+  },
+  "commercial": {
+    "monthly_price_eur": 99,
+    "annual_price_eur": 999,
+    "payment": "USDC on Solana only",
+    "broker": "Vantage MT5 via MetaAPI",
+    "access_model": "invitation and owner approval",
+    "public_live_tracking_start": "2026-08-31",
+    "public_starting_balance_usd": 1517.23,
+    "reconstructed_baseline_start": "2026-08-06",
+    "reconstructed_baseline_start_balance_usd": 1000,
+    "challenge": { "start_date": "2026-09-10", "from_usd": 100, "to_usd": 1000, "account": "dedicated_funded_subaccount" }
   },
   "next_build": {
     "title": "AIDY Data Hub",
     "audience": "owner_admin",
     "db_backed": true,
-    "page_refresh_must_not_trigger_openai_or_metaapi": true
+    "page_refresh_must_not_trigger_openai_or_metaapi": true,
+    "aidy_side_prerequisites": "already built - /provider/data-health and /provider/decision-memory"
   },
   "open_efficiency_items": [
     "quarantine_stale_broker_filled_position_not_visible_rows_from_fast_settlement_path",
@@ -79,5 +167,10 @@
     "persist_openai_and_metaapi_usage_telemetry",
     "consider_weekend_edited_at_replay_gate"
   ],
-  "notes": "Zero B-F snapshot rows during Sunday verification are expected because the weekly XAUUSD freeze is active. Do not fabricate forward evidence. Runtime/database evidence overrides Memory if it later differs."
+  "open_governance_items": [
+    "main_is_141_commits_behind_the_deployed_branch",
+    "branch_named_production_is_not_production",
+    "render_auto_deploy_setting_unresolved"
+  ],
+  "notes": "Runtime/database evidence overrides this file. Re-verify the deploy, the Alembic head and B-F snapshot population before making any production claim."
 }

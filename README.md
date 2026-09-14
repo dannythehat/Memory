@@ -20,19 +20,28 @@ An agent must verify live facts against the real project repository/data before 
 
 ## Projects
 
+- [`NETWORK.md`](NETWORK.md) — **how every repository fits together.** Read this first.
 - [`projects/aidy/`](projects/aidy/) — AIDY Gold Signals / intelligence system.
 - [`projects/super-signals/`](projects/super-signals/) — Super Signals private app and Provider Lab.
+
+### Other repositories in the estate
+
+- `dannythehat/super-signals-website` — the public `smartsignals.site` marketing and onboarding
+  site. It has no Memory project of its own; it is covered in `NETWORK.md`.
+- `dannythehat/Telegram-Signals-Auto-Trader` — **dormant since 2026-08-04**, superseded by
+  Super Signals. Do not build on it or treat its README as current architecture.
 
 ## Start here
 
 For any project session, read in this order:
 
 1. `AGENTS.md`
-2. the project's `CURRENT_STATE.md`
-3. the project's `SAFETY_RULES.md`
-4. the project's `LIVE_STATE.json`
-5. the latest file in the project's `handovers/` directory
-6. only then inspect the authoritative source repo/runtime and begin work.
+2. `NETWORK.md`
+3. the project's `CURRENT_STATE.md`
+4. the project's `SAFETY_RULES.md`
+5. the project's `LIVE_STATE.json`
+6. the latest file in the project's `handovers/` directory
+7. only then inspect the authoritative source repo/runtime and begin work.
 
 ## Design
 
