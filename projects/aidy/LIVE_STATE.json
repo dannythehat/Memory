@@ -226,10 +226,23 @@
     }
   },
   "root_cause": {
-    "primary": "Twelve Data plan too small - provider_minute_credits_left reaches 1; causes partial snapshots (7 of 227 complete) and full-day outages",
-    "secondary": "Cloudflare Cron not firing since 2026-09-13T10:35 despite capture_enabled=true and an open session",
-    "consequence_chain": "partial/absent capture -> market_reference_not_complete -> every forward evaluation pre_model_blocked -> zero decisions -> zero episodes -> Day 54 gate stuck at 0/300; and M1 holes stall Super Signals shadow scoring",
-    "weekend_note": "Sunday capture is CORRECT behaviour - the Worker runs and marks session_closed. Do not treat weekend activity as a fault."
+    "FINAL": "AIDY requires 1700 minutes of M1 history to build H1/H4/D1 aggregates and is missing 1681 of them. Each scheduled capture performs ONE bounded M1 read reused across timeframes, which can build 15m but never 1h/4h/1d. Completeness thresholds require 1.00 coverage on every timeframe, so all_timeframes_ready is always false, so every snapshot is 'partial', so market_reference_not_complete, so AIDY never reaches the model.",
+    "evidence_2026_09_14T10_50": {
+      "bootstrap_required_m1_minutes": 1700,
+      "missing_from_vendor_fetch": 1681,
+      "coverage": {
+        "15m": 1.0,
+        "5m": 0.8,
+        "1h": 0.0,
+        "4h": 0.0,
+        "1d": 0.0
+      },
+      "required_coverage_all_timeframes": 1.0
+    },
+    "the_fix": "Enable AIDY_TWELVE_DATA_BOOTSTRAP_ENABLED and run the historical M1 ingest (twelve_data_bootstrap.py, POST /day53/twelve-data-bootstrap). The Phase B rollout workflow deploys with this flag set to 'false', which is why the backfill has never run.",
+    "quota_is_NOT_the_blocker": "Internal ceiling is 720/day rolling 24h. Usage on 2026-09-14 was 53 rolling, 0 for the day; peak day ever 202. A capture costs 1 credit. Earlier quota hypothesis was WRONG.",
+    "cron_was_a_real_but_separate_fault": "Cron genuinely was not firing between 2026-09-13T10:36 and the redeploy. Fixed.",
+    "weekend_note": "Sunday capture is CORRECT behaviour. Do not treat weekend activity as a fault."
   },
   "monitoring_gap": {
     "watchdog_works": true,
@@ -237,5 +250,11 @@
     "problem": "alerts surface only as a red X in GitHub Actions with no notification channel",
     "github_cron_throttling": "aidy-capture-freshness-watchdog is scheduled every 10 minutes but actually ran at 18:50, 21:09, 23:08, 01:01, 06:05 - GitHub heavily throttles scheduled runs. Do not rely on GitHub Actions cron for time-sensitive monitoring. Same applies to phase-b-forward-restart.yml."
   },
-  "action_taken_2026_09_14": "Dispatched phase-b-episode-memory-rollout.yml on main (owner-approved) to restore the Cloudflare Cron. Runs full tests, rebuilds canonical config (capture on, twelve_data, poll 300s, formal forward OFF), applies D1 migrations, redeploys, and proves Cron schedules survived. Formal forward untouched."
+  "action_taken_2026_09_14": "Dispatched phase-b-episode-memory-rollout.yml on main (owner-approved) to restore the Cloudflare Cron. Runs full tests, rebuilds canonical config (capture on, twelve_data, poll 300s, formal forward OFF), applies D1 migrations, redeploys, and proves Cron schedules survived. Formal forward untouched.",
+  "cron_repair_2026_09_14": {
+    "action": "Dispatched phase-b-episode-memory-rollout.yml on main at 10:42Z; run 34834486221 succeeded 10:46Z.",
+    "result": "CRON RESTORED. First capture since 2026-09-13T10:35 landed at 2026-09-14T10:50:03Z - one Twelve Data request, one market snapshot.",
+    "cron_schedule": "*/2 * * * * plus 5,15,25,35,45,55 * * * * ; interval_due fires when epoch %% 300 < 60, so capture is due every 5 minutes. Ticks on non-due minutes correctly skip capture - that is NOT a fault.",
+    "still_red": "snapshot capture_status is 'partial'. Cron was necessary but not sufficient."
+  }
 }
