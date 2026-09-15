@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "source_verified_at_utc": "2026-09-14T00:00:00Z",
-  "runtime_verified_at_utc": "2026-09-14T00:00:00Z",
-  "evidence_status": "RUNTIME VERIFIED 2026-09-14 via Render MCP and read-only Postgres queries. Branch heads verified via git ls-remote. Cloudflare/D1 connected but not yet queried. One gap: Render exposes no env-var READ API, so dormant-service credential holdings remain unconfirmed.",
+  "source_verified_at_utc": "2026-09-15T10:00:00Z",
+  "runtime_verified_at_utc": "2026-09-15T10:00:00Z",
+  "evidence_status": "RUNTIME VERIFIED 2026-09-15 via Render MCP, read-only Postgres and Cloudflare D1. Per-group P&L is live in provider_trade_scoreboard and refreshes on a 30-minute loop, so its numbers move -- read the view, do not quote this file for them.",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "8019f66b36c90b6fe06b41e9acb6ff2ad845dc3a",
-  "branch_head_subject": "Hotfix Render web API base to same-origin root",
+  "branch_head_sha": "9ab11790d8d303c94c6c628e9779243a49dddfe5",
+  "branch_head_subject": "Skip the seconds before a signal was posted rather than refusing to score it (#178)",
   "branch_divergence": {
     "main_head_sha": "4bb664bd3adb76d3adbbeff32b495d1d62ce8f5d",
     "main_commits_behind_deployed_branch": 141,
@@ -76,11 +76,12 @@
     "ip_allow_list": "0.0.0.0/0",
     "ip_allow_note": "Production Postgres accepts connections from any IP. Password protected, but a hardening candidate.",
     "provider_intelligence_snapshots_actual": 259,
-    "provider_book_conflict_snapshots_actual": 19
+    "provider_book_conflict_snapshots_actual": 19,
+    "alembic_head_id": "0087_provider_scoreboard"
   },
   "quality_gate": {
-    "note": "931 passed / 67 skipped / 0 failed was measured at 278496cc. Not re-run at 8019f66.",
-    "api_test_file_count": 171,
+    "note": "1082 passed / 0 failed at 9ab11790, run against a fresh PostgreSQL with migrations 0001-0087 applied. First fully green run in this work; the previously failing edit-audit test was reporting a real fail-open bug.",
+    "api_test_file_count": 174,
     "enforced_in_docker_build": true,
     "docker_build_stages": [
       "security-scan",
@@ -274,7 +275,9 @@
     "render_yaml_declares_autoDeployTrigger_off_which_contradicts_the_live_dashboard_setting",
     "main_is_141_commits_behind_the_deployed_branch",
     "branch_named_production_is_not_production",
-    "repointing_render_at_main_or_merging_main_into_the_deploy_branch_would_roll_production_back_141_commits"
+    "repointing_render_at_main_or_merging_main_into_the_deploy_branch_would_roll_production_back_141_commits",
+    "day11-calibration-backfill.yml rebuilds the Worker config with triggers.crons=[] and that minute cron IS scheduled capture. Its 2026-09-15 03:44 deploy killed capture for 5.4 hours with a green deploy. NOT FIXED - do not run it without restoring the cron.",
+    "GTMO VIP instrument declaration outstanding (164 scorable trades, testing/live-executing) - owner decision."
   ],
   "notes": "Runtime/database evidence overrides this file. Re-verify the deploy, the Alembic head and B-F snapshot population before making any production claim.",
   "source_population_verified": {
@@ -320,18 +323,9 @@
     "open_gap": "Render MCP has no env-var read tool. Whether any dormant service holds production DATABASE_URL/Telegram/MetaAPI credentials is UNRESOLVED - check the dashboard Environment tab per service."
   },
   "shadow_scoring_verified": {
-    "verified_at": "2026-09-14",
-    "status": "RED",
-    "shadow_trades_total": 750,
-    "score_eligible": 39,
-    "score_eligible_pct": 5.2,
-    "unobserved_no_market_data": 423,
-    "blocked_by_missing_minutes": 107,
-    "distinct_missing_m1_minutes": 44,
-    "missing_minute_range": "2026-09-04T01:35Z to 2026-09-09T05:40Z",
-    "root_cause": "AIDY M1 history has holes and capture is stale - see projects/aidy handover 2026-09-14",
-    "recoverable": "YES - all 750 trades retain full geometry and timestamps. Twelve Data sells historical M1. Backfill machinery exists (twelve_data_bootstrap.py, /calibration/market/ohlc, provider_day11_calibration_replay). Expect partial not total recovery.",
-    "all_providers_research_state": "learning - not one has reached shadow or qualified"
+    "verified_at": "2026-09-15",
+    "status": "SUPERSEDED - see provider_trade_scoring_verified",
+    "why": "shadow_trades only exist where a trade was also mirrorable, so the three largest providers by volume had none: TDC V2 565 recorded trades and 0 shadow trades, The Gold Club 508 and 0, GOLD VIP 92 and 0. Scoring from there could not answer which groups make money."
   },
   "real_money_authority": {
     "database_is_not_authoritative": true,
@@ -361,5 +355,38 @@
       "gtmo_vip": -160.48,
       "sureshot_gold": "no closed trades"
     }
+  },
+  "provider_trade_scoring_verified": {
+    "verified_at": "2026-09-15T10:05Z",
+    "status": "LIVE AND CONVERGING",
+    "source_table": "provider_trade_observations",
+    "score_table": "provider_trade_scores",
+    "read_this_view": "provider_trade_scoreboard",
+    "scorable_trades": 2348,
+    "resolved_at_verification": 1338,
+    "note": "A pass was still running at verification (scored 1300/1775). Counts move.",
+    "benchmark": "fixed_1000_10_per_tp_fair_v2 - $1,000 start, $10 risked per target leg",
+    "refresh": "ProviderTradeScoringRuntime, 30-minute loop inside the API process. PROVIDER_SCORING_ENABLED=0 disables it without a deploy.",
+    "cannot_reach_a_decision": "forward_evidence_eligible is CHECK-constrained false and no promotion gate reads the table. score_eligibility still admits only quote_mode aidy_m1.",
+    "conventions_that_decide_every_figure": [
+      "a posted range is a limit, filled at the edge least favourable to the trader",
+      "a bar touching both stop and target is read as the stop",
+      "a target on the wrong side of the entry is dropped as a misread",
+      "replay starts at the first whole minute after the signal, rounding up",
+      "management is not modelled - see update_rate_pct, which runs 40-83%"
+    ],
+    "read_alongside_every_figure": [
+      "scored_coverage_pct",
+      "update_rate_pct",
+      "never_entered"
+    ]
+  },
+  "aidy_m1_coverage_verified": {
+    "verified_at": "2026-09-15T10:06Z",
+    "backfilled_range": "2026-08-12 to 2026-09-15",
+    "workflow": ".github/workflows/aidy-retrospective-m1-backfill.yml (workflow_dispatch)",
+    "finding": "Twelve Data does serve five-week-old M1 at a full 60 bars/hour. That was the open question and it is answered.",
+    "source_tag": "twelve_data_retrospective_m1_v1 - not selected by twelve_data_decision_admitted_m1_v1, so it cannot reach a forward decision",
+    "admin_token": "ephemeral - minted, installed via the Cloudflare secrets API, deleted in an always() step that asserts its absence. No standing admin secret."
   }
 }
