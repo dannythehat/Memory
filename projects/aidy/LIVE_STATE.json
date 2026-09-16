@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-16T18:10:00Z",
+  "verified_at_utc": "2026-09-16T18:23:37Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
+  "branch_head_sha": "bf3bb05ca5a9320e31173bbd93f41cf797b6ed51",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -12,67 +12,72 @@
     "capture_enabled": true,
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
-    "formal_forward_enabled": false,
-    "private_forward_model_gateway_configured": true
+    "formal_forward_enabled": false
   },
   "data_health": {
     "status": "degraded",
     "health_code": "stale_provider_context",
     "reason": "market capture is fresh but complete Provider Context is stale or missing",
     "session_open": true,
-    "latest_scheduled_success_utc": "2026-09-16T16:32:10.588999+00:00",
-    "capture_success_lag_seconds_at_check": 209,
+    "latest_scheduled_success_utc": "2026-09-16T18:22:09.331000+00:00",
+    "capture_success_lag_seconds_at_check": 88,
     "latest_provider_context_snapshot_utc": "2026-09-15T20:57:36.761999+00:00",
-    "provider_context_snapshot_lag_seconds_at_check": 70683
+    "provider_context_snapshot_lag_seconds_at_check": 77161
   },
   "provider_context_recovery": {
-    "status": "ENGINEERING_PROVEN_NOT_PRODUCTION_VERIFIED \u2014 blocked on a human step, see tooling_gap below",
+    "status": "ENGINEERING_PROVEN_NOT_PRODUCTION_VERIFIED",
     "open_pr": 133,
     "pr_title": "Keep Provider Intelligence alive when only D1 context is missing",
     "pr_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
-    "pr_head_sha_before_fix": "06ffdc8dc87c8aba8e521b237e181121fbd82cfd",
-    "pr_mergeable": false,
-    "pr_mergeable_state": "blocked",
-    "merge_api_response": "405 Repository rule violations found: 2 of 2 required status checks are failing",
-    "correction_to_prior_entry": "Prior entry recorded ruff:pass for this PR. That was true only for an earlier SHA (327ad76e) cited in the PR body, not the actual open head (06ffdc8d). Independently re-verified 2026-09-16: ruff genuinely failed on 06ffdc8d with UP035 (typing.Mapping deprecated). Fixed as an import-only change (no logic touched), re-verified clean, pushed as 01c6a955. Lesson: a PR body's carried-over acceptance numbers can describe a prior SHA, not the current head -- always re-run against the exact open head, never trust the cited SHA without diffing it against pull_request.head.sha.",
-    "external_verification_2026_09_16": {
-      "method": "checked out exact head locally, ran the same commands the dead CI would have run",
-      "ruff": "FAIL on 06ffdc8d (UP035) -> fixed -> PASS on 01c6a955",
+    "pr_base_sha": "bf3bb05ca5a9320e31173bbd93f41cf797b6ed51",
+    "pr_mergeable": true,
+    "merge_blocker": "repository ruleset requires two GitHub Actions checks which cannot currently obtain runner execution because Actions credits are exhausted",
+    "exact_head_external_acceptance": {
+      "ruff": "pass",
       "compile": "pass",
-      "focused_tests_passed": "33/33 (not 17 -- more regression coverage was added to this branch after the 17/17 figure was recorded)",
-      "full_tests_passed": "1270/1270 (unchanged before/after the ruff fix, as expected for an import-only change)",
-      "safety_claims_independently_checked_in_the_diff": [
-        "live_money_execution_allowed: False is hardcoded and unconditional in the packet provenance block",
-        "forward_live_observer.py keeps its own separate unmodified gate: if status != \"complete\": return \"market_reference_not_complete\" -- it never calls the loosened _snapshot_at_or_before, which has exactly one caller (the Provider Intelligence read endpoint this PR touches)"
+      "focused_tests_passed": 33,
+      "full_tests_passed": 1270,
+      "logic_change_from_prior_head": false,
+      "prior_head_lint_bug": "UP035 deprecated typing.Mapping import",
+      "final_fix": "collections.abc.Mapping"
+    },
+    "formal_forward_boundary": {
+      "provider_context_live_money_execution_allowed": false,
+      "formal_forward_complete_snapshot_gate_unchanged": true
+    },
+    "ruleset": {
+      "id": 22096458,
+      "name": "Protect main",
+      "enforcement": "active",
+      "deletion_protection": true,
+      "non_fast_forward_protection": true,
+      "pull_request_required": true,
+      "required_approving_review_count": 0,
+      "bypass_actors": [],
+      "current_connected_user_can_bypass": "never",
+      "required_status_checks": [
+        "Evidence Semantic Change Gate / classify-protected-diff",
+        "AIDY Day 53 Twelve Data OHLC Adapter / acceptance"
       ]
     },
-    "required_github_checks": [
-      "Evidence Semantic Change Gate / classify-protected-diff",
-      "AIDY Day 53 Twelve Data OHLC Adapter / acceptance"
-    ],
-    "github_actions_outage_confirmed_independently": "3 separate runs across 2 branches (fix/provider-context-partial-evidence-20260916 and ops/recover-aidy-cron-20260916) over several hours all completed in 2-3 seconds with conclusion=failure and 404 on log download -- consistent with the credit-exhaustion the owner reported, not a code failure.",
-    "owner_reported_actions_constraint": "GitHub Actions credits exhausted for approximately one week",
-    "tooling_gap_blocking_claude": {
-      "summary": "Claude has no way to complete the merge or the deploy in this environment. This is a capability gap, not a policy choice -- record it so the next session does not waste time rediscovering it.",
-      "ruleset_bypass": "No MCP tool in this session can read or edit repository rulesets/branch protection. No gh CLI, no raw GitHub API access (both explicitly withheld by this environment). merge_pull_request was attempted directly and returned 405 citing the 2 required checks -- confirms the block is real and confirms there is no admin-bypass path through the merge API with this token.",
-      "cloudflare_deploy": "No CLOUDFLARE_API_TOKEN or CLOUDFLARE_ACCOUNT_ID available in this sandbox (checked env directly -- absent). The Cloudflare MCP tools available here are read-only for Workers (get/list/get_worker_code) -- no deploy/put tool exists. aidy-signals-test has no visible native Cloudflare git integration (unlike Super Signals on Render, which deploys independently of GitHub Actions) -- the only deploy path is uv run pywrangler deploy inside the GitHub Actions workflow, which is exactly what is down.",
-      "what_this_means": "Two manual actions only the owner can perform: (1) bypass or temporarily relax the 2 required-check rule on main for this one merge, restoring it once Actions capacity returns; (2) run the deploy himself, either by waiting for Actions to recover or running wrangler deploy locally with his own Cloudflare credentials, building wrangler.jsonc exactly as .github/workflows/aidy-provider-research-read-deploy.yml does (cron must assert ['* * * * *'] before deploying -- this is the same check that caught the 2026-09-15 cron-loss incident)."
+    "chatgpt_capability_check": {
+      "ruleset_read_available": true,
+      "ruleset_write_available": false,
+      "github_browser_authenticated": false,
+      "repository_auto_merge_enabled": false,
+      "cloudflare_write_plugin_available": false,
+      "cloudflare_browser_authenticated": false,
+      "direct_ref_bypass_attempted": false
     },
-    "immediate_recovery_sequence": [
-      "DONE: revalidate exact PR 133 head outside GitHub Actions (found + fixed a real ruff bug the prior verification missed)",
-      "BLOCKED ON OWNER: merge PR 133 -- required checks cannot run (Actions outage), Claude has no ruleset-edit tool",
-      "BLOCKED ON OWNER: deploy canonical Worker -- Claude has no Cloudflare deploy credential/tool in this sandbox",
-      "NOT STARTED: verify Cloudflare schedule and current Provider Context",
-      "NOT STARTED: verify Super Signals stops recording pit_context_stale for current provider signals"
+    "remaining_owner_authenticated_steps": [
+      "temporarily remove only the two unavailable required status checks from Protect main",
+      "merge PR 133 at exact head 01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
+      "restore the two required checks when operationally useful / when Actions credits return",
+      "deploy canonical Cloudflare Worker preserving minute cron, capture ON, Twelve Data/public-independent ownership and formal-forward OFF",
+      "verify Worker health and schedule",
+      "verify a current Super Signals provider signal receives fresh AIDY context"
     ]
   },
-  "immediate_recovery_sequence": [
-    "revalidate exact PR 133 head outside GitHub Actions",
-    "merge PR 133 while preserving unrelated main protections",
-    "deploy canonical Worker preserving minute direct Cron and formal-forward OFF",
-    "verify Cloudflare schedule and current Provider Context",
-    "verify Super Signals stops recording pit_context_stale for current provider signals"
-  ],
   "authority": {
     "current": "research_private_forward_only",
     "live_money_execution_allowed_by_aidy": false,
@@ -82,11 +87,9 @@
     "title": "AIDY decision intelligence and counterfactual learning",
     "start_condition": "Provider Context production health restored",
     "shadow_decision_for_every_eligible_trade": true,
-    "decision_ledger_required": true,
-    "counterfactual_scoring_required": true,
-    "provider_conditional_intelligence_required": true,
+    "reuse_existing_observation_scoring_governance_spine": true,
     "hypothesis_registry_required": true,
-    "duplicate_conflict_engine_priority": true
+    "cross_provider_duplicate_conflict_engine_required": true
   },
-  "notes": "Market capture is healthy; Provider Context is the active blocker. Do not describe AIDY as fully healthy until current Provider Context is production verified."
+  "notes": "Main remains bf3bb05; PR #133 head is 01c6a955. Market capture is healthy; Provider Context is the active blocker. Do not describe AIDY as fully healthy until current Provider Context is production verified."
 }
