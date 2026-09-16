@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-16T18:23:37Z",
+  "verified_at_utc": "2026-09-16T18:33:59Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "bf3bb05ca5a9320e31173bbd93f41cf797b6ed51",
+  "branch_head_sha": "0a6230e606282dca97675d63117c4d24dcc38120",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -12,7 +12,8 @@
     "capture_enabled": true,
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
-    "formal_forward_enabled": false
+    "formal_forward_enabled": false,
+    "deployed_source_sha": "UNKNOWN_UNTIL_MANUAL_DEPLOY_VERIFIED"
   },
   "data_health": {
     "status": "degraded",
@@ -25,21 +26,17 @@
     "provider_context_snapshot_lag_seconds_at_check": 77161
   },
   "provider_context_recovery": {
-    "status": "ENGINEERING_PROVEN_NOT_PRODUCTION_VERIFIED",
-    "open_pr": 133,
+    "status": "MERGED_NOT_DEPLOYED",
+    "pr": 133,
     "pr_title": "Keep Provider Intelligence alive when only D1 context is missing",
-    "pr_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
-    "pr_base_sha": "bf3bb05ca5a9320e31173bbd93f41cf797b6ed51",
-    "pr_mergeable": true,
-    "merge_blocker": "repository ruleset requires two GitHub Actions checks which cannot currently obtain runner execution because Actions credits are exhausted",
+    "verified_pr_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
+    "merge_commit_sha": "0a6230e606282dca97675d63117c4d24dcc38120",
+    "merged": true,
     "exact_head_external_acceptance": {
       "ruff": "pass",
       "compile": "pass",
       "focused_tests_passed": 33,
-      "full_tests_passed": 1270,
-      "logic_change_from_prior_head": false,
-      "prior_head_lint_bug": "UP035 deprecated typing.Mapping import",
-      "final_fix": "collections.abc.Mapping"
+      "full_tests_passed": 1270
     },
     "formal_forward_boundary": {
       "provider_context_live_money_execution_allowed": false,
@@ -52,30 +49,17 @@
       "deletion_protection": true,
       "non_fast_forward_protection": true,
       "pull_request_required": true,
-      "required_approving_review_count": 0,
-      "bypass_actors": [],
-      "current_connected_user_can_bypass": "never",
-      "required_status_checks": [
+      "required_status_check_rule_temporarily_removed_for_merge": true,
+      "required_status_checks_to_restore": [
         "Evidence Semantic Change Gate / classify-protected-diff",
         "AIDY Day 53 Twelve Data OHLC Adapter / acceptance"
       ]
     },
-    "chatgpt_capability_check": {
-      "ruleset_read_available": true,
-      "ruleset_write_available": false,
-      "github_browser_authenticated": false,
-      "repository_auto_merge_enabled": false,
-      "cloudflare_write_plugin_available": false,
-      "cloudflare_browser_authenticated": false,
-      "direct_ref_bypass_attempted": false
-    },
     "remaining_owner_authenticated_steps": [
-      "temporarily remove only the two unavailable required status checks from Protect main",
-      "merge PR 133 at exact head 01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
-      "restore the two required checks when operationally useful / when Actions credits return",
-      "deploy canonical Cloudflare Worker preserving minute cron, capture ON, Twelve Data/public-independent ownership and formal-forward OFF",
-      "verify Worker health and schedule",
-      "verify a current Super Signals provider signal receives fresh AIDY context"
+      "restore Require status checks to pass in Protect main",
+      "deploy main commit 0a6230e606282dca97675d63117c4d24dcc38120 to canonical Cloudflare Worker",
+      "verify minute cron, capture ON, Twelve Data/public-independent ownership and formal-forward OFF",
+      "verify Provider Context freshness and fresh Super Signals attachment"
     ]
   },
   "authority": {
@@ -91,5 +75,5 @@
     "hypothesis_registry_required": true,
     "cross_provider_duplicate_conflict_engine_required": true
   },
-  "notes": "Main remains bf3bb05; PR #133 head is 01c6a955. Market capture is healthy; Provider Context is the active blocker. Do not describe AIDY as fully healthy until current Provider Context is production verified."
+  "notes": "PR #133 is merged into main. Production remains degraded until the merged Worker code is manually deployed and verified."
 }
