@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-16T15:55:37Z",
+  "verified_at_utc": "2026-09-16T18:21:21Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
   "branch_head_sha": "d3f3f8898ff85c3235875bd298d51066f0f5a82e",
@@ -10,9 +10,11 @@
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalblphm57gc73d7cta0",
+    "deploy_id": "dep-daldpg8igmls73bl6as0",
     "deploy_status": "live",
-    "auto_deploy": true
+    "auto_deploy": true,
+    "same_code_sha_redeploy": true,
+    "internal_health_checks_after_redeploy": "HTTP 200"
   },
   "quality_gate": {
     "passed": 989,
@@ -32,15 +34,16 @@
   "aidy_upstream_recovery": {
     "repo": "dannythehat/Aidy-Gold-Signals",
     "open_pr": 133,
-    "pr_head_sha": "06ffdc8dc87c8aba8e521b237e181121fbd82cfd",
+    "pr_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
     "external_acceptance": {
-      "focused_tests_passed": 17,
+      "focused_tests_passed": 33,
       "full_tests_passed": 1270,
       "ruff": "pass",
       "compile": "pass"
     },
     "production_verified": false,
-    "github_runner_execution_ms_observed": 0,
+    "ruleset_id": 22096458,
+    "required_checks_blocked_by_actions_credit_outage": true,
     "owner_reported_actions_constraint": "GitHub Actions credits exhausted for approximately one week"
   },
   "execution_contract": {
@@ -62,13 +65,11 @@
       "close_early",
       "continue"
     ],
-    "decision_ledger_required": true,
-    "counterfactual_scoring_required": true,
-    "provider_conditional_intelligence_required": true,
+    "reuse_existing_observation_scoring_governance_spine": true,
     "hypothesis_registry_required": true,
-    "duplicate_conflict_engine_priority": true,
+    "cross_provider_duplicate_conflict_engine_required": true,
     "authority_graduated_by_class": true,
     "broad_live_authority_enabled": false
   },
-  "notes": "The Super Signals watchdog is production live, but upstream AIDY Provider Context remains NOT_READY. Do not call AIDY fully healthy until a current provider signal receives current AIDY context in production."
+  "notes": "Super Signals remains live on the same d3f3f889 code after a same-SHA redeploy; internal /health checks returned 200. Upstream AIDY Provider Context remains NOT_READY."
 }
