@@ -4,14 +4,14 @@ Last verified: **2026-09-16**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
-Verified source `main` SHA: `bf3bb05ca5a9320e31173bbd93f41cf797b6ed51`
+Verified source `main` SHA: `0a6230e606282dca97675d63117c4d24dcc38120`
 Live Worker: `aidy-signals-test`
 
 ## Current production status — RED / degraded
 
-AIDY market capture is running and fresh, but Provider Context is stale.
+AIDY market capture is running and fresh, but Provider Context is still stale because the newly merged recovery code has not yet been deployed to Cloudflare.
 
-Latest verified Worker health:
+Latest verified Worker health before deployment:
 
 - runtime: `cloudflare-workers`
 - scheduler: `direct-cron`
@@ -24,7 +24,7 @@ Latest verified Worker health:
 - latest accepted Provider Context snapshot: `2026-09-15T20:57:36.761999+00:00`
 - Provider Context lag at check: **77,161 seconds**
 
-Active health failure:
+Active health failure remains:
 
 `stale_provider_context`
 
@@ -32,23 +32,21 @@ Reason:
 
 `market capture is fresh but complete Provider Context is stale or missing`
 
-Super Signals therefore correctly rejects stale AIDY joins with `pit_context_stale` / `AidyContextTerminalMiss`.
+Do not describe AIDY as fully healthy until the merged recovery is deployed and production-verified.
 
-Do not describe AIDY as fully healthy until current Provider Context is production verified.
+## PR #133 — MERGED
 
-## Recovery already built — PR #133
+PR #133 `Keep Provider Intelligence alive when only D1 context is missing` was merged on 16 September 2026.
 
-Open PR #133:
-
-`Keep Provider Intelligence alive when only D1 context is missing`
-
-Current head SHA:
+Verified PR head before merge:
 
 `01c6a955c5c7c513a6db86f70cdc2e7d146ea246`
 
-The immediately prior head `06ffdc8dc87c8aba8e521b237e181121fbd82cfd` had a genuine Ruff `UP035` failure from deprecated `typing.Mapping`. Claude fixed only that import, changing it to `collections.abc.Mapping`; comparison confirms this final commit changes only `src/aidy/provider_context_api.py` by +2/-1.
+Merge commit now on `main`:
 
-Exact current-head acceptance performed outside GitHub Actions:
+`0a6230e606282dca97675d63117c4d24dcc38120`
+
+Exact current-head acceptance performed outside GitHub Actions before merge:
 
 - Ruff: PASS
 - compile: PASS
@@ -58,47 +56,35 @@ Exact current-head acceptance performed outside GitHub Actions:
 Safety boundary independently checked:
 
 - Provider Context keeps `live_money_execution_allowed=false` hardcoded/unconditional.
-- Formal forward keeps its own separate untouched complete-snapshot gate in `forward_live_observer.py` and does not inherit the degraded Provider Intelligence allowance.
+- Formal forward keeps its own separate untouched complete-snapshot gate in `forward_live_observer.py`.
 
-PR #133 is therefore **ENGINEERING PROVEN but not PRODUCTION VERIFIED**.
+## GitHub ruleset state during recovery
 
-## Exact GitHub blocker
+Ruleset `Protect main` id `22096458` was temporarily edited by the owner so the unavailable GitHub Actions required-check rule no longer blocked the merge.
 
-The repository ruleset was read directly on 16 September 2026:
+Immediately before merge, the ruleset still preserved:
 
-- ruleset id: `22096458`
-- name: `Protect main`
-- enforcement: active
-- deletion protection: active
-- non-fast-forward protection: active
-- pull-request requirement: active
-- required approving reviews: 0
-- bypass actors: none
-- current connected user bypass: `never`
-- strict required-check policy: false
+- enforcement active
+- deletion protection active
+- non-fast-forward / force-push protection active
+- pull-request requirement active
 
-The only merge-blocking rule is the two required status checks:
+Only the required-status-check rule was removed for the merge because GitHub Actions credits are exhausted for approximately one week.
 
-1. `Evidence Semantic Change Gate / classify-protected-diff`
-2. `AIDY Day 53 Twelve Data OHLC Adapter / acceptance`
+The required status-check protection should now be restored by the owner. If re-enabled during the credit outage, future PRs will remain intentionally blocked until Actions capacity returns.
 
-The owner confirms GitHub Actions credits are exhausted for approximately one week. On the current PR head, both checks again failed in about two seconds before normal runner execution.
+## Remaining recovery actions
 
-The ChatGPT GitHub connection can **read** the ruleset but exposes no ruleset-write/admin action. Browser automation was also tested and is not authenticated to GitHub. Auto-merge cannot be enabled because the repository has auto-merge disabled.
+1. Restore `Require status checks to pass` in `Protect main`, preserving the two original checks if GitHub presents them:
+   - `Evidence Semantic Change Gate / classify-protected-diff`
+   - `AIDY Day 53 Twelve Data OHLC Adapter / acceptance`
+2. Deploy `main` commit `0a6230e606282dca97675d63117c4d24dcc38120` to the canonical Cloudflare Worker.
+3. Deployment must preserve `* * * * *` direct Cron, capture ON, Twelve Data/public-independent ownership and `AIDY_FORMAL_FORWARD_ENABLED=false`.
+4. Verify Cloudflare schedule state after deploy.
+5. Verify `/health` no longer reports stale Provider Context.
+6. Verify a genuinely current Super Signals provider signal receives current AIDY context instead of `pit_context_stale`.
 
-Do not use a direct branch-ref update to bypass the PR/ruleset. Preserve the protection intent.
-
-## Remaining owner-authenticated recovery actions
-
-1. In GitHub, temporarily remove **only** the two unavailable required status checks from ruleset `Protect main` (id `22096458`). Keep deletion protection, non-fast-forward protection and PR requirement active.
-2. Merge PR #133 at exact head `01c6a955c5c7c513a6db86f70cdc2e7d146ea246`.
-3. Restore the two required checks after the merge, or as soon as Actions credits return if GitHub will not allow a currently failing requirement to be restored usefully during the outage.
-4. Deploy the canonical Cloudflare Worker with the merged code while preserving `* * * * *` direct Cron, capture ON, Twelve Data/public-independent ownership and `AIDY_FORMAL_FORWARD_ENABLED=false`.
-5. Verify Cloudflare schedule state after deployment.
-6. Verify `/health` no longer reports stale Provider Context.
-7. Verify a genuinely current Super Signals provider signal receives current AIDY context instead of `pit_context_stale`.
-
-Current ChatGPT tooling has no authenticated Cloudflare write/deploy route and no Cloudflare plugin is available. Cloudflare browser automation is also unauthenticated. Do not pretend the Worker has been deployed from this environment.
+Current ChatGPT tooling has no authenticated Cloudflare write/deploy route. The Worker must therefore be deployed from an owner-authenticated Cloudflare/Wrangler session.
 
 ## New central product direction — decision intelligence
 
@@ -123,18 +109,16 @@ AIDY must prove whether its intervention made or saved money versus the fixed ba
 
 Do not create a parallel system. Existing Super Signals infrastructure already provides substantial foundations:
 
-- `provider_trade_observations` — durable per-signal/provider observation spine;
-- `provider_trade_scorer.py` + `provider_trade_scores` — deterministic outcome/counterfactual scoring foundation;
-- `provider_trade_scoreboard` — provider performance aggregation foundation;
-- `canonical_signal_ledger.py` + `signal_events.py` — same-source duplicate/edit collapsing;
-- `provider_day14_governance.py` — fail-closed learning -> shadow -> qualified governance pattern;
-- `provider_day18_combined_book.py` — combined-book/conflict research foundation.
+- `provider_trade_observations`
+- `provider_trade_scorer.py` + `provider_trade_scores`
+- `provider_trade_scoreboard`
+- `canonical_signal_ledger.py` + `signal_events.py`
+- `provider_day14_governance.py`
+- `provider_day18_combined_book.py`
 
 Genuinely new or incomplete pieces include the persistent hypothesis/question registry and cross-provider duplicate/exposure clustering. Add a small immutable AIDY decision layer on top of the existing observation/scoring spine rather than rebuilding capture or scoring.
 
 ## Authority graduation
-
-The owner wants AIDY making smart trading decisions soon, but authority must be graduated by evidence rather than switched on wholesale.
 
 Likely sequence:
 
