@@ -1,82 +1,159 @@
 # Super Signals — Current State
 
-Last verified: **2026-09-13**
+Last verified: **2026-09-16**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `278496ccbe71ec14f4e2e63b0dbd05004ea774b5`
+Verified source/deploy SHA: `d3f3f8898ff85c3235875bd298d51066f0f5a82e`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dajb9cmk1f9s73fm0b3g`
-Verified migration head: `0078_aidy_intel_bf`
-Quality gate at deployed SHA: **931 passed, 67 skipped, 0 failed**.
+Verified live deploy: `dep-dalblphm57gc73d7cta0`
+Deploy status: **live**
+Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings**.
 
-## Product north star
+## Current AIDY runtime state
 
-Super Signals is not building AIDY merely to classify Telegram providers. Provider signals are evidence and training material. The strategic objective is for AIDY to become an independent Gold/XAUUSD trading intelligence system that can understand Gold market moments, form its own market thesis, identify setups, judge or disagree with providers, and eventually propose and manage its own trades.
+Super Signals now continuously supervises its application-owned AIDY Provider Lab runtime.
 
-That strategic objective does **not** grant new broker authority today. Live execution remains governed by the explicit production rules and owner gates below.
+The production reliability patch at the deployed SHA does two things:
 
-## Current live execution posture
+- keeps AIDY Provider Context probing armed on the existing research cadence instead of stopping after one successful probe;
+- runs a one-minute supervisor that can restart the Provider Lab task if that task exits unexpectedly during the trading week.
+
+The existing XAUUSD weekend freeze is still respected.
+
+This reliability layer does **not** grant AIDY broker/live-money authority.
+
+## Current AIDY blocker
+
+The Super Signals side is alive, but upstream AIDY Provider Context is still unhealthy.
+
+Production logs after the current deploy continue to report:
+
+`AIDY Provider Context live probe NOT_READY error=AidyContextTerminalMiss`
+
+The upstream AIDY Worker has fresh market capture but stale Provider Context. Current provider signals have therefore been recorded with `pit_context_stale` instead of current AIDY context.
+
+The AIDY recovery is open as PR #133 in `dannythehat/Aidy-Gold-Signals`, head:
+
+`06ffdc8dc87c8aba8e521b237e181121fbd82cfd`
+
+That exact head passed external Render acceptance: 17/17 focused and 1270/1270 full repository tests, plus Ruff/compile.
+
+Do not call AIDY healthy or fully integrated until a current provider signal successfully receives current AIDY context in production.
+
+## GitHub Actions constraint
+
+The owner has confirmed GitHub Actions credits are exhausted for approximately one week. Recent required AIDY checks showed 0 ms runner execution.
+
+Do not make runtime continuity dependent on GitHub Actions and do not burn time repeatedly rerunning unavailable CI. During this temporary outage use trusted external exact-SHA acceptance where necessary while preserving protection intent.
+
+## Live execution posture
 
 - Trading universe remains Gold/XAUUSD.
-- Owner live risk directive remains **1% only** unless explicitly changed.
+- Owner live-risk directive remains **1% only** unless explicitly changed.
 - Approved management semantics remain: TP1 + TP2 hit -> move SL to entry; TP3 hit -> move SL to TP2; `move SL to entry` does not mean close the trade.
-- Research/shadow/provider-intelligence systems cannot silently change risk, promote/demote live providers, place trades, net broker positions or acquire live-money authority.
+- Research/shadow/provider-intelligence systems cannot silently change risk, promote/demote live providers or acquire broker authority.
 
-## Weekly XAUUSD freeze — PRODUCTION VERIFIED
+## Product north star — sharpened 16 September
 
-The automatic trading/research runtime now follows the standard XAUUSD weekly closure in `Europe/Sofia` time:
+AIDY must now progress from passive Provider Intelligence toward an evidence-scored decision layer for Super Signals.
 
-- Friday from 23:57 -> frozen.
-- Saturday -> frozen.
-- Sunday -> frozen.
-- Monday before 01:01 -> frozen.
-- Monday 01:01 onward -> open.
+Target flow:
 
-During the freeze the automatic MetaAPI read/margin/trade paths are blocked, Telegram provider readers are disconnected, original weekend messages are rejected, settlement and pending reconciliation return idle results, and the AIDY Provider Lab external research loop sleeps. B-F intelligence refresh is inside that paused runtime and therefore sleeps too.
+`provider signal -> PIT-safe Gold context -> provider history -> current exposure -> AIDY decision -> action -> outcome -> counterfactual score -> learning`
 
-The web/app itself is not globally powered off: health checks, stored/cached views and the free Gold quote path may remain available, and timer tasks may briefly wake to check the clock. User-initiated MetaAPI provisioning is not claimed to be frozen by this gate.
+Target decision classes:
 
-## AIDY Provider Intelligence A-F
+- `APPROVE`
+- `DENY`
+- `HOLD/NO_SECOND_ENTRY`
+- `CONFLICT_DENY`
+- `CLOSE_EARLY`
+- `CONTINUE`
 
-The provider-intelligence foundation and B-F integration are built and production verified at the deployed SHA. Statistical/provider-profit claims remain separate and require forward evidence.
+The immediate rollout is **shadow decisions for every eligible trade once Provider Context is healthy**. Existing execution rules remain authoritative until individual decision classes earn separate authority.
 
-- **A — capture/calendar foundation:** PIT-safe provider capture/research foundation and learning boundary.
-- **B — market-context join:** per-provider signal evidence is summarized against contemporaneous session/regime/context only.
-- **C — provider fingerprints:** provider style, cadence, sequence, vocabulary, entry/order/management habits and drift are consolidated from existing footprint/adaptive profiles.
-- **D — automatic research governance:** providers can be classified `learning`, `healthy_research`, `watch` or `quarantine_candidate`; this cannot mutate live source status.
-- **E — provider-specific adaptation:** interpretation can use provider-specific grammar/behaviour while historical numeric levels remain prohibited as current execution evidence.
-- **F — combined-book conflict intelligence:** current provider BUY/SELL consensus/conflicts are visible in observe-only form; broker netting is explicitly disabled.
+## Mandatory Decision Ledger
 
-Persistence is append-only through:
+Every AIDY decision must freeze the facts available at decision time:
 
-- `provider_intelligence_snapshots`
-- `provider_book_conflict_snapshots`
-- `provider_intelligence_current`
-- `provider_book_conflict_current`
+- provider/signal/message identity and ancestry
+- signal and decision timestamps
+- exact AIDY context/snapshot IDs and digests
+- provider evidence then available
+- open account/exposure state
+- duplicate/conflict cluster state
+- decision/reasons/confidence
+- model/rules version
+- resulting action when authority exists
 
-At Sunday verification the new snapshot tables contained zero rows because the weekly market freeze was active. That is expected; do not bypass the freeze to fabricate/populate forward evidence.
+Future outcomes must not be written back into the original decision state.
 
-## Current evidence quality
+## Counterfactual learning
 
-Engineering completion is **not** statistical validation. The latest provider-forward evidence remains insufficient for broad promotion/profitability claims. Where Day 13-style evaluation has no eligible OOS trades/results, the correct status is `WAITING-FOR-FORWARD-EVIDENCE`, not profitable/unprofitable.
+Every decision must later be scored against a fixed baseline.
 
-## Immediate next product build
+Examples:
 
-**AIDY Data Hub** — owner/admin daily control centre.
+- deny -> compare with following the provider normally
+- close early -> compare AIDY close with original provider-management outcome
+- approve -> score realised P&L, MFE/MAE, TP progression and management quality
 
-The Hub should read stored database state/current views rather than trigger OpenAI or MetaAPI simply because the page refreshes. It should expose provider coverage, capture/read quality, context coverage, forward evidence, provider fingerprints/confidence/drift/governance, current provider consensus/conflicts, system health and owner-attention alerts.
+Persist factual `decision_delta`: money made/saved or money lost because AIDY intervened.
 
-It must also show **AIDY itself**: current Gold bias/thesis, market regime, important levels/setups, confidence, what it is watching and what would invalidate the view as those capabilities become available. Individual providers should be clickable into their detailed AIDY knowledge/profile/evidence.
+No avoided loss may be claimed unless the baseline path proves it.
 
-## Efficiency work still open
+## Conditional provider intelligence
 
-- Quarantine four stale historical `broker_filled_position_not_visible` rows from the fast settlement/history path without deleting audit evidence.
-- Avoid position/order broker reads when there are no protection plans.
-- Remove the redundant dashboard MetaAPI XAU price read where the UI already uses the free Gold quote feeds.
-- Persist OpenAI token/cost and MetaAPI request telemetry.
-- Consider an `edited_at` weekly-freeze gate so a pre-weekend message edited during closure cannot be replayed after reopen.
+A provider is not simply good/bad. AIDY must measure where and how each provider works:
+
+- BUY vs SELL
+- session/time of day and weekday
+- observable volatility/regime/liquidity conditions
+- TP progression and small-profit/runner style
+- initial-call quality vs management quality
+- effect of provider close/BE/SL/cancel instructions
+- duplicate/edit/repost behaviour
+- latency/slippage sensitivity
+- provider agreement/conflict
+- stop/entry geometry
+- adverse duration and recovery/re-entry behaviour
+- provider-regime specialisation
+
+Where the sample is weak, answer `unknown`.
+
+## Hypothesis/question registry
+
+Create a persistent research-question registry containing stable question ID, exact cohort/filter, required factual features, metric, minimum sample, current sample size, answer/status, uncertainty, last calculation, supporting trade/decision IDs and observational-versus-decision eligibility.
+
+Retrospective patterns do not automatically become live rules. Freeze the rule definition and test it prospectively.
+
+## Duplicate/conflict control — priority
+
+Build canonical exposure clusters using symbol, direction, entry/stop vicinity, provider, message ancestry, timestamp, current broker exposure and cross-provider agreement/conflict.
+
+AIDY must know whether a new trade is already represented, merely an edit/repost, a same-direction equivalent risk addition, opposite exposure or genuinely independent.
+
+If evidence cannot justify choosing between conflicting exposures, fail safely and flag the situation rather than invent certainty.
+
+## Authority graduation
+
+Grant decision authority by class, not wholesale.
+
+Likely order:
+
+1. deterministic duplicate rejection
+2. obvious duplicate/conflicting exposure controls
+3. provider/regime denies
+4. early-close management
+5. broader approve/deny/management authority
+
+Every authority class requires prospective evidence, immutable audit trail, explicit enable/disable control, kill switch and owner/live gate. The 1% live-risk directive must not silently change.
+
+## Data Hub role
+
+The AIDY Data Hub remains useful, but it is now a supporting owner/admin surface rather than the central next milestone. It should expose stored Decision Ledger evidence, counterfactual decision delta, provider conditional intelligence, hypothesis state, duplicate/conflict state, AIDY thesis and system health without invoking OpenAI/MetaAPI just because the page refreshes.
 
 ## Session rule
 
-Before any production change, verify the live source branch, Render deploy/runtime and relevant production database evidence. Source/runtime truth overrides this Memory file if they disagree.
+Read the 16 September handover first, then verify the live Super Signals branch/Render/Postgres state and the current AIDY Worker/repo state. Source/runtime truth overrides Memory if it has advanced.
