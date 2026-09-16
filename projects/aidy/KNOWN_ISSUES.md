@@ -1,15 +1,48 @@
 # AIDY — Known Issues / Deferred Work
 
-Only keep unresolved or deliberately deferred items here. Remove or move items to a handover when resolved.
+Updated: **2026-09-16**
+
+Only keep unresolved or deliberately deferred items here. Verify source/runtime before acting because Memory can become stale.
 
 ## Current
 
-1. **Archive poison retry lifecycle** — Day 5 detects stale/retrying/poison archive items, but the live archive schema/runtime does not yet have bounded backoff + explicit dead-letter state. This is Day 6.
-2. **Formal-forward remains OFF** — do not treat forward-decision infrastructure as real-money authority.
-3. **Provider-market bearer credential hygiene** — any rotation/remediation must be synchronized with Super Signals and performed in a controlled window with rollback. Never expose the token value.
-4. **Committed-secret history remediation** — deleting a file in a later commit does not erase Git history. Any final cleanup must be deliberate and must not casually rewrite protected production history.
-5. **Real-market acceptance evidence** — where a test specifically requires a genuine open-session observation, do not substitute closed-market or synthetic evidence.
+### 1. Provider Context is stale while market capture is fresh — ACTIVE / RED
+
+The Worker is capturing fresh Twelve Data on direct Cron, but the latest accepted Provider Context snapshot is still from `2026-09-15T20:57:36.761999+00:00`. Current Super Signals joins therefore fail closed with `pit_context_stale` / `AidyContextTerminalMiss`.
+
+Open AIDY PR #133 (`06ffdc8dc87c8aba8e521b237e181121fbd82cfd`) is the engineering-proven recovery path. Exact head passed 17/17 focused tests and 1270/1270 full tests externally, but the change is not yet production verified.
+
+### 2. GitHub Actions unavailable due exhausted credits — TEMPORARY OPERATIONS BLOCKER
+
+The owner reports GitHub Actions credits are exhausted for approximately one week. Required AIDY checks have been failing with 0 ms runner execution.
+
+Do not repeatedly rerun unavailable CI. Use trusted external exact-SHA acceptance for urgent recovery work while preserving branch-protection intent, and restore normal required-check operation when credits return.
+
+### 3. Formal-forward/live-money authority remains OFF
+
+Do not treat new Decision Ledger, shadow decisions or provider intelligence as live-money authority. Decision classes must be separately graduated through prospective evidence and explicit owner/live gates.
+
+### 4. Decision intelligence not yet implemented end-to-end
+
+The new central roadmap requires:
+
+- immutable AIDY Decision Ledger;
+- counterfactual scoring and factual decision delta;
+- conditional provider intelligence;
+- persistent hypothesis/question registry;
+- duplicate/conflict exposure engine;
+- prospective shadow decisions for every eligible trade after Provider Context recovery.
+
+This is the next major product build after restoring current context health.
+
+### 5. Provider-market credential hygiene
+
+Any bearer/token rotation or remediation must be synchronized with Super Signals and performed in a controlled window with rollback. Never expose credential values in Memory, logs or chat.
+
+### 6. Historical secret-remediation caution
+
+Deleting a file in a later commit does not erase Git history. Any history rewrite must be deliberate and must not casually rewrite protected production history.
 
 ## Rule
 
-Before acting on this file, verify whether a later source-repo commit/PR already resolved the item. Memory can become stale.
+Do not call AIDY fully healthy until current Provider Context is production verified and a current Super Signals provider signal successfully receives current AIDY context.
