@@ -1,48 +1,70 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-06T17:06:00Z",
+  "verified_at_utc": "2026-09-16T16:32:10.588999Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
-  "live_worker_version": "d124b317-708d-4f57-afbb-3bd6844a32cf",
-  "runtime": {
+  "branch_head_sha": "bf3bb05ca5a9320e31173bbd93f41cf797b6ed51",
+  "live_worker": {
+    "name": "aidy-signals-test",
+    "runtime": "cloudflare-workers",
+    "scheduler": "direct-cron",
     "capture_enabled": true,
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
     "formal_forward_enabled": false,
-    "provider_context_route_live": true,
-    "provider_context_bearer_protected": true,
-    "provider_market_bearer_secret_unchanged": true
+    "private_forward_model_gateway_configured": true
   },
-  "latest_completed_build": {
-    "sequence": "2026-09-06-provider-intelligence",
-    "day": 10,
-    "status": "PRODUCTION VERIFIED",
-    "title": "immutable provider-profile plus AIDY context attachment",
-    "implementation_repo": "dannythehat/super-signals",
-    "implementation_sha": "634838b5a559a425a1fe54af5bf7c022763f2743",
-    "delivery_pr": 143,
-    "migration_head": "0058_provider_aidy_context"
+  "data_health": {
+    "status": "degraded",
+    "health_code": "stale_provider_context",
+    "reason": "market capture is fresh but complete Provider Context is stale or missing",
+    "session_open": true,
+    "latest_scheduled_success_utc": "2026-09-16T16:32:10.588999+00:00",
+    "capture_success_lag_seconds_at_check": 209,
+    "latest_provider_context_snapshot_utc": "2026-09-15T20:57:36.761999+00:00",
+    "provider_context_snapshot_lag_seconds_at_check": 70683
   },
-  "day9": {
-    "title": "canonical AIDY point-in-time context join",
-    "status": "PRODUCTION VERIFIED",
-    "source_sha": "b860e1b83e9f5bbfd52c94453c86443e2c16b276",
-    "code_only_rollout_run": 34047042761,
-    "context_route": "/provider/context",
-    "formal_forward_enabled": false
+  "provider_context_recovery": {
+    "status": "ENGINEERING PROVEN_NOT_PRODUCTION_VERIFIED",
+    "open_pr": 133,
+    "pr_title": "Keep Provider Intelligence alive when only D1 context is missing",
+    "pr_head_sha": "06ffdc8dc87c8aba8e521b237e181121fbd82cfd",
+    "pr_mergeable": true,
+    "external_render_acceptance": {
+      "focused_tests_passed": 17,
+      "full_tests_passed": 1270,
+      "ruff": "pass",
+      "compile": "pass"
+    },
+    "required_github_checks": [
+      "Evidence Semantic Change Gate / classify-protected-diff",
+      "AIDY Day 53 Twelve Data OHLC Adapter / acceptance"
+    ],
+    "github_runner_execution_ms_observed": 0,
+    "owner_reported_actions_constraint": "GitHub Actions credits exhausted for approximately one week"
   },
-  "day10": {
-    "attachment_runtime_live": true,
-    "attachment_resolver_failures": 0,
-    "eligible_forward_signals_waiting": 0,
-    "first_genuine_attachment": "WAITING_FOR_NEXT_REAL_PIT_CLEAN_SIGNAL"
+  "immediate_recovery_sequence": [
+    "revalidate exact PR 133 head outside GitHub Actions",
+    "merge PR 133 while preserving unrelated main protections",
+    "deploy canonical Worker preserving minute direct Cron and formal-forward OFF",
+    "verify Cloudflare schedule and current Provider Context",
+    "verify Super Signals stops recording pit_context_stale for current provider signals"
+  ],
+  "authority": {
+    "current": "research_private_forward_only",
+    "live_money_execution_allowed_by_aidy": false,
+    "future_direction": "graduate specific approve deny hold conflict and close authority only after prospective counterfactual evidence and explicit owner gates"
   },
-  "next_build": {
-    "day": 11,
-    "title": "execution-cost and paper-broker calibration"
+  "next_product_build": {
+    "title": "AIDY decision intelligence and counterfactual learning",
+    "start_condition": "Provider Context production health restored",
+    "shadow_decision_for_every_eligible_trade": true,
+    "decision_ledger_required": true,
+    "counterfactual_scoring_required": true,
+    "provider_conditional_intelligence_required": true,
+    "hypothesis_registry_required": true,
+    "duplicate_conflict_engine_priority": true
   },
-  "formal_forward_expected": false,
-  "notes": "Day 10 is production-ready and running. Zero attachment rows is currently correct because production has zero PIT-resolved forward signals eligible for attachment; no historical record was fabricated."
+  "notes": "Market capture is healthy; Provider Context is the active blocker. Do not describe AIDY as fully healthy until current Provider Context is production verified."
 }
