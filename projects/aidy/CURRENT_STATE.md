@@ -9,9 +9,9 @@ Live Worker: `aidy-signals-test`
 
 ## Current production status — RED / degraded
 
-AIDY market capture is currently running and fresh, but Provider Context is stale.
+AIDY market capture is running and fresh, but Provider Context is stale.
 
-Latest verified Worker health reported:
+Latest verified Worker health:
 
 - runtime: `cloudflare-workers`
 - scheduler: `direct-cron`
@@ -19,11 +19,12 @@ Latest verified Worker health reported:
 - market source: `twelve_data`
 - market ownership: `public_independent`
 - `formal_forward_enabled=false`
-- private-forward model gateway configured: true
-- latest scheduled capture success: `2026-09-16T16:32:10.588999+00:00`
-- capture-success lag at check: 209 seconds
+- latest scheduled capture success: `2026-09-16T18:22:09.331000+00:00`
+- capture lag at check: **88 seconds**
+- latest accepted Provider Context snapshot: `2026-09-15T20:57:36.761999+00:00`
+- Provider Context lag at check: **77,161 seconds**
 
-The active health failure is:
+Active health failure:
 
 `stale_provider_context`
 
@@ -31,11 +32,7 @@ Reason:
 
 `market capture is fresh but complete Provider Context is stale or missing`
 
-Latest accepted Provider Context snapshot:
-
-`2026-09-15T20:57:36.761999+00:00`
-
-Provider Context lag at the check was 70,683 seconds. Super Signals is therefore correctly rejecting stale AIDY joins with `pit_context_stale` / `AidyContextTerminalMiss`.
+Super Signals therefore correctly rejects stale AIDY joins with `pit_context_stale` / `AidyContextTerminalMiss`.
 
 Do not describe AIDY as fully healthy until current Provider Context is production verified.
 
@@ -45,37 +42,63 @@ Open PR #133:
 
 `Keep Provider Intelligence alive when only D1 context is missing`
 
-Head SHA:
+Current head SHA:
 
-`06ffdc8dc87c8aba8e521b237e181121fbd82cfd`
+`01c6a955c5c7c513a6db86f70cdc2e7d146ea246`
 
-It allows Provider Intelligence to use a fresh scheduled partial snapshot only when M1/M5/M15/H1/H4 are present and D1 alone is missing. The packet explicitly remains observational only. Formal-forward AIDY still requires a complete snapshot.
+The immediately prior head `06ffdc8dc87c8aba8e521b237e181121fbd82cfd` had a genuine Ruff `UP035` failure from deprecated `typing.Mapping`. Claude fixed only that import, changing it to `collections.abc.Mapping`; comparison confirms this final commit changes only `src/aidy/provider_context_api.py` by +2/-1.
 
-External exact-head acceptance on Render passed:
+Exact current-head acceptance performed outside GitHub Actions:
 
-- 17/17 focused tests
-- 1270/1270 full repository tests
-- Ruff passed
-- compile passed
+- Ruff: PASS
+- compile: PASS
+- focused Provider Context tests: **33/33 PASS**
+- full repository suite: **1270/1270 PASS**
 
-PR #133 is still unmerged. Therefore this recovery is **ENGINEERING PROVEN but not PRODUCTION VERIFIED**.
+Safety boundary independently checked:
 
-## GitHub Actions constraint
+- Provider Context keeps `live_money_execution_allowed=false` hardcoded/unconditional.
+- Formal forward keeps its own separate untouched complete-snapshot gate in `forward_live_observer.py` and does not inherit the degraded Provider Intelligence allowance.
 
-The two required AIDY `main` checks are not executing normal runner work. Recent failed attempts showed 0 ms Ubuntu runner execution. The owner has confirmed GitHub Actions credits are exhausted for approximately one week.
+PR #133 is therefore **ENGINEERING PROVEN but not PRODUCTION VERIFIED**.
 
-Do not keep rerunning unavailable Actions jobs. AIDY runtime continuity must not depend on GitHub Actions.
+## Exact GitHub blocker
 
-During this temporary outage, use trusted external exact-SHA acceptance and preserve branch-protection intent. If a temporary required-check adjustment is necessary for this exact recovery, change only the unavailable check requirement, record the original ruleset, and restore it when Actions credits return.
+The repository ruleset was read directly on 16 September 2026:
 
-## Exact immediate recovery step
+- ruleset id: `22096458`
+- name: `Protect main`
+- enforcement: active
+- deletion protection: active
+- non-fast-forward protection: active
+- pull-request requirement: active
+- required approving reviews: 0
+- bypass actors: none
+- current connected user bypass: `never`
+- strict required-check policy: false
 
-1. Revalidate the exact current PR #133 head outside GitHub Actions.
-2. Merge #133 without weakening unrelated `main` protections.
-3. Deploy the canonical Worker while preserving `* * * * *` direct Cron, capture ON, Twelve Data/public-independent ownership and formal-forward OFF.
-4. Verify the Cloudflare schedule after deployment.
-5. Verify `/health` no longer reports stale Provider Context.
-6. Verify a current Super Signals provider signal receives current AIDY context instead of `pit_context_stale`.
+The only merge-blocking rule is the two required status checks:
+
+1. `Evidence Semantic Change Gate / classify-protected-diff`
+2. `AIDY Day 53 Twelve Data OHLC Adapter / acceptance`
+
+The owner confirms GitHub Actions credits are exhausted for approximately one week. On the current PR head, both checks again failed in about two seconds before normal runner execution.
+
+The ChatGPT GitHub connection can **read** the ruleset but exposes no ruleset-write/admin action. Browser automation was also tested and is not authenticated to GitHub. Auto-merge cannot be enabled because the repository has auto-merge disabled.
+
+Do not use a direct branch-ref update to bypass the PR/ruleset. Preserve the protection intent.
+
+## Remaining owner-authenticated recovery actions
+
+1. In GitHub, temporarily remove **only** the two unavailable required status checks from ruleset `Protect main` (id `22096458`). Keep deletion protection, non-fast-forward protection and PR requirement active.
+2. Merge PR #133 at exact head `01c6a955c5c7c513a6db86f70cdc2e7d146ea246`.
+3. Restore the two required checks after the merge, or as soon as Actions credits return if GitHub will not allow a currently failing requirement to be restored usefully during the outage.
+4. Deploy the canonical Cloudflare Worker with the merged code while preserving `* * * * *` direct Cron, capture ON, Twelve Data/public-independent ownership and `AIDY_FORMAL_FORWARD_ENABLED=false`.
+5. Verify Cloudflare schedule state after deployment.
+6. Verify `/health` no longer reports stale Provider Context.
+7. Verify a genuinely current Super Signals provider signal receives current AIDY context instead of `pit_context_stale`.
+
+Current ChatGPT tooling has no authenticated Cloudflare write/deploy route and no Cloudflare plugin is available. Cloudflare browser automation is also unauthenticated. Do not pretend the Worker has been deployed from this environment.
 
 ## New central product direction — decision intelligence
 
@@ -90,32 +113,24 @@ Target decision classes:
 - `CLOSE_EARLY`
 - `CONTINUE`
 
-The target pipeline is:
+Target pipeline:
 
 `provider signal -> PIT-safe market context -> provider history -> current exposure -> AIDY decision -> action -> outcome -> counterfactual score -> learning`
 
-AIDY must not merely sound intelligent. It must prove whether its intervention made or saved money versus the fixed baseline that would otherwise have occurred.
+AIDY must prove whether its intervention made or saved money versus the fixed baseline that would otherwise have occurred.
 
-## Mandatory next capabilities
+## Reuse what already exists
 
-### Decision Ledger
-Persist the exact evidence available at decision time: provider/signal identity, message ancestry, timestamps, AIDY snapshot IDs/digests, provider statistics then available, open exposure, duplicate/conflict cluster, decision/reasons, model/rules version and resulting action.
+Do not create a parallel system. Existing Super Signals infrastructure already provides substantial foundations:
 
-Future information must never be written back into the original decision state.
+- `provider_trade_observations` — durable per-signal/provider observation spine;
+- `provider_trade_scorer.py` + `provider_trade_scores` — deterministic outcome/counterfactual scoring foundation;
+- `provider_trade_scoreboard` — provider performance aggregation foundation;
+- `canonical_signal_ledger.py` + `signal_events.py` — same-source duplicate/edit collapsing;
+- `provider_day14_governance.py` — fail-closed learning -> shadow -> qualified governance pattern;
+- `provider_day18_combined_book.py` — combined-book/conflict research foundation.
 
-### Counterfactual scoring
-Score each approve/deny/close/continue decision against a fixed baseline. Persist factual decision delta: money made/saved or money lost because AIDY intervened.
-
-### Conditional provider intelligence
-Measure providers by more than overall P&L: BUY versus SELL, session/time of day, weekday, regime/volatility/liquidity conditions, TP progression, management quality, duplicate/repost behaviour, latency/slippage sensitivity, provider agreement/conflict, adverse duration and recovery/re-entry behaviour.
-
-If evidence is weak, the answer is `unknown`.
-
-### Hypothesis/question registry
-Persist each question with an exact cohort/filter, required features, metric, minimum sample, current sample size, answer/status, uncertainty, calculation timestamp, supporting records and observational-versus-decision eligibility.
-
-### Duplicate/conflict engine
-Identify whether a proposed trade is already represented, merely an edit/repost, a materially equivalent same-direction exposure addition, opposite exposure, or a genuinely independent idea.
+Genuinely new or incomplete pieces include the persistent hypothesis/question registry and cross-provider duplicate/exposure clustering. Add a small immutable AIDY decision layer on top of the existing observation/scoring spine rather than rebuilding capture or scoring.
 
 ## Authority graduation
 
@@ -129,7 +144,7 @@ Likely sequence:
 4. early-close management
 5. broader approve/deny/management authority
 
-Each authority class requires an audit trail, kill switch, prospective evidence and explicit owner/live gate. The current live risk directive must not silently change.
+Each authority class requires an audit trail, kill switch, prospective evidence and explicit owner/live gate. The current Super Signals 1% risk directive must not silently change.
 
 ## Session rule
 
