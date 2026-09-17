@@ -12,102 +12,56 @@ Verified live deploy: `dep-dalpkreq1p3s739v7u5g`
 Deploy status: **live**
 Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier this session, not a real failure).
 
+## AIDY blind Gold learning exam — in build, research-only (2026-09-17)
+
+Owner explicitly redirected testing away from re-running already-proven Claude decision-ledger checks. New objective: measure whether AIDY actually understands Gold/provider-market relationships and becomes measurably smarter on later unseen data.
+
+AIDY repo PR #135 (`feature/blind-gold-learning-exam-20260917`), latest branch commit recorded here `3492beaf064780469367a28564bef3739aec18e9`, now contains a governed chronological blind scorer plus a PIT-safe bridge from immutable AIDY episode memory and score-eligible forward outcomes. It counts only learning cards available before each episode, excludes same-episode future learning, scores direction/Brier/difficulty where AIDY genuinely emitted the needed ex-ante fields, and reports `insufficient_evidence`, `memory_accumulating`, `learning_candidate`, `learning_observed`, or regression. Memory growth alone can never be labelled learning.
+
+The exam now extracts frozen contemporaneous market context already preserved in episode memory (`regime_state`/`setup_state`): market structure, volatility, liquidity/spread state, session and event state where present. Difficulty is assigned from those frozen features only. Missing context stays unknown and is surfaced through a context-coverage report rather than retrospectively invented. Provider identity/context is likewise not fabricated when absent; provider-conditioned learning needs a PIT-safe join.
+
+**Do not claim AIDY is smarter yet.** PR #135 is open/research-only and the real production/D1 blind scorecard still has to be run with adequate chronological unseen samples. If later batches do not improve, the result must remain memory accumulation/regression. Full handover: `handovers/2026-09-17-aidy-blind-gold-learning-exam.md`.
+
+Safety unchanged: no broker authority, no execution-rule change, 1% live-risk directive unchanged.
+
 ## AIDY visibility layer — v1 live, both repos (2026-09-17)
 
 Investigated build item #4 (hypothesis registry) before building it and found it already exists: `provider_conditional_hypotheses`/`_runs`/`_results` (Day 13) -- 15,744 hypotheses preregistered with real Benjamini-Hochberg significance testing and out-of-sample gating, just barely fed (42 of 15,744 ever tested, 0 significant). A "needs more live evidence" problem, not a "needs code" problem -- building a second registry would have duplicated real, more rigorous work. Built the visibility layer instead, at the owner's direction ("keep building, get AIDY ready for launch").
 
 - **Backend** (`dannythehat/super-signals` PR #186): `GET /admin/aidy/overview`, owner/trading_admin gated (`activity.view` permission, same as the existing Day 35 control centre). Returns decision totals, per-class breakdown with net delta and resolution mix, top/bottom cohort standouts (min 15 resolved trades), hypothesis registry status. Read-only, no writes, no broker/OpenAI calls.
-- **Frontend** (`dannythehat/super-signals-website` PR #4): **https://smartsignals.site/admin-aidy** (not `/admin/aidy` -- see bug below). Same auth pattern as the existing `/complimentary` page.
-- **Real bug found and fixed before merge**: a custom `/admin/aidy` clean-route fought Cloudflare's own asset clean-URL handling (a `.html`-suffixed request auto-307s to the extension-stripped form, which is `/admin-aidy` matching the filename, not the nested path registered). Caught by actually curling the live preview deploy rather than trusting the code read -- `/admin/aidy` 307'd, `/account`/`/performance` didn't. Fixed by dropping the custom route entirely; `/admin-aidy` now resolves in one clean 200, verified against both the preview and production URLs post-merge.
+- **Frontend** (`dannythehat/super-signals-website` PR #4): **https://smartsignals.site/admin-aidy** (not `/admin/aidy`). Same auth pattern as the existing `/complimentary` page.
 
 ## Book-flat-before-merge rule dropped (2026-09-17)
 
-Danny, after already overriding it once for PR #184: *"Merge it.. nobody cares about open positions."* This is now a general instruction, not a one-off -- merges are no longer held on open-position count. Full detail: `OWNER_MANDATE.md`. Execution/risk-sizing changes still get scrutiny on their own merits; this specifically stops gating a routine research-table PR's merge on live trades it cannot affect.
+Danny: *"Merge it.. nobody cares about open positions."* Routine research merges are no longer held on open-position count. Execution/risk-sizing changes still require scrutiny. Full detail: `OWNER_MANDATE.md`.
 
 ## Scoreboard cohort dimensions — v1 live (2026-09-17)
 
-PR #185 merged and deployed. New view `provider_trade_scoreboard_by_cohort` splits the same data `provider_trade_scoreboard` blends, by source, side, session (rough UTC-hour buckets) and weekday (Europe/Sofia). Verified against live production data immediately: `TDC V2 (NEW)` scores 100% win rate / +$608 net on London-session BUY signals posted on Fridays (29 resolved), while `GTMO VIP` scores 51.5% win rate / -$119 net on London-session BUY signals posted on Mondays (33 resolved) -- exactly the conditional pattern a blended number hides. Does not change what `aidy_decision_engine` reads today; wiring cohort evidence into a live decision is a separate step.
+PR #185 merged/deployed. `provider_trade_scoreboard_by_cohort` splits provider performance by source, side, session and weekday (Europe/Sofia). Cohort evidence is not yet wired into live AIDY decisions.
 
-## Decision Ledger outcome scoring — v1 live, first real evidence in (2026-09-17)
+## Decision Ledger outcome scoring — v1 live (2026-09-17)
 
-PR #184 merged and deployed. `AidyDecisionOutcomeRuntime` scores every AIDY decision against `provider_trade_scores` as the fixed baseline -- an `approve` always equals the baseline (delta=0, never manufactured credit); a `deny`/`conflict_deny`/`hold_no_second_entry` is scored as if the trade was never taken, so a denied trade that really lost reads `confirmed_helped` and one that really won reads `confirmed_hurt`, purely from the sign of an already-computed number.
-
-First production pass, scored against the historical backlog (thin sample, not a verdict):
-
-- **`hold_no_second_entry`** (duplicate/repost within 15 min): 20 helped (+€465) vs 3 hurt (-€69) -- **net +€396**. The strongest early candidate for real authority.
-- **`conflict_deny`** (opposite-direction book exposure): 27 hurt (-€579) vs 26 helped (+€527) -- **net -€52, roughly a wash**. Not yet convincing; needs more evidence before trusting it.
-- No provider has yet been denied on track record alone (every `approve` so far is either thin evidence or an acceptable record -- nobody has crossed the deny bar yet).
-
-Merged with 1 open position on the book -- the owner explicitly said "just merge it" rather than wait for it to flatten, overriding the standing book-flat-before-merge rule by direct instruction. That rule was crossed once, deliberately, not silently relaxed going forward.
+PR #184 merged/deployed. `AidyDecisionOutcomeRuntime` scores decisions against `provider_trade_scores` fixed baseline. `approve` gets delta 0; denied/held trades are scored counterfactually from already-computed baseline outcomes. Early historical evidence showed duplicate/repost holds promising while conflict-deny was not convincing. Treat this as thin historical evidence, not authority.
 
 ## Current AIDY runtime state — recovered / READY, multi-cycle verified
 
-The 17 September production patch hardened the Super Signals AIDY M1 transport against transient upstream/network failures. `AidyMarketClient.fetch_m1()` now uses bounded retry/backoff for connection/read timeouts, connection errors, protocol failures, HTTP 429 and transient 5xx responses rather than allowing a single transient transport failure to terminate that resolution cycle.
+17 September production patch hardened Super Signals AIDY M1 transport with bounded retry/backoff. Sustained health was independently confirmed across multiple systems/cycles; do not cite the one-time startup READY probe alone. Full detail: `handovers/2026-09-17-continuous-health-verification.md`.
 
-**Important caveat on the startup probe:** `aidy_shadow_runtime.py`'s "Provider Context live probe READY" log fires exactly once per process lifetime (`if context_client is not None and not context_probe_ready`) and never again. One READY line is not evidence of sustained health — do not cite it alone.
+## Day 14 governance issue
 
-Sustained health was instead independently confirmed across multiple systems and cycles (full detail: `handovers/2026-09-17-continuous-health-verification.md`):
-
-- AIDY's own D1 `market_snapshots`: **53 consecutive `complete` snapshots, 0 `partial`**, every ~5 minutes from `2026-09-17T00:02Z` through `04:22Z` — spanning well before and after the deploy.
-- Super Signals `shadow_trades`: 83 rows updated since deploy, `aidy_m1_cursor_at` advancing `03:43Z → 04:10Z` across multiple distinct cycles — the resolver is doing real repeated work.
-- Full post-deploy log window: zero `pit_context_stale` / `AidyContextTerminalMiss` / `NOT_READY` / tracebacks.
-- Live AIDY `/health` at time of writing: `status: ok`, `data_health.status: fresh`, lag 157s.
-
-Render deploy `dep-dalma2gae00c739qlul0` reached **live** at `2026-09-17T04:00:25Z`, superseded by `dep-dalmjj3bc2fs7387mrv0` (a second, unrelated fix, see below) at `04:20Z`, also live.
-
-The earlier `AidyContextTerminalMiss` / stale-context blocker recorded on 16 September is confirmed superseded by this multi-cycle evidence, not by the single startup probe alone.
-
-This recovery does **not** grant AIDY broker/live-money authority.
-
-## Second, unrelated issue found while verifying — partially fixed
-
-`PROVIDER_DAY14_GOVERNANCE_ERROR=RuntimeError` had been repeating since at least 16 September 18:15, unrelated to M1/context. Root cause: `_frozen_boundary()` requires every row in `provider_conditional_hypotheses` to share one `preregistered_at`; production has two legitimate cohorts (15,360 rows from 09-07, 384 from a newly-onboarded shadow source on 09-14) — not a bug in the writer, and the registry will keep growing this way, so the guard can never pass again as written. Fixed: the retry loop now logs the real reason instead of just the exception type (PR #182, deploy `dep-dalmjj3bc2fs7387mrv0`, live and verified). **Not fixed:** whether to freeze one boundary per run or per hypothesis is an anti-hindsight methodology decision left for the owner — changing it changes what counts as in-sample evidence for every provider evaluation. Zero live-money impact either way (`research_only=True` end to end).
-
-## Runtime continuity
-
-Super Signals continuously supervises its application-owned AIDY Provider Lab runtime. Provider Context probing remains armed on the existing research cadence and a one-minute supervisor can restart the Provider Lab task if it exits unexpectedly during the trading week. The existing XAUUSD weekend freeze remains respected.
+`PROVIDER_DAY14_GOVERNANCE_ERROR` root cause is a preregistration-boundary methodology mismatch as registry cohorts grow. Logging was fixed; methodology choice remains unresolved. Zero live-money impact (`research_only=True`).
 
 ## Live execution posture
 
-- Trading universe remains Gold/XAUUSD.
-- Owner live-risk directive remains **1% only** unless explicitly changed.
-- Approved management semantics remain: TP1 + TP2 hit -> move SL to entry; TP3 hit -> move SL to TP2; `move SL to entry` does not mean close the trade.
-- Research/shadow/provider-intelligence systems cannot silently change risk, promote/demote live providers or acquire broker authority.
+- Gold/XAUUSD only.
+- **1% only** live-risk directive unless owner explicitly changes it.
+- TP1 + TP2 -> SL to entry; TP3 -> SL to TP2; move SL to entry != close.
+- Research/provider intelligence cannot silently change risk, promote/demote live providers or acquire broker authority.
+- AIDY live-money authority OFF.
+- XAUUSD weekend freeze unchanged.
 
 ## Product north star
 
-AIDY must progress from passive Provider Intelligence toward an evidence-scored decision layer for Super Signals.
-
-Target flow:
-
 `provider signal -> PIT-safe Gold context -> provider history -> current exposure -> AIDY decision -> action -> outcome -> counterfactual score -> learning`
 
-Target decision classes: `APPROVE`, `DENY`, `HOLD/NO_SECOND_ENTRY`, `CONFLICT_DENY`, `CLOSE_EARLY`, `CONTINUE`.
-
-With Provider Context now production-READY, the next build can proceed with shadow decisions for every eligible trade while existing execution rules remain authoritative until individual decision classes earn separate authority.
-
-## Mandatory Decision Ledger
-
-Every AIDY decision must freeze the facts available at decision time: provider/signal/message identity and ancestry; signal and decision timestamps; exact AIDY context/snapshot IDs and digests; provider evidence then available; open account/exposure state; duplicate/conflict cluster state; decision/reasons/confidence; model/rules version; and resulting action when authority exists. Future outcomes must not be written back into the original decision state.
-
-**v1 merged and live in production** (2026-09-17, PR #183): `aidy_decisions` / `aidy_decision_outcomes` (migration `0088`), `AidyDecisionEngine`, `AidyDecisionRunner`, `AidyDecisionRuntime`, wired into `main.py` startup/shutdown alongside the existing scoring runtime. Deterministic only — duplicate/repost check, opposite-direction book-exposure conflict check, then provider track record from `provider_trade_scoreboard` (min 20 resolved trades; denies only when avg P&L ≤ -$3 **and** win rate ≤ 35% together, never either alone). No model call yet — that is a separate, costed piece not yet switched on. Supersedes the unwired, zero-row Day 16/20 `provider_veto_counterfactual_*` / `provider_management_counterfactual_*` tables rather than building alongside them. Append-only and `research_only=True` / `live_money_execution_allowed=False` are CHECK-constrained and trigger-enforced at the schema level, not documentary. Full detail: `handovers/2026-09-17-decision-ledger-v1.md`.
-
-Merged into `feature/day-10-shared-telegram-sources` (merge commit `acbe35a1`), deployed via Render (`dep-dalnocp5efls73bleqog`, live `2026-09-17T05:38:15Z`), and **verified actually running**: `AidyDecisionRuntime`'s first production pass completed and logged `decided 1241/1241` at `05:43:33Z` — not just deployed-and-idle, confirmed writing real rows to `aidy_decisions`. No new errors introduced; the app's `/health` returned steady 200s throughout.
-
-While building this, found and fixed a real pre-existing bug: `services/api/migrations/env.py` unconditionally called `fileConfig()` on every Alembic migration, which replaces the root logger's handlers process-wide and silently discards pytest's `caplog` capture handler for the rest of that test session — not just for the test that ran the migration, every test afterward. It had never been triggered before because no alembic-invoking test file happened to sort alphabetically before `test_aidy_shadow_runtime_startup.py`; the new `test_aidy_decision_ledger.py` was the first. Fixed by skipping `fileConfig()` when `PYTEST_CURRENT_TEST` is set; real CLI/deploy usage is unaffected.
-
-## Counterfactual learning
-
-Every decision must later be scored against a fixed baseline. Persist factual `decision_delta`: money made/saved or money lost because AIDY intervened. No avoided loss may be claimed unless the baseline path proves it.
-
-## Conditional provider intelligence
-
-A provider is not simply good/bad. AIDY must measure where and how each provider works: BUY vs SELL; session/time and weekday; observable volatility/regime/liquidity; TP progression; initial-call vs management quality; close/BE/SL/cancel instructions; duplicate/edit/repost behaviour; latency/slippage; agreement/conflict; stop/entry geometry; adverse duration and recovery/re-entry; and provider-regime specialisation. Where sample is weak, answer `unknown`.
-
-## Authority graduation
-
-Grant decision authority by class, not wholesale. Likely order: deterministic duplicate rejection; obvious duplicate/conflicting exposure controls; provider/regime denies; early-close management; broader approve/deny/management authority. Every authority class requires prospective evidence, immutable audit trail, explicit enable/disable control, kill switch and owner/live gate. The 1% live-risk directive must not silently change.
-
-## Session rule
-
-Verify live Super Signals branch/Render/Postgres state and current AIDY Worker/repo state before acting. Source/runtime truth overrides Memory if it has advanced. The current verified Super Signals production recovery point is SHA `356dfcf1801f70c786ff7fa2de38ce88d55ec071`, deploy `dep-dalma2gae00c739qlul0`.
+AIDY must become measurably better on forward unseen evidence, not merely accumulate more data.
