@@ -6,7 +6,7 @@ Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `45d49a0d3ed8b3631f81f7c84b71ffe224439a50`
+Verified source/deploy SHA: `6082ed7ec53b5339b26300a10c60f54fd9e16f9c`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
 Verified live deploy: `dep-dalrfbfqj5pc73e7um3g`
 Deploy status: **healthy, migration 0090 applied** (verified directly against production Postgres + `/health` 200)
@@ -38,6 +38,12 @@ Owner redirect: *"I'm not bothered about the hub yet, I'm more bothered about ge
 Given that, shipped the more direct lever instead: `aidy_decision_engine.py`'s own docstring already said a real model call per signal "is not switched on silently" — so it never had one. **PR #188** (merged `45d49a0d3ed8b3631f81f7c84b71ffe224439a50`) adds `AidyReasoningEngine`: one OpenAI call (same pattern as the existing Telegram message-interpretation supervisor — `gpt-5-mini`, strict JSON schema) per `approve` decision reasoned `insufficient_track_record_evidence` — the exact case where the deterministic engine has nothing left to say. Reads the signal's own entry/stop/target geometry and returns a lean (agree/caution/disagree), confidence and rationale. Purely additive: never changes `aidy_decisions.decision_class`, same `research_only`/no-live-authority contract as every other AIDY table (migration 0090, append-only). **Ships disabled** — `AIDY_REASONING_ENGINE_ENABLED` defaults to `"0"`, so merging started no real spend; an explicit monthly budget gate (soft $120/hard $180, inside the owner's pre-authorized ~€200/month ceiling) is enforced whenever it is turned on. Full detail: `LIVE_STATE.json` → `aidy_reasoning_engine_v1`.
 
 **Live since 2026-09-17T09:55Z** — owner said "Turn it on." Verified directly against production: 15 real annotations written within 90 seconds of restart, $0.0082 spent (~$0.0005/call), 196 more candidates queued to drain over the next several passes. Spot-checked output is genuinely useful, not placeholder text — e.g. correctly flagged `disagree` on a signal whose stop was only 1-6 ticks from entry (undefined reward:risk).
+
+## AIDY reasoning widened + provider fingerprints shipped (2026-09-17)
+
+v1's scope (only `insufficient_track_record_evidence` approvals) meant every provider with an established track record — all 4 real/testing providers included — got zero signal-level reasoning, since win rate alone already cleared the deterministic bar. **PR #189** (merged `e3c26b6961fafe62c09e8f0c69403d10aad2bac5`) widens the reasoning engine to every `approve` decision (real backlog cost checked against production first: ~$1.30 for all 2,598 historical decisions) and speeds up the drain loop to clear the backlog in under an hour. Owner reacted with real alarm to the original $120/$180 monthly cap ("I can't afford $180 per month. Are you insane?") even though it was a ceiling, not a bill — immediately lowered to soft $5 / hard $10/month via Render env vars, still ~50-100x actual observed spend.
+
+Owner then asked directly: does AIDY understand what separates each provider's wins from losses, for every trader, as a permanent running capability, not an ad-hoc query ("We've given aidy a full stack, so he needs to use it"). **PR #190** (merged `6082ed7ec53b5339b26300a10c60f54fd9e16f9c`) adds `ProviderFingerprintEngine`: computes per-provider stop-distance/reward:risk comparisons (winners vs losers) and best/worst side/session, straight from already-resolved trades — no need to wait on new forward evidence the way Day 13 does. Explicitly descriptive, not statistically certified, with honest sample floors (8 resolved per outcome for geometry, 15 per cohort cell) — verified live: GOLDHUNTER's 79.1% win rate correctly got **no** geometry claim (only 7 losses, below the floor) rather than a fabricated pattern. Runs daily, on by default. Critically, **it's actually read**: the reasoning engine now pulls each provider's latest fingerprint into its prompt, so a new signal is judged against that specific provider's own history, not generic rules. Full detail: `LIVE_STATE.json` → `aidy_reasoning_engine_v2_and_provider_fingerprints`.
 
 ## Provider coverage — v1 live, both repos (2026-09-17)
 

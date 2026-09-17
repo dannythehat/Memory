@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T09:53:00Z",
+  "verified_at_utc": "2026-09-17T13:10:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "45d49a0d3ed8b3631f81f7c84b71ffe224439a50",
+  "branch_head_sha": "6082ed7ec53b5339b26300a10c60f54fd9e16f9c",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalrfbfqj5pc73e7um3g",
-    "deploy_status": "healthy_migration_0090_applied",
+    "deploy_id": "dep-dalua5vqj5pc73eavk60",
+    "deploy_status": "healthy_migration_0091_applied",
     "auto_deploy": true,
-    "verified_by": "queried alembic_version=0090_aidy_reasoning_annotations and to_regclass('aidy_reasoning_annotations') directly against production Postgres, plus /health returning 200 healthy, post-deploy 2026-09-17T09:53Z"
+    "verified_by": "queried alembic_version=0091_provider_trade_fingerprints and real row counts directly against production Postgres, plus /health returning 200 healthy, post-deploy 2026-09-17T13:10Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -243,7 +243,31 @@
       "verified_by": "alembic_version=0090_aidy_reasoning_annotations and to_regclass('aidy_reasoning_annotations') queried directly against production Postgres; /health returned 200 healthy post-deploy 2026-09-17T09:53Z"
     },
     "test_status": "4 new unit tests (strict schema parsing, invalid lean rejected not guessed, malformed/HTTP-error responses raise not fabricate, api key required -- no real network calls) + 6 new integration tests against real Postgres (selection scope, already-annotated never reselected, failed call not persisted and retryable, exhausted budget skips pass with zero model calls, append-only trigger rejects update), full suite green, ruff clean.",
-    "next_step": "Live and running. Monitor monthly spend against the soft/hard budget as candidate volume grows; the 196-candidate backlog will finish draining over the next several 900s passes (100/pass default limit)."
+    "next_step": "Superseded in scope by aidy_reasoning_engine_v2 below -- see that entry."
+  },
+  "aidy_reasoning_engine_v2_and_provider_fingerprints": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED",
+    "why_built": "Owner turned v1 on, then flagged the real gap directly: 'I really don't give a shit about the 4 live traders' framing aside, the actual point stood -- v1's insufficient_track_record_evidence scope meant every provider with an established track record (all 4 real/testing providers included) got zero signal-level reasoning, since their win rate alone already cleared the deterministic bar. Separately, owner asked AIDY to understand what actually separates each provider's wins from losses, for all traders, and have that be a permanent running capability AIDY uses, not an ad-hoc chat query ('We've given aidy a full stack, so he needs to use it').",
+    "widened_reasoning_scope": {
+      "pr": 189,
+      "pr_url": "https://github.com/dannythehat/super-signals/pull/189",
+      "merge_commit_sha": "e3c26b6961fafe62c09e8f0c69403d10aad2bac5",
+      "what_changed": "aidy_reasoning_runner.py now selects every approve decision, not just insufficient_track_record_evidence ones. Real cost check against production before shipping: 2,598 historical approve decisions at the proven ~$0.0005/call rate is about $1.30 for the entire backlog. Sped up the drain loop (300s/300 per pass, was 900s/100) to clear the backlog in under an hour given owner's stated urgency.",
+      "budget_note": "Owner reacted with real alarm to the original $120/$180 soft/hard monthly cap ('I can't afford $180 per month. Are you insane?') despite it being a ceiling, not a bill -- immediately lowered it to soft $5 / hard $10 per month via Render env vars (still ~50-100x actual observed spend). Lesson: a stated ceiling reads as a commitment under financial stress; state the realistic run-rate first next time, not the cap."
+    },
+    "provider_trade_fingerprints_v1": {
+      "pr": 190,
+      "pr_url": "https://github.com/dannythehat/super-signals/pull/190",
+      "merge_commit_sha": "6082ed7ec53b5339b26300a10c60f54fd9e16f9c",
+      "what_it_is": "ProviderFingerprintEngine computes, per provider, from trades that have already resolved (no need to wait on new forward evidence unlike Day 13): stop distance and planned reward:risk compared winners vs losers (gated at 8 resolved per outcome), and best/worst side and session from the existing cohort view (gated at 15 per cell). Explicitly labelled descriptive, not statistically certified. Runs daily by default, on by default (no external API call, nothing to gate spend on), append-only history so drift over time stays visible.",
+      "actually_used_not_just_computed": "aidy_reasoning_engine.py and aidy_reasoning_runner.py pull each provider's latest fingerprint summary into the reasoning prompt (LATERAL join on provider_trade_fingerprints ordered by computed_at DESC), so a new signal is judged against how that specific provider's own wins and losses actually look, not generic geometry rules alone.",
+      "deploy": {
+        "render_deploy_id": "dep-dalua5vqj5pc73eavk60",
+        "verified_by": "alembic_version=0091_provider_trade_fingerprints and real row counts queried directly against production; 29 fingerprints computed on first pass. Spot-checked real output: GOLDHUNTER (79.1% win rate, 43 resolved) correctly refused a geometry comparison (only 7 losses, below the 8-per-outcome floor) rather than claim a pattern from a thin sample. FXTradingVision (real/testing provider) got a full profile: BUY 53.2% win rate vs SELL 44.4%, strongest session new_york (57.6%), weakest london_new_york_overlap (37.0%). Confirmed the reasoning-runner join is live by checking the next queued candidate batch (PipXpert) all carry a non-null fingerprint summary ready to feed into the next reasoning pass."
+      }
+    },
+    "test_status": "PR 189: widened selection test, full suite green. PR 190: 3 unit tests (summary honesty above/below sample floor -- caught and fixed a real bug where the provider name only appeared in the summary when trading style was known) + 5 integration tests against real Postgres (geometry gating, style pull-through, append-only persistence, schema-level safety contract), full suite green, ruff clean.",
+    "next_step": "Both live and running continuously (reasoning every 300s while backlog drains, fingerprints daily). No further action needed unless spend or coverage needs revisiting."
   },
   "day13_day14_evidence_starvation_diagnosis": {
     "found_while": "Investigating why Day 13's conditional-hypothesis registry (15,360+ preregistered hypotheses across the 40-provider shadow-discovery population) is still nearly untested, in response to the owner wanting AIDY to actually get smarter.",
