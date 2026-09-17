@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T04:00:37Z",
+  "verified_at_utc": "2026-09-17T04:25:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "356dfcf1801f70c786ff7fa2de38ce88d55ec071",
+  "branch_head_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
@@ -35,7 +35,7 @@
   },
   "aidy_m1_transport_recovery": {
     "production_sha": "356dfcf1801f70c786ff7fa2de38ce88d55ec071",
-    "status": "LIVE_VERIFIED",
+    "status": "LIVE_VERIFIED_MULTI_CYCLE",
     "bounded_retry_enabled": true,
     "retry_conditions": [
       "connect_timeout",
@@ -46,7 +46,8 @@
       "http_5xx"
     ],
     "backoff": "bounded_exponential",
-    "purpose": "prevent a single transient AIDY M1 transport failure from terminating the resolution cycle"
+    "purpose": "prevent a single transient AIDY M1 transport failure from terminating the resolution cycle",
+    "single_probe_caveat": "The startup probe in aidy_shadow_runtime.py fires exactly once per process lifetime (guarded by 'not context_probe_ready') and never again -- do not treat one READY log line as ongoing health. See continuous_health_verification below for the multi-cycle evidence this status is actually based on."
   },
   "execution_contract": {
     "instrument": "XAUUSD",
@@ -73,5 +74,37 @@
     "authority_graduated_by_class": true,
     "broad_live_authority_enabled": false
   },
-  "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window."
+  "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window.",
+  "continuous_health_verification": {
+    "verified_at_utc": "2026-09-17T04:25:00Z",
+    "method": "Cross-checked AIDY D1 ground truth, Super Signals DB resolver progress, and full post-deploy logs -- not a single probe line.",
+    "aidy_d1_market_snapshots": {
+      "window": "2026-09-17T00:02Z to 04:22Z",
+      "complete_count": 53,
+      "partial_count": 0,
+      "cadence_minutes": 5
+    },
+    "super_signals_resolver_progress": {
+      "shadow_trades_rows_updated_since_deploy": 83,
+      "aidy_m1_cursor_advanced": "2026-09-17T03:43Z -> 04:10Z"
+    },
+    "super_signals_logs_post_deploy": "zero occurrences of pit_context_stale, AidyContextTerminalMiss, NOT_READY, or any traceback in the full window from deploy to end of check",
+    "live_aidy_health_at_time_of_writing": {
+      "status": "ok",
+      "data_health_status": "fresh",
+      "provider_context_snapshot_lag_seconds": 157
+    },
+    "conclusion": "The 2026-09-16 stale-context state is confirmed superseded by sustained, multi-cycle production evidence, not by a single successful startup probe."
+  },
+  "second_unrelated_issue_found_and_partially_fixed": {
+    "found_while": "independently verifying the AIDY M1/context recovery, unrelated to it",
+    "symptom": "PROVIDER_DAY14_GOVERNANCE_ERROR=RuntimeError repeating since at least 2026-09-16T18:15",
+    "root_cause": "_frozen_boundary() in provider_day14_governance.py requires every row in provider_conditional_hypotheses under the current registry_version to share one preregistered_at. Production has two: 15,360 rows from 2026-09-07 and 384 more from 2026-09-14 -- a legitimate later cohort from a newly-onboarded shadow source, not a writer bug. The registry will keep growing this way, so this guard can never pass again as written.",
+    "fixed": "The retry loop now logs str(exc), not just the exception type, in both provider_day14_governance.py and provider_day14_runtime.py. Verified live post-deploy: log now reads ...RuntimeError:day13_preregistration_boundary_not_frozen.",
+    "not_fixed_left_for_owner": "Whether the evaluation window should freeze one boundary per run or let each hypothesis carry its own preregistered_at as its out-of-sample cutoff -- a real anti-hindsight methodology decision (frozen_boundary is applied identically to every source: observation.signal_posted_at > frozen_boundary), not a bug fix.",
+    "live_money_impact": "none -- research_only=True end to end, no sources.status or broker write path",
+    "pr": 182,
+    "merged_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
+    "render_deploy": "dep-dalmjj3bc2fs7387mrv0"
+  }
 }

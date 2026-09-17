@@ -10,20 +10,28 @@ Verified live deploy: `dep-dalma2gae00c739qlul0`
 Deploy status: **live**
 Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings**.
 
-## Current AIDY runtime state — recovered / READY
+## Current AIDY runtime state — recovered / READY, multi-cycle verified
 
 The 17 September production patch hardened the Super Signals AIDY M1 transport against transient upstream/network failures. `AidyMarketClient.fetch_m1()` now uses bounded retry/backoff for connection/read timeouts, connection errors, protocol failures, HTTP 429 and transient 5xx responses rather than allowing a single transient transport failure to terminate that resolution cycle.
 
-Production evidence after deploy:
+**Important caveat on the startup probe:** `aidy_shadow_runtime.py`'s "Provider Context live probe READY" log fires exactly once per process lifetime (`if context_client is not None and not context_probe_ready`) and never again. One READY line is not evidence of sustained health — do not cite it alone.
 
-- Render deploy `dep-dalma2gae00c739qlul0` reached **live** at `2026-09-17T04:00:25Z`.
-- New production instance started the `AIDY Provider Lab resolver loop` at `2026-09-17T04:00:26Z`.
-- AIDY Provider Context live probe returned `READY` at `2026-09-17T04:00:37Z` with `context_lag_seconds=196`.
-- No new AIDY error / `pit_context_stale` event was observed in the checked post-deploy log window.
+Sustained health was instead independently confirmed across multiple systems and cycles (full detail: `handovers/2026-09-17-continuous-health-verification.md`):
 
-The earlier `AidyContextTerminalMiss` / stale-context blocker recorded on 16 September is therefore no longer the current verified Super Signals production state.
+- AIDY's own D1 `market_snapshots`: **53 consecutive `complete` snapshots, 0 `partial`**, every ~5 minutes from `2026-09-17T00:02Z` through `04:22Z` — spanning well before and after the deploy.
+- Super Signals `shadow_trades`: 83 rows updated since deploy, `aidy_m1_cursor_at` advancing `03:43Z → 04:10Z` across multiple distinct cycles — the resolver is doing real repeated work.
+- Full post-deploy log window: zero `pit_context_stale` / `AidyContextTerminalMiss` / `NOT_READY` / tracebacks.
+- Live AIDY `/health` at time of writing: `status: ok`, `data_health.status: fresh`, lag 157s.
+
+Render deploy `dep-dalma2gae00c739qlul0` reached **live** at `2026-09-17T04:00:25Z`, superseded by `dep-dalmjj3bc2fs7387mrv0` (a second, unrelated fix, see below) at `04:20Z`, also live.
+
+The earlier `AidyContextTerminalMiss` / stale-context blocker recorded on 16 September is confirmed superseded by this multi-cycle evidence, not by the single startup probe alone.
 
 This recovery does **not** grant AIDY broker/live-money authority.
+
+## Second, unrelated issue found while verifying — partially fixed
+
+`PROVIDER_DAY14_GOVERNANCE_ERROR=RuntimeError` had been repeating since at least 16 September 18:15, unrelated to M1/context. Root cause: `_frozen_boundary()` requires every row in `provider_conditional_hypotheses` to share one `preregistered_at`; production has two legitimate cohorts (15,360 rows from 09-07, 384 from a newly-onboarded shadow source on 09-14) — not a bug in the writer, and the registry will keep growing this way, so the guard can never pass again as written. Fixed: the retry loop now logs the real reason instead of just the exception type (PR #182, deploy `dep-dalmjj3bc2fs7387mrv0`, live and verified). **Not fixed:** whether to freeze one boundary per run or per hypothesis is an anti-hindsight methodology decision left for the owner — changing it changes what counts as in-sample evidence for every provider evaluation. Zero live-money impact either way (`research_only=True` end to end).
 
 ## Runtime continuity
 
