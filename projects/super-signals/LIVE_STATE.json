@@ -227,7 +227,10 @@
     }
   },
   "aidy_reasoning_engine_v1": {
-    "status": "MERGED_DEPLOYED_HEALTHY_DISABLED_BY_DEFAULT",
+    "status": "MERGED_DEPLOYED_LIVE_ENABLED_PRODUCING_REAL_ANNOTATIONS",
+    "enabled_at_utc": "2026-09-17T09:55:09Z",
+    "enabled_by": "owner explicit instruction: 'Turn it on'",
+    "verified_live_evidence": "Queried production directly post-restart: 15 aidy_reasoning_annotations rows written within ~90s of startup (first pass fires immediately, not after the 900s interval), 196 insufficient_track_record_evidence candidates remained queued to drain over subsequent passes. Total spend so far: $0.0082 across 15 calls (~$0.0005/call, 7754 input + 3146 output tokens) -- trivial against the $120/180 soft/hard monthly budget. Spot-checked 3 real rows: coherent, geometry-grounded reasoning, e.g. one correctly flagged disagree on a signal whose stop was only 1-6 ticks from entry (effectively undefined reward:risk) while two others correctly flagged agree on well-ordered SELL setups with sane stop/TP structure. Not a placeholder -- genuinely useful output from the first pass.",
     "why_built": "Owner: 'I'm not bothered about the hub yet, I'm more bothered about getting Aidy running and making him smart.' Investigated why the existing Day 13/14 conditional-hypothesis registry (AIDY's real statistical learning engine) is stuck WAITING-FOR-FORWARD-EVIDENCE with tested_hypothesis_count=0 on the latest production run -- see day13_day14_evidence_starvation_diagnosis below. That is a genuine wait-for-evidence situation (self-healing, not a bug to fix). This PR is the more direct, immediate answer: aidy_decision_engine.py's own docstring says a real model call per signal 'is not switched on silently' -- so it never had one. This gives AIDY that first real reasoning call.",
     "pr": 188,
     "pr_url": "https://github.com/dannythehat/super-signals/pull/188",
@@ -240,7 +243,7 @@
       "verified_by": "alembic_version=0090_aidy_reasoning_annotations and to_regclass('aidy_reasoning_annotations') queried directly against production Postgres; /health returned 200 healthy post-deploy 2026-09-17T09:53Z"
     },
     "test_status": "4 new unit tests (strict schema parsing, invalid lean rejected not guessed, malformed/HTTP-error responses raise not fabricate, api key required -- no real network calls) + 6 new integration tests against real Postgres (selection scope, already-annotated never reselected, failed call not persisted and retryable, exhausted budget skips pass with zero model calls, append-only trigger rejects update), full suite green, ruff clean.",
-    "next_step": "Owner needs to explicitly decide to flip AIDY_REASONING_ENGINE_ENABLED=1 (and confirm OPENAI_API_KEY is set on the Render service) before any real reasoning calls or spend happen. Not done automatically by this session per the 'not switched on silently' principle already established in aidy_decision_engine.py."
+    "next_step": "Live and running. Monitor monthly spend against the soft/hard budget as candidate volume grows; the 196-candidate backlog will finish draining over the next several 900s passes (100/pass default limit)."
   },
   "day13_day14_evidence_starvation_diagnosis": {
     "found_while": "Investigating why Day 13's conditional-hypothesis registry (15,360+ preregistered hypotheses across the 40-provider shadow-discovery population) is still nearly untested, in response to the owner wanting AIDY to actually get smarter.",
