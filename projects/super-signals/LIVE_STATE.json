@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T05:45:00Z",
+  "verified_at_utc": "2026-09-17T06:38:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "acbe35a1b959206f07dde306404f012968d07e54",
+  "branch_head_sha": "d036db3c97531747df590972afd94a4351b0e313",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalnocp5efls73bleqog",
+    "deploy_id": "dep-dalokbnqj5pc73e5af6g",
     "deploy_status": "live",
     "auto_deploy": true,
-    "live_at_utc": "2026-09-17T05:38:15Z"
+    "live_at_utc": "2026-09-17T06:37:20Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -115,7 +115,29 @@
     },
     "conflict_duplicate_scope": "book_level_not_per_user -- per the 2026-09-17 one-pipeline (paper and real, any balance) directive",
     "test_status": "full suite green, 0 failed, against fresh local PostgreSQL 16 (migrations 0001-0088 applied clean)",
-    "next_steps": ["outcome/counterfactual scoring (item 2)", "scoreboard cohort dimensions (item 3)", "hypothesis registry (item 4)", "costed LLM reasoning proposal to owner (item 5)", "graduated authority (item 6)"]
+    "next_steps": ["scoreboard cohort dimensions (item 3)", "hypothesis registry (item 4)", "costed LLM reasoning proposal to owner (item 5)", "graduated authority (item 6)"]
+  },
+  "outcome_scoring_v1": {
+    "status": "MERGED_DEPLOYED_LIVE_SCORING_DECISIONS",
+    "pr": 184,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/184",
+    "merged_into": "feature/day-10-shared-telegram-sources",
+    "merge_commit_sha": "d036db3c97531747df590972afd94a4351b0e313",
+    "commit": "c9cb212 -- aidy_decision_outcome_scorer.py, aidy_decision_outcome_runner.py, aidy_decision_outcome_runtime.py, main.py wiring, tests",
+    "what_it_does": "Scores every AIDY decision against its real baseline (provider_trade_scores, reused not re-derived). approve/continue always equals the baseline (delta=0, no manufactured credit). deny/conflict_deny/hold is scored as if never taken (0 pnl), so delta = negative of the real trade's actual pnl -- a denied trade that really lost reads confirmed_helped, one that really won reads confirmed_hurt, purely from the sign of an already-computed number, never invented.",
+    "new_table": "aidy_decision_outcomes (append-only, write-once per decision -- no re-scoring, ever)",
+    "deploy": {
+      "render_deploy_id": "dep-dalokbnqj5pc73e5af6g",
+      "status": "live",
+      "live_at_utc": "2026-09-17T06:37:20Z",
+      "verified_by": "AidyDecisionOutcomeRuntime's first production pass observed mid-run: 'scored outcomes 800/2116' at 2026-09-17T06:37:54Z, actually writing rows -- not just deployed and idle",
+      "no_new_errors_introduced": "confirmed -- only error-level line post-deploy was the known single-shot startup probe ConnectTimeout already documented as expected/transient this session",
+      "health_endpoint": "/health returning steady 200 OK post-deploy"
+    },
+    "book_flat_check": "1 open position blocked the merge initially; owner said 'just merge it' rather than wait, so this was merged with the standing book-flat-before-merge rule explicitly overridden by direct owner instruction, not by default -- worth knowing this rule was crossed once, deliberately, not silently relaxed going forward",
+    "github_actions_ci": "the 'api' and 'web' checks on PR #184 failed, but completed in ~2 seconds each -- the same no-runner-executed signature already diagnosed this session as GitHub Actions credits being exhausted, not a real code failure. Local full-suite validation (green) substituted for CI, consistent with how PR #183 was handled.",
+    "test_status": "10 new tests (6 unit, 4 integration), full suite green",
+    "next_step": "scoreboard cohort dimensions (item 3) -- in progress"
   },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",

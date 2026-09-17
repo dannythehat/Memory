@@ -6,11 +6,23 @@ Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `356dfcf1801f70c786ff7fa2de38ce88d55ec071`
+Verified source/deploy SHA: `d036db3c97531747df590972afd94a4351b0e313`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dalma2gae00c739qlul0`
+Verified live deploy: `dep-dalokbnqj5pc73e5af6g`
 Deploy status: **live**
-Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings**.
+Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions still credit-exhausted as of this deploy -- PR #184's `api`/`web` checks failed in ~2s each, the same no-runner-executed signature diagnosed earlier this session, not a real failure).
+
+## Decision Ledger outcome scoring — v1 live, first real evidence in (2026-09-17)
+
+PR #184 merged and deployed. `AidyDecisionOutcomeRuntime` scores every AIDY decision against `provider_trade_scores` as the fixed baseline -- an `approve` always equals the baseline (delta=0, never manufactured credit); a `deny`/`conflict_deny`/`hold_no_second_entry` is scored as if the trade was never taken, so a denied trade that really lost reads `confirmed_helped` and one that really won reads `confirmed_hurt`, purely from the sign of an already-computed number.
+
+First production pass, scored against the historical backlog (thin sample, not a verdict):
+
+- **`hold_no_second_entry`** (duplicate/repost within 15 min): 20 helped (+€465) vs 3 hurt (-€69) -- **net +€396**. The strongest early candidate for real authority.
+- **`conflict_deny`** (opposite-direction book exposure): 27 hurt (-€579) vs 26 helped (+€527) -- **net -€52, roughly a wash**. Not yet convincing; needs more evidence before trusting it.
+- No provider has yet been denied on track record alone (every `approve` so far is either thin evidence or an acceptable record -- nobody has crossed the deny bar yet).
+
+Merged with 1 open position on the book -- the owner explicitly said "just merge it" rather than wait for it to flatten, overriding the standing book-flat-before-merge rule by direct instruction. That rule was crossed once, deliberately, not silently relaxed going forward.
 
 ## Current AIDY runtime state — recovered / READY, multi-cycle verified
 
