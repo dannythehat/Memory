@@ -70,8 +70,14 @@ mandate achievable at all. An account that gets margin-called cannot be optimize
 - **No hindsight, ever.** A decision is judged on what was actually knowable at decision
   time (per the Decision Ledger). A finding is `unknown` until the evidence says otherwise
   — profit pressure is not a reason to round `unknown` up to `confident`.
-- **A book must be flat before any deploy branch merge**, per existing `SAFETY_RULES.md` in
-  both projects — this protects production, not process for its own sake.
+- **The "book must be flat before merge" rule was dropped by explicit owner instruction,
+  2026-09-17.** It had been treated as a standing gate all session (held PRs #184 and #185
+  on one open position); Danny first overrode it once ("just merge it") for #184, then said
+  directly for #185: *"Merge it.. nobody cares about open positions."* That is a general
+  instruction, not a one-off — merges are no longer held on open-position count. This does
+  not touch execution/risk-sizing changes, which get scrutiny on their own merits regardless;
+  it specifically stops treating a routine research-table PR's merge as gated by the state of
+  live trades it cannot affect.
 - **Paper and real execution are one pipeline, always.** Danny, 2026-09-17: *"I want you to
   treat paper or real exactly the same... We should not and will not have different
   pipelines for different balances that are connected."* Risk scales proportionally
