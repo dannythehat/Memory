@@ -75,6 +75,36 @@
     "broad_live_authority_enabled": false
   },
   "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window.",
+  "decision_ledger_v1": {
+    "status": "BUILT_PUSHED_NOT_MERGED_NOT_DEPLOYED",
+    "branch": "claude/codebase-architecture-review-mq0txl",
+    "based_on_trunk_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
+    "commits": {
+      "d72a628": "fix: skip alembic env.py fileConfig() under pytest (was clobbering caplog process-wide)",
+      "00deff4": "feat: AIDY Decision Ledger v1 -- migration 0088, engine, runner, runtime, main.py wiring, tests"
+    },
+    "pr_opened": false,
+    "pr_note": "No PR opened yet -- only opened when explicitly asked, per standing instruction.",
+    "new_tables": ["aidy_decisions", "aidy_decision_outcomes"],
+    "decision_classes_implemented_v1": ["approve", "deny", "hold_no_second_entry", "conflict_deny"],
+    "decision_classes_not_yet_implemented": ["close_early", "continue"],
+    "engine_kind": "deterministic_only_no_model_call_yet",
+    "engine_checks_in_order": ["duplicate_or_repost_within_15m", "opposite_direction_book_exposure_conflict", "provider_track_record_from_scoreboard"],
+    "track_record_thresholds": {
+      "minimum_resolved_trades": 20,
+      "deny_requires_both": {"avg_pnl_usd_lte": -3, "win_rate_pct_lte": 35}
+    },
+    "supersedes": ["provider_veto_counterfactual_decisions", "provider_veto_counterfactual_outcomes", "provider_management_counterfactual_decisions", "provider_management_counterfactual_outcomes"],
+    "supersedes_reason": "verified zero rows in all four before deciding to build fresh -- never wired up",
+    "safety": {
+      "append_only": "trigger_enforced",
+      "research_only": "CHECK_constrained_true",
+      "live_money_execution_allowed": "CHECK_constrained_false"
+    },
+    "conflict_duplicate_scope": "book_level_not_per_user -- per the 2026-09-17 one-pipeline (paper and real, any balance) directive",
+    "test_status": "full suite green, 0 failed, against fresh local PostgreSQL 16 (migrations 0001-0088 applied clean)",
+    "next_steps": ["open PR against feature/day-10-shared-telegram-sources when asked", "verify book flat before merge", "confirm deploy and that AidyDecisionRuntime is writing rows in production", "then: outcome/counterfactual scoring (item 2), scoreboard cohort dimensions (item 3), hypothesis registry (item 4), costed LLM reasoning proposal (item 5), graduated authority (item 6)"]
+  },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",
     "method": "Cross-checked AIDY D1 ground truth, Super Signals DB resolver progress, and full post-deploy logs -- not a single probe line.",
