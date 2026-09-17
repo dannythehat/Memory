@@ -72,6 +72,12 @@ mandate achievable at all. An account that gets margin-called cannot be optimize
   — profit pressure is not a reason to round `unknown` up to `confident`.
 - **A book must be flat before any deploy branch merge**, per existing `SAFETY_RULES.md` in
   both projects — this protects production, not process for its own sake.
+- **Paper and real execution are one pipeline, always.** Danny, 2026-09-17: *"I want you to
+  treat paper or real exactly the same... We should not and will not have different
+  pipelines for different balances that are connected."* Risk scales proportionally
+  (1% of whatever the actual funded balance is, whether €50 or €10,000) — never by tier or
+  by branching on account mode. Full detail and current verification in
+  `projects/super-signals/SAFETY_RULES.md`.
 
 Everything above was already true; this mandate does not touch it, and no future session
 should read "full access to everything" as having quietly overridden it. If that boundary
