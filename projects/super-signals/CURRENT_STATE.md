@@ -6,11 +6,19 @@ Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `3b376f750065177b6ce7389aceef919b624fc071`
+Verified source/deploy SHA: `9af8b47bdc2ea8a82c2ee1c4b3770305a2297473`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dalopceq1p3s739ufv90`
+Verified live deploy: `dep-dalpkreq1p3s739v7u5g`
 Deploy status: **live**
-Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions still credit-exhausted as of this deploy -- PR #185's `api`/`web` checks failed in ~2s each twice in a row, including after the one allowed re-run, the same no-runner-executed signature diagnosed earlier this session, not a real failure).
+Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier this session, not a real failure).
+
+## AIDY visibility layer — v1 live, both repos (2026-09-17)
+
+Investigated build item #4 (hypothesis registry) before building it and found it already exists: `provider_conditional_hypotheses`/`_runs`/`_results` (Day 13) -- 15,744 hypotheses preregistered with real Benjamini-Hochberg significance testing and out-of-sample gating, just barely fed (42 of 15,744 ever tested, 0 significant). A "needs more live evidence" problem, not a "needs code" problem -- building a second registry would have duplicated real, more rigorous work. Built the visibility layer instead, at the owner's direction ("keep building, get AIDY ready for launch").
+
+- **Backend** (`dannythehat/super-signals` PR #186): `GET /admin/aidy/overview`, owner/trading_admin gated (`activity.view` permission, same as the existing Day 35 control centre). Returns decision totals, per-class breakdown with net delta and resolution mix, top/bottom cohort standouts (min 15 resolved trades), hypothesis registry status. Read-only, no writes, no broker/OpenAI calls.
+- **Frontend** (`dannythehat/super-signals-website` PR #4): **https://smartsignals.site/admin-aidy** (not `/admin/aidy` -- see bug below). Same auth pattern as the existing `/complimentary` page.
+- **Real bug found and fixed before merge**: a custom `/admin/aidy` clean-route fought Cloudflare's own asset clean-URL handling (a `.html`-suffixed request auto-307s to the extension-stripped form, which is `/admin-aidy` matching the filename, not the nested path registered). Caught by actually curling the live preview deploy rather than trusting the code read -- `/admin/aidy` 307'd, `/account`/`/performance` didn't. Fixed by dropping the custom route entirely; `/admin-aidy` now resolves in one clean 200, verified against both the preview and production URLs post-merge.
 
 ## Book-flat-before-merge rule dropped (2026-09-17)
 
