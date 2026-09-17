@@ -6,11 +6,19 @@ Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `d036db3c97531747df590972afd94a4351b0e313`
+Verified source/deploy SHA: `3b376f750065177b6ce7389aceef919b624fc071`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dalokbnqj5pc73e5af6g`
+Verified live deploy: `dep-dalopceq1p3s739ufv90`
 Deploy status: **live**
-Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions still credit-exhausted as of this deploy -- PR #184's `api`/`web` checks failed in ~2s each, the same no-runner-executed signature diagnosed earlier this session, not a real failure).
+Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions still credit-exhausted as of this deploy -- PR #185's `api`/`web` checks failed in ~2s each twice in a row, including after the one allowed re-run, the same no-runner-executed signature diagnosed earlier this session, not a real failure).
+
+## Book-flat-before-merge rule dropped (2026-09-17)
+
+Danny, after already overriding it once for PR #184: *"Merge it.. nobody cares about open positions."* This is now a general instruction, not a one-off -- merges are no longer held on open-position count. Full detail: `OWNER_MANDATE.md`. Execution/risk-sizing changes still get scrutiny on their own merits; this specifically stops gating a routine research-table PR's merge on live trades it cannot affect.
+
+## Scoreboard cohort dimensions — v1 live (2026-09-17)
+
+PR #185 merged and deployed. New view `provider_trade_scoreboard_by_cohort` splits the same data `provider_trade_scoreboard` blends, by source, side, session (rough UTC-hour buckets) and weekday (Europe/Sofia). Verified against live production data immediately: `TDC V2 (NEW)` scores 100% win rate / +$608 net on London-session BUY signals posted on Fridays (29 resolved), while `GTMO VIP` scores 51.5% win rate / -$119 net on London-session BUY signals posted on Mondays (33 resolved) -- exactly the conditional pattern a blended number hides. Does not change what `aidy_decision_engine` reads today; wiring cohort evidence into a live decision is a separate step.
 
 ## Decision Ledger outcome scoring — v1 live, first real evidence in (2026-09-17)
 

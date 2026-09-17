@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T06:38:00Z",
+  "verified_at_utc": "2026-09-17T06:47:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "d036db3c97531747df590972afd94a4351b0e313",
+  "branch_head_sha": "3b376f750065177b6ce7389aceef919b624fc071",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalokbnqj5pc73e5af6g",
+    "deploy_id": "dep-dalopceq1p3s739ufv90",
     "deploy_status": "live",
     "auto_deploy": true,
-    "live_at_utc": "2026-09-17T06:37:20Z"
+    "live_at_utc": "2026-09-17T06:47:14Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -137,7 +137,21 @@
     "book_flat_check": "1 open position blocked the merge initially; owner said 'just merge it' rather than wait, so this was merged with the standing book-flat-before-merge rule explicitly overridden by direct owner instruction, not by default -- worth knowing this rule was crossed once, deliberately, not silently relaxed going forward",
     "github_actions_ci": "the 'api' and 'web' checks on PR #184 failed, but completed in ~2 seconds each -- the same no-runner-executed signature already diagnosed this session as GitHub Actions credits being exhausted, not a real code failure. Local full-suite validation (green) substituted for CI, consistent with how PR #183 was handled.",
     "test_status": "10 new tests (6 unit, 4 integration), full suite green",
-    "next_step": "scoreboard cohort dimensions (item 3) -- in progress"
+    "next_step": "scoreboard cohort dimensions (item 3) -- see scoreboard_cohorts_v1 below"
+  },
+  "scoreboard_cohorts_v1": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED",
+    "pr": 185,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/185",
+    "merged_into": "feature/day-10-shared-telegram-sources",
+    "merge_commit_sha": "3b376f750065177b6ce7389aceef919b624fc071",
+    "commit": "0ced549 -- migration 0089_provider_scoreboard_cohorts.py, tests",
+    "what_it_is": "New read-only view provider_trade_scoreboard_by_cohort: same underlying data as provider_trade_scoreboard, grouped by source_id, side, session (rough non-overlapping UTC-hour buckets: asia/london/london_new_york_overlap/new_york/late), and weekday (Europe/Sofia). Does not change what aidy_decision_engine reads today -- wiring cohort evidence into a live decision is a separate later step.",
+    "verified_by": "Queried the live view directly against production data post-migration: real, meaningful splits appeared immediately -- e.g. 'TDC V2 (NEW)' scores 100% win rate / +$608 net on London-session BUY signals posted on Fridays (29 resolved), while 'GTMO VIP' scores 51.5% win rate / -$119 net on London-session BUY signals posted on Mondays (33 resolved) -- exactly the kind of conditional pattern a blended scoreboard number hides.",
+    "book_flat_check": "Merged with 1 open position, per Danny's direct instruction ('Merge it.. nobody cares about open positions') -- this was the second time in one session, so it is now recorded in OWNER_MANDATE.md as a dropped rule, not a one-off exception.",
+    "github_actions_ci": "api/web checks failed again in ~2s, same signature; re-ran once (the allowed one re-run) and got the identical ~2s failure again, confirming this is account-level credit exhaustion, not a real or newly-introduced failure. Commented once on the PR per the drive-to-green rule.",
+    "test_status": "2 new tests, full suite green",
+    "next_step": "hypothesis registry (item 4) -- not yet started"
   },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",
