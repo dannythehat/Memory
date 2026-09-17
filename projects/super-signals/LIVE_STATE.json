@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T07:51:00Z",
+  "verified_at_utc": "2026-09-17T09:30:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "9af8b47bdc2ea8a82c2ee1c4b3770305a2297473",
+  "branch_head_sha": "e4ed35bf148a25f257c232e5204ea36e2008c715",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalpkreq1p3s739v7u5g",
+    "deploy_id": "dep-dalr3deq1p3s73a0o9v0",
     "deploy_status": "live",
     "auto_deploy": true,
-    "live_at_utc": "2026-09-17T07:47:32Z"
+    "live_at_utc": "2026-09-17T09:26:20Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -183,6 +183,48 @@
       "deploy_verified": "curl against https://smartsignals.site/admin-aidy post-merge"
     },
     "test_status": "2 new backend tests (real Postgres), full suite green; no test runner exists in the website repo -- verified via HTML tag balance, node --check on the extracted inline JS, and live curl checks against the actual deployed preview and production URLs instead"
+  },
+  "provider_coverage_v1": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED_BOTH_REPOS",
+    "why_built": "Owner looked at the live AIDY overview dashboard and asked: 'Why is the skills so low? We have 38 traders no? Why isn't Aidy studying them all?' Investigated with direct SQL against production rather than guessing.",
+    "real_finding": "AIDY was already deciding on 41 of 63 connected sources (46 have trade history at all, 41 have both AIDY decisions and scored trades). The dashboard looked thin because the cohort-standouts table requires 15+ resolved trades in one specific side+session+weekday slice (70 possible slices per provider) -- almost nothing clears that floor yet, so ~36 of the 41 actively-decided providers were invisible even though AIDY was processing them. This was a dashboard display-threshold gap, not an actual coverage gap in AIDY's decisioning.",
+    "top_10_providers_by_volume_snapshot_20260917": [
+      {"provider": "TIG's Asia Trades"},
+      {"provider": "TDC V2 💎 (NEW)"},
+      {"provider": "FXTradingVision"},
+      {"provider": "TRADE GLOBAL", "win_rate_pct": 36.6, "net_pnl_usd": -1351.26},
+      {"provider": "Smart Signals"},
+      {"provider": "GTMO VIP"},
+      {"provider": "Scalping"},
+      {"provider": "FREE TRADİNG SİGNALS"},
+      {"provider": "XAUUSD SIGNALS"},
+      {"provider": "GOLDHUNTER | PAUL", "win_rate_pct": 78.6, "net_pnl_usd": 1605.31}
+    ],
+    "spread_note": "Real net P&L spread across named providers ranges from -$1,351.26 (TRADE GLOBAL, 36.6% win rate) to +$1,605.31 (GOLDHUNTER, 78.6% win rate) -- confirms AIDY is genuinely differentiating between providers, not producing flat/undifferentiated output.",
+    "backend": {
+      "repo": "dannythehat/super-signals",
+      "pr": 187,
+      "pr_url": "https://github.com/dannythehat/super-signals/pull/187",
+      "merge_commit_sha": "e4ed35bf148a25f257c232e5204ea36e2008c715",
+      "adds": "CoverageSummary (total_sources, sources_with_observations, sources_with_decisions) and ProviderCoverage (per-provider blended, not cohort-sliced: decision_count, trades_resolved, win_rate_pct, net_pnl_usd, scored_coverage_pct) on the existing GET /admin/aidy/overview endpoint",
+      "sql_note": "Coverage totals use independent subqueries, not one combined join -- a single join across sources/provider_trade_observations/aidy_decisions/provider_trade_scoreboard_by_cohort timed out at 36k+ observation rows in production.",
+      "deploy": {
+        "render_deploy_id": "dep-dalr3deq1p3s73a0o9v0",
+        "status": "live",
+        "live_at_utc": "2026-09-17T09:26:20Z"
+      },
+      "test_status": "1 new integration test (provider with a decision but no cohort standout still appears in the provider list), full suite green"
+    },
+    "frontend": {
+      "repo": "dannythehat/super-signals-website",
+      "pr": 5,
+      "pr_url": "https://github.com/dannythehat/super-signals-website/pull/5",
+      "merge_commit_sha": "9aec4e4f354b60ec80536cbe8120133b8373ba25",
+      "url": "https://smartsignals.site/admin-aidy",
+      "adds": "coverage stat row (total sources / sources with observations / sources with decisions) and a new 'every provider AIDY has decided on' table, blended not cohort-sliced, so all 41 active providers show up",
+      "also_fixed_this_pr": "mobile layout -- owner sent phone screenshots showing tables cut off mid-column ('Bit shit isn't it'). Tables now stack as label:value cards below 640px. Verified with Playwright at a real 390px viewport before and after, not just a curl 200 check -- the original bug had shipped past a curl-only check that never actually rendered the page.",
+      "deploy_verified": "curl against https://smartsignals.site/admin-aidy post-merge confirmed data-providers/data-total-sources/data-sources-observed/data-sources-decided/renderProviders and the max-width:640px mobile CSS are all present in the live page"
+    }
   },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",
