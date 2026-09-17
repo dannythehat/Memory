@@ -1,20 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-16T18:21:21Z",
+  "verified_at_utc": "2026-09-17T04:00:37Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "d3f3f8898ff85c3235875bd298d51066f0f5a82e",
+  "branch_head_sha": "356dfcf1801f70c786ff7fa2de38ce88d55ec071",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-daldpg8igmls73bl6as0",
+    "deploy_id": "dep-dalma2gae00c739qlul0",
     "deploy_status": "live",
     "auto_deploy": true,
-    "same_code_sha_redeploy": true,
-    "internal_health_checks_after_redeploy": "HTTP 200"
+    "live_at_utc": "2026-09-17T04:00:25Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -27,24 +26,27 @@
     "provider_lab_supervisor_interval_seconds": 60,
     "weekend_freeze_respected": true,
     "broker_authority_granted_by_watchdog": false,
-    "current_context_ready": false,
-    "current_error": "AidyContextTerminalMiss",
-    "upstream_health_cause": "AIDY market capture fresh but Provider Context stale"
+    "resolver_loop_started_utc": "2026-09-17T04:00:26Z",
+    "current_context_ready": true,
+    "last_ready_probe_utc": "2026-09-17T04:00:37Z",
+    "context_lag_seconds_at_probe": 196,
+    "current_error": null,
+    "post_deploy_pit_context_stale_observed": false
   },
-  "aidy_upstream_recovery": {
-    "repo": "dannythehat/Aidy-Gold-Signals",
-    "open_pr": 133,
-    "pr_head_sha": "01c6a955c5c7c513a6db86f70cdc2e7d146ea246",
-    "external_acceptance": {
-      "focused_tests_passed": 33,
-      "full_tests_passed": 1270,
-      "ruff": "pass",
-      "compile": "pass"
-    },
-    "production_verified": false,
-    "ruleset_id": 22096458,
-    "required_checks_blocked_by_actions_credit_outage": true,
-    "owner_reported_actions_constraint": "GitHub Actions credits exhausted for approximately one week"
+  "aidy_m1_transport_recovery": {
+    "production_sha": "356dfcf1801f70c786ff7fa2de38ce88d55ec071",
+    "status": "LIVE_VERIFIED",
+    "bounded_retry_enabled": true,
+    "retry_conditions": [
+      "connect_timeout",
+      "read_timeout",
+      "connection_error",
+      "protocol_error",
+      "http_429",
+      "http_5xx"
+    ],
+    "backoff": "bounded_exponential",
+    "purpose": "prevent a single transient AIDY M1 transport failure from terminating the resolution cycle"
   },
   "execution_contract": {
     "instrument": "XAUUSD",
@@ -55,7 +57,7 @@
     "aidy_live_money_execution_authority": false
   },
   "decision_intelligence_direction": {
-    "start_condition": "AIDY Provider Context production health restored",
+    "start_condition": "satisfied_provider_context_production_ready",
     "shadow_decision_for_every_eligible_trade": true,
     "decision_classes": [
       "approve",
@@ -71,5 +73,5 @@
     "authority_graduated_by_class": true,
     "broad_live_authority_enabled": false
   },
-  "notes": "Super Signals remains live on the same d3f3f889 code after a same-SHA redeploy; internal /health checks returned 200. Upstream AIDY Provider Context remains NOT_READY."
+  "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window."
 }
