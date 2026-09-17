@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T09:30:00Z",
+  "verified_at_utc": "2026-09-17T09:53:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "e4ed35bf148a25f257c232e5204ea36e2008c715",
+  "branch_head_sha": "45d49a0d3ed8b3631f81f7c84b71ffe224439a50",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalr3deq1p3s73a0o9v0",
-    "deploy_status": "live",
+    "deploy_id": "dep-dalrfbfqj5pc73e7um3g",
+    "deploy_status": "healthy_migration_0090_applied",
     "auto_deploy": true,
-    "live_at_utc": "2026-09-17T09:26:20Z"
+    "verified_by": "queried alembic_version=0090_aidy_reasoning_annotations and to_regclass('aidy_reasoning_annotations') directly against production Postgres, plus /health returning 200 healthy, post-deploy 2026-09-17T09:53Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -225,6 +225,29 @@
       "also_fixed_this_pr": "mobile layout -- owner sent phone screenshots showing tables cut off mid-column ('Bit shit isn't it'). Tables now stack as label:value cards below 640px. Verified with Playwright at a real 390px viewport before and after, not just a curl 200 check -- the original bug had shipped past a curl-only check that never actually rendered the page.",
       "deploy_verified": "curl against https://smartsignals.site/admin-aidy post-merge confirmed data-providers/data-total-sources/data-sources-observed/data-sources-decided/renderProviders and the max-width:640px mobile CSS are all present in the live page"
     }
+  },
+  "aidy_reasoning_engine_v1": {
+    "status": "MERGED_DEPLOYED_HEALTHY_DISABLED_BY_DEFAULT",
+    "why_built": "Owner: 'I'm not bothered about the hub yet, I'm more bothered about getting Aidy running and making him smart.' Investigated why the existing Day 13/14 conditional-hypothesis registry (AIDY's real statistical learning engine) is stuck WAITING-FOR-FORWARD-EVIDENCE with tested_hypothesis_count=0 on the latest production run -- see day13_day14_evidence_starvation_diagnosis below. That is a genuine wait-for-evidence situation (self-healing, not a bug to fix). This PR is the more direct, immediate answer: aidy_decision_engine.py's own docstring says a real model call per signal 'is not switched on silently' -- so it never had one. This gives AIDY that first real reasoning call.",
+    "pr": 188,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/188",
+    "merge_commit_sha": "45d49a0d3ed8b3631f81f7c84b71ffe224439a50",
+    "what_it_does": "AidyReasoningEngine calls OpenAI's Responses API (same pattern as the existing Telegram message-interpretation supervisor: gpt-5-mini, strict JSON schema, store=false) with a signal's own entry/stop/take-profit geometry plus the deterministic decision already made, and returns lean (agree/caution/disagree), confidence and a rationale on whether the geometry itself is disciplined. Additive only -- never changes aidy_decisions.decision_class, nothing in the execution path reads it, same research_only=true/live_money_execution_allowed=false CHECK-constrained + append-only-trigger contract as every other AIDY table (migration 0090).",
+    "scope_v1": "Only approve decisions reasoned insufficient_track_record_evidence -- the exact case where the deterministic engine has nothing left to say. Bounds cost naturally on top of an explicit monthly $ budget gate (AidyReasoningRunner, reusing the existing ResourceBudget/ResourceUsage primitives from provider_day19_explainer_budget.py) that stops making calls once exhausted rather than ever guessing to save one.",
+    "ships_disabled": "AIDY_REASONING_ENGINE_ENABLED defaults to '0' -- merging this PR started no real spend. Turning it on is one Render env var the owner sets deliberately. Default budget when enabled: soft $120 / hard $180 per month, inside the owner's pre-authorized ~EUR200/month new-spend ceiling. Model default gpt-5-mini-2025-08-07 (cheapest reasoning tier, matches the existing message supervisor's default).",
+    "deploy": {
+      "render_deploy_id": "dep-dalrfbfqj5pc73e7um3g",
+      "verified_by": "alembic_version=0090_aidy_reasoning_annotations and to_regclass('aidy_reasoning_annotations') queried directly against production Postgres; /health returned 200 healthy post-deploy 2026-09-17T09:53Z"
+    },
+    "test_status": "4 new unit tests (strict schema parsing, invalid lean rejected not guessed, malformed/HTTP-error responses raise not fabricate, api key required -- no real network calls) + 6 new integration tests against real Postgres (selection scope, already-annotated never reselected, failed call not persisted and retryable, exhausted budget skips pass with zero model calls, append-only trigger rejects update), full suite green, ruff clean.",
+    "next_step": "Owner needs to explicitly decide to flip AIDY_REASONING_ENGINE_ENABLED=1 (and confirm OPENAI_API_KEY is set on the Render service) before any real reasoning calls or spend happen. Not done automatically by this session per the 'not switched on silently' principle already established in aidy_decision_engine.py."
+  },
+  "day13_day14_evidence_starvation_diagnosis": {
+    "found_while": "Investigating why Day 13's conditional-hypothesis registry (15,360+ preregistered hypotheses across the 40-provider shadow-discovery population) is still nearly untested, in response to the owner wanting AIDY to actually get smarter.",
+    "real_finding_not_a_wiring_bug": "provider_day13_runtime and provider_day14_governance DO run on every single deploy (scripts/render-start.sh backgrounds them before uvicorn starts) -- this was verified directly against production: provider_conditional_runs has a new row at every one of today's ~8 deploy timestamps. The actual bottleneck is upstream: of ~734 shadow-provider candidate signals eligible for AIDY context attachment, 702 got a permanent pit_context_stale terminal miss (by design, never retried -- 'a proven historical miss cannot become PIT-valid later without rewriting history') and only 82 got a real attachment.",
+    "root_cause": "pit_context_stale is AIDY's own server (HTTP 409) declaring it has no valid point-in-time market snapshot for that exact historical minute -- not a Super Signals-side transport flake (the earlier-this-session M1 bounded-retry/backoff patch does not touch this 409 path, which was never retryable by design). The 702 stale misses all predate 2026-09-16T22:46Z; zero new stale misses have occurred since, and attachments have flowed normally since then (82 total, latest one 2026-09-17T09:16Z) -- this lines up exactly with AIDY's own snapshot-cadence recovery already recorded in continuous_health_verification below (53/53 complete D1 snapshots from 00:02Z onward). The historical damage is real and permanent by the system's own PIT-safety design; going forward it is healthy and self-healing.",
+    "conclusion": "Day 13/14 are correctly reporting WAITING-FOR-FORWARD-EVIDENCE, not broken. Given how fine-grained the preregistered cells are (side x session x regime_dimension x regime_value x duration_bucket -- 384 cells per provider, each needing 30+ forward observations on both sides of the cell), meaningful statistical results here are a multi-month proposition even with AIDY now healthy, not a code fix. Not touched this session -- MINIMUM_OOS_N/PROPOSED_FDR_Q/PROPOSED_MIN_EFFECT_R are explicitly PROPOSED_UNAPPROVED and changing them is a real statistical-methodology call for the owner, not a routine engineering one. Built aidy_reasoning_engine_v1 (above) instead as the more direct lever for 'making AIDY smart' in the near term.",
+    "live_money_impact": "none -- research_only=True end to end throughout this diagnosis, no code changed in provider_day13_conditional.py, provider_day14_runtime.py, or provider_context_attachment.py"
   },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",

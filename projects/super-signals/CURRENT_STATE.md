@@ -6,10 +6,10 @@ Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `e4ed35bf148a25f257c232e5204ea36e2008c715`
+Verified source/deploy SHA: `45d49a0d3ed8b3631f81f7c84b71ffe224439a50`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dalr3deq1p3s73a0o9v0`
-Deploy status: **live**
+Verified live deploy: `dep-dalrfbfqj5pc73e7um3g`
+Deploy status: **healthy, migration 0090 applied** (verified directly against production Postgres + `/health` 200)
 Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier this session, not a real failure).
 
 ## AIDY blind Gold learning exam — in build, research-only (2026-09-17)
@@ -30,6 +30,14 @@ Investigated build item #4 (hypothesis registry) before building it and found it
 
 - **Backend** (`dannythehat/super-signals` PR #186): `GET /admin/aidy/overview`, owner/trading_admin gated (`activity.view` permission, same as the existing Day 35 control centre). Returns decision totals, per-class breakdown with net delta and resolution mix, top/bottom cohort standouts (min 15 resolved trades), hypothesis registry status. Read-only, no writes, no broker/OpenAI calls.
 - **Frontend** (`dannythehat/super-signals-website` PR #4): **https://smartsignals.site/admin-aidy** (not `/admin/aidy`). Same auth pattern as the existing `/complimentary` page.
+
+## AIDY reasoning engine — v1 live, disabled by default (2026-09-17)
+
+Owner redirect: *"I'm not bothered about the hub yet, I'm more bothered about getting Aidy running and making him smart."* Investigated the deeper question first: why is Day 13's conditional-hypothesis registry (AIDY's actual statistical learning engine, 15,360+ preregistered hypotheses) still basically untested (`tested_hypothesis_count=0` on the latest production run)? Real finding, verified directly against production: it runs on every deploy as designed, but 702 of ~734 candidate shadow-provider signals got a permanent `pit_context_stale` miss (AIDY's own server saying it has no valid historical market snapshot for that exact minute) — all from *before* AIDY's snapshot-cadence recovery already recorded above (`continuous_health_verification`). Zero new misses since 2026-09-16T22:46Z; evidence has been flowing normally since. **This is a genuine wait-for-evidence situation, not a bug** — the historical gap is permanent by the system's own point-in-time-safety design, but it's healthy and self-healing going forward. Given how fine-grained the preregistered cells are (384 per provider, each needing 30+ forward observations both sides), meaningful results here are realistically a multi-month proposition even now that AIDY is healthy. Full detail: `LIVE_STATE.json` → `day13_day14_evidence_starvation_diagnosis`.
+
+Given that, shipped the more direct lever instead: `aidy_decision_engine.py`'s own docstring already said a real model call per signal "is not switched on silently" — so it never had one. **PR #188** (merged `45d49a0d3ed8b3631f81f7c84b71ffe224439a50`) adds `AidyReasoningEngine`: one OpenAI call (same pattern as the existing Telegram message-interpretation supervisor — `gpt-5-mini`, strict JSON schema) per `approve` decision reasoned `insufficient_track_record_evidence` — the exact case where the deterministic engine has nothing left to say. Reads the signal's own entry/stop/target geometry and returns a lean (agree/caution/disagree), confidence and rationale. Purely additive: never changes `aidy_decisions.decision_class`, same `research_only`/no-live-authority contract as every other AIDY table (migration 0090, append-only). **Ships disabled** — `AIDY_REASONING_ENGINE_ENABLED` defaults to `"0"`, so merging started no real spend; an explicit monthly budget gate (soft $120/hard $180, inside the owner's pre-authorized ~€200/month ceiling) is enforced whenever it is turned on. Full detail: `LIVE_STATE.json` → `aidy_reasoning_engine_v1`.
+
+**Next owner decision needed:** flip `AIDY_REASONING_ENGINE_ENABLED=1` on the Render service (and confirm `OPENAI_API_KEY` is set there) whenever ready to let AIDY actually start reasoning about signals, not just counting them.
 
 ## Provider coverage — v1 live, both repos (2026-09-17)
 
