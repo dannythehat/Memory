@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T04:25:00Z",
+  "verified_at_utc": "2026-09-17T05:45:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
+  "branch_head_sha": "acbe35a1b959206f07dde306404f012968d07e54",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalma2gae00c739qlul0",
+    "deploy_id": "dep-dalnocp5efls73bleqog",
     "deploy_status": "live",
     "auto_deploy": true,
-    "live_at_utc": "2026-09-17T04:00:25Z"
+    "live_at_utc": "2026-09-17T05:38:15Z"
   },
   "quality_gate": {
     "passed": 989,
@@ -74,17 +74,29 @@
     "authority_graduated_by_class": true,
     "broad_live_authority_enabled": false
   },
-  "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window.",
+  "notes": "AIDY M1 transport resilience patch is live. Provider Lab resolver restarted and Provider Context returned READY after deployment. No new AIDY error or pit_context_stale event was observed in the checked post-deploy window. PR #183 (Decision Ledger v1) merged and deployed 2026-09-17T05:38Z -- see decision_ledger_v1 below for the verified live status.",
   "decision_ledger_v1": {
-    "status": "BUILT_PUSHED_NOT_MERGED_NOT_DEPLOYED",
-    "branch": "claude/codebase-architecture-review-mq0txl",
+    "status": "MERGED_DEPLOYED_LIVE_PRODUCING_DECISIONS",
+    "branch": "claude/codebase-architecture-review-mq0txl (merged, now stale -- do not build on it further; open a fresh branch of the same name from trunk for the next chunk, per the repo's established pattern)",
     "based_on_trunk_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
+    "merge_commit_sha": "acbe35a1b959206f07dde306404f012968d07e54",
+    "pr": 183,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/183",
+    "merged_into": "feature/day-10-shared-telegram-sources",
     "commits": {
       "d72a628": "fix: skip alembic env.py fileConfig() under pytest (was clobbering caplog process-wide)",
       "00deff4": "feat: AIDY Decision Ledger v1 -- migration 0088, engine, runner, runtime, main.py wiring, tests"
     },
-    "pr_opened": false,
-    "pr_note": "No PR opened yet -- only opened when explicitly asked, per standing instruction.",
+    "deploy": {
+      "render_deploy_id": "dep-dalnocp5efls73bleqog",
+      "status": "live",
+      "live_at_utc": "2026-09-17T05:38:15Z",
+      "app_restarted_and_migrated_utc": "2026-09-17T05:40:41Z",
+      "application_startup_complete_utc": "2026-09-17T05:41:11Z",
+      "verified_by": "AidyDecisionRuntime's first production pass completed and logged 'decided 1241/1241' at 2026-09-17T05:43:33Z -- not just a deployed-and-idle flag, confirmed actually writing rows to aidy_decisions",
+      "no_new_errors_introduced": "confirmed -- the only error-level log line post-deploy (PROVIDER_DAY14_GOVERNANCE_ERROR=RuntimeError:day13_preregistration_boundary_not_frozen) is the pre-existing, already-documented Day 14 governance issue from PR #182, not a regression from this change",
+      "health_endpoint": "/health returning steady 200 OK post-deploy"
+    },
     "new_tables": ["aidy_decisions", "aidy_decision_outcomes"],
     "decision_classes_implemented_v1": ["approve", "deny", "hold_no_second_entry", "conflict_deny"],
     "decision_classes_not_yet_implemented": ["close_early", "continue"],
@@ -103,7 +115,7 @@
     },
     "conflict_duplicate_scope": "book_level_not_per_user -- per the 2026-09-17 one-pipeline (paper and real, any balance) directive",
     "test_status": "full suite green, 0 failed, against fresh local PostgreSQL 16 (migrations 0001-0088 applied clean)",
-    "next_steps": ["open PR against feature/day-10-shared-telegram-sources when asked", "verify book flat before merge", "confirm deploy and that AidyDecisionRuntime is writing rows in production", "then: outcome/counterfactual scoring (item 2), scoreboard cohort dimensions (item 3), hypothesis registry (item 4), costed LLM reasoning proposal (item 5), graduated authority (item 6)"]
+    "next_steps": ["outcome/counterfactual scoring (item 2)", "scoreboard cohort dimensions (item 3)", "hypothesis registry (item 4)", "costed LLM reasoning proposal to owner (item 5)", "graduated authority (item 6)"]
   },
   "continuous_health_verification": {
     "verified_at_utc": "2026-09-17T04:25:00Z",
