@@ -1,5 +1,7 @@
 # Super Signals — Current State
 
+> **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
+
 Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/super-signals`

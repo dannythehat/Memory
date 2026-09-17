@@ -1,17 +1,24 @@
 # AIDY — Current State
 
-Last verified: **2026-09-16**
+> **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
+
+Last verified: **2026-09-17**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
 Verified source `main` SHA: `0a6230e606282dca97675d63117c4d24dcc38120`
 Live Worker: `aidy-signals-test`
 
-## Current production status — RED / degraded
+## Current production status — HEALTHY, multi-cycle verified
 
-AIDY market capture is running and fresh, but Provider Context is still stale because the newly merged recovery code has not yet been deployed to Cloudflare.
+The 16 September `stale_provider_context` state is resolved and deployed. Verified not by
+a single startup probe but by 53 consecutive `complete` market snapshots (zero `partial`)
+across 4+ hours on 2026-09-17 — see
+`projects/super-signals/handovers/2026-09-17-continuous-health-verification.md` for the
+full cross-system evidence (AIDY D1 ground truth, Super Signals resolver progress, log
+window, live health check).
 
-Latest verified Worker health before deployment:
+Live Worker health as of last check:
 
 - runtime: `cloudflare-workers`
 - scheduler: `direct-cron`
@@ -19,20 +26,10 @@ Latest verified Worker health before deployment:
 - market source: `twelve_data`
 - market ownership: `public_independent`
 - `formal_forward_enabled=false`
-- latest scheduled capture success: `2026-09-16T18:22:09.331000+00:00`
-- capture lag at check: **88 seconds**
-- latest accepted Provider Context snapshot: `2026-09-15T20:57:36.761999+00:00`
-- Provider Context lag at check: **77,161 seconds**
+- `data_health.status`: `fresh`
+- `provider_context_snapshot_lag_seconds`: ~150 (fresh, well under the 10-minute cutoff)
 
-Active health failure remains:
-
-`stale_provider_context`
-
-Reason:
-
-`market capture is fresh but complete Provider Context is stale or missing`
-
-Do not describe AIDY as fully healthy until the merged recovery is deployed and production-verified.
+No known active health failure.
 
 ## PR #133 — MERGED
 
@@ -58,33 +55,31 @@ Safety boundary independently checked:
 - Provider Context keeps `live_money_execution_allowed=false` hardcoded/unconditional.
 - Formal forward keeps its own separate untouched complete-snapshot gate in `forward_live_observer.py`.
 
-## GitHub ruleset state during recovery
+## GitHub ruleset state during recovery — resolved
 
-Ruleset `Protect main` id `22096458` was temporarily edited by the owner so the unavailable GitHub Actions required-check rule no longer blocked the merge.
+Ruleset `Protect main` id `22096458` was temporarily edited by the owner (Claude has no
+ruleset-read/write tool in this environment — confirmed directly by a failed `merge_pull_request`
+attempt returning `405` citing the required-check rule, with no admin-bypass path through the
+merge API either) so the unavailable GitHub Actions required-check rule no longer blocked
+merging PR #133. Deletion protection, force-push protection and the pull-request requirement
+stayed active throughout.
 
-Immediately before merge, the ruleset still preserved:
+## Recovery actions — all complete, verified 2026-09-17
 
-- enforcement active
-- deletion protection active
-- non-fast-forward / force-push protection active
-- pull-request requirement active
-
-Only the required-status-check rule was removed for the merge because GitHub Actions credits are exhausted for approximately one week.
-
-The required status-check protection should now be restored by the owner. If re-enabled during the credit outage, future PRs will remain intentionally blocked until Actions capacity returns.
-
-## Remaining recovery actions
-
-1. Restore `Require status checks to pass` in `Protect main`, preserving the two original checks if GitHub presents them:
-   - `Evidence Semantic Change Gate / classify-protected-diff`
-   - `AIDY Day 53 Twelve Data OHLC Adapter / acceptance`
-2. Deploy `main` commit `0a6230e606282dca97675d63117c4d24dcc38120` to the canonical Cloudflare Worker.
-3. Deployment must preserve `* * * * *` direct Cron, capture ON, Twelve Data/public-independent ownership and `AIDY_FORMAL_FORWARD_ENABLED=false`.
-4. Verify Cloudflare schedule state after deploy.
-5. Verify `/health` no longer reports stale Provider Context.
-6. Verify a genuinely current Super Signals provider signal receives current AIDY context instead of `pit_context_stale`.
-
-Current ChatGPT tooling has no authenticated Cloudflare write/deploy route. The Worker must therefore be deployed from an owner-authenticated Cloudflare/Wrangler session.
+1. Required-status-check protection: restored by the owner.
+2. `main` commit `0a6230e606282dca97675d63117c4d24dcc38120` deployed to the canonical Worker
+   via `.github/workflows/aidy-provider-research-read-deploy.yml` once Actions capacity
+   returned — not a direct Cloudflare/Wrangler session; that workflow is the deploy path,
+   and it ran successfully. Confirmed by reading the deployed Worker source directly
+   (`workers_get_worker_code`): it contains `aidy_provider_context_api_v2` and
+   `intraday_complete_d1_missing`, the exact PR #133 markers.
+3. Deploy preserved `* * * * *` direct Cron, capture ON, Twelve Data/public-independent
+   ownership and `AIDY_FORMAL_FORWARD_ENABLED=false` — asserted by the deploy workflow itself
+   and independently confirmed live.
+4. Cloudflare schedule state verified post-deploy.
+5. `/health` confirmed `data_health.status: fresh`, no `stale_provider_context`.
+6. Super Signals confirmed receiving current AIDY context across 53 consecutive cycles — see
+   `projects/super-signals/handovers/2026-09-17-continuous-health-verification.md`.
 
 ## New central product direction — decision intelligence
 
@@ -132,4 +127,4 @@ Each authority class requires an audit trail, kill switch, prospective evidence 
 
 ## Session rule
 
-Read the 16 September handover first, then verify the current AIDY repo, Worker health and Super Signals production state. Source/runtime truth overrides Memory if it has advanced.
+Read `OWNER_MANDATE.md` first, then verify the current AIDY repo, Worker health and Super Signals production state directly. Source/runtime truth overrides Memory if it has advanced.
