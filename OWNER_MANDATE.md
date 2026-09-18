@@ -90,6 +90,48 @@ should read "full access to everything" as having quietly overridden it. If that
 ever needs to move, it moves because Danny says so explicitly, in this same direct way he
 gave this mandate — not because it would help hit a number faster.
 
+## Expanded AIDY standard — 2026-09-19
+
+Danny and ChatGPT aligned on the next destination for AIDY. This is now part of the standing
+product mandate:
+
+- If Gold makes an abnormal move, AIDY should investigate and explain the most likely
+  mechanism from point-in-time evidence: rates/real yields, USD, macro surprise, policy
+  repricing, geopolitical risk, volatility, positioning/flows, liquidity, stop cascades,
+  session transition or technical momentum. It must distinguish evidence from plausible
+  but unproven narrative.
+- If a trade fails, AIDY should classify the failure rather than merely record a loss:
+  direction, entry, timing, stop geometry, stale signal, provider-management error, regime
+  change, scheduled/breaking event, liquidity/spread/slippage, or a valid positive-EV trade
+  that simply lost.
+- Liquidity and execution quality are first-class evidence. Session, spread, slippage,
+  signal age, distance from intended entry, volatility expansion/compression, opening
+  ranges, previous-session extremes, MFE/MAE and stop/target path all belong in the learning
+  surface where reliable data exists.
+- Profit extraction matters as much as entry selection. AIDY must study whether provider
+  exits, break-even moves, partials, runners and stop adjustments leave money on the table,
+  and measure counterfactual alternatives without hindsight leakage.
+- Historical analogues must be regime-matched, point-in-time safe and distributional. AIDY
+  must not claim that one visually similar chart proves a setup.
+- Provider quality is conditional, not a single score. AIDY should learn side, session,
+  weekday, entry type, re-entry, management, volatility, news/event and regime-specific
+  strengths and weaknesses.
+- AIDY needs an explicit unknowns engine. When the evidence cannot explain a move or support
+  a provider-specific claim, the correct answer is UNKNOWN, together with the missing
+  evidence needed to reduce that uncertainty.
+- Every provider-specific statement in a decision rationale must be evidence-addressable:
+  exact field/value, sample size and point-in-time profile version. The model is not allowed
+  to invent a claim such as "BUY is weaker" when no BUY sample exists.
+- New features are admitted by measured incremental forward value, not sophistication.
+  A simpler rule beats a more complex model if the evidence says so.
+- AIDY must be allowed to abstain. "No trade" is a first-class successful decision when
+  uncertainty, event risk, execution quality or expected value is insufficient.
+- The destination is a Gold specialist that understands the market independently and treats
+  Telegram providers as one source of human alpha, not as ground truth.
+
+This expansion does not change the live-money boundary: build/research/shadow freely,
+but live-money authority remains separately graduated and explicitly approved.
+
 ## How Claude reports back under this mandate
 
 Per Danny's own words: *"You always should have access to his understanding, reasoning and
