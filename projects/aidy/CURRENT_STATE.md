@@ -81,6 +81,30 @@ stayed active throughout.
 6. Super Signals confirmed receiving current AIDY context across 53 consecutive cycles — see
    `projects/super-signals/handovers/2026-09-17-continuous-health-verification.md`.
 
+## Approved next build — Master Gold Intelligence
+
+Owner and ChatGPT aligned on 2026-09-19 that AIDY's destination is a full Gold specialist,
+not merely a provider scorer. The detailed build/test contract is now pinned at
+`projects/aidy/MASTER_GOLD_INTELLIGENCE_BUILD.md`.
+
+Core new requirements:
+
+- explain abnormal Gold moves from point-in-time evidence and distinguish known mechanism
+  from plausible narrative;
+- attribute trade failures without hindsight storytelling;
+- treat liquidity/execution quality, MFE/MAE and profit extraction as first-class learning;
+- match historical setups by regime and outcome distribution, not visual similarity;
+- learn provider edge conditionally by side/session/regime/management/event state;
+- require every provider-specific rationale claim to be evidence-addressable;
+- maintain an explicit UNKNOWN state and learn what evidence is missing;
+- add breaking-news/event intelligence, but only as a qualified context mechanism;
+- move toward calibrated probabilities/expected value and measure whether TAKE/REDUCE/HOLD/
+  REJECT/NO-TRADE decisions actually improve counterfactual value;
+- continuously ablate features and remove complexity that does not add forward value.
+
+Architecture boundary remains unchanged: AIDY market/research stays separate from Super
+Signals broker execution; AIDY live-money authority remains OFF until separately graduated.
+
 ## New central product direction — decision intelligence
 
 Once Provider Context is healthy, AIDY should begin producing a shadow decision for every eligible Super Signals provider trade.
