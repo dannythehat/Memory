@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-18T04:29:00Z",
+  "verified_at_utc": "2026-09-18T12:35:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "7b44e243517231bcea435dbea2be9691002ef2f9",
+  "branch_head_sha": "dedc6cba498d1c253970578ba3852364de926443",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dambqtbtqb8s73bj0vng",
-    "deploy_status": "healthy_migration_0097_applied",
+    "deploy_id": "dep-damehgfgejbc7385hgg0",
+    "deploy_status": "live",
     "auto_deploy": true,
-    "verified_by": "queried alembic_version=0097_aidy_reasoning_tool_calls directly against production Postgres, /health 200 OK, no errors from any new code in app logs. Same recurring alembic 'Can't locate revision' artifact as prior deploys tonight, from a stale old instance's dying restart racing the new one -- harmless, confirmed the pattern predates this specific deploy. NOTE: the underlying intermittent restart-loop (instance_count flapping 0/1 every few minutes) that this session attributed earlier tonight to a lapsed Render payment method is STILL observed as of this deploy (04:27-04:29Z window) -- not confirmed resolved, flagged back to the owner."
+    "verified_by": "list_deploys/get_deploy confirm status=live for dep-damehgfgejbc7385hgg0 (PR #206). App-log scan of the live window (07:31Z onward, level error/warning) shows no errors referencing aidy_reasoning_runtime, market_context, the calendar feed, or FINNHUB -- only pre-existing MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings already documented elsewhere, plus two unrelated errors in a different subsystem (telegram_publisher_day34_cutover group-logger cycle failure, telegram_listener_canonical broker dispatch failure) not investigated this pass. Confirmed via grep of deployed source: FINNHUB_API_KEY (set on Render, verified-valid key) is not read by any shipped code -- only reference anywhere in the codebase is an explanatory docstring in aidy_economic_calendar_client.py. NOTE: the underlying intermittent restart-loop (instance_count flapping 0/1) attributed earlier to a lapsed Render payment method was last observed 04:27-04:29Z and was NOT re-checked this pass -- still not confirmed resolved. NOTE: deploys for PRs #203/#204/#205/#206 landed between this session's own PR #202 and this verification pass, evidently from a separate concurrent session this session has no transcript context for -- see the gap note in CURRENT_STATE.md; not verified beyond deploy history + this clean log scan."
   },
   "quality_gate": {
     "passed": 989,
@@ -444,5 +444,38 @@
     "does_not_change": "aidy_decision_engine.py or any execution path. Still research_only=true throughout.",
     "verified_by": "104 aidy-related tests green (was 82 before this build; +9 pure aggregation tests, +9 tool-bridge tests, +5 new engine tests covering the tool-call round trip, its 2-round bound, and a failed fetch never raising). Full services/api/tests suite run clean (excluding test_ai_lifecycle_already_closed.py, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes -- exit code 0, zero FAILED/ERROR lines). ruff clean. Migration applies and downgrades cleanly. Deploy live, alembic_version=0097 confirmed directly against production, no new-code errors in logs.",
     "next_step": "Owner asked to pick a free economic calendar source: recommended Finnhub (official free tier, 60 calls/min, no card, has an impact-rated /calendar/economic endpoint) over the unofficial ForexFactory JSON scrape (free/keyless but undocumented, no support guarantee, declined as a foundation). Waiting on the owner to sign up and hand over the API key before this can be built. AIDY generating/scoring its own trade ideas remains explicitly not started pending separate owner sign-off."
+  },
+  "aidy_reasoning_calendar_tool_v3b": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED_THEN_SUPERSEDED_BY_LATER_SAME_NIGHT_DEPLOYS",
+    "why_built": "Owner sent a Finnhub API key.",
+    "correction_made_transparently": "The key checked out live (200 on /quote, /calendar/earnings) but the specific endpoint needed, GET /calendar/economic, returned 403 'You don't have access to this resource' on the same free-tier key -- verified by direct API call, not assumed. The prior session's recommendation of Finnhub (see aidy_reasoning_candle_tool_v3 above) was wrong for this endpoint specifically; corrected in the moment rather than shipped broken or silently swapped to something else without telling the owner.",
+    "what_was_built_instead": "EconomicCalendarClient (aidy_economic_calendar_client.py, new) -- free, keyless HTTP client for the public 'Fair Economy' JSON feed (nfs.faireconomy.media/ff_calendar_{lastweek,thisweek,nextweek}.json), the same feed many retail trading tools already rely on. Schema: title/country/impact/date/forecast/previous -- no 'actual' (realized outcome) field at all, which is actually safer for AIDY's point-in-time discipline than Finnhub's would have been: nothing this feed returns could ever leak a future-relative-to-a-signal result. forecast (published consensus) and previous are both legitimately public regardless of the event's own timing relative to any given signal.",
+    "pr": 201,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/201",
+    "merge_commit_sha": "bd731fac83ddf160709f326c848cb99263052fed",
+    "what_changed": "Adds a bounded get_economic_calendar tool (CALENDAR_TOOL_SCHEMA) alongside the existing get_recent_candles tool. AidyReasoningEngine.reason() generalized to accept tool_schemas: list[dict] | None instead of hardcoding the candle schema as the only option. AidyReasoningRunner._tools_for(signal_posted_at) combines whichever tool clients are actually configured (candles, calendar, both, or neither) into one schema list and one dispatching executor -- a tool whose client isn't configured is simply never offered. fetch_calendar_summary() refuses (returns an explicit {\"error\": \"signal_too_old_for_current_calendar_window\"}) for a signal more than ~6 days old, since the feed only ever reflects the current real-world week (last/this/next), never a historical point in time. A fetch failure is reported to the model as a plain {\"error\": ...} result, same contract as the candle tool -- never raises, never blocks the reasoning pass.",
+    "finnhub_key_disposition": "FINNHUB_API_KEY was set on Render (srv-d9qmcgks728c73a555m0) via update_environment_variables while investigating -- left in place rather than risk a destructive env-var replace operation. It is a verified-valid key but is NOT read by any shipped code. Confirmed by direct grep of the deployed source at the #206 HEAD: the only reference anywhere in the codebase is an explanatory docstring in aidy_economic_calendar_client.py describing why Finnhub was NOT used, not an env-var read.",
+    "deploy": {
+      "render_deploy_id": "dep-damc5kbncjis73der750",
+      "status_at_verification": "deactivated (superseded by later same-night deploys, PRs 202-206) -- confirmed via get_deploy it DID finish and go live cleanly (finishedAt populated, no build_failed) before being superseded, so this code has been running in production continuously since, just under later deploy IDs",
+      "verified_by": "get_deploy returned finishedAt=2026-09-18T04:51:40Z with the full PR #201 commit message attached, confirming a clean build. Current live deploy (#206, dep-damehgfgejbc7385hgg0) log scan shows zero calendar/FINNHUB-related errors."
+    },
+    "test_status": "125 aidy-related tests green (was 104): +6 calendar client tests, +9 calendar tool-bridge tests, +2 engine tests (multiple tools offered together, dispatched by name), +4 runner tests (_tools_for combining/dispatch). Full suite green (same pre-existing exclusion as every prior PR that night). ruff clean.",
+    "next_step": "Superseded in scope by aidy_reasoning_day_map_v4 below -- see that entry."
+  },
+  "aidy_reasoning_day_map_v4": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED_THEN_SUPERSEDED_BY_LATER_SAME_NIGHT_DEPLOYS",
+    "why_built": "Owner: 'He should use that and map the trading day out for gold in real time, then he can refer to it throughout the day.' The get_economic_calendar tool above only fires if the model happens to decide to call it per signal -- inconsistent (no guarantee any given signal gets calendar awareness) and wasteful (repeated fetches for the same day across many signals). This is different in kind, not degree: a standing rundown of the current UTC day's own scheduled medium/high-impact events, computed fresh and folded into every signal's market_context automatically, never gated behind the model choosing to ask for it.",
+    "pr": 202,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/202",
+    "merge_commit_sha": "e27e2e12de69689c8b64a24f9fa10fbe5c4260a6",
+    "what_changed": "fetch_todays_scheduled_events(client, as_of) (aidy_reasoning_calendar_tools.py) filters the same 3-week feed used by the on-demand tool down to just as_of's own UTC calendar day, medium/high impact only, each event labelled with session_bucket() -- the exact same asia/london/london_new_york_overlap/new_york/rollover boundaries already used everywhere else in this codebase for Gold session segmentation, reused rather than redefined. Same freshness discipline as the on-demand tool: refuses (returns None, field omitted from market_context) for a signal too old for the feed's current-week coverage rather than risk the wrong day's events. aidy_reasoning_runner.py's _fetch_market_context now combines two independently-optional sources -- regime/session context (PR 199) and the day map -- so a failure in one (e.g. AidyContextTerminalMiss) never suppresses the other. A genuinely empty day (checked, nothing scheduled) is reported honestly as an empty list, distinct from the None used when nothing could be fetched at all -- the model can tell the two apart. PROMPT_VERSION bumped v3->v4; MODEL_VERSION unchanged since the reasoning mechanism itself did not change, only its inputs.",
+    "deploy": {
+      "render_deploy_id": "dep-damc8p97lnhs73c6nnq0",
+      "status_at_verification": "deactivated (superseded by later same-night deploys, PRs 203-206) -- confirmed via get_deploy it DID finish and go live cleanly (finishedAt populated, no build_failed) before being superseded",
+      "verified_by": "get_deploy returned finishedAt=2026-09-18T04:58:37Z with the full PR #202 commit message attached. Current live deploy (#206, dep-damehgfgejbc7385hgg0) log scan shows zero market_context/calendar-related errors."
+    },
+    "test_status": "134 aidy-related tests green (was 125): +9 day-map filtering/session-labelling/staleness/failure/schema tests, plus runner tests proving the two market_context sources degrade independently and an empty day is distinguished from an unavailable one. Full suite green, ruff clean. No new migration needed.",
+    "next_step": "All three of that night's AIDY asks -- market context (v2), candles + tool-calling (v3), and the calendar (v3b/v4) -- are now shipped and were live in production as of this deploy. Remaining explicitly-gated item: AIDY generating and scoring its own trade ideas, pending separate owner sign-off. PRs #203-206 landed after this one, apparently from a separate concurrent session -- see the gap note in CURRENT_STATE.md and in the render.verified_by field above; their content has not been read/verified by this session."
   }
 }
