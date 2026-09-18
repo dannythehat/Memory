@@ -1,5 +1,11 @@
 # AIDY — Roadmap
 
+> **2026-09-19 strategic update:** the approved end-to-end build is now
+> [`MASTER_GOLD_INTELLIGENCE_BUILD.md`](MASTER_GOLD_INTELLIGENCE_BUILD.md).
+> That document is authoritative for the next intelligence phase. The older phased roadmap
+> below remains useful historical/build context but must not be read as limiting the new
+> Gold-market, news, liquidity, calibration, profit-extraction and self-critique work.
+
 Current roadmap verified against source/runtime on **2026-09-16**.
 
 ## Immediate gate — restore healthy Provider Context
