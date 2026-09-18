@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-17T13:10:00Z",
+  "verified_at_utc": "2026-09-18T03:58:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "6082ed7ec53b5339b26300a10c60f54fd9e16f9c",
+  "branch_head_sha": "d52c0241c6a134cbcbfd8b837ca043127372be44",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dalua5vqj5pc73eavk60",
-    "deploy_status": "healthy_migration_0091_applied",
+    "deploy_id": "dep-dambc90ae00c73ajkq0g",
+    "deploy_status": "healthy_migration_0096_applied",
     "auto_deploy": true,
-    "verified_by": "queried alembic_version=0091_provider_trade_fingerprints and real row counts directly against production Postgres, plus /health returning 200 healthy, post-deploy 2026-09-17T13:10Z"
+    "verified_by": "queried alembic_version=0096_aidy_reasoning_market_ctx directly against production Postgres, instance_count stable at 1 since 03:58Z, /health 200 OK. One transient alembic error ('Can't locate revision 0096') appeared from the OLD instance's dying container racing its own restart against a DB already migrated by the new one during the rolling handoff -- harmless, instance never served traffic again after that log line."
   },
   "quality_gate": {
     "passed": 989,
@@ -97,16 +97,39 @@
       "no_new_errors_introduced": "confirmed -- the only error-level log line post-deploy (PROVIDER_DAY14_GOVERNANCE_ERROR=RuntimeError:day13_preregistration_boundary_not_frozen) is the pre-existing, already-documented Day 14 governance issue from PR #182, not a regression from this change",
       "health_endpoint": "/health returning steady 200 OK post-deploy"
     },
-    "new_tables": ["aidy_decisions", "aidy_decision_outcomes"],
-    "decision_classes_implemented_v1": ["approve", "deny", "hold_no_second_entry", "conflict_deny"],
-    "decision_classes_not_yet_implemented": ["close_early", "continue"],
+    "new_tables": [
+      "aidy_decisions",
+      "aidy_decision_outcomes"
+    ],
+    "decision_classes_implemented_v1": [
+      "approve",
+      "deny",
+      "hold_no_second_entry",
+      "conflict_deny"
+    ],
+    "decision_classes_not_yet_implemented": [
+      "close_early",
+      "continue"
+    ],
     "engine_kind": "deterministic_only_no_model_call_yet",
-    "engine_checks_in_order": ["duplicate_or_repost_within_15m", "opposite_direction_book_exposure_conflict", "provider_track_record_from_scoreboard"],
+    "engine_checks_in_order": [
+      "duplicate_or_repost_within_15m",
+      "opposite_direction_book_exposure_conflict",
+      "provider_track_record_from_scoreboard"
+    ],
     "track_record_thresholds": {
       "minimum_resolved_trades": 20,
-      "deny_requires_both": {"avg_pnl_usd_lte": -3, "win_rate_pct_lte": 35}
+      "deny_requires_both": {
+        "avg_pnl_usd_lte": -3,
+        "win_rate_pct_lte": 35
+      }
     },
-    "supersedes": ["provider_veto_counterfactual_decisions", "provider_veto_counterfactual_outcomes", "provider_management_counterfactual_decisions", "provider_management_counterfactual_outcomes"],
+    "supersedes": [
+      "provider_veto_counterfactual_decisions",
+      "provider_veto_counterfactual_outcomes",
+      "provider_management_counterfactual_decisions",
+      "provider_management_counterfactual_outcomes"
+    ],
     "supersedes_reason": "verified zero rows in all four before deciding to build fresh -- never wired up",
     "safety": {
       "append_only": "trigger_enforced",
@@ -115,7 +138,12 @@
     },
     "conflict_duplicate_scope": "book_level_not_per_user -- per the 2026-09-17 one-pipeline (paper and real, any balance) directive",
     "test_status": "full suite green, 0 failed, against fresh local PostgreSQL 16 (migrations 0001-0088 applied clean)",
-    "next_steps": ["scoreboard cohort dimensions (item 3)", "hypothesis registry (item 4)", "costed LLM reasoning proposal to owner (item 5)", "graduated authority (item 6)"]
+    "next_steps": [
+      "scoreboard cohort dimensions (item 3)",
+      "hypothesis registry (item 4)",
+      "costed LLM reasoning proposal to owner (item 5)",
+      "graduated authority (item 6)"
+    ]
   },
   "outcome_scoring_v1": {
     "status": "MERGED_DEPLOYED_LIVE_SCORING_DECISIONS",
@@ -189,16 +217,40 @@
     "why_built": "Owner looked at the live AIDY overview dashboard and asked: 'Why is the skills so low? We have 38 traders no? Why isn't Aidy studying them all?' Investigated with direct SQL against production rather than guessing.",
     "real_finding": "AIDY was already deciding on 41 of 63 connected sources (46 have trade history at all, 41 have both AIDY decisions and scored trades). The dashboard looked thin because the cohort-standouts table requires 15+ resolved trades in one specific side+session+weekday slice (70 possible slices per provider) -- almost nothing clears that floor yet, so ~36 of the 41 actively-decided providers were invisible even though AIDY was processing them. This was a dashboard display-threshold gap, not an actual coverage gap in AIDY's decisioning.",
     "top_10_providers_by_volume_snapshot_20260917": [
-      {"provider": "TIG's Asia Trades"},
-      {"provider": "TDC V2 💎 (NEW)"},
-      {"provider": "FXTradingVision"},
-      {"provider": "TRADE GLOBAL", "win_rate_pct": 36.6, "net_pnl_usd": -1351.26},
-      {"provider": "Smart Signals"},
-      {"provider": "GTMO VIP"},
-      {"provider": "Scalping"},
-      {"provider": "FREE TRADİNG SİGNALS"},
-      {"provider": "XAUUSD SIGNALS"},
-      {"provider": "GOLDHUNTER | PAUL", "win_rate_pct": 78.6, "net_pnl_usd": 1605.31}
+      {
+        "provider": "TIG's Asia Trades"
+      },
+      {
+        "provider": "TDC V2 💎 (NEW)"
+      },
+      {
+        "provider": "FXTradingVision"
+      },
+      {
+        "provider": "TRADE GLOBAL",
+        "win_rate_pct": 36.6,
+        "net_pnl_usd": -1351.26
+      },
+      {
+        "provider": "Smart Signals"
+      },
+      {
+        "provider": "GTMO VIP"
+      },
+      {
+        "provider": "Scalping"
+      },
+      {
+        "provider": "FREE TRADİNG SİGNALS"
+      },
+      {
+        "provider": "XAUUSD SIGNALS"
+      },
+      {
+        "provider": "GOLDHUNTER | PAUL",
+        "win_rate_pct": 78.6,
+        "net_pnl_usd": 1605.31
+      }
     ],
     "spread_note": "Real net P&L spread across named providers ranges from -$1,351.26 (TRADE GLOBAL, 36.6% win rate) to +$1,605.31 (GOLDHUNTER, 78.6% win rate) -- confirms AIDY is genuinely differentiating between providers, not producing flat/undifferentiated output.",
     "backend": {
@@ -307,5 +359,78 @@
     "pr": 182,
     "merged_sha": "8b2ca7f78d3e1108c61f48b2940c538ba07d1e4e",
     "render_deploy": "dep-dalmjj3bc2fs7387mrv0"
+  },
+  "quality_gate_note": "The 989/93/0/2 baseline in quality_gate was NOT re-run in full this session -- only targeted suites touching changed files were re-verified (test_management_*, test_provider_execution_probation.py, test_provider_fingerprint_engine.py, test_provider_fingerprint_runner.py, test_aidy_reasoning_engine.py, test_aidy_reasoning_runner.py -- all green against a real local Postgres). Do not cite 989 passed as current without re-running the full suite.",
+  "management_reliability_and_tig_paper_trading_v1": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED",
+    "why_built": "Owner: 'We need to be 100% sure on how these groups trade, so we don't lose money.' Investigation into TIG's Asia Trades found the real root cause of missed management instructions was a stuck-retry bug: a failed trade_update dispatch was never retried and never escalated, so the position could sit unmanaged indefinitely. Owner: 'I want you to fix this for all profitable traders and switch them on.'",
+    "fix": {
+      "prs": [
+        191,
+        193,
+        194,
+        195,
+        196
+      ],
+      "pr_urls": [
+        "https://github.com/dannythehat/super-signals/pull/191",
+        "https://github.com/dannythehat/super-signals/pull/193",
+        "https://github.com/dannythehat/super-signals/pull/194",
+        "https://github.com/dannythehat/super-signals/pull/195",
+        "https://github.com/dannythehat/super-signals/pull/196"
+      ],
+      "final_merge_commit_sha": "f667d52007fcc14e8bb1fcbb4fd5f15a9b5d6d5b",
+      "what_it_is": "ManagementReliabilityRuntime: periodic (180s) sweep retries stuck trade_update dispatch failures via the existing dispatcher, and after 4 failures with the signal still open, force-closes via a new Day27Mt5ManagementService.force_close_all_positions fail-safe. Separately, AiLifecycleBridge._resolve_signal now recognises the dominant real failure mode (92% of 278 sampled production failures): a management instruction arriving after its target position already closed by another path (stop hit, earlier close, duplicate message) is a benign no-op, not a broken link -- verified 257/278 resolve correctly under the fix.",
+      "self_inflicted_bugs_found_and_fixed_same_session": [
+        "Migration 0093: jsonb_build_object() can't infer bare :param types -- fixed via json.dumps() + CAST(:payload AS jsonb), matching the pre-existing 0080 pattern (PR 194).",
+        "management_reliability_runtime.py crashed every sweep after deploy: ':lookback::interval' -- SQLAlchemy text() bind-param regex does not match a param immediately followed by '::' -- fixed via CAST(:lookback AS interval) (PR 195). Both are now documented as a recurring SQLAlchemy text() pitfall."
+      ]
+    },
+    "providers_switched_shadow_to_testing": [
+      "GOLDHUNTER | PAUL",
+      "FREE TRADİNG SİGNALS",
+      "XAUUSD SIGNALS",
+      "Scalping",
+      "XAUUSD JULIA",
+      "TIG's Asia Trades"
+    ],
+    "probation_mechanism": "provider_execution_probation (migration 0092): a newly-switched-on provider fires only on its own best-evidenced side (provider_trade_fingerprints.best_side) until the owner reviews real forward results and graduates it. Independent is_active_probation() keeps a still-probationary provider's paper trading on demo accounts only, never a member's real live account, regardless of the global live-execution switch.",
+    "verified_by": "Overnight audit (2026-09-17T17:00Z onward, requested by owner: 'Audit last night trades'): 135 messages captured with zero gap-hours despite an unrelated Render billing-lapse restart loop; 254 AI decisions, 0 messages left undecided; 3 real new_trade executions; several real management actions applied; 3 apparent failures all confirmed benign on investigation (2x a provider that double-posts every message verbatim -- correctly deduped, real trade executed under the other copy; 1x a provider still fully probation-shadowed with zero real positions ever, so nothing to manage)."
+  },
+  "provider_probation_side_session_split_and_goldhunter_graduation": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED",
+    "why_built": "Owner: 'We are leaving loads of profits on the table due to Aidy not understanding all our traders' -- specifically about GOLDHUNTER, whose real forward paper track record (43 resolved trades, 79.1% win rate, SELL 80.0%/20 trades, BUY 78.3%/23 trades -- both individually well past the 15-trade cohort floor) had produced zero real dispatched trades since being switched on.",
+    "root_cause_found": "provider_trade_fingerprints.cohort_sample_met required BOTH an adequate side split AND an adequate session split before it was ever true, but check_probation_eligibility only ever needs the side answer. GOLDHUNTER's trades cluster into one dominant session (London, 17 of 43 resolved), so the session half of that AND could never clear its own 15-per-bucket floor -- silently blocking every signal regardless of how solid the side evidence was.",
+    "fix": {
+      "pr": 197,
+      "pr_url": "https://github.com/dannythehat/super-signals/pull/197",
+      "merge_commit_sha": "9d1e48d7febf7138818f59324d00f217ffac2429",
+      "what_changed": "Split cohort_sample_met into independent side_sample_met and session_sample_met. check_probation_eligibility now reads side_sample_met only. Migration 0094_fp_side_session_split adds both columns (nullable-default-false, no backfill needed -- the daily fingerprint runner repopulates on its next pass, and did: verified live, GOLDHUNTER's fresh fingerprint shows side_sample_met=true, best_side=SELL immediately after deploy.",
+      "also_unblocked": [
+        "FREE TRADİNG SİGNALS",
+        "XAUUSD SIGNALS",
+        "Scalping"
+      ],
+      "still_correctly_held": "XAUUSD JULIA (genuinely thin side data, not a bug)"
+    },
+    "goldhunter_full_graduation": {
+      "pr": 198,
+      "pr_url": "https://github.com/dannythehat/super-signals/pull/198",
+      "merge_commit_sha": "85d761cee4833820cec102ceedffa0c9de871440",
+      "owner_decision": "Owner explicitly asked to graduate GOLDHUNTER fully off probation -- both sides trading, AND eligible for real member live-money accounts, not just demo/paper. Explicitly offered the narrower 'both sides, still paper-only' option first and explained the tradeoff (both restrictions are the same flag in the current schema; under an hour of real forward history existed under the corrected gate); owner chose full graduation anyway.",
+      "what_changed": "provider_execution_probation.graduated=true, graduated_at set, for GOLDHUNTER's source. Verified live directly against production.",
+      "live_money_caveat": "Real member live-money execution for her signals still additionally requires the global SUPER_SIGNALS_LIVE_EXECUTION_ENABLED switch (not verified on/off this session -- no read tool available for Render env vars) and each member's own opt-in. There ARE 5 connected live MT5 accounts with real trade history already in the system, so this is not a hypothetical switch -- flagged explicitly to the owner."
+    }
+  },
+  "aidy_reasoning_market_context_v2": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED_GATED_ON_FRESH_SIGNAL",
+    "why_built": "Owner asked directly what AIDY actually uses to understand gold movements, skeptical it does anything real ('shiny background tool that does nothing'). Audited the real code and real production numbers rather than describe it in the abstract: the reasoning call read only a signal's own entry/stop/TP geometry plus the provider fingerprint text -- its own system prompt explicitly forbade commenting on market conditions it was never given. Owner then asked directly for AIDY to have real market awareness; chose 'give AIDY real market context' as first priority over an economic calendar, killing the noise conflict-deny rule, or giving AIDY real execution authority.",
+    "pr": 199,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/199",
+    "merge_commit_sha": "d52c0241c6a134cbcbfd8b837ca043127372be44",
+    "what_changed": "Wired AidyContextClient (already-built, PIT-safe market/regime snapshot API -- same data Day 10's provider_signal_context_attachments records for a narrow slice, but fetched fresh per candidate at reasoning time here for full coverage) into aidy_reasoning_runner.py. The model now receives trend direction across M15/H1/H4, session, volatility band, event timing and quote freshness, all point-in-time as of when the signal posted. System prompt rewritten to instruct how to weigh it (supporting context for the geometry read, never a forecast of its own). MODEL_VERSION/PROMPT_VERSION bumped v1->v2. A signal reasoned long after it posted has no live context left to fetch (context API only serves a bounded recent window -- same reason ~700 old signals already carry a permanent pit_context_stale miss elsewhere) -- falls back to no-context reasoning exactly as before, never blocks the pass. New market_context_available column on aidy_reasoning_annotations (migration 0096) records which annotations actually had it, since both would otherwise look identical under prompt_version=v2.",
+    "does_not_change": "aidy_decision_engine.py or any execution path. Still research_only=true, live_money_execution_allowed=false at the schema level -- this only makes the existing commentary layer market-aware.",
+    "verified_by": "82 aidy-related tests green against real local Postgres (3 new: context fetched and passed through when available, stale/failed lookup never blocks reasoning, no-market-client-configured path unchanged). Migration applies clean. Deploy live, alembic_version=0096 confirmed directly against production, instance stable. Confirmed AIDY_REASONING_ENGINE_ENABLED is actually ON in production (not the code default) via real annotation history: 2,638 annotations, ~100% coverage of approve decisions, most recent 5 minutes before this deploy. NOT yet confirmed: a post-deploy annotation actually carrying market_context_available=true end-to-end in production -- no fresh approve decision had been reasoned yet as of last check.",
+    "next_step": "Confirm the first post-deploy annotation lands with market_context_available=true. Owner has also asked for: (1) multi-timeframe candle aggregation from the existing M1 feed -- cheap, no new data source, not yet built; (2) an economic/news calendar -- needs a new external data source/credential decision the owner hasn't made yet; (3) tool-calling so AIDY can pull data on demand rather than a fixed prompt payload -- architecturally the right next step, not yet built; (4) AIDY generating and scoring its own trade ideas rather than only judging providers' -- explicitly flagged to the owner as a materially different, bigger system given real money is now live on GOLDHUNTER, deferred pending explicit owner sign-off on that specific piece, not yet built. Owner responded 'you should build everything' -- proceeding with (1) and (3) next as the safely buildable, no-new-credential pieces."
   }
 }

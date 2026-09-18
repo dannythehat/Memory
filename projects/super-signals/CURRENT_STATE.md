@@ -2,15 +2,27 @@
 
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
-Last verified: **2026-09-17**
+Last verified: **2026-09-18**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `6082ed7ec53b5339b26300a10c60f54fd9e16f9c`
+Verified source/deploy SHA: `d52c0241c6a134cbcbfd8b837ca043127372be44`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dalrfbfqj5pc73e7um3g`
-Deploy status: **healthy, migration 0090 applied** (verified directly against production Postgres + `/health` 200)
-Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (local full-suite baseline; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier this session, not a real failure).
+Verified live deploy: `dep-dambc90ae00c73ajkq0g`
+Deploy status: **healthy, migration 0096 applied** (verified directly against production Postgres + `/health` 200, instance stable)
+Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (this is the last full-suite baseline, NOT re-run this session -- only targeted suites touching changed files were re-verified this pass, all green against real local Postgres; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure).
+
+## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
+
+Root-caused and fixed the real reason management instructions could go unmanaged: a stuck trade_update dispatch failure was never retried and never escalated. Built `ManagementReliabilityRuntime` (retry + fail-safe force-close) and fixed the dominant false-failure mode in `AiLifecycleBridge._resolve_signal` (92% of 278 sampled real failures were benign "already closed by another path" no-ops, not broken links). Switched 6 shadow providers (incl. TIG's Asia Trades) to `testing` status, each restricted to its own best-evidenced side via `provider_execution_probation` until graduated. Found and fixed two self-inflicted production bugs from this same work (a `jsonb_build_object` bare-param typing bug, a `:param::interval` SQLAlchemy `text()` adjacency bug) -- both now documented as a recurring pitfall. Overnight audit (owner-requested) confirmed real trades executed, zero messages left undecided despite an unrelated Render billing-lapse restart loop, and all apparent failures were benign. PRs 191, 193, 194, 195, 196. Full detail: `LIVE_STATE.json` -> `management_reliability_and_tig_paper_trading_v1`.
+
+## Probation side/session gate fixed, GOLDHUNTER graduated fully including live money (2026-09-18)
+
+Owner: "we are leaving loads of profits on the table." Investigated GOLDHUNTER specifically (79.1% win rate, 43 resolved trades, both sides individually well past the cohort floor) and found the real bug: the fingerprint's `cohort_sample_met` required both an adequate *side* split and an adequate *session* split before probation eligibility would ever pass, but eligibility only ever needs the side answer -- GOLDHUNTER's trades cluster into one dominant session, so the unrelated session half silently vetoed every trade. Split into independent `side_sample_met`/`session_sample_met` (PR 197) -- unblocked GOLDHUNTER plus 3 other providers with the same latent bug. Owner then explicitly asked to graduate GOLDHUNTER fully off probation, including real member live-money eligibility, not just paper (PR 198) -- offered the narrower paper-only option first and explained the tradeoff; owner chose full graduation with under an hour of real forward history under the corrected gate. **There are 5 connected live MT5 accounts with real trade history already in this system -- this is not a hypothetical switch.** Full detail: `LIVE_STATE.json` -> `provider_probation_side_session_split_and_goldhunter_graduation`.
+
+## AIDY reasoning gets real market context, v1->v2 (2026-09-18)
+
+Owner directly challenged whether AIDY uses any of the data/tools it's been given ("shiny background tool that does nothing"). Real audit found: the reasoning call previously saw only a signal's own entry/stop/TP numbers plus provider history text -- its own system prompt explicitly forbade discussing market conditions. Wired in AIDY's existing, already point-in-time-safe market/regime context (`AidyContextClient` -- real trend direction across M15/H1/H4, session, volatility, event timing) into the reasoning prompt (PR 199). Falls back to no-context reasoning exactly as before when a signal is too old for the context API's bounded lookback window; never blocks the pass. Does not touch `aidy_decision_engine.py` or any execution path -- still `research_only=true` throughout. **Owner has since asked for AIDY to have real-time multi-timeframe candles, a news/economic calendar, on-demand tool-calling access to pull any data it needs, and eventually to generate and score its own trade ideas rather than only judge providers'.** Responded with honest scoping: candle aggregation and tool-calling are buildable now from data already paid for; a calendar needs a new external data-source/credential decision the owner hasn't made; "predict whether price reverses or runs at a level" was declined as framed (nobody reliably does this) in favour of an honest historical-reaction-frequency version; AIDY originating its own trade ideas was flagged as a materially bigger, execution-adjacent system given real money is now live on GOLDHUNTER, and deferred pending explicit owner sign-off on that one piece specifically. Owner's response: "you should build everything." Proceeding with candle aggregation and tool-calling next as the pieces that need no new external dependency. Full detail: `LIVE_STATE.json` -> `aidy_reasoning_market_context_v2`.
 
 ## AIDY blind Gold learning exam — in build, research-only (2026-09-17)
 
