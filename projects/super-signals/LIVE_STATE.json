@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-18T03:58:00Z",
+  "verified_at_utc": "2026-09-18T04:29:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "d52c0241c6a134cbcbfd8b837ca043127372be44",
+  "branch_head_sha": "7b44e243517231bcea435dbea2be9691002ef2f9",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dambc90ae00c73ajkq0g",
-    "deploy_status": "healthy_migration_0096_applied",
+    "deploy_id": "dep-dambqtbtqb8s73bj0vng",
+    "deploy_status": "healthy_migration_0097_applied",
     "auto_deploy": true,
-    "verified_by": "queried alembic_version=0096_aidy_reasoning_market_ctx directly against production Postgres, instance_count stable at 1 since 03:58Z, /health 200 OK. One transient alembic error ('Can't locate revision 0096') appeared from the OLD instance's dying container racing its own restart against a DB already migrated by the new one during the rolling handoff -- harmless, instance never served traffic again after that log line."
+    "verified_by": "queried alembic_version=0097_aidy_reasoning_tool_calls directly against production Postgres, /health 200 OK, no errors from any new code in app logs. Same recurring alembic 'Can't locate revision' artifact as prior deploys tonight, from a stale old instance's dying restart racing the new one -- harmless, confirmed the pattern predates this specific deploy. NOTE: the underlying intermittent restart-loop (instance_count flapping 0/1 every few minutes) that this session attributed earlier tonight to a lapsed Render payment method is STILL observed as of this deploy (04:27-04:29Z window) -- not confirmed resolved, flagged back to the owner."
   },
   "quality_gate": {
     "passed": 989,
@@ -432,5 +432,17 @@
     "does_not_change": "aidy_decision_engine.py or any execution path. Still research_only=true, live_money_execution_allowed=false at the schema level -- this only makes the existing commentary layer market-aware.",
     "verified_by": "82 aidy-related tests green against real local Postgres (3 new: context fetched and passed through when available, stale/failed lookup never blocks reasoning, no-market-client-configured path unchanged). Migration applies clean. Deploy live, alembic_version=0096 confirmed directly against production, instance stable. Confirmed AIDY_REASONING_ENGINE_ENABLED is actually ON in production (not the code default) via real annotation history: 2,638 annotations, ~100% coverage of approve decisions, most recent 5 minutes before this deploy. NOT yet confirmed: a post-deploy annotation actually carrying market_context_available=true end-to-end in production -- no fresh approve decision had been reasoned yet as of last check.",
     "next_step": "Confirm the first post-deploy annotation lands with market_context_available=true. Owner has also asked for: (1) multi-timeframe candle aggregation from the existing M1 feed -- cheap, no new data source, not yet built; (2) an economic/news calendar -- needs a new external data source/credential decision the owner hasn't made yet; (3) tool-calling so AIDY can pull data on demand rather than a fixed prompt payload -- architecturally the right next step, not yet built; (4) AIDY generating and scoring its own trade ideas rather than only judging providers' -- explicitly flagged to the owner as a materially different, bigger system given real money is now live on GOLDHUNTER, deferred pending explicit owner sign-off on that specific piece, not yet built. Owner responded 'you should build everything' -- proceeding with (1) and (3) next as the safely buildable, no-new-credential pieces."
+  },
+  "aidy_reasoning_candle_tool_v3": {
+    "status": "MERGED_DEPLOYED_LIVE_VERIFIED",
+    "why_built": "Owner escalated hard after the market-context build ('you should build everything... Aidy should be able to pull any data he requires at any time'). Asked to pick between: real market context (already done, see aidy_reasoning_market_context_v2), a news/economic calendar, killing the noise conflict-deny rule, or giving AIDY real execution authority -- owner picked market context first, then escalated further wanting multi-timeframe candles, liquidity, news, on-demand data access and AIDY generating its own trade ideas, all at once. Session held the line on sequencing rather than bundling all of it: shipped the two pieces buildable with zero new external dependency (candles + tool-calling) together, since candle aggregation only has value once AIDY can actually ask for it; declined to build a literal price-reaction predictor as framed (no reliable version of that exists for anyone); asked the owner to pick an economic calendar data source (Finnhub recommended, free tier, needs a signup the owner has to do); left AIDY generating/scoring its own trade ideas explicitly gated on separate owner sign-off given GOLDHUNTER is now live for real money.",
+    "pr": 200,
+    "pr_url": "https://github.com/dannythehat/super-signals/pull/200",
+    "merge_commit_sha": "7b44e243517231bcea435dbea2be9691002ef2f9",
+    "what_changed": "Added a bounded get_recent_candles tool to aidy_reasoning_engine.py's reasoning call: real M1 bars from AIDY's existing market feed (AidyMarketClient, already point-in-time-safe, previously only used for retrospective outcome scoring, never for a live decision before now), aggregated on demand to 1/5/15/30/45/60-minute candles by a new pure module (aidy_candle_aggregation.py, no I/O of its own). The model chooses timeframe and lookback count; the fetch window always ends at, never after, the signal's own posted time. Bounded to 2 rounds of tool use -- the final round never offers the tool, so the model cannot stall indefinitely. reason() is now async and issues 1-3 real OpenAI requests per signal depending on tool use; token/cost accounting sums every round actually made. aidy_reasoning_runner.py's monthly budget usage now counts real request_count instead of a flat +1 per signal (migration 0097 adds request_count/tool_calls_made to aidy_reasoning_annotations). A failed or unavailable candle fetch is reported to the model as a plain {\"error\": ...} tool result (aidy_reasoning_market_tools.py) -- never raises, so a fetch failure costs the model that one piece of context, not the whole reasoning pass. MODEL_VERSION/PROMPT_VERSION bumped v2->v3.",
+    "bug_caught_by_a_real_test_before_shipping": "First version of lookback_window() rounded the fetch window's end forward to the end of the current bucket (e.g. as_of=10:37:42 with a 15-minute timeframe produced end=10:45, which is AFTER as_of) -- a genuine point-in-time leak. A test asserting end <= as_of caught it before merge; fixed by flooring end to as_of's own minute instead of rounding forward, and the most recent aggregated bucket is now honestly reported as partial (its true bar_count) rather than padded or rounded away.",
+    "does_not_change": "aidy_decision_engine.py or any execution path. Still research_only=true throughout.",
+    "verified_by": "104 aidy-related tests green (was 82 before this build; +9 pure aggregation tests, +9 tool-bridge tests, +5 new engine tests covering the tool-call round trip, its 2-round bound, and a failed fetch never raising). Full services/api/tests suite run clean (excluding test_ai_lifecycle_already_closed.py, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes -- exit code 0, zero FAILED/ERROR lines). ruff clean. Migration applies and downgrades cleanly. Deploy live, alembic_version=0097 confirmed directly against production, no new-code errors in logs.",
+    "next_step": "Owner asked to pick a free economic calendar source: recommended Finnhub (official free tier, 60 calls/min, no card, has an impact-rated /calendar/economic endpoint) over the unofficial ForexFactory JSON scrape (free/keyless but undocumented, no support guarantee, declined as a foundation). Waiting on the owner to sign up and hand over the API key before this can be built. AIDY generating/scoring its own trade ideas remains explicitly not started pending separate owner sign-off."
   }
 }

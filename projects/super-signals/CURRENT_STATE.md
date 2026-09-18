@@ -6,11 +6,13 @@ Last verified: **2026-09-18**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `d52c0241c6a134cbcbfd8b837ca043127372be44`
+Verified source/deploy SHA: `7b44e243517231bcea435dbea2be9691002ef2f9`
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dambc90ae00c73ajkq0g`
-Deploy status: **healthy, migration 0096 applied** (verified directly against production Postgres + `/health` 200, instance stable)
-Quality gate at deployed SHA: **989 passed, 93 skipped, 0 failed, 2 warnings** (this is the last full-suite baseline, NOT re-run this session -- only targeted suites touching changed files were re-verified this pass, all green against real local Postgres; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure).
+Verified live deploy: `dep-dambqtbtqb8s73bj0vng`
+Deploy status: **healthy, migration 0097 applied** (verified directly against production Postgres + `/health` 200, no new-code errors in logs)
+Quality gate: full `services/api/tests` suite run clean this session (excluding `test_ai_lifecycle_already_closed.py`, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes) -- exit code 0, zero FAILED/ERROR lines. The 989/93/0/2 number below is the last *counted* full-suite baseline and was not re-counted exactly this session; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure.
+
+**Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Next session should check this first before assuming it's fixed.
 
 ## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
 
@@ -23,6 +25,16 @@ Owner: "we are leaving loads of profits on the table." Investigated GOLDHUNTER s
 ## AIDY reasoning gets real market context, v1->v2 (2026-09-18)
 
 Owner directly challenged whether AIDY uses any of the data/tools it's been given ("shiny background tool that does nothing"). Real audit found: the reasoning call previously saw only a signal's own entry/stop/TP numbers plus provider history text -- its own system prompt explicitly forbade discussing market conditions. Wired in AIDY's existing, already point-in-time-safe market/regime context (`AidyContextClient` -- real trend direction across M15/H1/H4, session, volatility, event timing) into the reasoning prompt (PR 199). Falls back to no-context reasoning exactly as before when a signal is too old for the context API's bounded lookback window; never blocks the pass. Does not touch `aidy_decision_engine.py` or any execution path -- still `research_only=true` throughout. **Owner has since asked for AIDY to have real-time multi-timeframe candles, a news/economic calendar, on-demand tool-calling access to pull any data it needs, and eventually to generate and score its own trade ideas rather than only judge providers'.** Responded with honest scoping: candle aggregation and tool-calling are buildable now from data already paid for; a calendar needs a new external data-source/credential decision the owner hasn't made; "predict whether price reverses or runs at a level" was declined as framed (nobody reliably does this) in favour of an honest historical-reaction-frequency version; AIDY originating its own trade ideas was flagged as a materially bigger, execution-adjacent system given real money is now live on GOLDHUNTER, and deferred pending explicit owner sign-off on that one piece specifically. Owner's response: "you should build everything." Proceeding with candle aggregation and tool-calling next as the pieces that need no new external dependency. Full detail: `LIVE_STATE.json` -> `aidy_reasoning_market_context_v2`.
+
+## AIDY reasoning gets multi-timeframe candles + bounded tool-calling, v2->v3 (2026-09-18)
+
+Owner escalated further, wanting real-time multi-timeframe candles, liquidity, a news calendar, on-demand data access and AIDY generating its own trade ideas, all at once ("It seems you are the issue here"). Shipped the two pieces buildable with zero new external dependency together (PR 200): a bounded `get_recent_candles` tool on the reasoning call, backed by `AidyMarketClient` (already point-in-time-safe, previously only used for retrospective outcome scoring, never a live decision before now) and a new pure aggregation module producing 1/5/15/30/45/60-minute candles on demand. The model picks timeframe and lookback; the fetch window always ends at, never after, the signal's own posted time. Bounded to 2 rounds of tool use so the model cannot stall indefinitely; `reason()` is now async and issues up to 3 real OpenAI requests per signal, with token/cost/budget accounting summed across every round actually made rather than a flat one-call assumption.
+
+**A real point-in-time bug was caught by a test before merge**: the first version of the fetch-window calculation rounded forward to the end of the current (still-forming) candle bucket, which could request data from *after* the signal's own posted time -- a genuine PIT leak. Fixed by flooring to the signal's own minute instead.
+
+MODEL_VERSION/PROMPT_VERSION bumped v2->v3. Does not touch `aidy_decision_engine.py` or any execution path -- still `research_only=true` throughout. 104 aidy tests green (was 82), full suite green (same pre-existing unrelated exclusion as before), ruff clean.
+
+Owner then asked to pick a free economic calendar source. Recommended **Finnhub** (official free tier, 60 calls/min, no card, has an impact-rated `/calendar/economic` endpoint -- matters for telling a Fed rate decision from a minor regional release) over the unofficial ForexFactory JSON feed some bots scrape (genuinely free/keyless, but undocumented and no support guarantee -- declined as a foundation to build on). **Waiting on the owner to sign up and provide the API key** before this can be built. AIDY generating/scoring its own trade ideas remains explicitly un-started, pending separate owner sign-off given real money is now live on GOLDHUNTER. Full detail: `LIVE_STATE.json` -> `aidy_reasoning_candle_tool_v3`.
 
 ## AIDY blind Gold learning exam — in build, research-only (2026-09-17)
 
