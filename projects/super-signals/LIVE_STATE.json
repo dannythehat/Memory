@@ -503,5 +503,21 @@
     "live_money_execution_allowed_by_aidy": false,
     "owner_risk_rule_changed": false,
     "owner_risk_rule": "1%"
+  },
+  "aidy_grounding_forward_acceptance": {
+    "status": "LIVE_WAITING_FORWARD_ROWS",
+    "deployed_sha": "ec7febbdaa2fbd6444eae58a0873769943c5e89b",
+    "render_deploy_id": "dep-dan2kgdii2qc73bhsi50",
+    "alembic_version": "0105_aidy_grounding_accept",
+    "evidence_contract_version": "aidy_reasoning_evidence_v2",
+    "latest_state": "waiting_forward_rows",
+    "latest_invalid_rows": 0,
+    "required_rows": 10,
+    "required_providers": 2,
+    "research_only": true,
+    "live_money_execution_allowed": false,
+    "execution_path_modified": false,
+    "risk_rule_changed": false,
+    "risk_rule": "1%"
   }
 }
