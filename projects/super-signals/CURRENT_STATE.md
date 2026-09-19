@@ -109,6 +109,20 @@ PR #185 merged/deployed. `provider_trade_scoreboard_by_cohort` splits provider p
 
 PR #184 merged/deployed. `AidyDecisionOutcomeRuntime` scores decisions against `provider_trade_scores` fixed baseline. `approve` gets delta 0; denied/held trades are scored counterfactually from already-computed baseline outcomes. Early historical evidence showed duplicate/repost holds promising while conflict-deny was not convincing. Treat this as thin historical evidence, not authority.
 
+## AIDY Gold State v2 consumer — BUILT ISOLATED / NOT MERGED
+
+Phase 2 consumer preparation is on
+`feature/aidy-gold-state-v2-reasoning` at `f6e1e42ecb8ff18b153912915588f4c6945711b6`, PR #208.
+
+It adds strict intake validation for `aidy_provider_gold_state_v2` and reasoning rules that
+forbid turning descriptive close paths, round numbers, liquidity proxies, volatility state or
+scheduled-event proximity into causal/predictive claims. `cause_unknown=true` must remain
+unknown.
+
+PR #208 is intentionally **not merged** while Phase 1 forward grounding is still waiting.
+Production remains `4650d2074ea4d4287285783a5157d4340cd41e8a`; no broker/execution/sizing/provider-status files are
+changed by the Phase 2 PR.
+
 ## AIDY anti-drift Phase 0/1 — PRODUCTION VERIFIED / WAITING FOR FORWARD ROWS
 
 Verified 2026-09-19 on the live Render service.
