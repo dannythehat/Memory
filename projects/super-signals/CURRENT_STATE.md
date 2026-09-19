@@ -2,19 +2,29 @@
 
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
-Last verified: **2026-09-18**
+Last verified: **2026-09-19**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `dedc6cba498d1c253970578ba3852364de926443` (PR #206)
+Verified source/deploy SHA: `8ddbc40050e13fb26f04304d2e2de7a364c2efdc` (Build 1 Historical Time Machine, PR #209)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-damehgfgejbc7385hgg0`
+Verified live deploy: `dep-dan4cg3m8hqs73a0gtb0`
 Deploy status: **live**, verified directly via `list_deploys`/`get_deploy`; app-log scan of the live window (07:31Z onward) shows zero errors touching AIDY reasoning, market_context, the calendar feed, or FINNHUB -- only pre-existing, already-documented MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings, plus two unrelated errors (`telegram_publisher_day34_cutover` group-logger cycle failure, `telegram_listener_canonical` broker dispatch failure) that are a different subsystem, not investigated further this pass.
 Quality gate: full `services/api/tests` suite run clean this session (excluding `test_ai_lifecycle_already_closed.py`, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes) -- exit code 0, zero FAILED/ERROR lines. The 989/93/0/2 number below is the last *counted* full-suite baseline and was not re-counted exactly this session; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
 **Gap flagged for the next session**: between this session's PR #202 (day-map, merged 04:56Z) and this update, PRs **#203, #204, #205, #206** were also merged and deployed to the same service, evidently by a separate concurrent session this same session has no transcript context for: #203 "Harden AIDY Provider Context against transient transport failures", #204 "Fix Day 14 governance for append-only provider cohorts", #205 "Make AIDY use candle tools when structure evidence is needed" (this one's own deploy `build_failed`, followed by 4 more direct-commit build-fix attempts targeting a broken AIDY prompt-regression-test string literal -- 3 more `build_failed` before one succeeded), #206 "Restore Day 13 forward evidence under current Gold session buckets". All four are live in production as of the SHA/deploy recorded above. **Not verified by this session beyond the deploy history and a clean post-deploy log scan** -- read the actual PR diffs before making any claim about what #203-206 changed or relying on them architecturally.
+
+## Weekend Build 1 — Historical Time Machine — engineering/production verified, no edge claim (2026-09-19)
+
+Build 1 of the gated weekend sequence is complete as research infrastructure. Super Signals PR #209 merged to the deployed branch as `8ddbc40050e13fb26f04304d2e2de7a364c2efdc`; Render deploy `dep-dan4cg3m8hqs73a0gtb0` is live. The Docker image itself gates deployment on compileall plus the full API pytest suite.
+
+The frozen strict point-in-time cohort is **140 cases**: **103 development / 19 validation / 18 locked holdout**. Replay v4 completed **103/103 development decisions + scores** and then **19/19 validation decisions + scores**. The holdout remains sealed with **0 decisions**. Safety checks show **0 input-digest mismatches, 0 research-flag violations and 0 live-money replay rows**. The bounded anti-drift retry was used 11 times in development and 3 times in validation; every transient provider-claim rejection ultimately resolved under the unchanged strict validator.
+
+The Time Machine passed its engineering exam, but the current AIDY shadow policy did **not** prove edge. Development: provider-taken baseline **+$867.48**, AIDY replay shadow **+$403.65**, delta **-$463.83** (19 improved / 46 harmed / 38 unchanged). Validation: provider-taken baseline **-$39.42**, AIDY replay shadow **-$21.38**, delta **+$18.05** (1 improved / 1 harmed / 17 unchanged). This is deliberately recorded as a generalisation/decision-quality problem to solve, not as profitability proof. No holdout result is available because the holdout remains unopened.
+
+**Next gated module:** Build 2 — News/Event + Liquidity/Execution. It must be built, tested, PR-reviewed/merged, production-checked where relevant, then Memory-updated/merged/re-read before Build 3 starts.
 
 ## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
 
