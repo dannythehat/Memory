@@ -477,5 +477,31 @@
     },
     "test_status": "134 aidy-related tests green (was 125): +9 day-map filtering/session-labelling/staleness/failure/schema tests, plus runner tests proving the two market_context sources degrade independently and an empty day is distinguished from an unavailable one. Full suite green, ruff clean. No new migration needed.",
     "next_step": "All three of that night's AIDY asks -- market context (v2), candles + tool-calling (v3), and the calendar (v3b/v4) -- are now shipped and were live in production as of this deploy. Remaining explicitly-gated item: AIDY generating and scoring its own trade ideas, pending separate owner sign-off. PRs #203-206 landed after this one, apparently from a separate concurrent session -- see the gap note in CURRENT_STATE.md and in the render.verified_by field above; their content has not been read/verified by this session."
+  },
+  "aidy_reasoning_anti_drift_phase_0_1": {
+    "status": "PRODUCTION_VERIFIED_ENGINEERING_PROVEN_WAITING_FORWARD_ROWS",
+    "verified_at_utc": "2026-09-19T06:12:30Z",
+    "deployed_sha": "33305a020f96e545990906a6de0c5dc253e9fcaf",
+    "render_deploy_id": "dep-dan2cv5ii2qc73bhmpig",
+    "alembic_version": "0104_aidy_grounding_health",
+    "evidence_contract_version": "aidy_reasoning_evidence_v2",
+    "api_tests_passed": 1105,
+    "api_tests_skipped": 137,
+    "web_tests_passed": 28,
+    "secret_scan": "pass",
+    "production_health": "healthy",
+    "provider_history_surface": "atomic_pit_claims_only",
+    "side_session_scope": "current_signal_cohort_only",
+    "provider_identity_sent_to_model": false,
+    "raw_provider_profile_sent_to_model": false,
+    "unsupported_claims_fail_safe": true,
+    "legacy_unvalidated_rows": 2674,
+    "suspicious_legacy_provider_history_rows": 2227,
+    "grounded_forward_rows_at_verification": 0,
+    "unsupported_forward_rows_at_verification": 0,
+    "forward_acceptance": "WAITING_FOR_FIRST_FRESH_ELIGIBLE_MARKET_SIGNALS",
+    "live_money_execution_allowed_by_aidy": false,
+    "owner_risk_rule_changed": false,
+    "owner_risk_rule": "1%"
   }
 }
