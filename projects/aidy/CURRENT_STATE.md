@@ -2,12 +2,57 @@
 
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
-Last verified: **2026-09-17**
+Last verified: **2026-09-19**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
-Verified source `main` SHA: `0a6230e606282dca97675d63117c4d24dcc38120`
+Verified source `main` SHA: `526c561bf98183c58f2cabf970962eb2b26d670b`
 Live Worker: `aidy-signals-test`
+
+## Phase 0/1 anti-drift — PRODUCTION VERIFIED / WAITING FOR FORWARD ROWS
+
+Verified 2026-09-19 against the deployed Super Signals runtime.
+
+The evidence-grounding/anti-drift layer is now deployed in the signal-level AIDY reasoning
+path. Production Super Signals SHA: `33305a020f96e545990906a6de0c5dc253e9fcaf`; Render deploy:
+`dep-dan2cv5ii2qc73bhmpig`; Alembic: `0104_aidy_grounding_health`.
+
+Engineering acceptance on the exact deployed build:
+
+- API suite: **1105 passed, 137 skipped, 2 warnings**.
+- Web suite: **28 passed**.
+- secret scan: PASS.
+- Render `/health`: healthy after deploy.
+- origin and website public-performance endpoints: responding after the post-deploy startup
+  settled.
+- AIDY live-money authority: unchanged/OFF.
+- Super Signals owner risk: unchanged at 1%.
+
+What is now enforced:
+
+- provider history reaches the model only as versioned, PIT-safe atomic claims;
+- every claim carries the exact source path/value/sample N/version/evidence timestamp;
+- side-performance evidence is scoped to **this signal's side**;
+- session-performance evidence is scoped to **this signal's session**;
+- a missing BUY/SELL/session cohort remains UNKNOWN and cannot be inferred from an opposite
+  cohort;
+- provider identity and raw provider profile/fingerprint text are not sent to the model;
+- provider-history prose is rejected outside validated `provider_claim_refs`;
+- unsupported claim references fail safe and are not persisted as successful reasoning;
+- every new grounded annotation freezes the exact evidence snapshot and claim references;
+- production grounding health is queryable through
+  `aidy_reasoning_grounding_health`.
+
+Legacy audit at deployment: 2674 historical reasoning annotations are explicitly
+`legacy_unvalidated`; 2227 contain language the stricter detector marks for review. That
+number is **not** a count of proven false claims. It means those rows predate the evidence-ref
+contract and therefore cannot be granted grounded status retrospectively.
+
+Forward acceptance is correctly still **WAITING**: the market is in the canonical weekend
+closure and there are currently 0 new `aidy_reasoning_evidence_v2` forward annotations.
+The next acceptance is mechanical: on the first fresh eligible signals, require
+`claim_validation_status=passed`, `unsupported_claim_count=0`, and inspect the exact frozen
+claim/evidence pairs. Do not advance the programme past Phase 1 acceptance before this check.
 
 ## Current production status — HEALTHY, multi-cycle verified
 
