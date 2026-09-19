@@ -519,5 +519,21 @@
     "execution_path_modified": false,
     "risk_rule_changed": false,
     "risk_rule": "1%"
+  },
+  "aidy_gold_state_v2_consumer_build": {
+    "status": "BUILT_ISOLATED_NOT_MERGED",
+    "branch": "feature/aidy-gold-state-v2-reasoning",
+    "head": "f6e1e42ecb8ff18b153912915588f4c6945711b6",
+    "pr": 208,
+    "base_branch": "feature/day-10-shared-telegram-sources",
+    "production_sha": "4650d2074ea4d4287285783a5157d4340cd41e8a",
+    "production_changed_by_isolated_pr": false,
+    "broker_files_touched": false,
+    "execution_files_touched": false,
+    "sizing_files_touched": false,
+    "provider_status_files_touched": false,
+    "live_money_execution_allowed_by_aidy": false,
+    "owner_risk_rule": "1%",
+    "blocked_on": "phase_1_forward_grounding_acceptance"
   }
 }
