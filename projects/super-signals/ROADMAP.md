@@ -10,6 +10,16 @@ The remaining blocker is upstream AIDY Provider Context. Market capture is fresh
 
 Do not begin claiming AIDY decision intelligence is live until a current provider signal receives current AIDY context in production.
 
+## Weekend gated intelligence modules — active 2026-09-19
+
+- **Build 1 — Historical Time Machine:** ENGINEERING/PRODUCTION VERIFIED. 103 development + 19 validation cases completed under strict PIT replay; 18-case holdout remains sealed. This validates the exam infrastructure, not trading edge.
+- **Build 2 — News/Event + Liquidity/Execution:** NEXT.
+- **Build 3 — Provider Conditional-Alpha + Historical Analogue:** locked behind Build 2.
+- **Build 4 — Probability/EV + Trade Management/Profit Extraction:** locked behind Build 3.
+- **Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging:** locked behind Build 4.
+
+Every build uses the same gate: build -> tests/exam -> fix until clean -> PR/merge -> runtime evidence where applicable -> Memory update/validation/merge/re-read -> next build.
+
 ## Strategic destination
 
 AIDY is not intended to remain a Telegram parser or provider-ranking system. Providers are training/evidence inputs. The destination is an evidence-scored Gold/XAUUSD decision system that can:

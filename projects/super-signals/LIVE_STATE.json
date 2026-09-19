@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-18T12:35:00Z",
+  "verified_at_utc": "2026-09-19T08:34:00Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
-  "branch_head_sha": "dedc6cba498d1c253970578ba3852364de926443",
+  "branch_head_sha": "8ddbc40050e13fb26f04304d2e2de7a364c2efdc",
   "render": {
     "workspace_id": "tea-d3oti6umcj7s739j5jv0",
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-damehgfgejbc7385hgg0",
+    "deploy_id": "dep-dan4cg3m8hqs73a0gtb0",
     "deploy_status": "live",
     "auto_deploy": true,
     "verified_by": "list_deploys/get_deploy confirm status=live for dep-damehgfgejbc7385hgg0 (PR #206). App-log scan of the live window (07:31Z onward, level error/warning) shows no errors referencing aidy_reasoning_runtime, market_context, the calendar feed, or FINNHUB -- only pre-existing MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings already documented elsewhere, plus two unrelated errors in a different subsystem (telegram_publisher_day34_cutover group-logger cycle failure, telegram_listener_canonical broker dispatch failure) not investigated this pass. Confirmed via grep of deployed source: FINNHUB_API_KEY (set on Render, verified-valid key) is not read by any shipped code -- only reference anywhere in the codebase is an explanatory docstring in aidy_economic_calendar_client.py. NOTE: the underlying intermittent restart-loop (instance_count flapping 0/1) attributed earlier to a lapsed Render payment method was last observed 04:27-04:29Z and was NOT re-checked this pass -- still not confirmed resolved. NOTE: deploys for PRs #203/#204/#205/#206 landed between this session's own PR #202 and this verification pass, evidently from a separate concurrent session this session has no transcript context for -- see the gap note in CURRENT_STATE.md; not verified beyond deploy history + this clean log scan."
@@ -535,5 +535,50 @@
     "live_money_execution_allowed_by_aidy": false,
     "owner_risk_rule": "1%",
     "blocked_on": "phase_1_forward_grounding_acceptance"
+  },
+  "historical_time_machine_build1_20260919": {
+    "status": "ENGINEERING_PROVEN_PRODUCTION_VERIFIED_NO_EDGE_CLAIM",
+    "source_pr": 209,
+    "source_merge_sha": "8ddbc40050e13fb26f04304d2e2de7a364c2efdc",
+    "render_deploy_id": "dep-dan4cg3m8hqs73a0gtb0",
+    "replay_version": "aidy_historical_time_machine_v4",
+    "input_contract_version": "aidy_historical_replay_input_v3",
+    "cohort": {
+      "total": 140,
+      "development": 103,
+      "validation": 19,
+      "holdout_locked": 18
+    },
+    "development": {
+      "decisions": 103,
+      "scores": 103,
+      "taken_pnl_usd": 867.48,
+      "replay_shadow_pnl_usd": 403.65,
+      "replay_delta_vs_taken_usd": -463.83,
+      "improved": 19,
+      "harmed": 46,
+      "unchanged": 38,
+      "provider_claim_validation_retries": 11
+    },
+    "validation": {
+      "decisions": 19,
+      "scores": 19,
+      "taken_pnl_usd": -39.42,
+      "replay_shadow_pnl_usd": -21.38,
+      "replay_delta_vs_taken_usd": 18.05,
+      "improved": 1,
+      "harmed": 1,
+      "unchanged": 17,
+      "provider_claim_validation_retries": 3
+    },
+    "safety": {
+      "holdout_decisions": 0,
+      "input_digest_mismatches": 0,
+      "research_flag_violations": 0,
+      "live_money_replay_rows": 0,
+      "holdout_open_flag": false
+    },
+    "interpretation": "Historical replay infrastructure passed its engineering and production acceptance. These results do not validate AIDY trading edge: development materially underperformed the taken-trade baseline while the small validation slice improved slightly. Holdout remains sealed.",
+    "next_step": "Build 2 — News/Event + Liquidity/Execution. Do not start Build 3 until Build 2 passes its own acceptance and Memory closeout."
   }
 }
