@@ -4,7 +4,7 @@
   "verified_at_utc": "2026-09-16T18:33:59Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "0a6230e606282dca97675d63117c4d24dcc38120",
+  "branch_head_sha": "526c561bf98183c58f2cabf970962eb2b26d670b",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -75,5 +75,44 @@
     "hypothesis_registry_required": true,
     "cross_provider_duplicate_conflict_engine_required": true
   },
-  "notes": "PR #133 is merged into main. Production remains degraded until the merged Worker code is manually deployed and verified."
+  "notes": "Latest verified observation: standalone AIDY Worker is healthy/session_closed with formal-forward OFF; Super Signals Phase 0/1 anti-drift is production deployed and engineering proven, while fresh forward evidence-v2 rows are correctly waiting for the next eligible market signals.",
+  "current_runtime_observation": {
+    "verified_at_utc": "2026-09-19T06:12:30Z",
+    "live_worker_health": "ok",
+    "session_open": false,
+    "data_health_status": "session_closed",
+    "data_health_alert": false,
+    "capture_enabled": true,
+    "formal_forward_enabled": false,
+    "market_data_source": "twelve_data",
+    "market_data_ownership": "public_independent",
+    "scheduler": "direct-cron",
+    "latest_scheduled_success_utc": "2026-09-19T06:12:30.132999+00:00",
+    "latest_provider_context_snapshot_utc": "2026-09-18T20:57:30.150000+00:00",
+    "note": "Canonical Gold session is closed; open-session provider-context freshness is not required. Worker source SHA was not independently read in this verification."
+  },
+  "master_gold_intelligence_phase_0_1": {
+    "verified_at_utc": "2026-09-19T06:12:30Z",
+    "status": "PRODUCTION_VERIFIED_ENGINEERING_PROVEN_WAITING_FORWARD_ROWS",
+    "implementation_repo": "dannythehat/super-signals",
+    "branch": "feature/day-10-shared-telegram-sources",
+    "deployed_sha": "33305a020f96e545990906a6de0c5dc253e9fcaf",
+    "render_deploy_id": "dep-dan2cv5ii2qc73bhmpig",
+    "alembic_version": "0104_aidy_grounding_health",
+    "evidence_contract_version": "aidy_reasoning_evidence_v2",
+    "api_tests_passed": 1105,
+    "api_tests_skipped": 137,
+    "web_tests_passed": 28,
+    "secret_scan": "pass",
+    "public_health": "healthy",
+    "grounded_forward_rows_at_verification": 0,
+    "unsupported_forward_rows_at_verification": 0,
+    "legacy_unvalidated_rows": 2674,
+    "suspicious_legacy_provider_history_rows": 2227,
+    "legacy_count_meaning": "review candidates only; not a count of proven false claims",
+    "forward_acceptance": "WAITING_FOR_FIRST_FRESH_ELIGIBLE_MARKET_SIGNALS",
+    "required_forward_result": "claim_validation_status=passed and unsupported_claim_count=0",
+    "live_money_execution_allowed_by_aidy": false,
+    "super_signals_risk_changed": false
+  }
 }
