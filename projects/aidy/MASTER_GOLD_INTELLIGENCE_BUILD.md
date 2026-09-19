@@ -2,6 +2,17 @@
 
 Approved: 2026-09-19
 
+## Build status — 2026-09-19
+
+- **Phase 0/1 anti-drift/evidence grounding:** PRODUCTION VERIFIED engineering; forward
+  acceptance WAITING for the next eligible market signals. Exact Super Signals production
+  SHA `33305a020f96e545990906a6de0c5dc253e9fcaf`, deploy `dep-dan2cv5ii2qc73bhmpig`, migration
+  `0104_aidy_grounding_health`; 1105 API tests passed.
+- **Phase 2 Gold-state bridge:** scaffolding exists on both sides, but the programme is
+  intentionally held at the Phase 1 acceptance gate. Do not progress Phase 2+ until fresh
+  evidence-v2 decisions prove zero unsupported claims.
+- **Live-money authority:** OFF. **Owner live-risk directive:** unchanged at 1%.
+
 ## Objective
 
 Build AIDY into a point-in-time, self-evaluating Gold specialist that understands the market independently, uses provider calls as one source of human alpha, explains what it knows and does not know, and proves whether each intervention improves money made or money saved.
