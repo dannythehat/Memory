@@ -9,6 +9,41 @@ Authoritative branch: `main`
 Verified source `main` SHA: `526c561bf98183c58f2cabf970962eb2b26d670b`
 Live Worker: `aidy-signals-test`
 
+## Automatic forward acceptance monitor — LIVE
+
+Built and deployed 2026-09-19 so Phase 1 no longer depends on a manual Monday check.
+
+Production Super Signals SHA: `ec7febbdaa2fbd6444eae58a0873769943c5e89b`; Render deploy: `dep-dan2kgdii2qc73bhsi50`;
+Alembic: `0105_aidy_grounding_accept`.
+
+The monitor is **observational only**. It reads evidence-v2 AIDY reasoning rows, validates the
+frozen evidence contract again, and writes a research-only acceptance ledger. It has no broker,
+execution, sizing, provider-status or live-money write path.
+
+It checks:
+
+- evidence contract is exactly `aidy_reasoning_evidence_v2`;
+- claim validation already passed and unsupported count is zero;
+- every provider claim ref exists in the frozen evidence snapshot;
+- no duplicate claim refs/claim IDs;
+- source/path/sample/version provenance is present and valid;
+- provider evidence timestamps are never later than the signal timestamp;
+- provider-profile claim versions match the frozen profile version on the annotation;
+- prohibited free-form provider-history language did not escape into rationale/key factors/action reason.
+
+State machine:
+
+- `waiting_forward_rows` — no fresh evidence-v2 decisions yet;
+- `clean_so_far` — fresh rows exist and all are clean, but acceptance sample is not yet complete;
+- `accepted` — at least 10 clean rows across at least 2 providers;
+- `failed` — any audited row violates the contract.
+
+Initial live state: `waiting_forward_rows`, 0 invalid rows, research_only=true,
+live_money_execution_allowed=false.
+
+Exact deploy acceptance: **1113 API tests passed, 137 skipped, 2 warnings**; web suite and
+secret scan also passed. Public API and website proxy still respond after deploy.
+
 ## Phase 0/1 anti-drift — PRODUCTION VERIFIED / WAITING FOR FORWARD ROWS
 
 Verified 2026-09-19 against the deployed Super Signals runtime.
