@@ -109,6 +109,32 @@ PR #185 merged/deployed. `provider_trade_scoreboard_by_cohort` splits provider p
 
 PR #184 merged/deployed. `AidyDecisionOutcomeRuntime` scores decisions against `provider_trade_scores` fixed baseline. `approve` gets delta 0; denied/held trades are scored counterfactually from already-computed baseline outcomes. Early historical evidence showed duplicate/repost holds promising while conflict-deny was not convincing. Treat this as thin historical evidence, not authority.
 
+## AIDY anti-drift Phase 0/1 — PRODUCTION VERIFIED / WAITING FOR FORWARD ROWS
+
+Verified 2026-09-19 on the live Render service.
+
+- deployed SHA: `33305a020f96e545990906a6de0c5dc253e9fcaf`
+- Render deploy: `dep-dan2cv5ii2qc73bhmpig`
+- Alembic: `0104_aidy_grounding_health`
+- evidence contract: `aidy_reasoning_evidence_v2`
+- API acceptance: **1105 passed, 137 skipped, 2 warnings**
+- web acceptance: **28 passed**
+- secret scan: PASS
+- service health + public performance paths: responding after deploy
+
+The AIDY reasoning model no longer receives raw provider identity/profile/fingerprint history.
+Provider-history influence is limited to immutable PIT-safe claim objects. Side/session evidence
+is scoped to the current signal cohort, unsupported references fail safe, missing cohorts stay
+UNKNOWN, and successful annotations freeze both the evidence snapshot and validated claim refs.
+
+Production grounding view at verification: 2674 legacy-unvalidated annotations, 2227 legacy
+language-review candidates, 0 fresh evidence-v2 rows, 0 unsupported evidence-v2 rows. The market
+is in the canonical weekend closure, so forward acceptance is waiting for the next eligible
+signals; do not treat the legacy review count as a false-claim count.
+
+No execution/risk behavior changed. AIDY live-money authority remains OFF and the owner 1% risk
+directive is unchanged.
+
 ## Current AIDY runtime state — recovered / READY, multi-cycle verified
 
 17 September production patch hardened Super Signals AIDY M1 transport with bounded retry/backoff. Sustained health was independently confirmed across multiple systems/cycles; do not cite the one-time startup READY probe alone. Full detail: `handovers/2026-09-17-continuous-health-verification.md`.
