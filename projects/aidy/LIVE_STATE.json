@@ -114,5 +114,30 @@
     "required_forward_result": "claim_validation_status=passed and unsupported_claim_count=0",
     "live_money_execution_allowed_by_aidy": false,
     "super_signals_risk_changed": false
+  },
+  "master_gold_intelligence_phase_0_1_forward_monitor": {
+    "status": "LIVE_WAITING_FORWARD_ROWS",
+    "deployed_sha": "ec7febbdaa2fbd6444eae58a0873769943c5e89b",
+    "render_deploy_id": "dep-dan2kgdii2qc73bhsi50",
+    "alembic_version": "0105_aidy_grounding_accept",
+    "evidence_contract_version": "aidy_reasoning_evidence_v2",
+    "interval_seconds": 60,
+    "acceptance_required_rows": 10,
+    "acceptance_required_providers": 2,
+    "states": [
+      "waiting_forward_rows",
+      "clean_so_far",
+      "accepted",
+      "failed"
+    ],
+    "latest_state": "waiting_forward_rows",
+    "latest_invalid_rows": 0,
+    "research_only": true,
+    "live_money_execution_allowed": false,
+    "execution_path_modified": false,
+    "api_tests_passed": 1113,
+    "api_tests_skipped": 137,
+    "web_tests_passed": 28,
+    "secret_scan": "pass"
   }
 }
