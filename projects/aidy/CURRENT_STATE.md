@@ -161,6 +161,52 @@ stayed active throughout.
 6. Super Signals confirmed receiving current AIDY context across 53 consecutive cycles — see
    `projects/super-signals/handovers/2026-09-17-continuous-health-verification.md`.
 
+## Phase 2 Gold State Engine v1 — BUILT IN ISOLATION / NOT YET GRADUATED
+
+Built 2026-09-19 on isolated branches while the Phase 1 anti-drift forward gate remains
+`waiting_forward_rows`.
+
+Standalone AIDY branch: `feature/gold-state-engine-v1`, head
+`709d7702ec7b479d86ff8f8289d095bad8045cf0`, PR #137.
+
+Super Signals consumer branch: `feature/aidy-gold-state-v2-reasoning`, head
+`f6e1e42ecb8ff18b153912915588f4c6945711b6`, PR #208 against the production branch. **Do not merge PR #208 until
+Phase 1 forward grounding is accepted.**
+
+Gold State Engine v1 now composes a deterministic PIT-only XAUUSD dossier with:
+
+- completed-bar M1/M5/M15/H1/H4 close-path structure;
+- named session state;
+- observed prior-day, Asia overnight, named-session and opening-range location/distance;
+- explicit descriptive round-number references with no predictive-edge claim;
+- liquidity penetration/reclaim **proxies**, explicitly not hidden order flow;
+- PIT realised-volatility/jump context where qualified;
+- five-minute displacement and five-minute range expansion/compression versus prior
+  non-overlapping completed five-minute blocks;
+- scheduled-event timing context when known;
+- explicit `cause_unknown` for elevated/extreme moves because Phase 2 does not claim
+  causality;
+- explicit UNKNOWN surfaces and deterministic packet digest.
+
+The engine is hard-coded `research_only=true`, `descriptive_context_only=true`,
+`predictive_edge_claimed=false`, `live_money_execution_allowed=false`,
+`future_values_used=false`.
+
+Super Signals production was changed only to accept both Gold State v1 and v2 safely before
+the isolated build. Production SHA `4650d2074ea4d4287285783a5157d4340cd41e8a`, Render deploy
+`dep-dan2p2dii2qc73bi09h0`, **1116 API tests passed, 137 skipped, 2 warnings** plus web/security
+gates. The isolated PR #208 adds stricter v2 validation and prompt semantics but is not live.
+
+GitHub Actions remain credit-exhausted: PR jobs terminate in seconds with no job steps/logs,
+matching the already-documented account condition. Therefore PR #137 and #208 are deliberately
+not merged/deployed and no false green-test claim is made for the isolated heads. Static blast
+radius is bounded to Gold-state/provider-context/reasoning files and tests; repository compares
+show no broker/execution/sizing/provider-status files touched.
+
+Current production remains unchanged: standalone Worker health `ok`, capture enabled,
+formal-forward OFF, Twelve Data/public-independent; Phase 1 acceptance still
+`waiting_forward_rows`, 0 invalid rows, research-only, no live-money authority.
+
 ## Approved next build — Master Gold Intelligence
 
 Owner and ChatGPT aligned on 2026-09-19 that AIDY's destination is a full Gold specialist,
