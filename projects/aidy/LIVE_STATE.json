@@ -139,5 +139,37 @@
     "api_tests_skipped": 137,
     "web_tests_passed": 28,
     "secret_scan": "pass"
+  },
+  "master_gold_intelligence_phase_2": {
+    "status": "BUILT_ISOLATED_NOT_GRADUATED",
+    "aidy_repo_branch": "feature/gold-state-engine-v1",
+    "aidy_repo_head": "709d7702ec7b479d86ff8f8289d095bad8045cf0",
+    "aidy_pr": 137,
+    "super_signals_branch": "feature/aidy-gold-state-v2-reasoning",
+    "super_signals_head": "f6e1e42ecb8ff18b153912915588f4c6945711b6",
+    "super_signals_pr": 208,
+    "gold_state_engine_version": "aidy_gold_state_engine_v1",
+    "provider_gold_state_version": "aidy_provider_gold_state_v2",
+    "provider_context_target_version": "aidy_provider_context_api_v4",
+    "capabilities": [
+      "completed_bar_M1_M5_M15_H1_H4_structure",
+      "session_state",
+      "prior_day_asia_session_opening_range_location",
+      "liquidity_penetration_reclaim_proxies_not_order_flow",
+      "qualified_pit_volatility",
+      "five_minute_displacement_percentile",
+      "five_minute_range_expansion_compression",
+      "scheduled_event_timing_context",
+      "explicit_cause_unknown"
+    ],
+    "research_only": true,
+    "descriptive_context_only": true,
+    "predictive_edge_claimed": false,
+    "live_money_execution_allowed": false,
+    "future_values_used": false,
+    "production_graduated": false,
+    "blocked_on": "phase_1_forward_grounding_acceptance",
+    "github_actions_status": "credit_exhausted_jobs_start_without_steps_or_logs",
+    "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   }
 }
