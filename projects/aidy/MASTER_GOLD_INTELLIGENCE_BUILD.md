@@ -8,9 +8,13 @@ Approved: 2026-09-19
   acceptance WAITING for the next eligible market signals. Exact Super Signals production
   SHA `33305a020f96e545990906a6de0c5dc253e9fcaf`, deploy `dep-dan2cv5ii2qc73bhmpig`, migration
   `0104_aidy_grounding_health`; 1105 API tests passed.
-- **Phase 2 Gold-state bridge:** scaffolding exists on both sides, but the programme is
-  intentionally held at the Phase 1 acceptance gate. Do not progress Phase 2+ until fresh
-  evidence-v2 decisions prove zero unsupported claims.
+- **Phase 2 Gold-state bridge:** Gold State Engine v1 is built on isolated branches
+  (AIDY PR #137; Super Signals PR #208) but is deliberately **not graduated or deployed**
+  beyond the already-live backward-compatible intake seam. It contains PIT multi-timeframe
+  structure, session/location/liquidity proxies, volatility/range state, scheduled-event
+  context, abnormal-move observation and explicit cause-UNKNOWN semantics. Do not merge the
+  reasoning consumer or graduate Phase 2 until fresh evidence-v2 decisions prove Phase 1
+  acceptance.
 - **Live-money authority:** OFF. **Owner live-risk directive:** unchanged at 1%.
 
 ## Objective
