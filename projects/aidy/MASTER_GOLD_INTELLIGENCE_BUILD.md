@@ -288,6 +288,47 @@ No decision class gets live authority until all are true:
 9. kill switch and rollback proven;
 10. owner explicitly authorizes that exact live-money class.
 
+## Weekend acceleration strategy — historical time machine
+
+Approved 2026-09-19 by the owner.
+
+Do not waste the market-closed weekend waiting for fresh Gold signals. Use stored historical
+evidence to sharpen AIDY through strict as-of replay, while keeping fresh forward data as the
+final graduation check.
+
+The replay programme must behave like a time machine:
+
+- choose a historical signal timestamp T;
+- reconstruct only evidence genuinely available at or before T;
+- freeze AIDY's decision before loading any post-T outcome;
+- reveal the future path/outcome only after the decision is immutable;
+- score AIDY versus the frozen baseline and persist both;
+- never tune on the final untouched holdout period.
+
+Chronological partitions are mandatory:
+
+1. development history — may be used to design/repair features;
+2. validation history — may be used to select between registered alternatives;
+3. untouched holdout history — may only be opened for a formal examination after the
+   implementation is frozen.
+
+The replay harness is the reusable test bed for Phases 2-10. It must preserve provider-profile
+versions, message ordering, market-data provenance, feed epoch, context timestamps and
+outcome-availability timestamps. HistData-era and Twelve-era evidence must remain distinguishable;
+blocked/amber feature surfaces must not silently cross feed epochs.
+
+Weekend build blocks:
+
+1. historical time-machine + replay qualification harness;
+2. news/event + liquidity/execution replay;
+3. provider conditional-alpha + analogue replay;
+4. probability/EV + trade-management replay;
+5. failure attribution + AIDY self-critique/ablation.
+
+Historical performance can qualify engineering/research value but cannot by itself grant
+live-money authority. Fresh prospective forward evidence remains required before any class is
+graduated.
+
 ## Build order
 
 Build in this sequence: 0 -> 1 -> 2 -> 3/4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10. News and liquidity can proceed in parallel only after evidence contracts and claim-grounding are in place. Live-money authority does not move during this build.
