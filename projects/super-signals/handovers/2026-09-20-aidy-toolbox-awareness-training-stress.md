@@ -109,3 +109,24 @@ Earlier exact replay showed 42 trades that the model tried to reduce but Build-5
 ## Next gate
 
 Finish the 571-case v7 toolbox-aware + tool-traced training run; report shadow P&L, delta vs provider baseline, action distribution, tool-call distribution by exact tool name, losses avoided versus winners cut, and only then freeze a candidate before opening validation.
+
+
+## v7 diagnostic failure and v8 correction
+
+The first tool-traced v7 run proved the toolbox-awareness prompt was insufficient by itself.
+v7 wrote 55 decisions with **0 model tool calls and 0 preflight evidence calls**. Of the 46
+rows scored before shutdown, provider-taken P&L was +$31.84, AIDY shadow P&L +$23.71 and
+delta -$8.13. v7 is therefore preserved as failed diagnostic evidence and must not be used as
+the candidate policy.
+
+PR #235 / `79e00b0f514aeb184918f736ce456830a742dab7` introduced
+`aidy_historical_stress_lab_v8_preflight_router`. It mirrors the live reasoning runner's
+discipline: M15 structure is routed before every decision; H1 is added when trend/volatility is
+unclear; high-impact calendar evidence is focused when event timing is unknown or an event is
+within six hours; frozen provider evidence is inspected when available. It records preflight
+tool names/results separately from any model-initiated tool calls.
+
+Render Docker gate: **1,194 passed / 137 skipped / 2 warnings**. Deploy
+`dep-danvn2f40ujc73dc8ev0` is live. Environment is train-only:
+`AIDY_HISTORICAL_STRESS_SCOPE=train`, validation=0, OOS=0. Live
+`AIDY_REASONING_ENGINE_ENABLED=1`.
