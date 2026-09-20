@@ -386,3 +386,19 @@ Super Signals Gold-first integration merged to the live deploy branch:
 - When a verified Gold movement investigation is present, live preflight adds spike M5 structure and calendar evidence where connected; missing cross-asset/breaking-news tools remain explicit UNKNOWN, never fabricated.
 - DB migrations: `0109_aidy_gold_view`, `0110_aidy_gold_view_scores`.
 - No production execution/risk authority was added or changed.
+
+
+## Gold-first build final deployment status — 2026-09-20
+
+- Super Signals Gold-first integration is LIVE on Render.
+- Live deploy: `dep-dao0o5942hec7381b6fg`
+- Live commit: `27dbe11deb8f12f31abeda1a113dda5db79b8dc0`
+- Full Docker gate: 1,206 passed / 137 skipped / 2 warnings.
+- Alembic is at `0110_aidy_gold_view_scores`.
+- Research decision cadence is configured to 60 seconds.
+- Reasoning engine is enabled.
+- Validation and OOS remain closed.
+- Historical replay v8 is complete at 571/571.
+- Gold-first historical replay v9 has started and was at 45/571 decisions at this status check, all 45 carrying the frozen independent Gold-view fields.
+
+Therefore: Super Signals side is deployed and operational; the wider Gold-first programme is not complete until v9 finishes/evaluates and the standalone AIDY Cloudflare deployment is proven live.
