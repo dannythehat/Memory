@@ -354,3 +354,19 @@ Historical/live evaluation must separately credit:
 No hindsight and UNKNOWN discipline remain mandatory. Live-money authority remains OFF until separately graduated.
 
 Canonical detailed contract: `projects/aidy/MASTER_GOLD_INTELLIGENCE_BUILD.md`.
+
+
+## Gold-first build implementation — 2026-09-20
+
+Implemented and merged in standalone AIDY:
+- Merge SHA: `f2f809bdd1610d4b16166160bca6a43ceb19322b`
+- Gold State Engine v1 remains the descriptive PIT market-state base.
+- Added `aidy_gold_movement_investigator_v1`: abnormal Gold displacement/range/jump triggers an evidence-backed investigation with explicit supported/plausible/unknown attribution and missing-evidence requests.
+- Added `aidy_gold_movement_memory_v1`: Gold movements are learned independently of provider signals. Abnormal movement episodes are frozen, deduped, and after a 60-minute forward window receive immutable continuation/reversal/mixed learning cards.
+- Added D1 migration `0021_gold_movement_memory.sql`.
+- Provider Context exposes the verified movement investigation inside Gold state.
+- Cloudflare provider deploy workflow now applies D1 migrations, tests investigator/memory modules, and verifies investigator/memory health versions.
+
+Deployment truth at handoff: GitHub Actions did not start after the merge because the account Actions capacity is exhausted. Therefore the standalone AIDY merge is in `main`, but its new Cloudflare Worker/D1 rollout is NOT yet proven live. Do not describe merged code as deployed until the Worker health response shows the new movement investigator/memory versions.
+
+Gold-first rule remains: AIDY forms an independent Gold view first, provider signal second; no live-money authority was added.
