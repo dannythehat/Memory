@@ -12,8 +12,8 @@ Live Worker: `aidy-signals-test`
 ## Large historical acceleration lab — MERGED / RESEARCH OFF PENDING TRAIN RUN (2026-09-20)
 
 The owner explicitly directed a full AIDY audit and historical acceleration programme. Super Signals
-now contains a separate **803-case reconstructed research stress lab** over older resolved XAUUSD
-provider trades: **571 train / 70 validation / 162 research-OOS**. The official exact-PIT
+now contains a separate **803-source / 800-scoreable reconstructed research stress lab** over older resolved XAUUSD
+provider trades: **571 train / 69 validation / 160 research-OOS**, with 3 source cases excluded because no resolvable provider trade score exists. The official exact-PIT
 **18-case holdout remains sealed and separate**.
 
 Hardening found and fixed real gaps before any training claim: the original 650-call ceiling could
