@@ -6,11 +6,11 @@ Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `5b09fea3f7707a8f752c888f187c99c1a531f8e7` (AIDY toolbox-aware historical training stack through PR #232)
+Verified source/deploy SHA: `745b5af537cd0028535cb5e7400255b49d101156` (AIDY toolbox-aware historical training stack through PR #234)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-danvbk7f3r2c73ecei20`
+Verified live deploy: `dep-danvg7vavr4c73apar1g`
 Deploy status: **live**. Historical stress is enabled in **train-only** mode; validation and OOS remain sealed; exact replay/18-case holdout remain disabled and unopened.
-Quality gate: canonical Render Docker gate **1,189 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
+Quality gate: canonical Render Docker gate **1,191 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
@@ -29,6 +29,8 @@ Relevant merged Super Signals commits:
 - PR #230 `36dee29f4b87dfe2f94bb02ea19f21c612b363d4`: aligns the historical manifest key with the reasoning prompt.
 - PR #231 `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`: records exact per-decision tool names and versions the measured stress replay to `aidy_historical_stress_lab_v7_tooltrace`.
 - PR #232 `5b09fea3f7707a8f752c888f187c99c1a531f8e7`: freezes the training cohort independently so late evaluation rows cannot block or contaminate training.
+- PR #233 `f85a0456d1d0cf566c4b6eb4ecdc0c3722e22abb`: expands the historical replay DB contract for research partitions/evidence/run scopes; first deploy failed transactionally because the scoreboard view depended on `partition`.
+- PR #234 `745b5af537cd0028535cb5e7400255b49d101156`: fixes the migration by dropping/recreating the replay scoreboard view inside the transaction. Alembic `0108_aidy_hist_stress_schema` is live and verified directly in Postgres.
 
 Active training identity:
 - 571 cases
