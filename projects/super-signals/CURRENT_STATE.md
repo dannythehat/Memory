@@ -6,11 +6,11 @@ Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `745b5af537cd0028535cb5e7400255b49d101156` (AIDY toolbox-aware historical training stack through PR #234)
+Verified source/deploy SHA: `79e00b0f514aeb184918f736ce456830a742dab7` (AIDY toolbox-aware historical training stack through PR #235)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-danvg7vavr4c73apar1g`
+Verified live deploy: `dep-danvn2f40ujc73dc8ev0`
 Deploy status: **live**. Historical stress is enabled in **train-only** mode; validation and OOS remain sealed; exact replay/18-case holdout remain disabled and unopened.
-Quality gate: canonical Render Docker gate **1,191 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
+Quality gate: canonical Render Docker gate **1,194 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
@@ -31,6 +31,11 @@ Relevant merged Super Signals commits:
 - PR #232 `5b09fea3f7707a8f752c888f187c99c1a531f8e7`: freezes the training cohort independently so late evaluation rows cannot block or contaminate training.
 - PR #233 `f85a0456d1d0cf566c4b6eb4ecdc0c3722e22abb`: expands the historical replay DB contract for research partitions/evidence/run scopes; first deploy failed transactionally because the scoreboard view depended on `partition`.
 - PR #234 `745b5af537cd0028535cb5e7400255b49d101156`: fixes the migration by dropping/recreating the replay scoreboard view inside the transaction. Alembic `0108_aidy_hist_stress_schema` is live and verified directly in Postgres.
+- PR #235 `79e00b0f514aeb184918f736ce456830a742dab7`: historical v8 deterministic preflight router. M15 is always fetched, H1 is added for unclear/high-risk structure, calendar is focused for unknown/nearby event risk, and provider evidence is inspected when available. Historical stress remains train-only; live reasoning is explicitly enabled.
+
+v7 diagnostic failure (preserved, not training evidence): 55 decisions used 0 model tools and 0 preflight tools. Of 46 scored before shutdown, provider taken P&L was +$31.84, v7 shadow +$23.71, delta -$8.13. Entire v7 namespace is failed diagnostic evidence only.
+
+v8 active replay: `aidy_historical_stress_lab_v8_preflight_router`. Live reasoning engine is explicitly enabled; historical stress is train-only with validation/OOS locked.
 
 Active training identity:
 - 571 cases
