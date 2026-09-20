@@ -25,6 +25,13 @@ Super Signals live branch: `feature/day-10-shared-telegram-sources`
   - measured stress replay becomes `aidy_historical_stress_lab_v7_tooltrace`; old v6 decisions cannot be mixed into the measured run.
 - PR #232 / `5b09fea3f7707a8f752c888f187c99c1a531f8e7`
   - freezes the 571-case training identity independently with SHA-256 `18326c515d12a7e55046828f6fe59198de50b0b7538193174528bf56f7829168`.
+- PR #233 / `f85a0456d1d0cf566c4b6eb4ecdc0c3722e22abb`
+  - adds research partition/evidence/run-scope DB support. Its first Render deploy failed safely and transactionally because the replay scoreboard view depended on the partition column.
+- PR #234 / `745b5af537cd0028535cb5e7400255b49d101156`
+  - drops/recreates the replay scoreboard view around the schema changes.
+  - live Alembic head is `0108_aidy_hist_stress_schema`.
+  - direct Postgres verification confirms research partitions, `reconstructed_research`, train scopes and varchar(32) partition columns.
+  - canonical Render Docker gate: 1,191 passed, 137 skipped, 2 warnings.
   - late historical rows in validation/OOS can no longer block or contaminate training.
   - evaluation scopes retain the original full-cohort guard and remain fail-closed until their 69/160 frozen identities are explicitly restored.
 
