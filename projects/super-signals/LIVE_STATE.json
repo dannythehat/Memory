@@ -704,5 +704,73 @@
     },
     "interpretation": "Build 3 proves strict PIT conditional-alpha readiness and historical-analogue plumbing, not AIDY edge. Development improved versus Build 2 by $79.46 of delta but remains materially below the taken-trade baseline. Validation is unchanged at +$17.07 on a small slice. Holdout remains sealed.",
     "next_step": "Build 4 — Probability/EV + Trade Management/Profit Extraction. Build 5 remains locked until Build 4 passes and Memory is closed."
+  },
+  "probability_ev_trade_management_build4_20260920": {
+    "status": "ENGINEERING_PROVEN_PRODUCTION_VERIFIED_NO_EDGE_CLAIM",
+    "source_merged_pr": 216,
+    "source_final_sha": "1c6853e814d59f57c6b55f41361c23c98ffde791",
+    "render_validation_scope_deploy_id": "dep-dannhpugekts739i8660",
+    "render_status": "live",
+    "context_contract_version": "aidy_probability_ev_management_v1",
+    "replay_version": "aidy_historical_time_machine_v7",
+    "input_contract_version": "aidy_historical_replay_input_v6",
+    "previous_input_contract_version": "aidy_historical_replay_input_v5",
+    "canonical_api_test_gate": {
+      "passed": 1154,
+      "skipped": 137,
+      "warnings": 2,
+      "web_quality_passed": true,
+      "secret_scan_passed": true
+    },
+    "cohort": {
+      "total": 140,
+      "development": 103,
+      "validation": 19,
+      "holdout_locked": 18,
+      "same_source_decisions_as_build3": 140,
+      "partition_drift": 0
+    },
+    "evidence_audit": {
+      "descriptive_probability_ev_cases": 72,
+      "insufficient_probability_ev_cases": 68,
+      "selected_analogue_rows": 360,
+      "future_analogue_result_violations": 0,
+      "future_analogue_signal_violations": 0,
+      "live_edge_claim_violations": 0,
+      "entry_override_violations": 0
+    },
+    "development": {
+      "decisions": 103,
+      "scores": 103,
+      "taken_pnl_usd": 867.48,
+      "replay_shadow_pnl_usd": 554.52,
+      "replay_delta_vs_taken_usd": -312.96,
+      "improved": 13,
+      "harmed": 33,
+      "unchanged": 57,
+      "improvement_vs_build3_delta_usd": 220.43
+    },
+    "validation": {
+      "decisions": 19,
+      "scores": 19,
+      "taken_pnl_usd": -39.42,
+      "replay_shadow_pnl_usd": -21.38,
+      "replay_delta_vs_taken_usd": 18.05,
+      "improved": 1,
+      "harmed": 1,
+      "unchanged": 17
+    },
+    "safety": {
+      "holdout_decisions": 0,
+      "holdout_scores": 0,
+      "input_digest_mismatches": 0,
+      "research_flag_violations": 0,
+      "live_money_replay_rows": 0,
+      "live_management_violations": 0,
+      "paper_management_violations": 0,
+      "holdout_open_flag": false
+    },
+    "interpretation": "Build 4 proves PIT-safe probability/EV/management plumbing, not AIDY edge. Development delta improves by $220.43 versus Build 3 but remains $312.96 below taking the provider trades. Validation is +$18.05 on the small fixed slice. Holdout remains sealed.",
+    "next_step": "Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging. Do not start until Build 4 Memory closeout is merged and re-read."
   }
 }
