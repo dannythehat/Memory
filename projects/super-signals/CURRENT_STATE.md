@@ -349,3 +349,23 @@ All underperformance came from REDUCE decisions:
 This is NOT a production policy conclusion yet; it is training evidence. Do not encode a blanket 0.3 rule.
 The next calibration task is to distinguish losing trades worth reducing from winning trades that must
 remain full exposure, using current-trade-specific evidence. Historical v8 remains research-only.
+
+
+## Gold-first causal learning mandate — 2026-09-20
+
+Owner correction: AIDY must be developed as a **Gold intelligence system first, provider filter second**.
+
+Primary loop:
+`detect Gold move -> investigate evidence-backed cause/mechanism -> observe continuation/reversal -> store structured movement episode -> retrieve analogues -> form independent Gold view -> compare with provider call -> score economic value.`
+
+This supersedes any testing interpretation that only asks how much of a provider trade AIDY kept.
+Historical/live evaluation must separately credit:
+- avoiding a losing provider trade;
+- reducing a genuinely bad provider trade;
+- preserving profitable provider trades;
+- an independently emitted opposite-direction Gold hypothesis when it was frozen before outcome;
+- abstention/no-trade.
+
+No hindsight and UNKNOWN discipline remain mandatory. Live-money authority remains OFF until separately graduated.
+
+Canonical detailed contract: `projects/aidy/MASTER_GOLD_INTELLIGENCE_BUILD.md`.
