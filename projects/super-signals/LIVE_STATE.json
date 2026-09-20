@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "super-signals",
-  "verified_at_utc": "2026-09-20T05:48:11Z",
+  "verified_at_utc": "2026-09-20T05:48:17Z",
   "source_repo": "dannythehat/super-signals",
   "authoritative_branch": "feature/day-10-shared-telegram-sources",
   "branch_head_sha": "3ae5469e2b4ae83c6de64842aaf714cbd51a38f1",
@@ -10,7 +10,7 @@
     "service_id": "srv-d9qmcgks728c73a555m0",
     "service_name": "super-signals-day-8",
     "service_url": "https://super-signals-day-8.onrender.com",
-    "deploy_id": "dep-dann5mek1f9s7399ndp0",
+    "deploy_id": "dep-dann5otii2qc73c233qg",
     "deploy_status": "live",
     "auto_deploy": true,
     "verified_by": "list_deploys/get_deploy confirm status=live for dep-damehgfgejbc7385hgg0 (PR #206). App-log scan of the live window (07:31Z onward, level error/warning) shows no errors referencing aidy_reasoning_runtime, market_context, the calendar feed, or FINNHUB -- only pre-existing MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings already documented elsewhere, plus two unrelated errors in a different subsystem (telegram_publisher_day34_cutover group-logger cycle failure, telegram_listener_canonical broker dispatch failure) not investigated this pass. Confirmed via grep of deployed source: FINNHUB_API_KEY (set on Render, verified-valid key) is not read by any shipped code -- only reference anywhere in the codebase is an explanatory docstring in aidy_economic_calendar_client.py. NOTE: the underlying intermittent restart-loop (instance_count flapping 0/1) attributed earlier to a lapsed Render payment method was last observed 04:27-04:29Z and was NOT re-checked this pass -- still not confirmed resolved. NOTE: deploys for PRs #203/#204/#205/#206 landed between this session's own PR #202 and this verification pass, evidently from a separate concurrent session this session has no transcript context for -- see the gap note in CURRENT_STATE.md; not verified beyond deploy history + this clean log scan."
@@ -645,15 +645,16 @@
     "status": "ENGINEERING_PROVEN_PRODUCTION_VERIFIED_NO_EDGE_CLAIM",
     "source_pr": 215,
     "source_merge_sha": "3ae5469e2b4ae83c6de64842aaf714cbd51a38f1",
-    "render_validation_scope_deploy_id": "dep-dann5mek1f9s7399ndp0",
+    "render_validation_scope_deploy_id": "dep-dann5otii2qc73c233qg",
     "render_status": "live",
     "context_contract_version": "aidy_provider_alpha_analogue_v1",
+    "analogue_version": "aidy_historical_analogue_v1",
+    "day13_registry_version": "provider_day13_preregistered_v1",
     "replay_version": "aidy_historical_time_machine_v6",
     "input_contract_version": "aidy_historical_replay_input_v5",
     "canonical_api_test_gate": {
       "passed": 1149,
-      "skipped": 137,
-      "warnings": 2
+      "skipped": 137
     },
     "cohort": {
       "total": 140,
@@ -661,14 +662,13 @@
       "validation": 19,
       "holdout_locked": 18
     },
-    "evidence": {
-      "pretrade_alpha_usable_cases": 0,
-      "analogue_live_edge_usable_cases": 0,
-      "analogue_descriptive_sample_available_cases": 72,
-      "analogue_insufficient_cases": 68,
-      "future_analogue_result_violations": 0,
-      "future_analogue_signal_violations": 0,
-      "future_day13_cutoff_violations": 0
+    "evidence_audit": {
+      "cases_with_usable_pretrade_conditional_alpha": 0,
+      "cases_with_live_edge_usable_analogue": 0,
+      "cases_with_descriptive_analogue_sample": 72,
+      "cases_with_insufficient_prior_analogues": 68,
+      "selected_analogue_rows": 360,
+      "future_analogue_result_violations": 0
     },
     "development": {
       "decisions": 103,
@@ -697,9 +697,12 @@
       "input_digest_mismatches": 0,
       "research_flag_violations": 0,
       "live_money_replay_rows": 0,
+      "future_analogue_result_violations": 0,
+      "pretrade_alpha_usable_cases": 0,
+      "analogue_live_edge_usable_cases": 0,
       "holdout_open_flag": false
     },
-    "interpretation": "Build 3 proves safe PIT use of the existing Day 13 conditional-alpha readiness state and prior-resolved descriptive analogues. It does not prove trading edge. Development improved versus Build 2 but remains materially below the provider-taken baseline; validation was unchanged from Build 2.",
+    "interpretation": "Build 3 proves strict PIT conditional-alpha readiness and historical-analogue plumbing, not AIDY edge. Development improved versus Build 2 by $79.46 of delta but remains materially below the taken-trade baseline. Validation is unchanged at +$17.07 on a small slice. Holdout remains sealed.",
     "next_step": "Build 4 — Probability/EV + Trade Management/Profit Extraction. Build 5 remains locked until Build 4 passes and Memory is closed."
   }
 }
