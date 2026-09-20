@@ -2,13 +2,13 @@
 
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
-Last verified: **2026-09-19**
+Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `8ddbc40050e13fb26f04304d2e2de7a364c2efdc` (Build 1 Historical Time Machine, PR #209)
+Verified source/deploy SHA: `4bdd56e94bf801a5c22aa9b80168b4f64251b9f1` (Build 2 News/Event + Liquidity/Execution, PRs #210-#213)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dan4cg3m8hqs73a0gtb0`
+Verified live deploy: `dep-danmqtajnfac7395g5cg`
 Deploy status: **live**, verified directly via `list_deploys`/`get_deploy`; app-log scan of the live window (07:31Z onward) shows zero errors touching AIDY reasoning, market_context, the calendar feed, or FINNHUB -- only pre-existing, already-documented MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings, plus two unrelated errors (`telegram_publisher_day34_cutover` group-logger cycle failure, `telegram_listener_canonical` broker dispatch failure) that are a different subsystem, not investigated further this pass.
 Quality gate: full `services/api/tests` suite run clean this session (excluding `test_ai_lifecycle_already_closed.py`, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes) -- exit code 0, zero FAILED/ERROR lines. The 989/93/0/2 number below is the last *counted* full-suite baseline and was not re-counted exactly this session; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure.
 
@@ -24,7 +24,20 @@ The frozen strict point-in-time cohort is **140 cases**: **103 development / 19 
 
 The Time Machine passed its engineering exam, but the current AIDY shadow policy did **not** prove edge. Development: provider-taken baseline **+$867.48**, AIDY replay shadow **+$403.65**, delta **-$463.83** (19 improved / 46 harmed / 38 unchanged). Validation: provider-taken baseline **-$39.42**, AIDY replay shadow **-$21.38**, delta **+$18.05** (1 improved / 1 harmed / 17 unchanged). This is deliberately recorded as a generalisation/decision-quality problem to solve, not as profitability proof. No holdout result is available because the holdout remains unopened.
 
-**Next gated module:** Build 2 — News/Event + Liquidity/Execution. It must be built, tested, PR-reviewed/merged, production-checked where relevant, then Memory-updated/merged/re-read before Build 3 starts.
+**Build 1 handoff complete:** Build 2 subsequently passed its own separate gate below.
+
+
+## Weekend Build 2 — News/Event + Liquidity/Execution — engineering/production verified, no edge claim (2026-09-20)
+
+Build 2 is complete as a research evidence layer. Super Signals PRs #210-#213 are merged to the authoritative deployed branch; final source SHA `4bdd56e94bf801a5c22aa9b80168b4f64251b9f1` is live on Render. Validation-scope deploy `dep-danmqtajnfac7395g5cg` is live. The final canonical Docker gate passed **1,144 API tests, 137 skipped**, plus the repository secret scan and web quality gates.
+
+Build 2 adds a deterministic point-in-time `aidy_event_liquidity_execution_v1` surface to AIDY. It uses the signal's own geometry, immutable quote/liquidity evidence, scheduled-event metadata and broker execution calibration available no later than the signal. Scheduled events are timing/risk facts only, never directional predictions; realized event outcomes are unavailable to the decision. Future quote/calibration evidence is rejected. Broker execution calibration is usable only after the existing 30-sample floor is met for every required sample class; otherwise execution friction remains UNKNOWN. The replay provider-history retry was also hardened fail-closed: if strict provider-history prose validation fails, the one bounded retry removes provider history entirely while leaving the validator unchanged.
+
+Historical replay advanced to `aidy_historical_time_machine_v5` with immutable input contract `aidy_historical_replay_input_v4`, preserving the same frozen **140 cases: 103 development / 19 validation / 18 locked holdout**. Development completed **103/103 decisions + 103/103 scores**: taken baseline **+$867.48**, Build 2 AIDY shadow **+$254.63**, delta **-$612.85** (17 improved / 44 harmed / 42 unchanged; 11 bounded provider-claim retries). Validation completed **19/19 decisions + 19/19 scores**: taken baseline **-$39.42**, Build 2 AIDY shadow **-$22.35**, delta **+$17.07** (1 improved / 1 harmed / 17 unchanged; 3 retries). Safety remained clean: **0 holdout decisions, 0 input-digest mismatches, 0 research-flag violations, 0 live-money replay rows**.
+
+This proves the Build 2 evidence plumbing and acceptance discipline, **not trading edge**. Development performance worsened versus both the provider-taken baseline and the Build 1 replay, while the small validation slice remained only modestly positive. The result must be carried forward as a decision-quality/generalisation problem for later modules, not marketed as profitability proof.
+
+**Next gated module:** Build 3 — Provider Conditional-Alpha + Historical Analogue. Reuse the existing preregistered Day 13 conditional-alpha machinery rather than creating a duplicate registry; add the missing historical-analogue decision surface, then run the same build/test/replay/Memory gate before Build 4.
 
 ## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
 
