@@ -16,7 +16,8 @@ Do not begin claiming AIDY decision intelligence is live until a current provide
 - **Build 2 — News/Event + Liquidity/Execution:** ENGINEERING/PRODUCTION VERIFIED. 103 development + 19 validation cases completed under strict PIT replay; 18-case holdout remains sealed. Evidence plumbing passed, no trading-edge claim.
 - **Build 3 — Provider Conditional-Alpha + Historical Analogue:** ENGINEERING/PRODUCTION VERIFIED. Existing Day 13 registry reused; PIT prior-resolved analogues added; 103 development + 19 validation completed; holdout sealed; no edge claim.
 - **Build 4 — Probability/EV + Trade Management/Profit Extraction:** ENGINEERING/PRODUCTION VERIFIED. 103 development + 19 validation completed on the exact frozen Build 3 cohort; development delta improved to -$312.96 but remains below provider baseline; holdout sealed; no edge claim and no management authority widened.
-- **Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging:** ENGINEERING/PRODUCTION VERIFIED. Final dev delta -$60.42 after development-only calibration; validation delta -$1.96, so generalisation/edge is not proven; holdout remains sealed.\n- **Proper final exam — sealed 18-case holdout:** NEXT. Freeze Build 5 exactly as deployed; no Build 6 and no further tuning on observed validation before the holdout exam.
+- **Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging:** ENGINEERING/PRODUCTION VERIFIED. Final dev delta -$60.42 after development-only calibration; validation delta -$1.96, so generalisation/edge is not proven; holdout remains sealed.
+- **Proper final exam — sealed 18-case holdout:** NEXT. Freeze Build 5 exactly as deployed; no Build 6 and no further tuning on observed validation before the holdout exam.
 
 Every build uses the same gate: build -> tests/exam -> fix until clean -> PR/merge -> runtime evidence where applicable -> Memory update/validation/merge/re-read -> next build.
 
