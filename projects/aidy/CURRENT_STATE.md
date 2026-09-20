@@ -32,6 +32,8 @@ Production Super Signals commits:
 - PR #230 `36dee29f4b87dfe2f94bb02ea19f21c612b363d4`: historical manifest-key alignment
 - PR #231 `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`: exact tool-name telemetry, stress replay `aidy_historical_stress_lab_v7_tooltrace`
 - PR #232 `5b09fea3f7707a8f752c888f187c99c1a531f8e7`: independent 571-case training identity freeze
+- PR #233 `f85a0456d1d0cf566c4b6eb4ecdc0c3722e22abb`: reconstructed-stress DB schema expansion; first deploy rolled back safely on scoreboard-view dependency
+- PR #234 `745b5af537cd0028535cb5e7400255b49d101156`: corrected transactional migration; live Alembic head `0108_aidy_hist_stress_schema`, Render gate 1,191 passed / 137 skipped
 
 The active train identity is 571 cases, SHA-256
 `18326c515d12a7e55046828f6fe59198de50b0b7538193174528bf56f7829168`.
