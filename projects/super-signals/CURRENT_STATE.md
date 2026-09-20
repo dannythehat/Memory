@@ -6,11 +6,11 @@ Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `3ae5469e2b4ae83c6de64842aaf714cbd51a38f1` (Build 3 Provider Conditional-Alpha + Historical Analogue, PR #215)
+Verified source/deploy SHA: `1c6853e814d59f57c6b55f41361c23c98ffde791` (Build 4 Probability/EV + Trade Management/Profit Extraction; merged implementation PR #216 plus final frozen-contract test alignment)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dann5otii2qc73c233qg`
-Deploy status: **live**, verified directly via `list_deploys`/`get_deploy`; app-log scan of the live window (07:31Z onward) shows zero errors touching AIDY reasoning, market_context, the calendar feed, or FINNHUB -- only pre-existing, already-documented MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings, plus two unrelated errors (`telegram_publisher_day34_cutover` group-logger cycle failure, `telegram_listener_canonical` broker dispatch failure) that are a different subsystem, not investigated further this pass.
-Quality gate: full `services/api/tests` suite run clean this session (excluding `test_ai_lifecycle_already_closed.py`, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes) -- exit code 0, zero FAILED/ERROR lines. The 989/93/0/2 number below is the last *counted* full-suite baseline and was not re-counted exactly this session; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure.
+Verified live deploy: `dep-dannhpugekts739i8660`
+Deploy status: **live**, verified directly after the Build 4 development+validation closure pass. Holdout stayed closed.
+Quality gate: canonical Render Docker gate **1,154 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
@@ -50,7 +50,23 @@ Historical replay advanced to `aidy_historical_time_machine_v6` with immutable i
 
 Engineering result: PASS. Trading-edge result: **not proven**. Build 3 improved development replay by **$79.46** versus Build 2 but still materially underperformed the provider-taken baseline and remained worse than Build 1. Validation was unchanged from Build 2. The result is evidence that the new context is safe and usable, not evidence that AIDY should receive wider authority.
 
-**Next gated module:** Build 4 — Probability/EV + Trade Management/Profit Extraction. It must be built and tested on the same frozen cohort, with the 18-case holdout remaining sealed, then Memory must be updated/merged/re-read before Build 5.
+**Build 3 handoff complete:** Build 4 subsequently passed its own separate gate below.
+
+## Weekend Build 4 — Probability/EV + Trade Management/Profit Extraction — engineering/production verified, no edge claim (2026-09-20)
+
+Build 4 is complete as a research-only decision-support layer on the authoritative deployed branch. The merged implementation entered through Super Signals PR #216, and the final deployed source SHA is `1c6853e814d59f57c6b55f41361c23c98ffde791`. Validation-scope Render deploy `dep-dannhpugekts739i8660` is live. The canonical Docker gate passed **1,154 API tests, 137 skipped, 2 warnings**, plus web quality and secret-scan gates.
+
+The deployed `aidy_probability_ev_management_v1` layer remains deliberately conservative. It derives descriptive probability only from already-resolved prior Build 3 analogues, keeps selection bias explicit, computes signal reward:risk geometry and execution-cost proxies only from evidence already available at the signal, and does not pretend that prior positive-outcome frequency is a calibrated current TP-hit probability. Across the frozen cohort, **72/140** cases have the minimum prior-outcome sample for descriptive empirical analogue EV and **68/140** correctly remain insufficient. In every case, `usable_for_live_edge_claim=false` and `usable_for_entry_override=false`.
+
+Trade-management authority did not change. Build 4 exposes the existing profit-protection ladder as context only and preserves the Day 20 forward-evidence gate: **AIDY paper management=false and AIDY live management=false**. The research posture is `provider_baseline_only_until_forward_efficacy_is_proven`; Build 4 must not duplicate or override the canonical broker-settlement ladder. No new live-money execution authority was added.
+
+Historical replay advanced to `aidy_historical_time_machine_v7` with immutable input contract `aidy_historical_replay_input_v6`, deriving directly from the exact frozen Build 3 v5 cohort. The cohort remains **140 cases: 103 development / 19 validation / 18 locked holdout** with **0 partition drift**. Development completed **103/103 decisions + 103/103 scores**: provider-taken baseline **+$867.48**, Build 4 AIDY shadow **+$554.52**, delta **-$312.96** (13 improved / 33 harmed / 57 unchanged). That is a **+$220.43 improvement in delta versus Build 3**, but AIDY still materially underperforms simply taking the provider trades, so no trading-edge claim is permitted.
+
+Validation completed **19/19 decisions + 19/19 scores**: provider-taken baseline **-$39.42**, Build 4 AIDY shadow **-$21.38**, delta **+$18.05** (1 improved / 1 harmed / 17 unchanged). Safety/PIT audit is clean: **0 holdout decisions, 0 holdout scores, 0 input-digest mismatches, 0 research/live-money flag violations, 0 future analogue-result violations, 0 future analogue-signal violations, 0 live-management violations, 0 paper-management violations, 0 live-edge-claim violations, and 0 entry-override violations**. All 140 Build 4 cases map back to the same Build 3 source decisions.
+
+Engineering result: PASS. Trading-edge result: **not proven**. Build 4 materially improves development performance versus Build 3 while preserving the safety boundary, but it still does not beat the provider baseline. The 18-case holdout remains sealed and must not be opened merely because development improved.
+
+**Next gated module:** Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging. Do not begin it until this Build 4 Memory handoff is merged and re-read.
 
 ## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
 
