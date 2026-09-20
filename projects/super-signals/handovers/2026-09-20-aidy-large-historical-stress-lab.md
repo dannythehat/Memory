@@ -29,12 +29,13 @@ Super Signals already had a much larger usable historical spine:
 - 2,598 historical approve decisions had already been reasoned over by the live reasoning backlog;
 - 1,700+ provider trades had been resolved/scored in prior production evidence;
 - after strict deduplication/eligibility requirements, the large reconstructed stress cohort is
-  exactly 803 unique resolved executable XAUUSD provider messages.
+  803 source cases with decision outcomes; 800 are P&L-scoreable resolved executable XAUUSD provider messages.
 
 Frozen reconstructed split:
 - research_train: 571
-- research_validation: 70
-- research_oos: 162
+- research_validation: 69
+- research_oos: 160
+- source-universe exclusions without a resolvable provider score: 3 (1 validation, 2 OOS)
 
 The official exact-PIT 18-case holdout remains separate and sealed.
 
@@ -65,7 +66,7 @@ to broker/execution paths.
 Merged as `6987732dc99124442847d7114b37de3dc181a428`.
 
 Changes:
-- max-call capacity raised to the full 803 cohort;
+- max-call capacity initially raised to cover the intended cohort; production verification then proved 800 are scoreable and PR #224 froze those exact identities;
 - exact expected partition counts frozen;
 - validation and OOS separately locked by explicit flags;
 - retrospective candle tool added for 1/5/15/30/45/60-minute XAUUSD candles;
