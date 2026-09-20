@@ -8,7 +8,7 @@ Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
 Verified source/deploy SHA: `3ae5469e2b4ae83c6de64842aaf714cbd51a38f1` (Build 3 Provider Conditional-Alpha + Historical Analogue, PR #215)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dann5mek1f9s7399ndp0`
+Verified live deploy: `dep-dann5otii2qc73c233qg`
 Deploy status: **live**, verified directly via `list_deploys`/`get_deploy`; app-log scan of the live window (07:31Z onward) shows zero errors touching AIDY reasoning, market_context, the calendar feed, or FINNHUB -- only pre-existing, already-documented MetaAPI/Telegram transient-timeout and member-metrics-sync-deferred warnings, plus two unrelated errors (`telegram_publisher_day34_cutover` group-logger cycle failure, `telegram_listener_canonical` broker dispatch failure) that are a different subsystem, not investigated further this pass.
 Quality gate: full `services/api/tests` suite run clean this session (excluding `test_ai_lifecycle_already_closed.py`, a pre-existing unrelated fixture bug verified to fail in complete isolation before any of this session's changes) -- exit code 0, zero FAILED/ERROR lines. The 989/93/0/2 number below is the last *counted* full-suite baseline and was not re-counted exactly this session; GitHub Actions remains credit-exhausted, same no-runner-executed signature diagnosed earlier, not a real failure.
 
