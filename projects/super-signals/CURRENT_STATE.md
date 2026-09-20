@@ -369,3 +369,20 @@ Historical/live evaluation must separately credit:
 No hindsight and UNKNOWN discipline remain mandatory. Live-money authority remains OFF until separately graduated.
 
 Canonical detailed contract: `projects/aidy/MASTER_GOLD_INTELLIGENCE_BUILD.md`.
+
+
+## Gold-first build implementation — 2026-09-20
+
+Super Signals Gold-first integration merged to the live deploy branch:
+- Merge SHA: `9b7410aa17354671d31405914b9a90e91adab041`
+- PR: #236
+- Render deployment: `dep-dao0ke3tqb8s73au0og0` (was building when this Memory entry was written; verify final state before calling complete).
+- Reasoning engine: `aidy_reasoning_engine_v8`
+- Prompt: `aidy_reasoning_prompt_v13_gold_first`
+- Historical stress replay: `aidy_historical_stress_lab_v9_gold_first` on the same frozen 571-case research_train cohort; v8 evidence remains immutable.
+- Every new reasoning annotation must freeze an independent Gold view: bullish/bearish/neutral/unknown, confidence, horizon, reason, plus provider alignment.
+- Live provider action (take/reduce/reject/etc.) remains a separate shadow output.
+- Added separate historical Gold-view scorer: directional correctness/MFE/MAE at the frozen AIDY horizon is scored separately from provider trade P&L. This is the explicit counterfactual needed to credit AIDY when it rejects a provider BUY and had independently frozen a bearish Gold view.
+- When a verified Gold movement investigation is present, live preflight adds spike M5 structure and calendar evidence where connected; missing cross-asset/breaking-news tools remain explicit UNKNOWN, never fabricated.
+- DB migrations: `0109_aidy_gold_view`, `0110_aidy_gold_view_scores`.
+- No production execution/risk authority was added or changed.
