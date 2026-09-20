@@ -14,8 +14,8 @@ Do not begin claiming AIDY decision intelligence is live until a current provide
 
 - **Build 1 — Historical Time Machine:** ENGINEERING/PRODUCTION VERIFIED. 103 development + 19 validation cases completed under strict PIT replay; 18-case holdout remains sealed. This validates the exam infrastructure, not trading edge.
 - **Build 2 — News/Event + Liquidity/Execution:** ENGINEERING/PRODUCTION VERIFIED. 103 development + 19 validation cases completed under strict PIT replay; 18-case holdout remains sealed. Evidence plumbing passed, no trading-edge claim.
-- **Build 3 — Provider Conditional-Alpha + Historical Analogue:** NEXT. Reuse existing Day 13 preregistered conditional-alpha engine; add the historical-analogue decision surface.
-- **Build 4 — Probability/EV + Trade Management/Profit Extraction:** locked behind Build 3.
+- **Build 3 — Provider Conditional-Alpha + Historical Analogue:** ENGINEERING/PRODUCTION VERIFIED. Existing Day 13 registry reused; PIT prior-resolved analogues added; 103 development + 19 validation completed; holdout sealed; no edge claim.
+- **Build 4 — Probability/EV + Trade Management/Profit Extraction:** NEXT.
 - **Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging:** locked behind Build 4.
 
 Every build uses the same gate: build -> tests/exam -> fix until clean -> PR/merge -> runtime evidence where applicable -> Memory update/validation/merge/re-read -> next build.
