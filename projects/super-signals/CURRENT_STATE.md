@@ -6,15 +6,52 @@ Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `dc642161e59d94c1e6fdb595bc578d070e53ec9c` (Build 5 Failure Attribution/UNKNOWN + AIDY self-critique final calibration; PRs #219 and #220)
+Verified source/deploy SHA: `5b09fea3f7707a8f752c888f187c99c1a531f8e7` (AIDY toolbox-aware historical training stack through PR #232)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dantd12jnfac739q2o2g`
-Deploy status: **live**, verified after the final Build 5 v9 development+validation replay. Historical replay is now disabled/frozen; holdout stayed closed.
-Quality gate: canonical Render Docker gate **1,165 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
+Verified live deploy: `dep-danvbk7f3r2c73ecei20`
+Deploy status: **live**. Historical stress is enabled in **train-only** mode; validation and OOS remain sealed; exact replay/18-case holdout remain disabled and unopened.
+Quality gate: canonical Render Docker gate **1,189 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
 **Gap flagged for the next session**: between this session's PR #202 (day-map, merged 04:56Z) and this update, PRs **#203, #204, #205, #206** were also merged and deployed to the same service, evidently by a separate concurrent session this same session has no transcript context for: #203 "Harden AIDY Provider Context against transient transport failures", #204 "Fix Day 14 governance for append-only provider cohorts", #205 "Make AIDY use candle tools when structure evidence is needed" (this one's own deploy `build_failed`, followed by 4 more direct-commit build-fix attempts targeting a broken AIDY prompt-regression-test string literal -- 3 more `build_failed` before one succeeded), #206 "Restore Day 13 forward evidence under current Gold session buckets". All four are live in production as of the SHA/deploy recorded above. **Not verified by this session beyond the deploy history and a clean post-deploy log scan** -- read the actual PR diffs before making any claim about what #203-206 changed or relying on them architecturally.
+
+## AIDY toolbox-aware historical training exam — ACTIVE / TRAIN ONLY (2026-09-20)
+
+The owner directed that AIDY must understand and use the tools available to him rather than merely
+having research modules in repositories. Production reasoning now uses prompt
+`aidy_reasoning_prompt_v12_toolbox` and receives an explicit `toolbox_manifest`.
+
+Relevant merged Super Signals commits:
+- PR #227 `e21b4eded371e9c46038d5daaca6514399cf708b`: fixes edited-Telegram hindsight by using the selected revision edit timestamp as effective signal time.
+- PR #228 `521b4c9002f7ffa22aae54a585c6edfbd5b10e53`: adds explicit historical toolbox orchestration.
+- PR #229 `134a81d79fe88d6b2343a08e657d6307a1d30402`: teaches AIDY to read the toolbox manifest, consider available standing evidence, call material on-demand tools, and preserve UNKNOWN for unavailable evidence.
+- PR #230 `36dee29f4b87dfe2f94bb02ea19f21c612b363d4`: aligns the historical manifest key with the reasoning prompt.
+- PR #231 `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`: records exact per-decision tool names and versions the measured stress replay to `aidy_historical_stress_lab_v7_tooltrace`.
+- PR #232 `5b09fea3f7707a8f752c888f187c99c1a531f8e7`: freezes the training cohort independently so late evaluation rows cannot block or contaminate training.
+
+Active training identity:
+- 571 cases
+- SHA-256 `18326c515d12a7e55046828f6fe59198de50b0b7538193174528bf56f7829168`
+- first signal 2026-08-12 00:23:26Z
+- last signal 2026-09-03 22:23:23Z
+
+The live dynamic source query currently returns 803 eligible rows split 571/70/162 because three
+late historical rows appeared in validation/OOS after the original 800-case freeze. Those three are
+NOT admitted into the frozen evaluation design. Training stays 571. Validation and OOS remain
+locked until their original 69/160 frozen identities are restored explicitly. The exact 18-case
+holdout remains sealed.
+
+Historical reasoning can use retrospective XAUUSD candles, official event timing/calendar,
+provider as-of evidence, recent provider messages, historical analogues, event/liquidity context,
+probability/EV context, self-critique and a focused historical evidence inspector. Per-decision
+tool-use telemetry records which on-demand tools were actually used so later analysis can measure
+losses avoided versus winners cut by tool.
+
+No broker execution, live risk sizing, provider routing or live-money authority changed in this work.
+
+Full handover:
+`projects/super-signals/handovers/2026-09-20-aidy-toolbox-awareness-training-stress.md`.
 
 ## AIDY large historical stress lab — MERGED / RESEARCH OFF PENDING TRAIN RUN (2026-09-20)
 
