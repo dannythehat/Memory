@@ -780,7 +780,7 @@
       220
     ],
     "source_final_sha": "dc642161e59d94c1e6fdb595bc578d070e53ec9c",
-    "render_deploy_id": "dep-dant4068bjmc73ar4960",
+    "render_deploy_id": "dep-dantd12jnfac739q2o2g",
     "render_status": "live",
     "context_contract_version": "aidy_failure_self_critique_v2",
     "replay_version": "aidy_historical_time_machine_v9",
@@ -871,6 +871,12 @@
       "holdout_open_flag": false
     },
     "interpretation": "Build 5 materially improves development behaviour versus Build 4 but remains $60.42 below taking provider trades. Validation is -$1.96 and worse than Build 4's +$18.05, so generalisation is not proven and no edge claim is allowed. Do not tune again on validation.",
-    "next_step": "No Build 6. Freeze this exact Build 5 implementation. Proper final exam is the untouched 18-case holdout, only when the owner explicitly starts that exam."
+    "next_step": "No Build 6. Freeze this exact Build 5 implementation. Proper final exam is the untouched 18-case holdout, only when the owner explicitly starts that exam.",
+    "replay_runtime": {
+      "enabled": false,
+      "scope": "development_validation",
+      "holdout_open": false,
+      "purpose": "Freeze final Build 5 after development+validation completion until owner explicitly starts the proper holdout exam."
+    }
   }
 }

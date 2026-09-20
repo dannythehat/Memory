@@ -11,8 +11,10 @@ Status: **ENGINEERING_PROVEN_PRODUCTION_VERIFIED_NO_EDGE_CLAIM**
 - Build 5 initial PR: **#219**
 - Build 5 final-calibration PR: **#220**
 - Final deployed SHA: `dc642161e59d94c1e6fdb595bc578d070e53ec9c`
-- Render deploy: `dep-dant4068bjmc73ar4960`
+- Render deploy: `dep-dantd12jnfac739q2o2g`
 - Deploy state: **live**
+- Historical replay runtime after closure: **disabled/frozen**
+- Holdout remains closed until the owner explicitly starts the proper exam.
 - Canonical Docker gate: **1,165 passed / 137 skipped / 2 warnings**
 - Web quality gate: passed
 - Repository secret scan: passed
