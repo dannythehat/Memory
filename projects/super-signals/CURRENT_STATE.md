@@ -16,6 +16,24 @@ Quality gate: canonical Render Docker gate **1,165 passed / 137 skipped / 2 warn
 
 **Gap flagged for the next session**: between this session's PR #202 (day-map, merged 04:56Z) and this update, PRs **#203, #204, #205, #206** were also merged and deployed to the same service, evidently by a separate concurrent session this same session has no transcript context for: #203 "Harden AIDY Provider Context against transient transport failures", #204 "Fix Day 14 governance for append-only provider cohorts", #205 "Make AIDY use candle tools when structure evidence is needed" (this one's own deploy `build_failed`, followed by 4 more direct-commit build-fix attempts targeting a broken AIDY prompt-regression-test string literal -- 3 more `build_failed` before one succeeded), #206 "Restore Day 13 forward evidence under current Gold session buckets". All four are live in production as of the SHA/deploy recorded above. **Not verified by this session beyond the deploy history and a clean post-deploy log scan** -- read the actual PR diffs before making any claim about what #203-206 changed or relying on them architecturally.
 
+## AIDY large historical stress lab — MERGED / RESEARCH OFF PENDING TRAIN RUN (2026-09-20)
+
+The five-build 140-case exact-PIT exam remains intact, but it is no longer being mistaken for the
+full historical learning corpus. A separate reconstructed stress lab now covers **803 unique
+resolved executable XAUUSD provider messages**, frozen chronologically into **571 research_train /
+70 research_validation / 162 research_oos**. The official exact-PIT 18-case holdout is untouched.
+
+PR #221 created the isolated lab. PR #222 fixed full-cohort capacity, hard-locked evaluation scopes
+and added retrospective candle tool use. PR #223 added conservative official event timing and
+provider-specific as-of memory reconstructed only from results known before each target signal.
+Latest merged source SHA: `25d6cea1dc7dd127e9890b0363148f1732557da4`.
+
+Runtime stays disabled by default and carries no broker/execution/provider-status/live-money write
+authority. Next step: run only the 571 training cases, diagnose AIDY-versus-provider outcome
+differences, improve from training evidence only, then evaluate untouched validation and OOS.
+Full handover:
+`projects/super-signals/handovers/2026-09-20-aidy-large-historical-stress-lab.md`.
+
 ## Weekend Build 1 — Historical Time Machine — engineering/production verified, no edge claim (2026-09-19)
 
 Build 1 of the gated weekend sequence is complete as research infrastructure. Super Signals PR #209 merged to the deployed branch as `8ddbc40050e13fb26f04304d2e2de7a364c2efdc`; Render deploy `dep-dan4cg3m8hqs73a0gtb0` is live. The Docker image itself gates deployment on compileall plus the full API pytest suite.
