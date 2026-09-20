@@ -327,3 +327,25 @@ directive is unchanged.
 `provider signal -> PIT-safe Gold context -> provider history -> current exposure -> AIDY decision -> action -> outcome -> counterfactual score -> learning`
 
 AIDY must become measurably better on forward unseen evidence, not merely accumulate more data.
+
+## v8 current training diagnosis — 2026-09-20
+
+At 116 scored v8 training decisions:
+- provider-taken P&L: +$57.49
+- AIDY shadow P&L: -$43.57
+- delta: -$101.06
+- improved: 29
+- harmed: 38
+- unchanged: 49
+
+All underperformance came from REDUCE decisions:
+- 71 reductions: provider P&L +$227.96 vs AIDY +$126.90, delta -$101.06
+- TAKE decisions had zero delta by definition.
+- On reduced provider losers, AIDY saved +$311.84.
+- On reduced provider winners, AIDY gave back -$412.89.
+- 0.3 multiplier reductions were net positive (+$50.80 delta) in this sample.
+- 0.5 multiplier reductions were strongly negative (-$128.90 delta), driven by chopping winners.
+
+This is NOT a production policy conclusion yet; it is training evidence. Do not encode a blanket 0.3 rule.
+The next calibration task is to distinguish losing trades worth reducing from winning trades that must
+remain full exposure, using current-trade-specific evidence. Historical v8 remains research-only.
