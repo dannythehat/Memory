@@ -23,6 +23,10 @@ Super Signals live branch: `feature/day-10-shared-telegram-sources`
 - PR #231 / `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`
   - adds per-decision tool-use telemetry so AIDY's historical exam records which on-demand tools were actually called.
   - measured stress replay becomes `aidy_historical_stress_lab_v7_tooltrace`; old v6 decisions cannot be mixed into the measured run.
+- PR #232 / `5b09fea3f7707a8f752c888f187c99c1a531f8e7`
+  - freezes the 571-case training identity independently with SHA-256 `18326c515d12a7e55046828f6fe59198de50b0b7538193174528bf56f7829168`.
+  - late historical rows in validation/OOS can no longer block or contaminate training.
+  - evaluation scopes retain the original full-cohort guard and remain fail-closed until their 69/160 frozen identities are explicitly restored.
 
 ## AIDY's currently connected reasoning toolbox
 
@@ -52,9 +56,11 @@ These are NOT to be falsely treated as connected callable tools. Until an audita
 ## Historical exam safety
 
 Frozen large scoreable cohort: 800
-- training: 571
+- training: 571 (independently hash-frozen for the active exam)
 - validation: 69
 - OOS: 160
+
+The live source-universe query now returns 803 eligible historical rows (571/70/162) because three late rows arrived in evaluation partitions after the original freeze. They are NOT admitted into the frozen evaluation set. Training remains 571.
 
 Current stress configuration:
 - `AIDY_HISTORICAL_STRESS_ENABLED=1`
