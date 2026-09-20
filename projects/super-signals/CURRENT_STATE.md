@@ -6,11 +6,11 @@ Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
-Verified source/deploy SHA: `1c6853e814d59f57c6b55f41361c23c98ffde791` (Build 4 Probability/EV + Trade Management/Profit Extraction; merged implementation PR #216 plus final frozen-contract test alignment)
+Verified source/deploy SHA: `dc642161e59d94c1e6fdb595bc578d070e53ec9c` (Build 5 Failure Attribution/UNKNOWN + AIDY self-critique final calibration; PRs #219 and #220)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dannhpugekts739i8660`
-Deploy status: **live**, verified directly after the Build 4 development+validation closure pass. Holdout stayed closed.
-Quality gate: canonical Render Docker gate **1,154 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
+Verified live deploy: `dep-dant4068bjmc73ar4960`
+Deploy status: **live**, verified after the final Build 5 v9 development+validation replay. Holdout stayed closed.
+Quality gate: canonical Render Docker gate **1,165 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
 
@@ -66,7 +66,50 @@ Validation completed **19/19 decisions + 19/19 scores**: provider-taken baseline
 
 Engineering result: PASS. Trading-edge result: **not proven**. Build 4 materially improves development performance versus Build 3 while preserving the safety boundary, but it still does not beat the provider baseline. The 18-case holdout remains sealed and must not be opened merely because development improved.
 
-**Next gated module:** Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging. Do not begin it until this Build 4 Memory handoff is merged and re-read.
+**Build 4 handoff complete:** Build 5 subsequently passed its engineering/production gate below.
+
+## Weekend Build 5 — Failure Attribution / UNKNOWN + AIDY self-critique — engineering/production verified, no edge claim (2026-09-20)
+
+Build 5 is complete as the fifth and final module in the current weekend sequence. Super Signals PR #219 introduced the PIT-safe self-critique/failure-attribution layer. Its first full replay exposed the exact failure the module was intended to detect: AIDY still used `reduce` as generic caution too often. Build 5 v1 reduced **79/103** development trades and produced development delta **-$407.47**, worse than Build 4's **-$312.96**. That failed result was preserved rather than hidden.
+
+The corrective calibration in PR #220 was selected from **development evidence only**. It made the self-critique enforceable rather than merely advisory: a reduced shadow size is permitted only when the current trade itself has an approved concrete reason (mean target reward below 1R, clear multi-timeframe counter-trend, or a high-impact scheduled event within 60 minutes). Ordinary uncertainty is not a reduce reason. A hard UNKNOWN gate forces `need_more_evidence`. Prior self-feedback remains descriptive only and can never create directional edge, entry authority, paper management, live management or live-money authority.
+
+Final deployed source SHA is `dc642161e59d94c1e6fdb595bc578d070e53ec9c`; Render deploy `dep-dant4068bjmc73ar4960` is **live**. Canonical Docker gate passed **1,165 API tests / 137 skipped / 2 warnings**, plus web quality and secret scan.
+
+Final Build 5 contracts:
+- self-critique context: `aidy_failure_self_critique_v2`
+- historical replay: `aidy_historical_time_machine_v9`
+- immutable replay input: `aidy_historical_replay_input_v8`
+- frozen predecessor contract: `aidy_historical_replay_input_v7`
+
+The exact **140-case** cohort remains unchanged: **103 development / 19 validation / 18 locked holdout**. All 140 final cases map back to the same Build 5-v1 source decisions with **0 partition drift**. The 18-case holdout remains sealed with **0 decisions / 0 scores**.
+
+Final development completed **103/103 decisions + 103/103 scores**:
+- provider-taken baseline: **+$867.48**
+- Build 5 final AIDY shadow: **+$807.07**
+- delta versus provider baseline: **-$60.42**
+- improved / harmed / unchanged: **6 / 15 / 82**
+- final actions: **74 take / 28 reduce / 1 reject**
+- deterministic `reduce -> take` corrections: **42**
+
+Build 5 therefore improves development delta by **+$252.54 versus Build 4** (-$60.42 vs -$312.96), but it still does **not** beat the provider baseline and therefore does **not** prove trading edge.
+
+Validation completed **19/19 decisions + 19/19 scores**:
+- provider-taken baseline: **-$39.42**
+- Build 5 final AIDY shadow: **-$41.38**
+- delta: **-$1.96**
+- improved / harmed / unchanged: **0 / 1 / 18**
+- final actions: **12 take / 6 reduce / 1 need_more_evidence**
+- deterministic `reduce -> take` corrections: **5**
+- hard UNKNOWN correction: **1**
+
+This validation result is worse than Build 4's **+$18.05** validation delta. That is important evidence that the large development improvement did **not** fully generalise. Do not tune Build 5 again against the now-observed validation slice. The next proper test must use the still-sealed holdout, with no further fitting first.
+
+Final PIT/safety audit is clean: **0 decision-digest mismatches, 0 partition drift, 0 future self-feedback cutoff violations, 0 research-flag violations, 0 live-money violations, 0 live-management violations, 0 holdout decisions and 0 holdout scores**. Across the 140 frozen inputs, self-feedback identified **56 over-reduction**, **11 prior-filtering-added-value**, **5 mixed/neutral**, and **68 insufficient-prior-feedback** cases; UNKNOWN was hard-required on **1/140** cases. These are descriptive diagnostics only.
+
+Engineering result: **PASS**. Production result: **PASS**. Trading-edge result: **NOT PROVEN**. The five-build sequence is now complete.
+
+**Next step is not Build 6.** The next step is the proper final exam: freeze this exact Build 5 implementation and evaluate the untouched **18-case holdout** without further tuning. Do not open that holdout until the owner explicitly begins the proper exam.
 
 ## TIG management-reliability fix, 6 providers switched on for paper trading (2026-09-17/18)
 
