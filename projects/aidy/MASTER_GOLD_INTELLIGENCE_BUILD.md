@@ -332,3 +332,36 @@ graduated.
 ## Build order
 
 Build in this sequence: 0 -> 1 -> 2 -> 3/4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10. News and liquidity can proceed in parallel only after evidence contracts and claim-grounding are in place. Live-money authority does not move during this build.
+
+
+## Owner correction — Gold-first causal learning architecture (2026-09-20)
+
+This is now the primary design rule for AIDY.
+
+**AIDY is a Gold intelligence system first and a provider filter second.**
+
+The core learning loop is not merely provider-signal -> accept/reduce/reject -> outcome. It is:
+
+`Gold movement -> detect abnormality -> investigate cause -> explain the market mechanism -> observe continuation/reversal -> store a structured lesson -> retrieve comparable episodes -> form an independent Gold view -> then compare that view with provider signals.`
+
+Required behaviour:
+
+1. Detect meaningful Gold movement continuously, including spikes, jump-dominant candles, abnormal range expansion, volume/spread anomalies and cross-asset reaction.
+2. Trigger an investigation automatically when movement is unusual. Do not rely on a model deciding whether to look.
+3. Inspect all qualified evidence available at that time: multi-timeframe Gold candles/structure, scheduled and breaking macro/event evidence, forecast-vs-actual surprise where point-in-time valid, USD/cross-market/rates/yields, CME state, volatility/GVZ, liquidity/session/spread/execution state and recent provider context where relevant.
+4. Distinguish **known cause**, **supported mechanism**, **plausible but unconfirmed explanation**, and **cause_unknown**. Never invent a headline or mechanism.
+5. Watch the post-event path: immediate displacement, 5/15/30/60 minute continuation or retracement, structure break/reclaim, MFE/MAE, duration and eventual normalization/continuation.
+6. Persist each event as a retrievable **Gold movement episode / learning card** with immutable evidence and timestamps.
+7. Before later decisions, retrieve genuinely comparable prior Gold episodes and include counterexamples, not only confirming examples.
+8. AIDY must form an **independent Gold directional view** before using a provider signal as additional human alpha.
+9. Counterfactual scoring must include:
+   - provider trade taken unchanged;
+   - provider trade avoided;
+   - provider trade reduced;
+   - AIDY independent opposite-direction hypothesis when explicitly emitted before the outcome;
+   - no-trade/abstention.
+10. AIDY is judged by forward/out-of-sample economic value and calibration, not by the sophistication of its explanation.
+
+Important architectural finding from the 2026-09-20 audit: the standalone repo already has many required components (shock detection, macro surprise capture, cross-market as-of reconstruction, volatility/jump intelligence, episode memory, learning cards and semantic analogue retrieval), but they are fragmented. In particular, `build_unexplained_market_shock()` intentionally forbids narrative cause attribution. The next build is therefore an **evidence-backed Gold Movement Investigator** that joins these existing components rather than creating a parallel stack.
+
+Live-money authority remains OFF while this is built and tested. The research system may learn an independent opposite-direction view, but that does not silently become broker authority.
