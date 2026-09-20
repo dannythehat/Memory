@@ -8,8 +8,8 @@ Authoritative repo: `dannythehat/super-signals`
 Authoritative deployed branch: `feature/day-10-shared-telegram-sources`
 Verified source/deploy SHA: `dc642161e59d94c1e6fdb595bc578d070e53ec9c` (Build 5 Failure Attribution/UNKNOWN + AIDY self-critique final calibration; PRs #219 and #220)
 Render service: `super-signals-day-8` (`srv-d9qmcgks728c73a555m0`)
-Verified live deploy: `dep-dant4068bjmc73ar4960`
-Deploy status: **live**, verified after the final Build 5 v9 development+validation replay. Holdout stayed closed.
+Verified live deploy: `dep-dantd12jnfac739q2o2g`
+Deploy status: **live**, verified after the final Build 5 v9 development+validation replay. Historical replay is now disabled/frozen; holdout stayed closed.
 Quality gate: canonical Render Docker gate **1,165 passed / 137 skipped / 2 warnings**, plus web quality checks and repository secret scan.
 
 **Open concern, not yet confirmed resolved**: the intermittent restart-loop (`instance_count` flapping 0/1 every few minutes) that this session attributed to a lapsed Render payment method earlier tonight was still observed as recently as the 04:27-04:29Z window, well after the owner said they'd paid it. Not re-checked this pass -- next session should check this first before assuming it's fixed.
@@ -74,7 +74,7 @@ Build 5 is complete as the fifth and final module in the current weekend sequenc
 
 The corrective calibration in PR #220 was selected from **development evidence only**. It made the self-critique enforceable rather than merely advisory: a reduced shadow size is permitted only when the current trade itself has an approved concrete reason (mean target reward below 1R, clear multi-timeframe counter-trend, or a high-impact scheduled event within 60 minutes). Ordinary uncertainty is not a reduce reason. A hard UNKNOWN gate forces `need_more_evidence`. Prior self-feedback remains descriptive only and can never create directional edge, entry authority, paper management, live management or live-money authority.
 
-Final deployed source SHA is `dc642161e59d94c1e6fdb595bc578d070e53ec9c`; Render deploy `dep-dant4068bjmc73ar4960` is **live**. Canonical Docker gate passed **1,165 API tests / 137 skipped / 2 warnings**, plus web quality and secret scan.
+Final deployed source SHA is `dc642161e59d94c1e6fdb595bc578d070e53ec9c`; Render deploy `dep-dantd12jnfac739q2o2g` is **live**. Canonical Docker gate passed **1,165 API tests / 137 skipped / 2 warnings**, plus web quality and secret scan.
 
 Final Build 5 contracts:
 - self-critique context: `aidy_failure_self_critique_v2`
