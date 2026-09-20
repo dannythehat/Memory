@@ -335,3 +335,22 @@ Each authority class requires an audit trail, kill switch, prospective evidence 
 ## Session rule
 
 Read `OWNER_MANDATE.md` first, then verify the current AIDY repo, Worker health and Super Signals production state directly. Source/runtime truth overrides Memory if it has advanced.
+
+## Gold-first causal learning mandate — 2026-09-20
+
+Owner correction: AIDY must be developed as a **Gold intelligence system first, provider filter second**.
+
+Primary loop:
+`detect Gold move -> investigate evidence-backed cause/mechanism -> observe continuation/reversal -> store structured movement episode -> retrieve analogues -> form independent Gold view -> compare with provider call -> score economic value.`
+
+This supersedes any testing interpretation that only asks how much of a provider trade AIDY kept.
+Historical/live evaluation must separately credit:
+- avoiding a losing provider trade;
+- reducing a genuinely bad provider trade;
+- preserving profitable provider trades;
+- an independently emitted opposite-direction Gold hypothesis when it was frozen before outcome;
+- abstention/no-trade.
+
+No hindsight and UNKNOWN discipline remain mandatory. Live-money authority remains OFF until separately graduated.
+
+Canonical detailed contract: `projects/aidy/MASTER_GOLD_INTELLIGENCE_BUILD.md`.
