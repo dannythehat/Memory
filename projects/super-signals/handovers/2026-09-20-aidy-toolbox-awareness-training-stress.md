@@ -20,6 +20,9 @@ Super Signals live branch: `feature/day-10-shared-telegram-sources`
   - live reasoning gets `aidy_live_toolbox_manifest_v1` on every reasoning call.
 - PR #230 / `36dee29f4b87dfe2f94bb02ea19f21c612b363d4`
   - aligns historical supplemental-evidence key to `toolbox_manifest` so the toolbox-aware prompt sees it.
+- PR #231 / `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`
+  - adds per-decision tool-use telemetry so AIDY's historical exam records which on-demand tools were actually called.
+  - measured stress replay becomes `aidy_historical_stress_lab_v7_tooltrace`; old v6 decisions cannot be mixed into the measured run.
 
 ## AIDY's currently connected reasoning toolbox
 
@@ -92,4 +95,4 @@ Earlier exact replay showed 42 trades that the model tried to reduce but Build-5
 
 ## Next gate
 
-Finish the 571-case v6 toolbox-aware training run; report shadow P&L, delta vs provider baseline, action distribution, tool-call distribution, losses avoided versus winners cut, and only then freeze a candidate before opening validation.
+Finish the 571-case v7 toolbox-aware + tool-traced training run; report shadow P&L, delta vs provider baseline, action distribution, tool-call distribution by exact tool name, losses avoided versus winners cut, and only then freeze a candidate before opening validation.
