@@ -9,6 +9,28 @@ Authoritative branch: `main`
 Verified source `main` SHA: `526c561bf98183c58f2cabf970962eb2b26d670b`
 Live Worker: `aidy-signals-test`
 
+## Large historical acceleration lab — MERGED / RESEARCH OFF PENDING TRAIN RUN (2026-09-20)
+
+The owner explicitly directed a full AIDY audit and historical acceleration programme. Super Signals
+now contains a separate **803-case reconstructed research stress lab** over older resolved XAUUSD
+provider trades: **571 train / 70 validation / 162 research-OOS**. The official exact-PIT
+**18-case holdout remains sealed and separate**.
+
+Hardening found and fixed real gaps before any training claim: the original 650-call ceiling could
+not cover all OOS cases; evaluation partitions were insufficiently locked; historical reasoning had
+no candle tools; and the large replay lacked reconstructed as-of provider memory. PRs **#221-#223**
+are merged; latest implementation SHA is
+`25d6cea1dc7dd127e9890b0363148f1732557da4`.
+
+The current replay can use retrospective-research 1/5/15/30/45/60-minute candles, conservative
+official scheduled-event timing, recent provider messages, prior-resolved analogues, and
+provider-specific overall/side/session evidence known before each target signal. All reconstructed
+evidence remains explicitly non-PIT/research-only and cannot grant live authority.
+
+Training protocol is fixed: 571 train first; tune only there; freeze; 70 validation without tuning;
+freeze; 162 research-OOS; only then final exact-PIT holdout. See
+`projects/super-signals/handovers/2026-09-20-aidy-large-historical-stress-lab.md`.
+
 ## Automatic forward acceptance monitor — LIVE
 
 Built and deployed 2026-09-19 so Phase 1 no longer depends on a manual Monday check.
