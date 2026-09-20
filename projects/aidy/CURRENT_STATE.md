@@ -370,3 +370,13 @@ Implemented and merged in standalone AIDY:
 Deployment truth at handoff: GitHub Actions did not start after the merge because the account Actions capacity is exhausted. Therefore the standalone AIDY merge is in `main`, but its new Cloudflare Worker/D1 rollout is NOT yet proven live. Do not describe merged code as deployed until the Worker health response shows the new movement investigator/memory versions.
 
 Gold-first rule remains: AIDY forms an independent Gold view first, provider signal second; no live-money authority was added.
+
+
+## Gold-first build final deployment status — 2026-09-20
+
+Do NOT mark the Gold-first architecture fully complete yet.
+
+- Standalone AIDY Gold-first brain code is merged to main at `f2f809bdd1610d4b16166160bca6a43ceb19322b`.
+- GitHub Actions returned no workflow runs for that merge, so Cloudflare Worker/D1 deployment of the new Gold Movement Investigator + Movement Memory is NOT yet proven live.
+- The code exists and is merged; deployment remains the blocker.
+- Super Signals may safely consume the older Gold-state packet until the standalone provider context v5 rollout is proven live.
