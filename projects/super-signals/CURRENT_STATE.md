@@ -20,8 +20,7 @@ Quality gate: canonical Render Docker gate **1,165 passed / 137 skipped / 2 warn
 
 The five-build 140-case exact-PIT exam remains intact, but it is no longer being mistaken for the
 full historical learning corpus. A separate reconstructed stress lab now covers **803 unique
-resolved executable XAUUSD provider messages**, frozen chronologically into **571 research_train /
-70 research_validation / 162 research_oos**. The official exact-PIT 18-case holdout is untouched.
+resolved executable XAUUSD provider messages**, frozen chronologically into **571 research_train / 69 research_validation / 160 research_oos**, plus 3 auditable source-universe exclusions with no resolvable score. The official exact-PIT 18-case holdout is untouched.
 
 PR #221 created the isolated lab. PR #222 fixed full-cohort capacity, hard-locked evaluation scopes
 and added retrospective candle tool use. PR #223 added conservative official event timing and
