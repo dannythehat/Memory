@@ -772,5 +772,105 @@
     },
     "interpretation": "Build 4 proves PIT-safe probability/EV/management plumbing, not AIDY edge. Development delta improves by $220.43 versus Build 3 but remains $312.96 below taking the provider trades. Validation is +$18.05 on the small fixed slice. Holdout remains sealed.",
     "next_step": "Build 5 — Failure Attribution/UNKNOWN + AIDY self-critique/judging. Do not start until Build 4 Memory closeout is merged and re-read."
+  },
+  "failure_attribution_unknown_self_critique_build5_20260920": {
+    "status": "ENGINEERING_PROVEN_PRODUCTION_VERIFIED_NO_EDGE_CLAIM",
+    "source_prs": [
+      219,
+      220
+    ],
+    "source_final_sha": "dc642161e59d94c1e6fdb595bc578d070e53ec9c",
+    "render_deploy_id": "dep-dant4068bjmc73ar4960",
+    "render_status": "live",
+    "context_contract_version": "aidy_failure_self_critique_v2",
+    "replay_version": "aidy_historical_time_machine_v9",
+    "input_contract_version": "aidy_historical_replay_input_v8",
+    "previous_input_contract_version": "aidy_historical_replay_input_v7",
+    "canonical_api_test_gate": {
+      "passed": 1165,
+      "skipped": 137,
+      "warnings": 2,
+      "web_quality_passed": true,
+      "secret_scan_passed": true
+    },
+    "build5_v1_failed_iteration": {
+      "replay_version": "aidy_historical_time_machine_v8",
+      "input_contract_version": "aidy_historical_replay_input_v7",
+      "development": {
+        "taken_pnl_usd": 867.48,
+        "replay_shadow_pnl_usd": 460.01,
+        "replay_delta_vs_taken_usd": -407.47,
+        "reduce_actions": 79
+      },
+      "interpretation": "Prompt-only self-critique failed to constrain generic caution; result preserved and used only as development evidence for final calibration."
+    },
+    "cohort": {
+      "total": 140,
+      "development": 103,
+      "validation": 19,
+      "holdout_locked": 18,
+      "same_source_decisions_as_previous": 140,
+      "partition_drift": 0
+    },
+    "development": {
+      "decisions": 103,
+      "scores": 103,
+      "taken_pnl_usd": 867.48,
+      "replay_shadow_pnl_usd": 807.07,
+      "replay_delta_vs_taken_usd": -60.42,
+      "improved": 6,
+      "harmed": 15,
+      "unchanged": 82,
+      "actions": {
+        "take": 74,
+        "reduce": 28,
+        "reject": 1
+      },
+      "reduce_to_take_calibrations": 42,
+      "improvement_vs_build4_delta_usd": 252.54
+    },
+    "validation": {
+      "decisions": 19,
+      "scores": 19,
+      "taken_pnl_usd": -39.42,
+      "replay_shadow_pnl_usd": -41.38,
+      "replay_delta_vs_taken_usd": -1.96,
+      "improved": 0,
+      "harmed": 1,
+      "unchanged": 18,
+      "actions": {
+        "take": 12,
+        "reduce": 6,
+        "need_more_evidence": 1
+      },
+      "reduce_to_take_calibrations": 5,
+      "hard_unknown_calibrations": 1,
+      "change_vs_build4_validation_delta_usd": -20.01
+    },
+    "self_critique_evidence": {
+      "dominant_failure_modes": {
+        "over_reduction_of_profitable_trades": 56,
+        "prior_filtering_added_value": 11,
+        "mixed_or_neutral": 5,
+        "insufficient_prior_self_feedback": 68
+      },
+      "unknown_required_cases": 1,
+      "evidence_usable_cases": 139,
+      "reduce_gate_open_cases": 58,
+      "reduce_gate_closed_cases": 82
+    },
+    "safety": {
+      "holdout_decisions": 0,
+      "holdout_scores": 0,
+      "input_digest_mismatches": 0,
+      "partition_drift": 0,
+      "future_feedback_cutoff_violations": 0,
+      "research_flag_violations": 0,
+      "live_money_replay_rows": 0,
+      "live_management_violations": 0,
+      "holdout_open_flag": false
+    },
+    "interpretation": "Build 5 materially improves development behaviour versus Build 4 but remains $60.42 below taking provider trades. Validation is -$1.96 and worse than Build 4's +$18.05, so generalisation is not proven and no edge claim is allowed. Do not tune again on validation.",
+    "next_step": "No Build 6. Freeze this exact Build 5 implementation. Proper final exam is the untouched 18-case holdout, only when the owner explicitly starts that exam."
   }
 }
