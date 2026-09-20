@@ -2,12 +2,45 @@
 
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
-Last verified: **2026-09-19**
+Last verified: **2026-09-20**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
 Verified source `main` SHA: `526c561bf98183c58f2cabf970962eb2b26d670b`
 Live Worker: `aidy-signals-test`
+
+## Toolbox-aware decision layer + measured historical exam — ACTIVE (2026-09-20)
+
+Super Signals reasoning now carries an explicit AIDY toolbox contract. Production reasoning prompt
+`aidy_reasoning_prompt_v12_toolbox` requires AIDY to read `toolbox_manifest`, consider every
+available standing evidence surface, call an on-demand tool when it can materially resolve a
+take/reduce/reject uncertainty, avoid meaningless checklist calls, and preserve UNKNOWN when a
+surface is unavailable or not connected.
+
+Connected on-demand surfaces are candles and economic calendar in live reasoning; the historical
+stress lab additionally has a focused evidence inspector. Standing evidence includes provider
+history, Gold/market context, recent provider messages, event/liquidity/execution context,
+historical analogues/provider alpha, probability/EV/management context, and failure/self-critique.
+Broader AIDY modules such as rates/macro vintages, cross-market, CME contract state, GVZ/volatility,
+semantic context and provider decision memory are NOT to be falsely treated as callable until an
+auditable adapter makes their timestamp/provenance semantics valid. Their unavailable state is
+explicit in the manifest.
+
+Production Super Signals commits:
+- PR #228 `521b4c9002f7ffa22aae54a585c6edfbd5b10e53`: historical toolbox
+- PR #229 `134a81d79fe88d6b2343a08e657d6307a1d30402`: toolbox-aware prompt/live manifest
+- PR #230 `36dee29f4b87dfe2f94bb02ea19f21c612b363d4`: historical manifest-key alignment
+- PR #231 `e92c46f92d7c9679066fbdbbb1bd46dd281d4029`: exact tool-name telemetry, stress replay `aidy_historical_stress_lab_v7_tooltrace`
+- PR #232 `5b09fea3f7707a8f752c888f187c99c1a531f8e7`: independent 571-case training identity freeze
+
+The active train identity is 571 cases, SHA-256
+`18326c515d12a7e55046828f6fe59198de50b0b7538193174528bf56f7829168`.
+Validation and OOS remain sealed. Three late historical rows now make the dynamic source query
+571/70/162, but they are not admitted into the original frozen 571/69/160 evaluation design.
+The 18-case exact holdout remains sealed.
+
+Full handover:
+`projects/super-signals/handovers/2026-09-20-aidy-toolbox-awareness-training-stress.md`.
 
 ## Large historical acceleration lab — MERGED / RESEARCH OFF PENDING TRAIN RUN (2026-09-20)
 
