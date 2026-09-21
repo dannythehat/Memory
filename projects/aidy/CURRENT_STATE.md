@@ -4,23 +4,48 @@
 
 The 24-build expert-gate programme is underway.
 
-**Builds 1–14:** complete under their recorded engineering/production status.
+**Build 1 — Environment Contract v3:** complete and production-verified.
+
+**Build 2 — Expert Gate Contract v1:** complete and engineering-proven.
+
+**Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
+
+**Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
+
+**Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
+
+**Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
+
+**Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
+
+**Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
+
+**Build 9 — D1 Context Expert:** complete and engineering-proven.
+
+**Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
+
+**Build 11 — Price Location Expert:** complete and engineering-proven.
+
+**Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
+
+**Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
+
+**Build 14 — Session / Participation Expert:** complete and engineering-proven.
 
 **Build 15 — Macro / Event Expert:** complete and engineering-proven.
 
-Build 15 adds a context-only Gold macro/event specialist layered on the accepted official event stack:
-- strict point-in-time official schedule selection;
-- pre-event Gold structure from closed bars only;
-- immutable pre-release consensus plus first print for raw surprise;
-- later revisions kept separate from the first print;
-- standardized surprise only when same-class/same-unit PIT history has enough independent episodes;
-- event clustering from PIT-known schedules;
+Build 15 adds a Gold-specific macro/event context specialist:
+- official schedule visibility selected strictly as-of;
+- pre-event Gold features that cannot see future actuals;
+- first-print surprise using PIT-known consensus and revision-index-0 official actual only;
+- later revisions remain separate from the first print;
+- standardized surprise only when same-unit PIT history has enough independent observations;
+- Gold-learned event tiers from independent Gold episodes, not vendor importance labels;
+- event clustering within 30/60 minutes;
 - post-release Gold confirmation from completed M1 bars;
 - historical conditional Gold response by event class and surprise direction;
-- matched no-news controls;
-- Gold-specific event tiers from independent Gold episodes, not vendor importance labels;
-- no trade P/L in tiering or response estimates;
-- Build-3 conditional trust scopes.
+- matched no-news controls and event-versus-control comparison;
+- Build-3 trust scopes for event class/tier, surprise/cluster and response state.
 
 AIDY implementation merge:
 `ce9ff0a8f021c062aba05440b112c5f8cf2e0518`
@@ -30,20 +55,20 @@ Acceptance:
 - static checks: PASS
 - focused workflow suite: 276 passed
 - full repository regression: 1528 passed
-- pre-event cannot see later actual: PASS
-- first-observed actual timing: PASS
-- revision/first-print separation: PASS
-- standardized surprise PIT history only: PASS
-- independent Gold event tiers: PASS
-- event clustering: PASS
-- post-release confirmation: PASS
+- pre-event actual leakage blocked: PASS
+- actual enters only after first_observed_at: PASS
+- first print remains separate from later revisions: PASS
+- standardized surprise uses PIT history only: PASS
+- event tier uses independent Gold episodes, not vendor labels: PASS
+- event cluster detection: PASS
+- completed-bar post-release confirmation: PASS
+- independent historical response: PASS
 - matched no-news control: PASS
-- future historical rows excluded: PASS
-- PIT/no-lookahead chronological freeze: PASS
+- PIT/no-lookahead and chronological freeze: PASS
 
 Build 15 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Macro / Event expert is not wired into live gate weighting.
 
-**Next:** Build 16 — Rates / USD / Cross-Asset Expert. It will model Gold opportunity-cost and risk relationships using broad USD, DGS2/DGS10/DFII10/T10YIE, policy-path research and qualified SI/ES/VIX/EURUSD/USDJPY evidence, with multi-horizon changes, rolling Gold beta/correlation, relationship stability, divergence and cross-asset agreement while forbidding permanent sign assumptions and stale daily data masquerading as intraday reaction.
+**Next:** Build 16 — Rates / USD / Cross-Asset Expert. It will model Gold's opportunity-cost and risk mechanisms without permanent sign assumptions, using USD, Treasury/real-rate/breakeven series and qualified cross-assets across multiple horizons, with rolling Gold beta/correlation, relationship stability, divergence and cross-asset breadth.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
