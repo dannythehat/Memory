@@ -1,5 +1,12 @@
 # AIDY — Current State
 
+## Actions monitoring cutover — COMPLETE; Provider Context fault remains (2026-09-21)
+
+AIDY GitHub Actions monitoring was rationalized in `dannythehat/Aidy-Gold-Signals` PR #140, merged as `09066e085493b2970530adf82577db132164c94a`. Three every-10-minute GitHub schedules plus one hourly schedule were removed, eliminating approximately 13,680 scheduled GitHub workflow launches per 30-day month. The corresponding workflows remain manually runnable. Cloudflare direct-cron remains the canonical AIDY runtime monitor and already records capture, Provider Context, archive and Gold-movement health.
+
+Post-cutover live verification found a separate unresolved AIDY fault: Twelve Data scheduled capture is fresh, but complete Provider Context has been stale since `2026-09-21T01:57:30.150000+00:00`; Super Signals also logged `AidyContextTerminalMiss`. Do not describe the broader AIDY runtime as healthy until Provider Context is repaired and reverified. Full handover: `projects/aidy/handovers/2026-09-21-actions-monitoring-cutover.md`.
+
+
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
 Last verified: **2026-09-20**
