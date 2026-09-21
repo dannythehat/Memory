@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-13 COMPLETE / BUILD 14 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-14 COMPLETE / BUILD 15 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -30,39 +30,44 @@ The 24-build expert-gate programme is underway.
 
 **Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
 
-Build 13 adds a direction-neutral volatility context specialist:
-- completed-M1 15-minute realised volatility;
-- clock-normalised volatility percentile against historical observations from the same UTC 15-minute slot;
-- compression, expansion and compression-to-expansion transitions;
-- qualified PIT jump-versus-continuous state;
-- event-proximate jump classification without a causal event claim;
-- qualified vol-of-vol context;
-- optional GVZ and IV/RV context only when PIT-qualified;
-- sparse/unqualified GVZ and IV/RV remain UNKNOWN;
-- simple M15 ATR/RV band retained as the ablation baseline;
-- richer-regime complexity receives no automatic weight and must prove incremental value with sufficient historical samples;
-- Build-3 conditional trust scopes for clock-volatility, jump regime and richer volatility regime.
+**Build 14 — Session / Participation Expert:** complete and engineering-proven.
+
+Build 14 adds a direction-neutral participation/context specialist:
+- DST-safe London and New York regional session state;
+- explicit active-market list and London/New York overlap state;
+- session phase retained from the frozen cycle environment;
+- completed-M1 15-minute realised volatility and range;
+- matched weekday × UTC 15-minute clock baselines;
+- event-clean matched-clock history preferred when enough clean observations exist;
+- unusual/elevated/quiet activity classification from volatility and range percentiles;
+- existing Day-42 genuine GC exchange trade-volume and pre-trade BBO spread z-scores reused as descriptive participation context when qualified;
+- retrospective GC context remains research-only unless PIT-qualified;
+- event-time confounding explicit so unusual activity is not automatically attributed to a regional session;
+- no hardcoded session-direction rules and ordinary session activity cannot count as alpha.
 
 AIDY implementation merge:
-`6e9b42eb98c0b624c13273cb76bccd82ac4e1c53`
+`58a0425f717342dba28ce67e199087f3e96645f3`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 249 passed
-- full repository regression: 1501 passed
-- direction-neutrality: PASS
-- clock-normalised compression-to-expansion: PASS
-- continuous expansion distinguished from jump: PASS
-- event-proximate jump without causal claim: PASS
-- sparse GVZ/IV remains UNKNOWN: PASS
-- unqualified retrospective volatility evidence excluded: PASS
-- simple ATR versus richer-regime ablation retained: PASS
+- focused workflow suite: 263 passed
+- full repository regression: 1515 passed
+- UK DST transition: PASS
+- US DST transition: PASS
+- London/New York overlap identification: PASS
+- matched weekday-clock activity baseline: PASS
+- event-clean history selection: PASS
+- event-time confounding representation: PASS
+- genuine GC volume/spread descriptive boundary: PASS
+- unqualified GC context remains UNKNOWN: PASS
+- insufficient clock history remains UNKNOWN: PASS
 - PIT/no-lookahead and chronological freeze: PASS
+- no hardcoded session-direction rule: PASS
 
-Build 13 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Volatility / Jump expert is not wired into live gate weighting.
+Build 14 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Session / Participation expert is not wired into live gate weighting.
 
-**Next:** Build 14 — Session / Participation Expert. It will quantify who is likely active and whether current activity is unusual for this time using DST-safe sessions, session phase/overlap, weekday-clock volatility/range baselines and qualified historical GC volume/spread baselines where available, with event-time confounding explicit and no hardcoded session-direction rule.
+**Next:** Build 15 — Macro / Event Expert. It will turn the existing official event stack into a Gold-specific specialist using pre-event features, consensus/actual/revision separation, Gold-learned event tiers, standardized surprise where valid, event clustering, post-release confirmation and historical conditional response, with strict first-observed timestamps and no-news controls.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
