@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-10 are COMPLETE. Build 10 Momentum / Impulse Expert is engineering-proven. Build 11 — Price Location Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-11 are COMPLETE. Build 11 Price Location Expert is engineering-proven. Build 12 — Liquidity / Reclaim Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -983,6 +983,8 @@ Features:
 ---
 
 ## Build 11 — Price Location Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #214, 223 focused / 1475 full tests.**
 
 **Objective:** know where Gold is, not merely where it is moving.
 
