@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-12 COMPLETE / BUILD 13 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-13 COMPLETE / BUILD 14 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -28,43 +28,41 @@ The 24-build expert-gate programme is underway.
 
 **Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
 
-Build 12 adds a measurable liquidity/reclaim proxy specialist:
-- named high/low reference levels inherited from Build 11;
-- exact penetration depth in USD and bps;
-- reclaim speed measured in completed M1 bars;
-- confirmation-close count;
-- retest and retest-hold detection;
-- reclaim-candle rejection geometry;
-- nearest competing-level distance;
-- session/phase and volatility-conditioned trust;
-- directional proxy votes only for confirmed/retest-held reclaims;
-- failed or unconfirmed reclaim attempts remain neutral;
-- explicit OHLC-proxy language with no genuine/hidden order-flow claim;
-- retrospective genuine GC-flow research stored separately and excluded from the OHLC proxy calculation and expert conclusion;
-- gapped/insufficient M1 fails closed.
+**Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
+
+Build 13 adds a direction-neutral volatility context specialist:
+- completed-M1 15-minute realised volatility;
+- clock-normalised volatility percentile against historical observations from the same UTC 15-minute slot;
+- compression, expansion and compression-to-expansion transitions;
+- qualified PIT jump-versus-continuous state;
+- event-proximate jump classification without a causal event claim;
+- qualified vol-of-vol context;
+- optional GVZ and IV/RV context only when PIT-qualified;
+- sparse/unqualified GVZ and IV/RV remain UNKNOWN;
+- simple M15 ATR/RV band retained as the ablation baseline;
+- richer-regime complexity receives no automatic weight and must prove incremental value with sufficient historical samples;
+- Build-3 conditional trust scopes for clock-volatility, jump regime and richer volatility regime.
 
 AIDY implementation merge:
-`68c793281811351ece20c3f66dc8af3413bdd8fe`
+`6e9b42eb98c0b624c13273cb76bccd82ac4e1c53`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 235 passed
-- full repository regression: 1487 passed
-- high sweep/reclaim/retest proxy: PASS
-- low sweep/reclaim proxy: PASS
-- no-sweep neutral: PASS
-- failed reclaim neutral: PASS
-- competing-level distance: PASS
-- session/volatility trust separation: PASS
-- fake order-flow language protection: PASS
-- genuine GC-flow storage separated: PASS
-- gapped M1 fail closed: PASS
+- focused workflow suite: 249 passed
+- full repository regression: 1501 passed
+- direction-neutrality: PASS
+- clock-normalised compression-to-expansion: PASS
+- continuous expansion distinguished from jump: PASS
+- event-proximate jump without causal claim: PASS
+- sparse GVZ/IV remains UNKNOWN: PASS
+- unqualified retrospective volatility evidence excluded: PASS
+- simple ATR versus richer-regime ablation retained: PASS
 - PIT/no-lookahead and chronological freeze: PASS
 
-Build 12 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Liquidity/Reclaim expert is not wired into live gate weighting.
+Build 13 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Volatility / Jump expert is not wired into live gate weighting.
 
-**Next:** Build 13 — Volatility / Jump Expert. It will classify clock-normalised volatility, compression/expansion transitions, continuous-versus-jump behaviour, vol-of-vol and optional IV/RV context when qualified, while remaining direction-neutral.
+**Next:** Build 14 — Session / Participation Expert. It will quantify who is likely active and whether current activity is unusual for this time using DST-safe sessions, session phase/overlap, weekday-clock volatility/range baselines and qualified historical GC volume/spread baselines where available, with event-time confounding explicit and no hardcoded session-direction rule.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
