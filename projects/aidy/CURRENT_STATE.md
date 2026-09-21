@@ -1,5 +1,19 @@
 # AIDY — Current State
 
+## Contextual marker-learning brain — LIVE (2026-09-21)
+
+AIDY's 15-minute Gold learner now scores toolbox markers by **environment**, not just globally. Runtime code from `6f9b607c0201bec77f5996126d158914864d58e5` is live on Worker version `a264b7b3-e26a-406f-827f-2ebd7f128740`; repository main after audit cleanup is `a2c029b9954b2b06964b8cd7f1c9d60d35458192`.
+
+The canonical toolbox has **34 capabilities**. Every capability is evaluated each cycle. Directional/PIT-safe surfaces become scoreable markers; contextual or unavailable tools remain explicit rather than receiving fabricated votes.
+
+Marker outcomes are scored `-2/-1/0/+1/+2`: large correct moves (+2), normal correct (+1), unavailable/unscoreable (0), normal wrong (-1), large wrong (-2). Current large-move threshold is `abs(15m return) >= 5 bps`. Plain accuracy is stored separately.
+
+Each score updates seven environment scopes: global, session, session+15m state, higher-timeframe environment, session+move regime, session+state+event, and full environment. Learned weight multipliers are bounded to 0.5x-1.5x and only become more specific as minimum sample thresholds are met.
+
+Immediate live proof: the resolved 04:00-04:15 miss was backfilled automatically. H4 bullish scored **+2**; H1 bearish, two M15 bearish markers, M5 bearish and the movement detector bearish each scored **-2** against the +6.8 bps bullish outcome. D1 showed **6 marker observations, 6 marker results, and 42 contextual score rows (6 x 7 scopes)**.
+
+Provider Context exposes the selected marker profiles and effective learned weights. No execution, provider-rule or 1% risk changes were made. Full handover: `projects/aidy/handovers/2026-09-21-contextual-marker-learning-brain-live.md`.
+
 ## Gold cycle learning + auditable toolbox reasoning — LIVE (2026-09-21)
 
 AIDY main `9b23e1c83fd169fb9ad08ded97a1ba4cce59ddee` is deployed to Cloudflare Worker `aidy-signals-test`, Worker version `395ada01-cf5d-4b51-9b4f-fd207e837a6d`. Final canonical deploy run `35559806815` completed successfully with the direct minute cron present, capture enabled, Twelve Data/public-independent, Provider Context routes live, and formal-forward/live-money authority OFF.
