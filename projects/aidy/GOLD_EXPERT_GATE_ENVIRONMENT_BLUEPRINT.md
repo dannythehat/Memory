@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-13 are COMPLETE. Build 13 Volatility / Jump Expert is engineering-proven. Build 14 — Session / Participation Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-14 are COMPLETE. Build 14 Session / Participation Expert is engineering-proven. Build 15 — Macro / Event Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1054,6 +1054,8 @@ Add:
 ---
 
 ## Build 14 — Session / Participation Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #217, 263 focused / 1515 full tests.**
 
 **Objective:** quantify who is likely active and whether current activity is unusual for this time.
 
