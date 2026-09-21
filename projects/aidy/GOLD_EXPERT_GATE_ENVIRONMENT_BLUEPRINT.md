@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-7 are COMPLETE. Build 7 H1 Price Structure Expert is engineering-proven. Build 8 — H4 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-8 are COMPLETE. Build 8 H4 Price Structure Expert is engineering-proven. Build 9 — D1 Context Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -934,6 +934,8 @@ Focus on genuine hourly trend quality, swing structure, acceleration and breakou
 ---
 
 ## Build 8 — H4 Price Structure Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #211, 187 focused / 1439 full tests.**
 
 Slow structural expert.
 
