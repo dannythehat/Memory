@@ -37,6 +37,7 @@ Checks:
 - static/compile: PASS
 - focused tests: 61 passed
 - full regression: 1577 passed
+- Memory handoff JSON/JSONL hygiene: validated by repository gate
 
 Acceptance fixtures:
 - scheduled event: PASS
