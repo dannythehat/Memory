@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-15 COMPLETE / BUILD 16 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-16 COMPLETE / BUILD 17 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -34,41 +34,43 @@ The 24-build expert-gate programme is underway.
 
 **Build 15 — Macro / Event Expert:** complete and engineering-proven.
 
-Build 15 adds a Gold-specific macro/event context specialist:
-- official schedule visibility selected strictly as-of;
-- pre-event Gold features that cannot see future actuals;
-- first-print surprise using PIT-known consensus and revision-index-0 official actual only;
-- later revisions remain separate from the first print;
-- standardized surprise only when same-unit PIT history has enough independent observations;
-- Gold-learned event tiers from independent Gold episodes, not vendor importance labels;
-- event clustering within 30/60 minutes;
-- post-release Gold confirmation from completed M1 bars;
-- historical conditional Gold response by event class and surprise direction;
-- matched no-news controls and event-versus-control comparison;
-- Build-3 trust scopes for event class/tier, surprise/cluster and response state.
+**Build 16 — Rates / USD / Cross-Asset Expert:** complete and engineering-proven.
+
+Build 16 adds a regime-aware rates/USD/cross-asset context specialist:
+- PIT-vintaged DGS2/DGS10/DFII10/T10YIE daily context with 1/5/20-observation changes;
+- daily cash-rate series explicitly cannot masquerade as 15m/60m reactions;
+- Day-44 policy/cross-asset observations with source cadence retained;
+- fresh, decision-qualified exchange-timestamped futures can carry 15m/60m changes;
+- broad USD/EURUSD/USDJPY/VIX official daily/fix context remains non-intraday;
+- rolling Gold beta/correlation learned separately inside the current compound regime;
+- positive, negative, weak and sign-flipping relationships are all representable;
+- relationship stability from chronological subwindows;
+- divergence means opposite to the learned current-regime relationship, not opposite to a fixed textbook sign;
+- cross-asset breadth counts one representative per dependency group;
+- rates curve, policy path, USD mechanism, precious complex and risk state are explicitly dependency-tagged;
+- no permanent Gold/USD or Gold/real-yield inverse rule.
 
 AIDY implementation merge:
-`ce9ff0a8f021c062aba05440b112c5f8cf2e0518`
+`e9f992b71246eec029b7a8449e3143ff855b057f`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 276 passed
-- full repository regression: 1528 passed
-- pre-event actual leakage blocked: PASS
-- actual enters only after first_observed_at: PASS
-- first print remains separate from later revisions: PASS
-- standardized surprise uses PIT history only: PASS
-- event tier uses independent Gold episodes, not vendor labels: PASS
-- event cluster detection: PASS
-- completed-bar post-release confirmation: PASS
-- independent historical response: PASS
-- matched no-news control: PASS
-- PIT/no-lookahead and chronological freeze: PASS
+- focused workflow suite: 292 passed
+- full repository regression: 1544 passed
+- Gold rising with USD and real yields representable: PASS
+- relationship sign flip representable: PASS
+- daily/stale series cannot masquerade as intraday: PASS
+- fresh exchange-timestamped futures support intraday changes: PASS
+- retrospective current observations cannot become decision-qualified intraday inputs: PASS
+- same-mechanism series dependency-tagged: PASS
+- breadth counts dependency groups rather than raw correlated series: PASS
+- learned-sign divergence: PASS
+- PIT/future-row exclusion: PASS
 
-Build 15 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Macro / Event expert is not wired into live gate weighting.
+Build 16 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Rates / USD / Cross-Asset expert is not wired into live gate weighting.
 
-**Next:** Build 16 — Rates / USD / Cross-Asset Expert. It will model Gold's opportunity-cost and risk mechanisms without permanent sign assumptions, using USD, Treasury/real-rate/breakeven series and qualified cross-assets across multiple horizons, with rolling Gold beta/correlation, relationship stability, divergence and cross-asset breadth.
+**Next:** Build 17 — Futures / Microstructure Expert. Phase A will test whether genuine historical COMEX GC TBBO signed aggressor imbalance, BBO spread, trade volume, VWAP, clock-normalised baselines, contract/roll state and available CME volume/OI add independent value beyond spot OHLC experts. Phase B paid live/delayed activation remains separately gated by entitlement review and owner approval.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
