@@ -1,58 +1,40 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-21 COMPLETE / BUILD 22 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-22 COMPLETE / BUILD 23 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Builds 1-20:** complete under their recorded acceptance gates.
+**Builds 1-21:** complete under their recorded acceptance gates.
 
-**Build 21 — Environment-Aware Gate Selector:** complete and engineering-proven.
+**Build 22 — AIDY Meta Direction Aggregator & Explanation:** complete and engineering-proven.
 
-Build 21 adds `aidy_gold_environment_gate_selector_v1`.
+Build 22 adds `aidy_gold_meta_direction_aggregator_v1`.
 
 What is now proven:
-- selector consumes frozen Build-2 packets plus Build-3 trust envelopes;
-- exact current environment/as-of is required;
-- exact/reduced/global trust-scope fallback is preserved;
-- hierarchical shrinkage and sample confidence are applied;
-- explicit scope backoff is applied;
-- historical calibration rows must predate the current cycle;
-- recent drift reduces recently-weaker gates and never boosts above 1;
-- Build-20 dependency multipliers are propagated into gate authority;
-- small-N star performers remain reduced;
-- strong large-N contextual performers can rise to high trust;
-- missing/unknown gates get exactly zero authority;
-- weak gates remain observable with low non-zero weight;
-- context-only gates remain observable but get zero directional authority;
+- Build-21 gate selection is combined into one bullish/bearish/neutral/abstain 15-minute research view;
+- every directional contribution binds to the exact selector row and verified gate packet digest;
+- supporting, opposing, context-only and unavailable gates are preserved separately;
+- strong high-trust contradiction can force abstention;
+- context-only gates remain unsigned and cannot cast directional votes;
+- readable why text names supporting/opposing gates and authority totals;
+- numerical confidence is withheld unless sufficient historical meta-calibration observed before the cycle exists;
+- small-sample or future meta-calibration cannot create confidence;
 - current outcome injection fails closed;
-- deterministic replay is invariant to input ordering.
+- deterministic replay is invariant to expert-result ordering.
 
 Acceptance evidence:
-- exact tested head: `a5f4892909d5eeaffb7143a2d579c0e12eea528d`;
-- implementation PR #231 merge: `49632b75c773b207f857e23387e4f7ec5428fe52`;
-- AIDY repository handoff merge: `9c217699b15e089af78b9f8925d514ea606cb6fd`;
-- Build 21 workflow run `35613740266`: PASS;
-- semantic gate run `35613740343`: PASS;
-- static/compile: PASS;
-- focused suite: 84 passed;
-- dedicated selector acceptance: 6 passed;
-- full repository regression: 1622 passed;
-- small-N suppression: PASS;
-- strong large-N contextual promotion: PASS;
-- unavailable gate zero authority: PASS;
-- weak gate retained for observation: PASS;
-- recently-weaker drift reduction: PASS;
-- historical calibration adjustment: PASS;
-- future calibration exclusion: PASS;
-- Build-20 dependency penalty propagation: PASS;
-- independent liquidity/macro/structure preservation: PASS;
-- context-only zero directional authority: PASS;
-- current outcome injection rejection: PASS;
-- deterministic replay: PASS.
+- exact tested head: `5eb5a20f7aa5003aec38ccf6a5714f7adf8b559f`;
+- implementation PR #233 merge: `25be25ddb973e9c419002630a481e2b6c4cb5d05`;
+- AIDY repository handoff merge: `73b7668806ed35d4d223a8f5e79b6cf8636ee8d8`;
+- Build 22 workflow run `35615805313`: PASS;
+- semantic gate run `35615805343`: PASS;
+- focused suite: 74 passed;
+- dedicated aggregator acceptance: 6 passed;
+- full repository regression: 1637 passed.
 
-Build 21 selects attention only. It does not create the final Gold direction, alter Super Signals execution/provider rules, alter owner 1% risk, create formal-forward evidence or grant live-money authority.
+Build 22 remains research-only. It does not alter Super Signals execution/provider rules, owner 1% risk, formal-forward authority or live-money authority.
 
-**Next:** Build 22 — AIDY Meta Direction Aggregator & Explanation. It must combine the selected gate set into one traceable bullish/bearish/neutral/abstain research view with contradictions, environment, trust/N, dependency adjustment and a readable why.
+**Next:** Build 23 — Chronological Replay, Ablation & Untouched Holdout. It must compare legacy, individual gates, full system, leave-one-gate-out and with/without dependency penalty under frozen chronological splits with untouched holdout.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 

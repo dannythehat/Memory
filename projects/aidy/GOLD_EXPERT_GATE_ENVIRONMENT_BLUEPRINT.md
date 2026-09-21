@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-21 are COMPLETE. Build 21 Environment-Aware Gate Selector is engineering-proven with contextual trust/backoff, sample shrinkage, historical calibration, recency drift, Build-20 dependency penalties, unavailable-zero-authority and weak-but-observable behavior. Build 22 — AIDY Meta Direction Aggregator & Explanation — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-22 are COMPLETE. Build 22 AIDY Meta Direction Aggregator & Explanation is engineering-proven with traceable gate contributions, contradiction-driven abstention, unsigned context-only gates and confidence withheld unless historical meta-calibration is sufficient. Build 23 — Chronological Replay, Ablation & Untouched Holdout — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1282,6 +1282,8 @@ Output:
 - abstain works;
 - future values = false;
 - live-money authority = false.
+
+**Completion — 2026-09-21:** PASS. Build 22 combines Build-21 gate selection into one traceable bullish/bearish/neutral/abstain research view, preserves context-only gates as unsigned context, forces abstention under strong high-trust contradiction, and withholds numerical confidence unless enough pre-existing historical meta-calibration exists. Semantic gate PASS, 74 focused tests, 6 dedicated aggregator tests and 1637 full regression tests.
 
 ---
 
