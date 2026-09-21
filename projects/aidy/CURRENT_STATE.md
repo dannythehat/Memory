@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-10 COMPLETE / BUILD 11 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-11 COMPLETE / BUILD 12 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -24,39 +24,39 @@ The 24-build expert-gate programme is underway.
 
 **Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
 
-Build 10 adds a dedicated momentum specialist:
-- exact completed-M1 backward returns for 1/5/15/30/60 minutes;
-- realised-volatility normalisation for every horizon;
-- 30-minute persistence and path efficiency;
-- recent 5-minute versus prior 5-minute acceleration/deceleration;
-- continuation impulse versus persistent drift versus noisy/unconfirmed movement;
-- single-bar concentration and an exhaustion/reversal hypothesis;
-- an explicit guard preventing one giant final candle from masquerading as sustained momentum when persistence is poor;
-- multi-horizon agreement and correlation-aware family aggregation;
-- trust conditioned by volatility regime, session phase and 15-minute UTC clock bucket;
-- every price-derived momentum calculator tagged for later correlation penalty so shared price inputs cannot be counted twice in the final fusion;
-- 61 contiguous completed M1 candles required, with gaps/insufficient data failing closed.
+**Build 11 — Price Location Expert:** complete and engineering-proven.
+
+Build 11 adds a context-only location specialist:
+- frozen prior-day, Asia, active-session and opening-range references;
+- confirmed M15/H1 swing references plus recent M5/M15 extrema from completed bars;
+- deterministic round-number references;
+- exact USD, bps and ATR-normalised distance for every reference;
+- separate geometric-nearest and structural-priority rankings;
+- auditable priority tiers/reasons;
+- confluence clusters within 0.25 ATR;
+- nearby two-sided bracketing/conflict within 0.50 ATR;
+- Build-3 conditional trust for location context;
+- no directional vote or conviction unless a later separately tested location-reaction rule earns that right.
 
 AIDY implementation merge:
-`50b692c4ecf2f775a2f445bf69ea1578b0fd5bae`
+`8b3400ecb569b6b0990c899f0b15440f73f4eb73`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 211 passed
-- full repository regression: 1463 passed
-- clean bullish/bearish continuation impulse: PASS
-- one-large-candle persistence veto: PASS
-- noisy/choppy momentum rejection: PASS
-- gapped/insufficient M1 fails closed: PASS
-- volatility-regime trust separation: PASS
-- clock-bucket trust separation: PASS
-- correlated price-expert influence tagging: PASS
+- focused workflow suite: 223 passed
+- full repository regression: 1475 passed
+- exact nearest-level calculations: PASS
+- structural priority auditability: PASS
+- confluence/conflict representation: PASS
+- round numbers descriptive-only: PASS
+- ATR-normalised distances: PASS
+- missing-mid fail closed: PASS
 - PIT/no-lookahead and chronological freeze: PASS
 
-Build 10 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the momentum expert is not wired into live gate weighting.
+Build 11 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Price Location expert is not wired into live gate weighting.
 
-**Next:** Build 11 — Price Location Expert. It will identify where Gold sits relative to prior day, Asia, the active session, opening ranges, swings, recent extrema and round numbers using exact and ATR-normalised distances. Reference priority and confluence/conflict must be auditable, and location alone cannot vote direction unless a separately tested reaction rule earns that right.
+**Next:** Build 12 — Liquidity / Reclaim Expert. It will make sweep/reclaim reasoning measurable using level identity, penetration depth, reclaim speed, confirmation closes, retest, rejection geometry, competing-level distance and session/volatility context, while explicitly treating OHLC sweep logic as a proxy rather than real order flow.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
