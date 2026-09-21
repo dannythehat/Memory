@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-20 are COMPLETE. Build 20 Evidence Dependency & Double-Counting Engine is engineering-proven with exact-duplicate zero increment, declared family roots, rolling pre-outcome correlation diagnostics, same-root caps and bounded independent-root agreement bonus. Build 21 — Environment-Aware Gate Selector — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-21 are COMPLETE. Build 21 Environment-Aware Gate Selector is engineering-proven with contextual trust/backoff, sample shrinkage, historical calibration, recency drift, Build-20 dependency penalties, unavailable-zero-authority and weak-but-observable behavior. Build 22 — AIDY Meta Direction Aggregator & Explanation — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1255,6 +1255,8 @@ Outputs:
 - unavailable gate gets zero authority;
 - weak gate remains observable/scoreable;
 - deterministic replay.
+
+**Completion — 2026-09-21:** PASS. Build 21 consumes frozen Build-2/Build-3 gate state, applies hierarchical shrinkage, scope backoff, historical calibration, recency drift and Build-20 dependency penalties, suppresses small-N stars, promotes strong large-N contextual performers, preserves weak gates for learning, gives unavailable gates zero authority and rejects current-outcome injection. Semantic gate PASS, 84 focused tests, 6 dedicated selector tests and 1622 full regression tests.
 
 ---
 
