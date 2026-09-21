@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-4 COMPLETE / BUILD 5 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-5 COMPLETE / BUILD 6 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -12,35 +12,34 @@ The 24-build expert-gate programme is underway.
 
 **Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
 
-Build 4 adds the shared deterministic price-analysis layer used by future M5/M15/H1/H4/D1 experts:
-- multi-lookback returns;
-- log-price OLS slope and R² trend quality;
-- close-step persistence;
-- path efficiency;
-- ATR/RV-normalised movement;
-- acceleration/deceleration;
-- no-lookahead confirmed swing sequences;
-- structure breaks;
-- breakout penetration, acceptance, hold, retest and reclaim;
-- 20/50-bar range position;
-- candle body/wick/close geometry;
-- contradiction diagnostics;
-- unique primitive manifest preventing accidental duplicate feature counting.
+**Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
 
-Only completed bars at the frozen as-of time are admitted. Partial current bars are excluded. Swing pivots are not visible until their right-hand confirmation bars have completed.
+Build 5 adds the first actual timeframe mini-brain:
+- five independently scoreable directional M5 sub-calculators for trend/path quality, confirmed swing structure, breakout acceptance/reclaim, momentum transition and completed-candle pressure;
+- context-only range-location and contradiction diagnostics;
+- an M5-specific repeatable mini-environment;
+- Build-3 exact/reduced/global trust scopes for the gate and its calculators;
+- family-balanced consensus so correlated measurements do not gain weight simply by being numerous;
+- explicit NEUTRAL / ABSTAIN / UNKNOWN states for weak or conflicting evidence;
+- legacy-M5 baseline comparison and chronological replay support for ablation.
 
 AIDY implementation merge:
-`b3fdabe25b58ea816f282b7cfc29ab22485d4257`
+`eaa6f49636ae4ae9f73d6a17db4c9d8f46d8743a`
+
+AIDY repo handoff:
+`be2760dd6daa52bdadc655b50d8bb32f02eeef60`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 122 passed
-- full repository regression: 1390 passed
+- focused workflow suite: 148 passed
+- full repository regression: 1400 passed
+- completed-bar/PIT/no-future tests: PASS
+- chronological freeze and legacy-M5 comparison: PASS
 
-Build 4 is a common mathematics library and does not alter the current live gate logic or weights, so no Worker deployment was required.
+Build 5 remains research/shadow only. It does not replace the current live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the expert is not yet wired into live gate weighting.
 
-**Next:** Build 5 — M5 Price Structure Expert. This will be the first actual timeframe mini-brain. It will consume Build-4 primitives, define an M5-specific mini-environment, create auditable sub-calculator votes and contradictions, explain its conclusion, and attach Build-3 environment-specific trust without changing live-money authority.
+**Next:** Build 6 — M15 Price Structure Expert. It will use the same expert contract with independently calibrated M15 horizons/thresholds, separately identifying the M15 8-bar path, latest 15-minute momentum and swing/breakout evidence, while retaining dependency metadata and the legacy M15 baseline for ablation.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
