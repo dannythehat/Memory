@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-19 are COMPLETE. Build 19 Analogue / Episode Expert is engineering-proven with exact PIT gate/environment state binding, outcome-blind similarity, independent episode collapse, symmetric counterexamples and chronological holdout-only acceptance. Build 20 — Evidence Dependency & Double-Counting Engine — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-20 are COMPLETE. Build 20 Evidence Dependency & Double-Counting Engine is engineering-proven with exact-duplicate zero increment, declared family roots, rolling pre-outcome correlation diagnostics, same-root caps and bounded independent-root agreement bonus. Build 21 — Environment-Aware Gate Selector — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1223,6 +1223,8 @@ Implement:
 - highly correlated M5/M15/momentum inputs are damped;
 - independent liquidity + macro + structure agreement remains distinct;
 - removing one duplicate does not radically change final score.
+
+**Completion — 2026-09-21:** PASS. Build 20 adds an explicit evidence-family graph, exact-duplicate zero increment, symmetric shared-evidence conflicts, same-correlation-group damping, rolling pre-outcome correlation diagnostics, same-root incremental caps and a bounded independent-root bonus. Semantic gate PASS, 144 focused tests, 5 dedicated double-counting tests and 1607 full regression tests.
 
 ---
 
