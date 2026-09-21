@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-16 COMPLETE / BUILD 17 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-17 COMPLETE / BUILD 18 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -36,41 +36,43 @@ The 24-build expert-gate programme is underway.
 
 **Build 16 — Rates / USD / Cross-Asset Expert:** complete and engineering-proven.
 
-Build 16 adds a regime-aware rates/USD/cross-asset context specialist:
-- PIT-vintaged DGS2/DGS10/DFII10/T10YIE daily context with 1/5/20-observation changes;
-- daily cash-rate series explicitly cannot masquerade as 15m/60m reactions;
-- Day-44 policy/cross-asset observations with source cadence retained;
-- fresh, decision-qualified exchange-timestamped futures can carry 15m/60m changes;
-- broad USD/EURUSD/USDJPY/VIX official daily/fix context remains non-intraday;
-- rolling Gold beta/correlation learned separately inside the current compound regime;
-- positive, negative, weak and sign-flipping relationships are all representable;
-- relationship stability from chronological subwindows;
-- divergence means opposite to the learned current-regime relationship, not opposite to a fixed textbook sign;
-- cross-asset breadth counts one representative per dependency group;
-- rates curve, policy path, USD mechanism, precious complex and risk state are explicitly dependency-tagged;
-- no permanent Gold/USD or Gold/real-yield inverse rule.
+**Build 17 — Futures / Microstructure Expert:** complete and engineering-proven with genuine retrospective holdout evidence.
 
-AIDY implementation merge:
-`e9f992b71246eec029b7a8449e3143ff855b057f`
+Build 17 adds `aidy_gold_futures_microstructure_expert_v1` and proves the Phase-A research path using genuine historical COMEX GC TBBO plus the frozen spot-OHLC baseline:
+- genuine exchange trade volume;
+- known-side aggressor flow with unknown side preserved as UNKNOWN;
+- pre-trade BBO spread;
+- trade-price/size VWAP and anchored/session VWAP;
+- matched weekday × clock normalization;
+- official CME daily OI / active-contract / roll context;
+- chronological purge + embargo + no-holdout-tuning enforcement;
+- explicit null, underperformance and insufficient outcomes;
+- no depth/L2/L3/MBO/MBP10 claim without depth data.
 
-Acceptance:
-- Evidence Semantic Change Gate: PASS
-- static checks: PASS
-- focused workflow suite: 292 passed
-- full repository regression: 1544 passed
-- Gold rising with USD and real yields representable: PASS
-- relationship sign flip representable: PASS
-- daily/stale series cannot masquerade as intraday: PASS
-- fresh exchange-timestamped futures support intraday changes: PASS
-- retrospective current observations cannot become decision-qualified intraday inputs: PASS
-- same-mechanism series dependency-tagged: PASS
-- breadth counts dependency groups rather than raw correlated series: PASS
-- learned-sign divergence: PASS
-- PIT/future-row exclusion: PASS
+Final genuine evidence:
+- core implementation PR #220 merge: `f6ac451c90ae49f5bbe795af5a25757b65afb8ce`;
+- genuine holdout PR #223 tested head: `ca49a6dd541ec17b09b11b25604722d7ef256b32`;
+- genuine holdout merge: `b1e6e2f491c1cf31fdb30a94a88929e4f092fc18`;
+- repo completion handoff merge: `a350b23cf656f9518ac2407af2253ccd8f687dbb`;
+- Evidence Semantic Change Gate: PASS — run `35605952419`;
+- genuine acceptance workflow: PASS — run `35605952385`;
+- focused workflow suite: 313 passed;
+- full repository regression: 1565 passed;
+- 61 valid genuine weekly episodes;
+- 20 normalization episodes;
+- 10 development episodes;
+- 1 embargo episode;
+- 30 untouched holdout episodes;
+- dev-only selected rule: `override_1p5_0p5`;
+- spot-only holdout accuracy: 20.0000%;
+- spot + microstructure holdout accuracy: 23.3333%;
+- incremental holdout accuracy: +3.3333 percentage points;
+- holdout state: `incremental_value_observed`;
+- quoted Databento research spend: $0.148881077766.
 
-Build 16 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Rates / USD / Cross-Asset expert is not wired into live gate weighting.
+This satisfies Build 17's blueprint requirement for genuine retrospective incremental value beyond spot OHLC. It does not make the feature statistically validated, does not create formal-forward evidence, does not grant live gate weight, and does not authorize paid/live data or live-money execution.
 
-**Next:** Build 17 — Futures / Microstructure Expert. Phase A will test whether genuine historical COMEX GC TBBO signed aggressor imbalance, BBO spread, trade volume, VWAP, clock-normalised baselines, contract/roll state and available CME volume/OI add independent value beyond spot OHLC experts. Phase B paid live/delayed activation remains separately gated by entitlement review and owner approval.
+**Next:** Build 18 — News / Movement Mechanism Expert. It must explain abnormal Gold moves using scheduled-event and source-grounded news/mechanism evidence without inventing causality. Unsupported narratives and source disagreement remain UNKNOWN/unresolved; news context does not automatically become direction.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 

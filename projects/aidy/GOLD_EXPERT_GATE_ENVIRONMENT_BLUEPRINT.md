@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-16 are COMPLETE. Build 16 Rates / USD / Cross-Asset Expert is engineering-proven. Build 17 — Futures / Microstructure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-17 are COMPLETE. Build 17 Futures / Microstructure Expert passed genuine Phase-A retrospective holdout acceptance: 30 untouched holdout episodes improved from 20.0000% spot-only accuracy to 23.3333% spot+microstructure accuracy (+3.3333pp), with no holdout tuning and no live authority. Build 18 — News / Movement Mechanism Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1153,6 +1153,8 @@ Phase B only if Phase A passes:
 - order-flow feature definitions match actual data entitlement;
 - no depth claim without depth data;
 - no paid activation solely to improve feature count.
+
+**Completion — 2026-09-21:** PASS. Genuine Phase-A evidence used 61 valid weekly episodes with 20 normalization, 10 development, 1 embargo and 30 untouched holdout episodes. The development-only rule `override_1p5_0p5` improved holdout accuracy from 20.0000% spot-only to 23.3333% spot+microstructure (+3.3333pp). Research-only boundaries remain: statistically validated=false, formal-forward evidence=false, paid/live feed=false, depth claim=false, live weight=false, live-money authority=false.
 
 ---
 
