@@ -1,5 +1,10 @@
 # AIDY — Current State
 
+## AIDY Provider Context self-heal — LIVE (2026-09-21)
+
+AIDY main `aebb414656e9e1f6f30f2cf954366085792dca6f` is deployed to the canonical Cloudflare Worker. Deployment workflow run `35557298002` completed successfully at `2026-09-21T03:23:24Z` after lint/test cleanup. Live health is green: direct-cron, capture enabled, Twelve Data/public-independent, formal forward OFF, and both scheduled capture and Provider Context fresh at `2026-09-21T03:22:30.148000+00:00`. The bounded intraday self-heal is live and may repair only small recent <=30-minute M1 gaps needed for M5/M15/H1/H4 while preserving strict evidence and fail-closed behavior. Full handover: `projects/aidy/handovers/2026-09-21-live-self-heal-deployed.md`.
+
+
 ## Actions monitoring cutover — COMPLETE; Provider Context fault remains (2026-09-21)
 
 AIDY GitHub Actions monitoring was rationalized in `dannythehat/Aidy-Gold-Signals` PR #140, merged as `09066e085493b2970530adf82577db132164c94a`. Three every-10-minute GitHub schedules plus one hourly schedule were removed, eliminating approximately 13,680 scheduled GitHub workflow launches per 30-day month. The corresponding workflows remain manually runnable. Cloudflare direct-cron remains the canonical AIDY runtime monitor and already records capture, Provider Context, archive and Gold-movement health.
