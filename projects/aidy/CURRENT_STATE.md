@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-9 COMPLETE / BUILD 10 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-10 COMPLETE / BUILD 11 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -22,33 +22,41 @@ The 24-build expert-gate programme is underway.
 
 **Build 9 — D1 Context Expert:** complete and engineering-proven.
 
-Build 9 adds the slowest structural/macro-location context layer:
-- D1 is context-only by contract and never emits or forces a 15-minute bullish/bearish conclusion;
-- completed daily trend, range-location, structure and breakout context are exposed separately;
-- daily freshness is explicit, with a 72-hour maximum context age;
-- stale, missing or genuinely partial D1 evidence causes usable context to ABSTAIN;
-- unconfirmed daily swings may remain UNKNOWN while otherwise fresh trend/location context stays usable;
-- default next-15m weight is zero and direct 15m authority is disabled;
-- historical evaluation separates whether adding D1 context improved another forecast from whether a direct D1 directional guess happened to be right;
-- Build-3 conditional trust attaches to the D1 gate and its context calculators without creating directional conviction.
+**Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
+
+Build 10 adds a dedicated momentum specialist:
+- exact completed-M1 backward returns for 1/5/15/30/60 minutes;
+- realised-volatility normalisation for every horizon;
+- 30-minute persistence and path efficiency;
+- recent 5-minute versus prior 5-minute acceleration/deceleration;
+- continuation impulse versus persistent drift versus noisy/unconfirmed movement;
+- single-bar concentration and an exhaustion/reversal hypothesis;
+- an explicit guard preventing one giant final candle from masquerading as sustained momentum when persistence is poor;
+- multi-horizon agreement and correlation-aware family aggregation;
+- trust conditioned by volatility regime, session phase and 15-minute UTC clock bucket;
+- every price-derived momentum calculator tagged for later correlation penalty so shared price inputs cannot be counted twice in the final fusion;
+- 61 contiguous completed M1 candles required, with gaps/insufficient data failing closed.
 
 AIDY implementation merge:
-`e0fe9a8e0e91bfeacbade687a70746ad51165586`
+`50b692c4ecf2f775a2f445bf69ea1578b0fd5bae`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 199 passed
-- full repository regression: 1451 passed
-- stale D1 -> ABSTAIN: PASS
-- partial/missing D1 -> ABSTAIN: PASS
-- no forced 15m direction: PASS
-- context value separated from direct forecast value: PASS
+- focused workflow suite: 211 passed
+- full repository regression: 1463 passed
+- clean bullish/bearish continuation impulse: PASS
+- one-large-candle persistence veto: PASS
+- noisy/choppy momentum rejection: PASS
+- gapped/insufficient M1 fails closed: PASS
+- volatility-regime trust separation: PASS
+- clock-bucket trust separation: PASS
+- correlated price-expert influence tagging: PASS
 - PIT/no-lookahead and chronological freeze: PASS
 
-Build 9 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because this is a context library and is not wired into live gate weighting.
+Build 10 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the momentum expert is not wired into live gate weighting.
 
-**Next:** Build 10 — Momentum / Impulse Expert. It will distinguish continuation-quality momentum from noisy direction using multi-horizon returns, volatility-normalised movement, acceleration, persistence, path efficiency, impulse/drift, exhaustion and multi-horizon agreement. One large candle alone must not equal persistent momentum.
+**Next:** Build 11 — Price Location Expert. It will identify where Gold sits relative to prior day, Asia, the active session, opening ranges, swings, recent extrema and round numbers using exact and ATR-normalised distances. Reference priority and confluence/conflict must be auditable, and location alone cannot vote direction unless a separately tested reaction rule earns that right.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
