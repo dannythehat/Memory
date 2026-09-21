@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-11 are COMPLETE. Build 11 Price Location Expert is engineering-proven. Build 12 — Liquidity / Reclaim Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-12 are COMPLETE. Build 12 Liquidity / Reclaim Expert is engineering-proven. Build 13 — Volatility / Jump Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1007,6 +1007,8 @@ Use:
 ---
 
 ## Build 12 — Liquidity / Reclaim Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #215, 235 focused / 1487 full tests.**
 
 **Objective:** make sweep/reclaim reasoning measurable and multi-step.
 
