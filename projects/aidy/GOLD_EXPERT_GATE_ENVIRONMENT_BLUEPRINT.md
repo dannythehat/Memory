@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-5 are COMPLETE. Build 5 M5 Price Structure Expert is engineering-proven. Build 6 — M15 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-6 are COMPLETE. Build 6 M15 Price Structure Expert is engineering-proven. Build 7 — H1 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -908,6 +908,8 @@ Use Build 4 primitives with M5-specific lookbacks and mini-environment.
 ---
 
 ## Build 6 — M15 Price Structure Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #209, 159 focused / 1411 full tests.**
 
 Same contract, independently calibrated M15 horizons/thresholds.
 
