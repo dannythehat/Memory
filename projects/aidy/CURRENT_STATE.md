@@ -1,55 +1,34 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-23 COMPLETE / BUILD 24 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-23 COMPLETE / BUILD 24 LIVE PROOF IN PROGRESS (2026-09-21)
 
-The 24-build expert-gate programme is underway.
+Build 24 — Live Forward Shadow Soak & Permanent Scorecard — is merged and deployed, but this Memory branch deliberately remains unmerged until the delayed outcome score for the first genuine prospective cycle passes.
 
-**Builds 1-22:** complete under their recorded acceptance gates.
+Engineering/live state already proven:
+- AIDY implementation PR #238 tested head `a0b8710abc3fe4ea569deed868ea6538294169ad`;
+- implementation merge `6644892d12be6ae497f07db2a69119eaa58e0d27`;
+- semantic gate run `35623113461`: PASS;
+- Build-24 acceptance run `35623113260`: PASS;
+- focused/component suite: **103 passed**;
+- full repository regression: **1664 passed**;
+- live public Worker exposes `aidy_gold_expert_shadow_v1` and `aidy_gold_expert_scorecard_v1`;
+- capture and Provider Context are fresh;
+- formal-forward remains OFF;
+- live rollout run `35623618474` has passed schema, deployment, Worker safety and the first genuine post-activation 15-minute shadow cycle.
 
-**Build 23 — Chronological Replay, Ablation & Untouched Holdout:** complete and engineering-proven.
+Build-24 runtime:
+- prospective activation boundary prevents pre-activation backfill;
+- every eligible cycle stores all 15 expected gate identities;
+- connected PIT experts run from the exact admitted cycle snapshot;
+- currently disconnected macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode live sources remain explicit UNKNOWN context gates;
+- Build-20 dependency state, Build-21 selector and Build-22 final AIDY view are frozen before outcome;
+- later scoring reuses the Build-3 +/-2/+/-1/0 engine and updates permanent environment-specific scorebooks;
+- Provider Context exposes a read-only permanent scorecard;
+- scorecard state is not fed back into private-forward decision inputs.
 
-Build 23 adds the versioned `aidy_gold_meta_replay_*_v1` contracts.
+**Completion gate still open:** live rollout run `35623618474` must prove the later resolved result, 15-gate outcome-ledger coverage, permanent scorebook update and healthy sync. Until then the authoritative programme status remains Builds 1-23 complete / Build 24 live proof in progress.
 
-What is now proven:
-- immutable replay cases separate pre-outcome decision state from later evaluation-only outcomes;
-- deterministic versioned input, case and report digests;
-- chronological development, validation and untouched holdout partitions;
-- purge and embargo around split boundaries;
-- holdout tuning and holdout-driven recommendation changes are forbidden;
-- frozen comparisons cover legacy simple 15m, every gate alone, full system, full-minus-each-gate and full system with/without dependency penalties;
-- metrics cover directional accuracy by class, +2/+1/-1/-2 impact score, Brier where confidence exists, coverage/abstention, environment performance, time stability, incremental contribution and sample N;
-- gate pruning/retention recommendations are derived from validation only;
-- a flashy development-only gate cannot earn promotion from in-sample beauty;
-- changing holdout outcomes cannot change gate/dependency recommendations;
-- dependency penalty is explicitly ablated rather than assumed useful;
-- acceptance data are tagged `acceptance_fixture` and cannot be represented as real-market edge;
-- future values are not prediction inputs;
-- formal-forward authority and live-money authority remain OFF.
-
-Acceptance evidence:
-- implementation merge from PR #235: `12d5f0f17b6678a426890fd8bcd643d3984d1d27`;
-- corrective post-merge verification PR #237 tested head: `0c5e2f2a072e20e1671db13ac90f3ccce88cf11f`;
-- verified main after corrective merge: `5c370ac4182b96a8fb2d06be7927d8de141914a1`;
-- AIDY repository handoff merge: `0d71792813a12b62f70e2999058b7ba7780e1943`;
-- Build 23 verification workflow run `35619195819`: PASS;
-- semantic gate run `35619195958`: PASS;
-- static/compile: PASS;
-- focused replay suite: 54 passed;
-- dedicated adversarial replay suite: 6 passed;
-- full repository regression: 1652 passed;
-- development-only star rejected by validation: PASS;
-- strong validation contributor retained candidate: PASS;
-- dependency-penalty ablation: PASS;
-- holdout recommendation immutability: PASS;
-- fixture/real-market evidence separation: PASS;
-- deterministic replay: PASS.
-
-Important evidence boundary:
-- Build 23 proves the replay, ablation, pruning and untouched-holdout machinery.
-- Its acceptance fixture is synthetic and is not evidence that AIDY has already demonstrated real-market predictive edge.
-- Fresh prospective market evidence is the purpose of Build 24.
-
-**Next:** Build 24 — Live Forward Shadow Soak & Permanent Scorecard. This is the final planned build. It must persist fresh expert packets, selector state, final AIDY view and later outcomes on every eligible cycle and expose the permanent environment-specific scorecard.
+This final wait is the no-hindsight proof, not a build failure. No AIDY live-money authority, formal-forward authority, Super Signals execution/provider rule or owner 1% risk setting changes.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
