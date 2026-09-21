@@ -1175,7 +1175,7 @@ Add only when source contract exists:
 - disagreement remains unresolved rather than fabricated;
 - news context does not automatically become direction.
 
-If live source is not available, this build may remain BUILT with the live branch explicitly UNKNOWN.
+**Completion — 2026-09-21:** PASS. Finnhub adapter/source contract built around `FINNHUB_API_KEY`; 61 focused and 1577 full tests passed. Scheduled-event, credible-news, duplicate-collapse, unsupported-narrative, UNKNOWN, disagreement and PIT-future-row fixtures all pass. News remains context-only with no causal or directional authority. The authenticated AIDY-runtime smoke remains separate because the existing key is stored on Super Signals Render, not copied across product boundaries.
 
 ---
 

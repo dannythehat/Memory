@@ -1,78 +1,50 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-17 COMPLETE / BUILD 18 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-18 COMPLETE / BUILD 19 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Build 1 — Environment Contract v3:** complete and production-verified.
+**Builds 1-17:** complete. See prior handovers and acceptance evidence.
 
-**Build 2 — Expert Gate Contract v1:** complete and engineering-proven.
+**Build 18 — News / Movement Mechanism Expert:** complete and engineering-proven.
 
-**Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
+Build 18 adds `aidy_gold_news_movement_mechanism_expert_v1` plus the bounded Finnhub adapter `aidy_finnhub_market_news_adapter_v1`.
 
-**Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
+Proven behavior:
+- abnormal Gold moves are investigated using the existing frozen movement investigator;
+- scheduled-event evidence and Finnhub news evidence remain separate, timestamped evidence families;
+- Finnhub uses `FINNHUB_API_KEY`, `/news`, bounded categories `general` + `forex`;
+- publication and first-observed timestamps are enforced at the decision as-of;
+- future news rows are excluded;
+- source authority is explicit;
+- duplicate/syndicated stories collapse before agreement scoring;
+- credible sources can agree, disagree, or remain insufficient;
+- scheduled events can agree/disagree with news without becoming causal proof;
+- unsupported narratives remain unsupported and are never admitted as evidence;
+- disagreement remains unresolved rather than fabricated;
+- the expert is context-only and cannot create an automatic bullish/bearish vote.
 
-**Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
+Acceptance evidence:
+- tested PR #225 head: `6ca20729e1925dde30d2cfe123648371d437e648`;
+- implementation merge: `5270f17b536d496d39d231b52da76ad391d4a610`;
+- repository handoff merge: `160673ea6172bb3aa182a03ab5b02475edceffd7`;
+- Evidence Semantic Change Gate: PASS — run `35608776114`;
+- acceptance workflow: PASS — run `35608776007`;
+- focused suite: 61 passed;
+- full repository regression: 1577 passed;
+- Finnhub response-schema adapter: PASS;
+- duplicate-story anti-double-counting: PASS;
+- unsupported narrative: PASS;
+- UNKNOWN path: PASS;
+- source disagreement unresolved: PASS;
+- scheduled-event/news agreement without causal claim: PASS;
+- future-news PIT exclusion: PASS;
+- directional authority: FALSE;
+- live-money authority: FALSE.
 
-**Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
+The user already owns a valid Finnhub key on the separate Super Signals Render runtime. Build 18 does not create a Super Signals dependency or silently copy secrets across products. AIDY's Finnhub adapter is ready for the same key in AIDY's own secret store; the optional authenticated smoke workflow remains available.
 
-**Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
-
-**Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
-
-**Build 9 — D1 Context Expert:** complete and engineering-proven.
-
-**Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
-
-**Build 11 — Price Location Expert:** complete and engineering-proven.
-
-**Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
-
-**Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
-
-**Build 14 — Session / Participation Expert:** complete and engineering-proven.
-
-**Build 15 — Macro / Event Expert:** complete and engineering-proven.
-
-**Build 16 — Rates / USD / Cross-Asset Expert:** complete and engineering-proven.
-
-**Build 17 — Futures / Microstructure Expert:** complete and engineering-proven with genuine retrospective holdout evidence.
-
-Build 17 adds `aidy_gold_futures_microstructure_expert_v1` and proves the Phase-A research path using genuine historical COMEX GC TBBO plus the frozen spot-OHLC baseline:
-- genuine exchange trade volume;
-- known-side aggressor flow with unknown side preserved as UNKNOWN;
-- pre-trade BBO spread;
-- trade-price/size VWAP and anchored/session VWAP;
-- matched weekday × clock normalization;
-- official CME daily OI / active-contract / roll context;
-- chronological purge + embargo + no-holdout-tuning enforcement;
-- explicit null, underperformance and insufficient outcomes;
-- no depth/L2/L3/MBO/MBP10 claim without depth data.
-
-Final genuine evidence:
-- core implementation PR #220 merge: `f6ac451c90ae49f5bbe795af5a25757b65afb8ce`;
-- genuine holdout PR #223 tested head: `ca49a6dd541ec17b09b11b25604722d7ef256b32`;
-- genuine holdout merge: `b1e6e2f491c1cf31fdb30a94a88929e4f092fc18`;
-- repo completion handoff merge: `a350b23cf656f9518ac2407af2253ccd8f687dbb`;
-- Evidence Semantic Change Gate: PASS — run `35605952419`;
-- genuine acceptance workflow: PASS — run `35605952385`;
-- focused workflow suite: 313 passed;
-- full repository regression: 1565 passed;
-- 61 valid genuine weekly episodes;
-- 20 normalization episodes;
-- 10 development episodes;
-- 1 embargo episode;
-- 30 untouched holdout episodes;
-- dev-only selected rule: `override_1p5_0p5`;
-- spot-only holdout accuracy: 20.0000%;
-- spot + microstructure holdout accuracy: 23.3333%;
-- incremental holdout accuracy: +3.3333 percentage points;
-- holdout state: `incremental_value_observed`;
-- quoted Databento research spend: $0.148881077766.
-
-This satisfies Build 17's blueprint requirement for genuine retrospective incremental value beyond spot OHLC. It does not make the feature statistically validated, does not create formal-forward evidence, does not grant live gate weight, and does not authorize paid/live data or live-money execution.
-
-**Next:** Build 18 — News / Movement Mechanism Expert. It must explain abnormal Gold moves using scheduled-event and source-grounded news/mechanism evidence without inventing causality. Unsupported narratives and source disagreement remain UNKNOWN/unresolved; news context does not automatically become direction.
+**Next:** Build 19 — Analogue / Episode Expert. It will retrieve comparable historical Gold states without hindsight using movement episode memory, analogue retrieval, gate/environment similarity, duplicate collapse, symmetric counterexamples and continuation/retrace distributions.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
