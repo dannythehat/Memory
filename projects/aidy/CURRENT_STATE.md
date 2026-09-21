@@ -1,85 +1,48 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-18 COMPLETE / BUILD 19 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-19 COMPLETE / BUILD 20 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Build 1 — Environment Contract v3:** complete and production-verified.
+**Builds 1-18:** complete under their recorded acceptance gates.
 
-**Build 2 — Expert Gate Contract v1:** complete and engineering-proven.
+**Build 19 — Analogue / Episode Expert:** complete and engineering-proven.
 
-**Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
+Build 19 adds `aidy_gold_analogue_episode_expert_v1` and reuses the existing analogue retrieval v1/v2/v3, movement episode memory and semantic analogue boundaries rather than creating a parallel memory engine.
 
-**Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
-
-**Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
-
-**Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
-
-**Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
-
-**Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
-
-**Build 9 — D1 Context Expert:** complete and engineering-proven.
-
-**Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
-
-**Build 11 — Price Location Expert:** complete and engineering-proven.
-
-**Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
-
-**Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
-
-**Build 14 — Session / Participation Expert:** complete and engineering-proven.
-
-**Build 15 — Macro / Event Expert:** complete and engineering-proven.
-
-**Build 16 — Rates / USD / Cross-Asset Expert:** complete and engineering-proven.
-
-**Build 17 — Futures / Microstructure Expert:** complete and engineering-proven with genuine retrospective holdout evidence.
-
-**Build 18 — News / Movement Mechanism Expert:** complete and engineering-proven.
-
-Build 18 adds `aidy_gold_news_movement_mechanism_expert_v1` plus a bounded Finnhub market-news adapter:
-- starts from the frozen Gold movement investigation;
-- scheduled-event context remains PIT-safe and cannot become causal from timing alone;
-- Finnhub `/news` adapter supports `general` and `forex` categories;
-- publisher time and local first-observed time are separate;
-- source authority is classified;
-- duplicate/syndicated stories are collapsed;
-- mechanism tags cover Fed policy, inflation, labour/growth, USD/rates, geopolitics, trade policy, risk sentiment, energy/inflation and Gold-specific context;
-- scheduled-event/news agreement is explicit;
-- credible-source disagreement remains unresolved;
-- unsupported narratives cannot become evidence;
-- future news is excluded from the frozen packet;
-- news remains context-only and cannot create BUY/SELL direction.
+What is now proven:
+- exact PIT state snapshots bind expert-gate/environment similarity to immutable input identity;
+- gate-state and environment similarity are explicit and auditable;
+- v2 overlapping-window episode collapse remains in force before Build 19 re-ranking;
+- future outcome values do not enter similarity or selection;
+- changing historical future outcome content does not change selected case identity or similarity;
+- continuation/retrace distributions are calculated only after selection;
+- supporting analogues and symmetric counterexamples are both retained;
+- movement learning cards are eligible only after their own available-at timestamp;
+- semantic analogue results are accepted only through the verified semantic wrapper;
+- chronological holdout requires purge + embargo and forbids holdout tuning;
+- Build 19 is context-only and carries no automatic direction.
 
 Acceptance evidence:
-- exact tested Build 18 head: `6ca20729e1925dde30d2cfe123648371d437e648`;
-- implementation PR #225 merge: `5270f17b536d496d39d231b52da76ad391d4a610`;
-- AIDY repository handoff merge: `160673ea6172bb3aa182a03ab5b02475edceffd7`;
-- semantic gate run `35608776114`: PASS;
-- Build 18 acceptance run `35608776007`: PASS;
-- static/compile checks: PASS;
-- focused suite: 61 passed;
-- full repository regression: 1577 passed;
-- scheduled-event fixture: PASS;
-- credible-news fixture: PASS;
-- duplicate-collapse fixture: PASS;
-- unsupported-narrative fixture: PASS;
-- UNKNOWN fixture: PASS;
-- credible-source disagreement unresolved: PASS;
-- scheduled-event/news agreement: PASS;
-- future-news exclusion/frozen packet: PASS;
-- no directional authority: PASS;
-- Finnhub mocked HTTP schema adapter: PASS;
-- missing Finnhub key fails closed: PASS.
+- exact tested head: `87a793066af3ac0cb9855399416c0a01f55aa02d`;
+- implementation PR #227 merge: `aba5ebc275646b31ec8132af3fed7179c1b5046f`;
+- AIDY repository handoff merge: `439780074aee6ec2a84ca30d5a399a1f8c4bc76e`;
+- Build 19 workflow run `35610105516`: PASS;
+- semantic gate run `35610105748`: PASS;
+- static/compile: PASS;
+- focused suite: 115 passed;
+- dedicated chronological/counterexample acceptance: 5 passed;
+- full repository regression: 1591 passed;
+- exact PIT input-digest binding: PASS;
+- positive + counterexample retrieval: PASS;
+- duplicate episode collapse: PASS;
+- future-outcome mutation invariance: PASS;
+- deterministic candidate reordering: PASS;
+- chronological holdout-only boundary: PASS.
 
-The optional real Finnhub smoke was not run in GitHub because `FINNHUB_API_KEY` currently exists on Render rather than AIDY GitHub secrets. That is not part of Build 18's acceptance gate. The source contract and runtime adapter are implemented and tested.
+Build 19 remains research/shadow only. It does not change Super Signals execution/provider rules, owner 1% risk, formal-forward authority or live-money authority.
 
-Build 18 remains research/shadow only. It does not change Super Signals execution/provider rules, owner 1% risk, formal-forward authority or live-money authority.
-
-**Next:** Build 19 — Analogue / Episode Expert. It must retrieve comparable historical states without hindsight, collapse duplicate episodes, preserve positive and counterexample retrieval, and use chronological holdout only.
+**Next:** Build 20 — Evidence Dependency & Double-Counting Engine. It must stop duplicated/correlated evidence from voting multiple times while preserving genuinely independent agreement.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
