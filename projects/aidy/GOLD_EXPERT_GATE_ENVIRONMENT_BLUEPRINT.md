@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-4 are COMPLETE. Build 4 Common Price Expert Mathematics is engineering-proven. Build 5 — M5 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-5 are COMPLETE. Build 5 M5 Price Structure Expert is engineering-proven. Build 6 — M15 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -893,6 +893,8 @@ Reuse existing feature/price-structure functions where already correct.
 ---
 
 ## Build 5 — M5 Price Structure Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #206, 148 focused / 1400 full tests.**
 
 Use Build 4 primitives with M5-specific lookbacks and mini-environment.
 
