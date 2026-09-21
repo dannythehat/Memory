@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-7 COMPLETE / BUILD 8 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-8 COMPLETE / BUILD 9 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -18,33 +18,35 @@ The 24-build expert-gate programme is underway.
 
 **Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
 
-Build 7 gives AIDY a genuine hourly specialist:
-- H1 trend quality uses 8h/13h return and log-slope/R², path efficiency, close-step persistence and ATR-normalised displacement;
-- a quality gate prevents a positive or negative first-to-last move from being treated as a directional trend when the internal path is choppy or poorly persistent;
-- a same-direction H1 conclusion is downgraded to ABSTAIN when the net move exists but the H1 quality gate fails;
-- confirmed H1 swing structure, breakout acceptance/reclaim, acceleration and completed-candle pressure remain separately scoreable;
-- H1 range location and contradiction diagnostics remain explicit context;
-- explanations explicitly expose slope, quality, swings/breakout, location and contradictions;
-- H1 conditional trust and score scopes remain separate from M15;
-- legacy-H1 comparison remains for chronological ablation.
+**Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
+
+Build 8 adds the slow H4 structural specialist:
+- H4 trend quality uses 32h/52h path evidence, slope/R², persistence, path efficiency and ATR-normalised displacement;
+- H4 swing structure, breakout acceptance/reclaim, acceleration and candle pressure remain independently scoreable;
+- disagreement with M5/M15/H1 is emitted as `h4_lower_timeframe_conflict`, a scoreable hypothesis rather than an override;
+- higher timeframe receives **zero** automatic priority bonus;
+- H4 receives **zero** default next-15m weight;
+- any future short-horizon influence must prove incremental conditional value against the lower-timeframe baseline with a minimum historical sample;
+- H4 keeps its own Build-3 trust scopes, dependency/correlation metadata and legacy-H4 ablation path.
 
 AIDY implementation merge:
-`a03cd568884549e760b2c6abc43d60127a4fbd23`
+`cfe3ab856e3e7c11df99066c9ad99a39391532e6`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 172 passed
-- full repository regression: 1424 passed
-- positive-first-to-last but choppy H1 acceptance case: PASS
+- focused workflow suite: 187 passed
+- full repository regression: 1439 passed
+- explicit H4/lower-timeframe conflict scoring: PASS
+- no automatic next-15m authority from timeframe: PASS
+- incremental-value proof gate: PASS
 - PIT/no-lookahead and chronological freeze: PASS
-- separate H1 trust scope: PASS
-- dependency/correlation metadata: PASS
-- legacy-H1 ablation baseline retained: PASS
+- separate H4 conditional trust: PASS
+- legacy-H4 ablation retained: PASS
 
-Build 7 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the H1 expert is not yet wired into live gate weighting.
+Build 8 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the H4 expert is not wired into live gate weighting.
 
-**Next:** Build 8 — H4 Price Structure Expert. H4 is a slow structural expert, but it cannot dominate a next-15m forecast merely because it is the higher timeframe. It must prove incremental conditional value and any conflict with lower-timeframe experts must remain explicit and scoreable.
+**Next:** Build 9 — D1 Context Expert. D1 is the slowest structural/macro-location context. It must abstain when daily evidence is stale or partial, must not force a 15-minute direction, and historical tests must distinguish context value from direct forecast value.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
