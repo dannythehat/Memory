@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-11 COMPLETE / BUILD 12 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-12 COMPLETE / BUILD 13 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -26,37 +26,45 @@ The 24-build expert-gate programme is underway.
 
 **Build 11 — Price Location Expert:** complete and engineering-proven.
 
-Build 11 adds a context-only location specialist:
-- frozen prior-day, Asia, active-session and opening-range references;
-- confirmed M15/H1 swing references plus recent M5/M15 extrema from completed bars;
-- deterministic round-number references;
-- exact USD, bps and ATR-normalised distance for every reference;
-- separate geometric-nearest and structural-priority rankings;
-- auditable priority tiers/reasons;
-- confluence clusters within 0.25 ATR;
-- nearby two-sided bracketing/conflict within 0.50 ATR;
-- Build-3 conditional trust for location context;
-- no directional vote or conviction unless a later separately tested location-reaction rule earns that right.
+**Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
+
+Build 12 adds a measurable liquidity/reclaim proxy specialist:
+- named high/low reference levels inherited from Build 11;
+- exact penetration depth in USD and bps;
+- reclaim speed measured in completed M1 bars;
+- confirmation-close count;
+- retest and retest-hold detection;
+- reclaim-candle rejection geometry;
+- nearest competing-level distance;
+- session/phase and volatility-conditioned trust;
+- directional proxy votes only for confirmed/retest-held reclaims;
+- failed or unconfirmed reclaim attempts remain neutral;
+- explicit OHLC-proxy language with no genuine/hidden order-flow claim;
+- retrospective genuine GC-flow research stored separately and excluded from the OHLC proxy calculation and expert conclusion;
+- gapped/insufficient M1 fails closed.
 
 AIDY implementation merge:
-`8b3400ecb569b6b0990c899f0b15440f73f4eb73`
+`68c793281811351ece20c3f66dc8af3413bdd8fe`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 223 passed
-- full repository regression: 1475 passed
-- exact nearest-level calculations: PASS
-- structural priority auditability: PASS
-- confluence/conflict representation: PASS
-- round numbers descriptive-only: PASS
-- ATR-normalised distances: PASS
-- missing-mid fail closed: PASS
+- focused workflow suite: 235 passed
+- full repository regression: 1487 passed
+- high sweep/reclaim/retest proxy: PASS
+- low sweep/reclaim proxy: PASS
+- no-sweep neutral: PASS
+- failed reclaim neutral: PASS
+- competing-level distance: PASS
+- session/volatility trust separation: PASS
+- fake order-flow language protection: PASS
+- genuine GC-flow storage separated: PASS
+- gapped M1 fail closed: PASS
 - PIT/no-lookahead and chronological freeze: PASS
 
-Build 11 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Price Location expert is not wired into live gate weighting.
+Build 12 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Liquidity/Reclaim expert is not wired into live gate weighting.
 
-**Next:** Build 12 — Liquidity / Reclaim Expert. It will make sweep/reclaim reasoning measurable using level identity, penetration depth, reclaim speed, confirmation closes, retest, rejection geometry, competing-level distance and session/volatility context, while explicitly treating OHLC sweep logic as a proxy rather than real order flow.
+**Next:** Build 13 — Volatility / Jump Expert. It will classify clock-normalised volatility, compression/expansion transitions, continuous-versus-jump behaviour, vol-of-vol and optional IV/RV context when qualified, while remaining direction-neutral.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
