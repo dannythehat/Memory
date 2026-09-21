@@ -1,48 +1,51 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-19 COMPLETE / BUILD 20 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-20 COMPLETE / BUILD 21 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Builds 1-18:** complete under their recorded acceptance gates.
+**Builds 1-19:** complete under their recorded acceptance gates.
 
-**Build 19 — Analogue / Episode Expert:** complete and engineering-proven.
+**Build 20 — Evidence Dependency & Double-Counting Engine:** complete and engineering-proven.
 
-Build 19 adds `aidy_gold_analogue_episode_expert_v1` and reuses the existing analogue retrieval v1/v2/v3, movement episode memory and semantic analogue boundaries rather than creating a parallel memory engine.
+Build 20 adds `aidy_gold_evidence_dependency_engine_v1`.
 
 What is now proven:
-- exact PIT state snapshots bind expert-gate/environment similarity to immutable input identity;
-- gate-state and environment similarity are explicit and auditable;
-- v2 overlapping-window episode collapse remains in force before Build 19 re-ranking;
-- future outcome values do not enter similarity or selection;
-- changing historical future outcome content does not change selected case identity or similarity;
-- continuation/retrace distributions are calculated only after selection;
-- supporting analogues and symmetric counterexamples are both retained;
-- movement learning cards are eligible only after their own available-at timestamp;
-- semantic analogue results are accepted only through the verified semantic wrapper;
-- chronological holdout requires purge + embargo and forbids holdout tuning;
-- Build 19 is context-only and carries no automatic direction.
+- explicit dependency-family graph and parent/child roots;
+- structure, momentum and location share one `price_action` root;
+- event, rates/USD, cross-market and news share one `macro_information` root;
+- liquidity remains a separate root;
+- exact duplicates contribute zero incremental weight;
+- contradictory interpretations of the same evidence are split symmetrically;
+- same-correlation-group inputs are damped;
+- rolling signal correlations use only prior pre-outcome rows;
+- highly correlated same-root inputs are further damped;
+- same-root incremental contribution is capped so repeated price-derived signals cannot manufacture confidence;
+- independent-root bonus is bounded and only appears when at least three genuinely distinct roots agree;
+- context-only evidence stays observable but receives zero directional weight;
+- historical outcome fields are rejected from dependency diagnostics.
 
 Acceptance evidence:
-- exact tested head: `87a793066af3ac0cb9855399416c0a01f55aa02d`;
-- implementation PR #227 merge: `aba5ebc275646b31ec8132af3fed7179c1b5046f`;
-- AIDY repository handoff merge: `439780074aee6ec2a84ca30d5a399a1f8c4bc76e`;
-- Build 19 workflow run `35610105516`: PASS;
-- semantic gate run `35610105748`: PASS;
+- exact tested head: `b5cf46b5751cb9a9f7dc565b88bd08dccf3810d4`;
+- implementation PR #229 merge: `35de6056cbbbdde2309a2185c07914f7df375797`;
+- AIDY repository handoff merge: `0fd8728d3686babd88849933cce38d6486da65c2`;
+- Build 20 workflow run `35611781428`: PASS;
+- semantic gate run `35611781415`: PASS;
 - static/compile: PASS;
-- focused suite: 115 passed;
-- dedicated chronological/counterexample acceptance: 5 passed;
-- full repository regression: 1591 passed;
-- exact PIT input-digest binding: PASS;
-- positive + counterexample retrieval: PASS;
-- duplicate episode collapse: PASS;
-- future-outcome mutation invariance: PASS;
-- deterministic candidate reordering: PASS;
-- chronological holdout-only boundary: PASS.
+- focused suite: 144 passed;
+- dedicated double-counting acceptance: 5 passed;
+- full repository regression: 1607 passed;
+- duplicate-removal invariance: PASS;
+- M5/M15/momentum correlation damping: PASS;
+- price-action root cap: PASS;
+- independent liquidity + macro + structure preservation: PASS;
+- future correlation rows excluded: PASS;
+- outcome fields rejected: PASS;
+- deterministic input ordering: PASS.
 
-Build 19 remains research/shadow only. It does not change Super Signals execution/provider rules, owner 1% risk, formal-forward authority or live-money authority.
+Build 20 remains dependency infrastructure only. It does not independently choose live gates, alter Super Signals execution/provider rules, alter owner 1% risk, create formal-forward evidence or grant live-money authority.
 
-**Next:** Build 20 — Evidence Dependency & Double-Counting Engine. It must stop duplicated/correlated evidence from voting multiple times while preserving genuinely independent agreement.
+**Next:** Build 21 — Environment-Aware Gate Selector. It must combine contextual trust, sample shrinkage, calibration, recency drift and Build-20 dependency penalties so AIDY knows which gates deserve attention in the current environment.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
