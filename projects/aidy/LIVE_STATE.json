@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-21T09:46:00Z",
+  "verified_at_utc": "2026-09-21T09:55:25Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "102b75170fc5f9b64b02ea5223b1c61182b802d5",
+  "branch_head_sha": "a03cd568884549e760b2c6abc43d60127a4fbd23",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,7 +174,7 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILDS_1_6_COMPLETE_BUILD_7_NEXT",
+    "status": "BUILDS_1_7_COMPLETE_BUILD_8_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
@@ -184,14 +184,15 @@
       3,
       4,
       5,
-      6
+      6,
+      7
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 7 — H1 Price Structure Expert",
+    "next_build": "Build 8 — H4 Price Structure Expert",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -206,7 +207,7 @@
       "future_values_used": 0
     },
     "expert_gate_contract_version": "aidy_gold_expert_gate_contract_v1",
-    "expert_gate_contract_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_AND_BUILD6_M15_EXPERTS_NOT_LIVE_WEIGHTED",
+    "expert_gate_contract_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_AND_BUILD7_H1_EXPERTS_NOT_LIVE_WEIGHTED",
     "build_2_acceptance": {
       "merge_sha": "95f1bbfbfe845ca95c6c766b16d87c42468da4f6",
       "semantic_gate": "pass",
@@ -216,7 +217,7 @@
       "worker_deploy_required": false
     },
     "expert_trust_engine_version": "aidy_gold_expert_conditional_trust_v3",
-    "expert_trust_engine_status": "PRODUCTION_VERIFIED_USED_BY_BUILD5_M5_AND_BUILD6_M15_EXPERTS_NOT_LIVE_WEIGHTED",
+    "expert_trust_engine_status": "PRODUCTION_VERIFIED_USED_BY_BUILD5_M5_BUILD6_M15_AND_BUILD7_H1_EXPERTS_NOT_LIVE_WEIGHTED",
     "build_3_acceptance": {
       "implementation_merge_sha": "76cbedc410dbb4f298687bdccff754f444048036",
       "aidy_handoff_sha": "538ebac3fe8799550bce99d1b65a517834081e13",
@@ -231,7 +232,7 @@
       "full_tests_passed": 1374
     },
     "price_expert_math_version": "aidy_gold_price_expert_math_v1",
-    "price_expert_math_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_AND_BUILD6_M15_EXPERTS_NOT_LIVE_WEIGHTED",
+    "price_expert_math_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_AND_BUILD7_H1_EXPERTS_NOT_LIVE_WEIGHTED",
     "build_4_acceptance": {
       "merge_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
       "semantic_gate": "pass",
@@ -272,6 +273,36 @@
       "pit_no_hindsight_tests": "pass",
       "chronological_freeze_tests": "pass",
       "legacy_m15_ablation_retained": true,
+      "complexity_grants_no_weight": true,
+      "worker_deploy_required": false,
+      "live_gate_weighting_changed": false,
+      "live_money_execution_allowed": false
+    },
+    "h1_price_structure_expert_version": "aidy_gold_h1_price_structure_expert_v1",
+    "h1_price_structure_expert_status": "ENGINEERING_PROVEN_NOT_LIVE_WEIGHTED",
+    "build_7_acceptance": {
+      "implementation_merge_sha": "a03cd568884549e760b2c6abc43d60127a4fbd23",
+      "pr": 210,
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_tests_passed": 172,
+      "full_tests_passed": 1424,
+      "target_horizon_minutes": 240,
+      "trend_quality_primary_horizon_hours": 8,
+      "trend_quality_secondary_horizon_hours": 13,
+      "positive_but_choppy_h1_veto": "pass",
+      "explanation_fields": [
+        "slope",
+        "quality",
+        "swings_breakout",
+        "location",
+        "contradictions"
+      ],
+      "separate_h1_conditional_trust": "pass",
+      "dependency_correlation_metadata": "pass",
+      "pit_no_hindsight_tests": "pass",
+      "chronological_freeze_tests": "pass",
+      "legacy_h1_ablation_retained": true,
       "complexity_grants_no_weight": true,
       "worker_deploy_required": false,
       "live_gate_weighting_changed": false,
