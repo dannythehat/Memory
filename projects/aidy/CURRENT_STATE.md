@@ -1,35 +1,38 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-2 COMPLETE / BUILD 3 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-3 COMPLETE / BUILD 4 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Build 1 — Environment Contract v3 is complete and production-verified.** AIDY freezes a factorised PIT-safe 34-dimension Gold environment before each 15-minute cycle.
+**Build 1 — Environment Contract v3:** complete and production-verified.
 
-**Build 2 — Expert Gate Contract v1 is complete and engineering-proven.** Every future expert mini-brain now has one mandatory packet contract:
-- verified frozen Environment v3 reference;
-- specialist mini-environment with its own digest/key;
-- timestamped evidence inputs with source/path/state/value/provenance;
-- versioned sub-calculators with role, dependency family, vote, strength, scoreability and evidence refs;
-- explicit directional / context-only / NEUTRAL / ABSTAIN / UNKNOWN states;
-- internal conviction stored separately from historical reliability;
-- structured explanations and contradictions that must cite real evidence/calculators;
-- hard rejection of future-dated evidence and labelled future/outcome fields;
-- mutation-detecting packet/evidence/calculator/mini-environment digests;
-- research-only=true and live-money authority=false.
+**Build 2 — Expert Gate Contract v1:** complete and engineering-proven.
 
-Build 2 AIDY merge:
-`95f1bbfbfe845ca95c6c766b16d87c42468da4f6`
+**Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
 
-Acceptance:
-- Evidence Semantic Change Gate: PASS
-- static checks: PASS
-- focused workflow suite: 108 passed
-- full repository regression: 1360 passed
+Build 3 gives every future expert gate and every scoreable sub-calculator its own environment-specific historical trust. It uses the owner-approved +2/+1/0/-1/-2 outcome scale, deterministic hierarchical shrinkage, minimum sample gates, exact/reduced/global fallback, separate long-term and recent-window statistics, uncertainty intervals, strict pre-decision as-of filtering and idempotent result identities.
 
-Build 2 is a foundation contract and is not wired into live gate weighting yet, so no Worker deployment was required.
+Important design rule: the generic trust engine does not guess a gate's reduced mini-environment. Each future expert must explicitly declare which of its mini-environment dimensions survive at each fallback level.
 
-**Next:** Build 3 — Conditional Trust & Score Engine v3. It will give each gate and each scoreable sub-calculator separate historical reliability by environment, with +2/+1/0/-1/-2 outcomes, small-sample shrinkage and hierarchical fallback when an exact mini-environment has too little evidence.
+Production proof:
+- AIDY implementation merge: `76cbedc410dbb4f298687bdccff754f444048036`
+- AIDY handoff merge: `538ebac3fe8799550bce99d1b65a517834081e13`
+- engine: `aidy_gold_expert_conditional_trust_v3`
+- D1 migration: `0026_gold_expert_conditional_trust.sql`
+- deploy run: `35580744094`
+- Worker version: `bb0a1553-5b85-44aa-8ca7-6cba85fad081`
+- production D1 tables verified:
+  - `aidy_gold_expert_outcome_ledger`
+  - `aidy_gold_expert_context_scores`
+- exact candidate acceptance: semantic gate PASS, static checks PASS, 122 focused tests, 1374 full tests
+- minute capture cron remained present
+- environment v3/toolbox audit remained green
+- future values remained 0
+- live-money authority remained 0
+
+The legacy live marker-weighting path is intentionally unchanged. Build 3 provides the trust foundation that later expert gates will use.
+
+**Next:** Build 4 — Common Price Expert Mathematics. It will build the shared price-analysis primitives used by M5/M15/H1/H4/D1 experts: multi-lookback returns, slope/R², persistence, path efficiency, volatility-normalised displacement, confirmed swings, structure breaks, breakout/acceptance/reclaim, range position, wick/body geometry and acceleration/deceleration.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
