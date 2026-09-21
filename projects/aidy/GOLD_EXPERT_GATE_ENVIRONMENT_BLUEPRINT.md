@@ -5,6 +5,8 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
+> **Progress update — 2026-09-21:** Build 1 — Environment Contract v3 is COMPLETE and production-verified. Build 2 — Expert Gate Contract v1 is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+
 ## 1. Purpose
 
 The current AIDY 15-minute contextual learning loop is a useful skeleton, but several directional gates are intentionally simple. In particular, a timeframe gate can presently reduce a rich price path to a coarse bullish/bearish close-path vote. That is deterministic, not random, but it is not intelligent enough to be the long-term basis of AIDY's Gold brain.
