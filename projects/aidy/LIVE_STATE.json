@@ -4,7 +4,7 @@
   "verified_at_utc": "2026-09-21T08:13:14Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "847342903da2cc988ce61eb4ebb43ff96b420924",
+  "branch_head_sha": "95f1bbfbfe845ca95c6c766b16d87c42468da4f6",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,19 +174,20 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILD_1_COMPLETE_BUILD_2_NEXT",
+    "status": "BUILDS_1_2_COMPLETE_BUILD_3_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
     "completed_builds": [
-      1
+      1,
+      2
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 2 — Expert Gate Contract v1",
+    "next_build": "Build 3 — Conditional Trust & Score Engine v3",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -199,6 +200,16 @@
       "toolbox_trace_count": 34,
       "environment_tool_coverage_count": 34,
       "future_values_used": 0
+    },
+    "expert_gate_contract_version": "aidy_gold_expert_gate_contract_v1",
+    "expert_gate_contract_status": "ENGINEERING_PROVEN_NOT_YET_USED_BY_LIVE_EXPERTS",
+    "build_2_acceptance": {
+      "merge_sha": "95f1bbfbfe845ca95c6c766b16d87c42468da4f6",
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_tests_passed": 108,
+      "full_tests_passed": 1360,
+      "worker_deploy_required": false
     }
   }
 }
