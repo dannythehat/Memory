@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-3 COMPLETE / BUILD 4 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-4 COMPLETE / BUILD 5 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -10,29 +10,37 @@ The 24-build expert-gate programme is underway.
 
 **Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
 
-Build 3 gives every future expert gate and every scoreable sub-calculator its own environment-specific historical trust. It uses the owner-approved +2/+1/0/-1/-2 outcome scale, deterministic hierarchical shrinkage, minimum sample gates, exact/reduced/global fallback, separate long-term and recent-window statistics, uncertainty intervals, strict pre-decision as-of filtering and idempotent result identities.
+**Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
 
-Important design rule: the generic trust engine does not guess a gate's reduced mini-environment. Each future expert must explicitly declare which of its mini-environment dimensions survive at each fallback level.
+Build 4 adds the shared deterministic price-analysis layer used by future M5/M15/H1/H4/D1 experts:
+- multi-lookback returns;
+- log-price OLS slope and R² trend quality;
+- close-step persistence;
+- path efficiency;
+- ATR/RV-normalised movement;
+- acceleration/deceleration;
+- no-lookahead confirmed swing sequences;
+- structure breaks;
+- breakout penetration, acceptance, hold, retest and reclaim;
+- 20/50-bar range position;
+- candle body/wick/close geometry;
+- contradiction diagnostics;
+- unique primitive manifest preventing accidental duplicate feature counting.
 
-Production proof:
-- AIDY implementation merge: `76cbedc410dbb4f298687bdccff754f444048036`
-- AIDY handoff merge: `538ebac3fe8799550bce99d1b65a517834081e13`
-- engine: `aidy_gold_expert_conditional_trust_v3`
-- D1 migration: `0026_gold_expert_conditional_trust.sql`
-- deploy run: `35580744094`
-- Worker version: `bb0a1553-5b85-44aa-8ca7-6cba85fad081`
-- production D1 tables verified:
-  - `aidy_gold_expert_outcome_ledger`
-  - `aidy_gold_expert_context_scores`
-- exact candidate acceptance: semantic gate PASS, static checks PASS, 122 focused tests, 1374 full tests
-- minute capture cron remained present
-- environment v3/toolbox audit remained green
-- future values remained 0
-- live-money authority remained 0
+Only completed bars at the frozen as-of time are admitted. Partial current bars are excluded. Swing pivots are not visible until their right-hand confirmation bars have completed.
 
-The legacy live marker-weighting path is intentionally unchanged. Build 3 provides the trust foundation that later expert gates will use.
+AIDY implementation merge:
+`b3fdabe25b58ea816f282b7cfc29ab22485d4257`
 
-**Next:** Build 4 — Common Price Expert Mathematics. It will build the shared price-analysis primitives used by M5/M15/H1/H4/D1 experts: multi-lookback returns, slope/R², persistence, path efficiency, volatility-normalised displacement, confirmed swings, structure breaks, breakout/acceptance/reclaim, range position, wick/body geometry and acceleration/deceleration.
+Acceptance:
+- Evidence Semantic Change Gate: PASS
+- static checks: PASS
+- focused workflow suite: 122 passed
+- full repository regression: 1390 passed
+
+Build 4 is a common mathematics library and does not alter the current live gate logic or weights, so no Worker deployment was required.
+
+**Next:** Build 5 — M5 Price Structure Expert. This will be the first actual timeframe mini-brain. It will consume Build-4 primitives, define an M5-specific mini-environment, create auditable sub-calculator votes and contradictions, explain its conclusion, and attach Build-3 environment-specific trust without changing live-money authority.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 

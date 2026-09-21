@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-3 are COMPLETE. Environment Contract v3 and Conditional Trust & Score Engine v3 are production-verified; Expert Gate Contract v1 is engineering-proven. Build 4 — Common Price Expert Mathematics — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-4 are COMPLETE. Build 4 Common Price Expert Mathematics is engineering-proven. Build 5 — M5 Price Structure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
