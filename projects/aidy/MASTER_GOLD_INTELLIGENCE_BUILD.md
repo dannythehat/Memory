@@ -365,3 +365,30 @@ Required behaviour:
 Important architectural finding from the 2026-09-20 audit: the standalone repo already has many required components (shock detection, macro surprise capture, cross-market as-of reconstruction, volatility/jump intelligence, episode memory, learning cards and semantic analogue retrieval), but they are fragmented. In particular, `build_unexplained_market_shock()` intentionally forbids narrative cause attribution. The next build is therefore an **evidence-backed Gold Movement Investigator** that joins these existing components rather than creating a parallel stack.
 
 Live-money authority remains OFF while this is built and tested. The research system may learn an independent opposite-direction view, but that does not silently become broker authority.
+
+
+## Owner refinement — toolbox mastery + cycle-learning lens (2026-09-21)
+
+This refines, but does **not replace**, the Gold-first causal-learning architecture above.
+
+AIDY must understand the full toolbox already built across Aidy-Gold-Signals and Super Signals. A capability merely existing in code is insufficient. The reasoning contract must know:
+- the capability/tool name;
+- what market question it answers;
+- when it is relevant;
+- whether it is live/PIT-safe, standing evidence, downstream callable, historical/research-only, or not yet connected;
+- whether it was considered/used for a decision or movement investigation;
+- how useful it has actually been in resolved forward/historical evaluation.
+
+The 15-minute cycle idea is an **additional learning lens**, not AIDY's entire specification. It should complement 5m shock detection, multi-timeframe structure, macro/calendar, rates/yields, cross-market, volatility/GVZ, CME, news, liquidity, provider evidence, historical analogues, execution context and self-critique.
+
+Cycle-learning objective:
+1. Maintain a continuous 15-minute Gold state/view timeline with bullish / bearish / neutral / unknown states.
+2. Freeze each view before its future window is known.
+3. After the window resolves, attach the realised 15-minute direction/path and score the prior view.
+4. Build intraday sequences/cycles from those windows and measure persistence, transition, reversal and duration.
+5. Retrieve genuinely similar prior day/path/setup sequences, including counterexamples, and measure what happened next rather than assuming cycles repeat.
+6. Track daily accuracy/calibration and feed resolved results into AIDY's research memory/self-critique.
+7. Record which toolbox surfaces were available, considered and used for each cycle view so future evaluation can identify which tools add value.
+8. Historical cycle evidence remains research/descriptive unless its provenance and no-hindsight boundary are qualified. It cannot silently create live-money authority.
+
+The goal is a richer Gold memory: AIDY should be able to ask, for example, “have I seen a similar developing day/setup before, how did those paths evolve, how long did the state persist, what contradicted it, and which evidence tools were actually useful?” It must also be willing to answer UNKNOWN when historical support is weak.
