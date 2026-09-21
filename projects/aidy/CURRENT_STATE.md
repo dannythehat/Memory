@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-6 COMPLETE / BUILD 7 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-7 COMPLETE / BUILD 8 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -16,35 +16,35 @@ The 24-build expert-gate programme is underway.
 
 **Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
 
-Build 6 adds the second timeframe mini-brain, independently calibrated for M15:
-- an explicit M15 8-bar / 120-minute path specialist using return, log-slope/R², persistence, efficiency and ATR/RV-normalised displacement;
-- a separate latest-completed-15-minute momentum specialist using one-bar return, M15 ATR and completed-candle geometry;
-- confirmed M15 swing structure;
-- breakout acceptance/reclaim;
-- M15 candle pressure;
-- context-only range location and contradiction diagnostics;
-- explicit dependency families and correlation groups so overlapping evidence stays separately scoreable without being double-counted in current conviction;
-- an independently calibrated 60-minute target horizon and M15-specific thresholds;
-- Build-3 exact/reduced/global conditional trust for the M15 gate and each scoreable calculator;
-- explicit NEUTRAL / ABSTAIN / UNKNOWN handling;
-- legacy-M15 baseline and chronological replay retained for ablation.
+**Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
+
+Build 7 gives AIDY a genuine hourly specialist:
+- H1 trend quality uses 8h/13h return and log-slope/R², path efficiency, close-step persistence and ATR-normalised displacement;
+- a quality gate prevents a positive or negative first-to-last move from being treated as a directional trend when the internal path is choppy or poorly persistent;
+- a same-direction H1 conclusion is downgraded to ABSTAIN when the net move exists but the H1 quality gate fails;
+- confirmed H1 swing structure, breakout acceptance/reclaim, acceleration and completed-candle pressure remain separately scoreable;
+- H1 range location and contradiction diagnostics remain explicit context;
+- explanations explicitly expose slope, quality, swings/breakout, location and contradictions;
+- H1 conditional trust and score scopes remain separate from M15;
+- legacy-H1 comparison remains for chronological ablation.
 
 AIDY implementation merge:
-`102b75170fc5f9b64b02ea5223b1c61182b802d5`
+`a03cd568884549e760b2c6abc43d60127a4fbd23`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 159 passed
-- full repository regression: 1411 passed
-- completed-bar/PIT/no-future tests: PASS
-- chronological freeze: PASS
-- dependency/correlation metadata acceptance: PASS
-- legacy-M15 ablation baseline retained: PASS
+- focused workflow suite: 172 passed
+- full repository regression: 1424 passed
+- positive-first-to-last but choppy H1 acceptance case: PASS
+- PIT/no-lookahead and chronological freeze: PASS
+- separate H1 trust scope: PASS
+- dependency/correlation metadata: PASS
+- legacy-H1 ablation baseline retained: PASS
 
-Build 6 remains research/shadow only. It does not replace the current live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the M15 expert is not yet wired into live gate weighting.
+Build 7 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the H1 expert is not yet wired into live gate weighting.
 
-**Next:** Build 7 — H1 Price Structure Expert. It will focus on genuine hourly trend quality, swing structure, acceleration and breakout acceptance. A positive first-to-last H1 move will not be enough to label H1 strongly bullish if persistence/quality are poor, and H1 historical trust will remain separate from M15.
+**Next:** Build 8 — H4 Price Structure Expert. H4 is a slow structural expert, but it cannot dominate a next-15m forecast merely because it is the higher timeframe. It must prove incremental conditional value and any conflict with lower-timeframe experts must remain explicit and scoreable.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
