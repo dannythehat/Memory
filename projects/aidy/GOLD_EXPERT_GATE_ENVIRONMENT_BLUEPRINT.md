@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-14 are COMPLETE. Build 14 Session / Participation Expert is engineering-proven. Build 15 — Macro / Event Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-15 are COMPLETE. Build 15 Macro / Event Expert is engineering-proven. Build 16 — Rates / USD / Cross-Asset Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1075,6 +1075,8 @@ Use:
 ---
 
 ## Build 15 — Macro / Event Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #218, 276 focused / 1528 full tests.**
 
 **Objective:** turn the existing event stack into a Gold-specific specialist.
 
