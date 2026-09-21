@@ -171,5 +171,16 @@
     "blocked_on": "phase_1_forward_grounding_acceptance",
     "github_actions_status": "credit_exhausted_jobs_start_without_steps_or_logs",
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
+  },
+  "expert_gate_environment_blueprint": {
+    "status": "APPROVED_PLAN_NOT_BUILT",
+    "date": "2026-09-21",
+    "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
+    "build_count": 24,
+    "next_build": "Build 1 — Environment Contract v3",
+    "aidy_implementation_started": false,
+    "implementation_repo": "dannythehat/Aidy-Gold-Signals",
+    "memory_repo_authoritative_for_blueprint": true,
+    "live_money_execution_allowed": false
   }
 }
