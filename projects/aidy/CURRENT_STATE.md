@@ -1,33 +1,35 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILD 1 COMPLETE / BUILD 2 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-2 COMPLETE / BUILD 3 NEXT (2026-09-21)
 
-The 24-build expert-gate programme is now underway.
+The 24-build expert-gate programme is underway.
 
-**Build 1 — Environment Contract v3 is complete and production-verified.** AIDY now freezes a factorised PIT-safe Gold environment before each 15-minute cycle using a canonical 34-dimension registry, compact global-core key, factor-specific environment families, explicit data-quality state, UTC 15-minute clock buckets, market-calendar/weekend state and hard rejection of labelled future/outcome fields.
+**Build 1 — Environment Contract v3 is complete and production-verified.** AIDY freezes a factorised PIT-safe 34-dimension Gold environment before each 15-minute cycle.
 
-The old monolithic `full_environment` scope has been removed so later experts can learn from smaller specialist mini-environments instead of sparse near-unique combinations.
+**Build 2 — Expert Gate Contract v1 is complete and engineering-proven.** Every future expert mini-brain now has one mandatory packet contract:
+- verified frozen Environment v3 reference;
+- specialist mini-environment with its own digest/key;
+- timestamped evidence inputs with source/path/state/value/provenance;
+- versioned sub-calculators with role, dependency family, vote, strength, scoreability and evidence refs;
+- explicit directional / context-only / NEUTRAL / ABSTAIN / UNKNOWN states;
+- internal conviction stored separately from historical reliability;
+- structured explanations and contradictions that must cite real evidence/calculators;
+- hard rejection of future-dated evidence and labelled future/outcome fields;
+- mutation-detecting packet/evidence/calculator/mini-environment digests;
+- research-only=true and live-money authority=false.
 
-Production proof:
-- AIDY main implementation commit: `2b42c3484254a7fd50508f8a2e201d6d652c353e`
-- deploy-gate coverage commit: `968909df73eada5bc9603ea45894395b54ca2c9b`
-- live verification commit: `3cab838f7f7308bbcd8827220ff68a64ea3352b9`
-- final AIDY repo handoff commit: `847342903da2cc988ce61eb4ebb43ff96b420924`
-- production deploy run: `35576676324`
-- Worker version: `a20dcfe9-cd46-40c2-aef5-5d6c524cc6c1`
-- live v3 cycle: `2026-09-21T08:15:00+00:00`
-- frozen at: `2026-09-21T08:10:56.620000+00:00`
-- environment schema: `aidy_gold_environment_contract_schema_v1`
-- registered dimensions: 34
-- toolbox trace/coverage: 34/34
-- monolithic full-environment key: OFF
-- legacy `full_environment` scope count: 0
-- future values: 0
-- live-money authority: 0
-- capture cron remained present
-- formal-forward remained OFF
+Build 2 AIDY merge:
+`95f1bbfbfe845ca95c6c766b16d87c42468da4f6`
 
-**Next:** Build 2 — Expert Gate Contract v1. It will define the standard packet every mini-brain must produce: gate/version, frozen global environment, specialist mini-environment, sub-calculator outputs, direction/context-only/ABSTAIN/UNKNOWN, internal conviction, contradictions, readable explanation, scoreability, dependency family and no-hindsight attestation.
+Acceptance:
+- Evidence Semantic Change Gate: PASS
+- static checks: PASS
+- focused workflow suite: 108 passed
+- full repository regression: 1360 passed
+
+Build 2 is a foundation contract and is not wired into live gate weighting yet, so no Worker deployment was required.
+
+**Next:** Build 3 — Conditional Trust & Score Engine v3. It will give each gate and each scoreable sub-calculator separate historical reliability by environment, with +2/+1/0/-1/-2 outcomes, small-sample shrinkage and hierarchical fallback when an exact mini-environment has too little evidence.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
