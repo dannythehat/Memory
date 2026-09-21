@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-17 are COMPLETE. Build 17 Futures / Microstructure Expert passed genuine Phase-A retrospective holdout acceptance: 30 untouched holdout episodes improved from 20.0000% spot-only accuracy to 23.3333% spot+microstructure accuracy (+3.3333pp), with no holdout tuning and no live authority. Build 18 — News / Movement Mechanism Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-18 are COMPLETE. Build 18 News / Movement Mechanism Expert is engineering-proven with a bounded Finnhub market-news adapter, PIT timestamp/source authority, duplicate-story collapse, disagreement/UNKNOWN preservation, unsupported-narrative rejection and no directional authority. Build 19 — Analogue / Episode Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1176,6 +1176,8 @@ Add only when source contract exists:
 - news context does not automatically become direction.
 
 If live source is not available, this build may remain BUILT with the live branch explicitly UNKNOWN.
+
+**Completion — 2026-09-21:** PASS. Finnhub market-news adapter/source contract added; scheduled-event, credible-news, unsupported-narrative, UNKNOWN, disagreement, agreement, duplicate-collapse, future-news exclusion and no-direction fixtures all pass. Semantic gate PASS, 61 focused tests and 1577 full regression tests. Optional real Finnhub smoke was not run in GitHub because the existing key is on Render rather than AIDY GitHub secrets; this was not an acceptance requirement.
 
 ---
 
