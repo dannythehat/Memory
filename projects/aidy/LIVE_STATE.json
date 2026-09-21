@@ -4,7 +4,7 @@
   "verified_at_utc": "2026-09-21T08:13:14Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "538ebac3fe8799550bce99d1b65a517834081e13",
+  "branch_head_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,21 +174,22 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILDS_1_3_COMPLETE_BUILD_4_NEXT",
+    "status": "BUILDS_1_4_COMPLETE_BUILD_5_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
     "completed_builds": [
       1,
       2,
-      3
+      3,
+      4
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 4 — Common Price Expert Mathematics",
+    "next_build": "Build 5 — M5 Price Structure Expert",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -226,6 +227,16 @@
       "static_checks": "pass",
       "focused_tests_passed": 122,
       "full_tests_passed": 1374
+    },
+    "price_expert_math_version": "aidy_gold_price_expert_math_v1",
+    "price_expert_math_status": "ENGINEERING_PROVEN_SHARED_LIBRARY_NOT_YET_WIRED_TO_LIVE_EXPERTS",
+    "build_4_acceptance": {
+      "merge_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_tests_passed": 122,
+      "full_tests_passed": 1390,
+      "worker_deploy_required": false
     }
   }
 }
