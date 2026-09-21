@@ -1,5 +1,30 @@
 # AIDY — Current State
 
+## Factual cycle-start environment v2 — LIVE (2026-09-21)
+
+AIDY now freezes a canonical PIT-safe factual environment before each 15-minute Gold cycle and learns marker usefulness **by market condition** rather than one universal tool score.
+
+Live versions:
+- cycle environment: `aidy_gold_cycle_environment_v2`
+- contextual marker brain: `aidy_gold_contextual_marker_brain_v2`
+- cycle memory: `aidy_gold_cycle_memory_v3`
+- Worker: `aidy-signals-test`
+- Worker version: `240739fb-849e-410f-a805-70a1e4496514`
+- successful deploy run: `35565777824`
+- final environment audit: `35565912418`
+
+The environment stores exact start-point facts for audit, but learns on repeatable buckets: session/session phase, price location, nearest liquidity/reference distance band, sweep/reclaim state, prior-day/Asia/session range zone, M5/M15/H1/H4/D1 state, recent path, volatility/jump regime, event proximity, cross-market availability and compound regime.
+
+Contextual scorebooks now span **13 scopes**, including liquidity+location, session+liquidity, location+HTF structure and volatility+movement regime. The canonical **34-item toolbox** is still evaluated every cycle; only legitimately directional/PIT-safe evidence is scored.
+
+Live D1 proof for the `2026-09-21T05:45:00+00:00` cycle: Asia late-session, Gold below `asia_opening_30m_low` by the 3-8bp band, prior-day lower-middle zone, low-side reclaim, H1 bearish, H4 bullish, 4 known cross-market series, 34 toolbox items, 13 scopes, future-values=0 and live-money authority=0.
+
+Persistent cycle-sync health is also live and reported `status=ok` at `2026-09-21T05:48:01.095000+00:00`.
+
+The AIDY repo itself now carries its own memory/handoff: root `MEMORY.md`, `README.md` entry point and `docs/current-gold-learning-state.md`. Full handover: `projects/aidy/handovers/2026-09-21-cycle-environment-v2-live.md`.
+
+No execution/provider/risk authority changed; owner 1% risk and formal-forward OFF remain intact.
+
 ## Contextual marker-learning brain — LIVE (2026-09-21)
 
 AIDY's 15-minute Gold learner now scores toolbox markers by **environment**, not just globally. Runtime code from `6f9b607c0201bec77f5996126d158914864d58e5` is live on Worker version `a264b7b3-e26a-406f-827f-2ebd7f128740`; repository main after audit cleanup is `a2c029b9954b2b06964b8cd7f1c9d60d35458192`.
@@ -49,7 +74,7 @@ Last verified: **2026-09-21**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
-Verified repository `main` SHA: `9b23e1c83fd169fb9ad08ded97a1ba4cce59ddee`
+Verified repository `main` SHA: `1635f68a4ed98298f979d6d13521c21c1b0e4463`
 Live Worker: `aidy-signals-test`
 
 ## Toolbox-aware decision layer + measured historical exam — ACTIVE (2026-09-20)
