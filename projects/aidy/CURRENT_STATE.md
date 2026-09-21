@@ -1,73 +1,49 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-14 COMPLETE / BUILD 15 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-15 COMPLETE / BUILD 16 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Build 1 — Environment Contract v3:** complete and production-verified.
+**Builds 1–14:** complete under their recorded engineering/production status.
 
-**Build 2 — Expert Gate Contract v1:** complete and engineering-proven.
+**Build 15 — Macro / Event Expert:** complete and engineering-proven.
 
-**Build 3 — Conditional Trust & Score Engine v3:** complete and production-verified.
-
-**Build 4 — Common Price Expert Mathematics:** complete and engineering-proven.
-
-**Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
-
-**Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
-
-**Build 7 — H1 Price Structure Expert:** complete and engineering-proven.
-
-**Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
-
-**Build 9 — D1 Context Expert:** complete and engineering-proven.
-
-**Build 10 — Momentum / Impulse Expert:** complete and engineering-proven.
-
-**Build 11 — Price Location Expert:** complete and engineering-proven.
-
-**Build 12 — Liquidity / Reclaim Expert:** complete and engineering-proven.
-
-**Build 13 — Volatility / Jump Expert:** complete and engineering-proven.
-
-**Build 14 — Session / Participation Expert:** complete and engineering-proven.
-
-Build 14 adds a direction-neutral participation/context specialist:
-- DST-safe London and New York regional session state;
-- explicit active-market list and London/New York overlap state;
-- session phase retained from the frozen cycle environment;
-- completed-M1 15-minute realised volatility and range;
-- matched weekday × UTC 15-minute clock baselines;
-- event-clean matched-clock history preferred when enough clean observations exist;
-- unusual/elevated/quiet activity classification from volatility and range percentiles;
-- existing Day-42 genuine GC exchange trade-volume and pre-trade BBO spread z-scores reused as descriptive participation context when qualified;
-- retrospective GC context remains research-only unless PIT-qualified;
-- event-time confounding explicit so unusual activity is not automatically attributed to a regional session;
-- no hardcoded session-direction rules and ordinary session activity cannot count as alpha.
+Build 15 adds a context-only Gold macro/event specialist layered on the accepted official event stack:
+- strict point-in-time official schedule selection;
+- pre-event Gold structure from closed bars only;
+- immutable pre-release consensus plus first print for raw surprise;
+- later revisions kept separate from the first print;
+- standardized surprise only when same-class/same-unit PIT history has enough independent episodes;
+- event clustering from PIT-known schedules;
+- post-release Gold confirmation from completed M1 bars;
+- historical conditional Gold response by event class and surprise direction;
+- matched no-news controls;
+- Gold-specific event tiers from independent Gold episodes, not vendor importance labels;
+- no trade P/L in tiering or response estimates;
+- Build-3 conditional trust scopes.
 
 AIDY implementation merge:
-`58a0425f717342dba28ce67e199087f3e96645f3`
+`ce9ff0a8f021c062aba05440b112c5f8cf2e0518`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 263 passed
-- full repository regression: 1515 passed
-- UK DST transition: PASS
-- US DST transition: PASS
-- London/New York overlap identification: PASS
-- matched weekday-clock activity baseline: PASS
-- event-clean history selection: PASS
-- event-time confounding representation: PASS
-- genuine GC volume/spread descriptive boundary: PASS
-- unqualified GC context remains UNKNOWN: PASS
-- insufficient clock history remains UNKNOWN: PASS
-- PIT/no-lookahead and chronological freeze: PASS
-- no hardcoded session-direction rule: PASS
+- focused workflow suite: 276 passed
+- full repository regression: 1528 passed
+- pre-event cannot see later actual: PASS
+- first-observed actual timing: PASS
+- revision/first-print separation: PASS
+- standardized surprise PIT history only: PASS
+- independent Gold event tiers: PASS
+- event clustering: PASS
+- post-release confirmation: PASS
+- matched no-news control: PASS
+- future historical rows excluded: PASS
+- PIT/no-lookahead chronological freeze: PASS
 
-Build 14 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Session / Participation expert is not wired into live gate weighting.
+Build 15 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the Macro / Event expert is not wired into live gate weighting.
 
-**Next:** Build 15 — Macro / Event Expert. It will turn the existing official event stack into a Gold-specific specialist using pre-event features, consensus/actual/revision separation, Gold-learned event tiers, standardized surprise where valid, event clustering, post-release confirmation and historical conditional response, with strict first-observed timestamps and no-news controls.
+**Next:** Build 16 — Rates / USD / Cross-Asset Expert. It will model Gold opportunity-cost and risk relationships using broad USD, DGS2/DGS10/DFII10/T10YIE, policy-path research and qualified SI/ES/VIX/EURUSD/USDJPY evidence, with multi-horizon changes, rolling Gold beta/correlation, relationship stability, divergence and cross-asset agreement while forbidding permanent sign assumptions and stale daily data masquerading as intraday reaction.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
