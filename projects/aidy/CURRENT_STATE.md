@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-8 COMPLETE / BUILD 9 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-9 COMPLETE / BUILD 10 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -20,33 +20,35 @@ The 24-build expert-gate programme is underway.
 
 **Build 8 — H4 Price Structure Expert:** complete and engineering-proven.
 
-Build 8 adds the slow H4 structural specialist:
-- H4 trend quality uses 32h/52h path evidence, slope/R², persistence, path efficiency and ATR-normalised displacement;
-- H4 swing structure, breakout acceptance/reclaim, acceleration and candle pressure remain independently scoreable;
-- disagreement with M5/M15/H1 is emitted as `h4_lower_timeframe_conflict`, a scoreable hypothesis rather than an override;
-- higher timeframe receives **zero** automatic priority bonus;
-- H4 receives **zero** default next-15m weight;
-- any future short-horizon influence must prove incremental conditional value against the lower-timeframe baseline with a minimum historical sample;
-- H4 keeps its own Build-3 trust scopes, dependency/correlation metadata and legacy-H4 ablation path.
+**Build 9 — D1 Context Expert:** complete and engineering-proven.
+
+Build 9 adds the slowest structural/macro-location context layer:
+- D1 is context-only by contract and never emits or forces a 15-minute bullish/bearish conclusion;
+- completed daily trend, range-location, structure and breakout context are exposed separately;
+- daily freshness is explicit, with a 72-hour maximum context age;
+- stale, missing or genuinely partial D1 evidence causes usable context to ABSTAIN;
+- unconfirmed daily swings may remain UNKNOWN while otherwise fresh trend/location context stays usable;
+- default next-15m weight is zero and direct 15m authority is disabled;
+- historical evaluation separates whether adding D1 context improved another forecast from whether a direct D1 directional guess happened to be right;
+- Build-3 conditional trust attaches to the D1 gate and its context calculators without creating directional conviction.
 
 AIDY implementation merge:
-`cfe3ab856e3e7c11df99066c9ad99a39391532e6`
+`e0fe9a8e0e91bfeacbade687a70746ad51165586`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused workflow suite: 187 passed
-- full repository regression: 1439 passed
-- explicit H4/lower-timeframe conflict scoring: PASS
-- no automatic next-15m authority from timeframe: PASS
-- incremental-value proof gate: PASS
+- focused workflow suite: 199 passed
+- full repository regression: 1451 passed
+- stale D1 -> ABSTAIN: PASS
+- partial/missing D1 -> ABSTAIN: PASS
+- no forced 15m direction: PASS
+- context value separated from direct forecast value: PASS
 - PIT/no-lookahead and chronological freeze: PASS
-- separate H4 conditional trust: PASS
-- legacy-H4 ablation retained: PASS
 
-Build 8 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the H4 expert is not wired into live gate weighting.
+Build 9 remains research/shadow only. It does not replace the live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because this is a context library and is not wired into live gate weighting.
 
-**Next:** Build 9 — D1 Context Expert. D1 is the slowest structural/macro-location context. It must abstain when daily evidence is stale or partial, must not force a 15-minute direction, and historical tests must distinguish context value from direct forecast value.
+**Next:** Build 10 — Momentum / Impulse Expert. It will distinguish continuation-quality momentum from noisy direction using multi-horizon returns, volatility-normalised movement, acceleration, persistence, path efficiency, impulse/drift, exhaustion and multi-horizon agreement. One large candle alone must not equal persistent momentum.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 

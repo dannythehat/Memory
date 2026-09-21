@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-21T10:03:31Z",
+  "verified_at_utc": "2026-09-21T10:16:21Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "cfe3ab856e3e7c11df99066c9ad99a39391532e6",
+  "branch_head_sha": "e0fe9a8e0e91bfeacbade687a70746ad51165586",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,7 +174,7 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILDS_1_8_COMPLETE_BUILD_9_NEXT",
+    "status": "BUILDS_1_9_COMPLETE_BUILD_10_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
@@ -186,14 +186,15 @@
       5,
       6,
       7,
-      8
+      8,
+      9
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 9 — D1 Context Expert",
+    "next_build": "Build 10 — Momentum / Impulse Expert",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -208,7 +209,7 @@
       "future_values_used": 0
     },
     "expert_gate_contract_version": "aidy_gold_expert_gate_contract_v1",
-    "expert_gate_contract_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_AND_BUILD8_H4_EXPERTS_NOT_LIVE_WEIGHTED",
+    "expert_gate_contract_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_BUILD8_H4_AND_BUILD9_D1_CONTEXT_NOT_LIVE_WEIGHTED",
     "build_2_acceptance": {
       "merge_sha": "95f1bbfbfe845ca95c6c766b16d87c42468da4f6",
       "semantic_gate": "pass",
@@ -218,7 +219,7 @@
       "worker_deploy_required": false
     },
     "expert_trust_engine_version": "aidy_gold_expert_conditional_trust_v3",
-    "expert_trust_engine_status": "PRODUCTION_VERIFIED_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_AND_BUILD8_H4_EXPERTS_NOT_LIVE_WEIGHTED",
+    "expert_trust_engine_status": "PRODUCTION_VERIFIED_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_BUILD8_H4_AND_BUILD9_D1_CONTEXT_NOT_LIVE_WEIGHTED",
     "build_3_acceptance": {
       "implementation_merge_sha": "76cbedc410dbb4f298687bdccff754f444048036",
       "aidy_handoff_sha": "538ebac3fe8799550bce99d1b65a517834081e13",
@@ -233,7 +234,7 @@
       "full_tests_passed": 1374
     },
     "price_expert_math_version": "aidy_gold_price_expert_math_v1",
-    "price_expert_math_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_AND_BUILD8_H4_EXPERTS_NOT_LIVE_WEIGHTED",
+    "price_expert_math_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_BUILD6_M15_BUILD7_H1_BUILD8_H4_AND_BUILD9_D1_CONTEXT_NOT_LIVE_WEIGHTED",
     "build_4_acceptance": {
       "merge_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
       "semantic_gate": "pass",
@@ -332,6 +333,29 @@
       "separate_h4_conditional_trust": "pass",
       "legacy_h4_ablation_retained": true,
       "complexity_grants_no_weight": true,
+      "worker_deploy_required": false,
+      "live_gate_weighting_changed": false,
+      "live_money_execution_allowed": false
+    },
+    "d1_context_expert_version": "aidy_gold_d1_context_expert_v1",
+    "d1_context_expert_status": "ENGINEERING_PROVEN_CONTEXT_ONLY_NOT_LIVE_WEIGHTED",
+    "build_9_acceptance": {
+      "implementation_merge_sha": "e0fe9a8e0e91bfeacbade687a70746ad51165586",
+      "pr": 212,
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_tests_passed": 199,
+      "full_tests_passed": 1451,
+      "context_only": true,
+      "max_context_age_hours": 72,
+      "stale_d1_abstains": true,
+      "partial_missing_d1_abstains": true,
+      "unconfirmed_swings_can_remain_unknown": true,
+      "direct_15m_direction_allowed": false,
+      "default_next_15m_weight": "0",
+      "context_value_separate_from_direct_forecast_value": true,
+      "pit_no_hindsight_tests": "pass",
+      "chronological_freeze_tests": "pass",
       "worker_deploy_required": false,
       "live_gate_weighting_changed": false,
       "live_money_execution_allowed": false
