@@ -1,5 +1,17 @@
 # AIDY — Current State
 
+## Gold cycle learning + auditable toolbox reasoning — LIVE (2026-09-21)
+
+AIDY main `9b23e1c83fd169fb9ad08ded97a1ba4cce59ddee` is deployed to Cloudflare Worker `aidy-signals-test`, Worker version `395ada01-cf5d-4b51-9b4f-fd207e837a6d`. Final canonical deploy run `35559806815` completed successfully with the direct minute cron present, capture enabled, Twelve Data/public-independent, Provider Context routes live, and formal-forward/live-money authority OFF.
+
+The additive 15-minute Gold cycle learner is now live. Every view is frozen before its target window and stores bullish/bearish/neutral/unknown state plus a cross-checkable reason trail: supporting reasons, contradictory reasons, missing/unavailable evidence, toolbox manifest digest, toolbox considered and toolbox actually used. Post-window outcomes attach realised direction, return, MFE/MAE and scoring without rewriting the original reasoning.
+
+Live D1 audit of the `2026-09-21T04:00:00+00:00` view proved: observed bearish, AIDY bearish, **5 supporting reasons**, **1 contradiction**, **33 toolbox capabilities considered**, **5 tool/evidence surfaces used**, **13 unavailable evidence items kept explicit**, `future_values_used=0`, `live_money_execution_allowed=0`.
+
+Historical cycle memory is also loaded: **46,353** retrospective M15 Gold cycle rows from **47,319** BigQuery research-candle rows across 2024-2025, covering **120 distinct state sequences** and **95 UTC time slots**. Safety audit found **0 illegal PIT rows, 0 illegal research flags and 0 illegal live-money rows**. This history is descriptive analogue memory only.
+
+The 15-minute cycle is one learning lens, not AIDY's full specification. Gold-first causal learning remains primary. Known-but-not-yet-live/PIT-connected parts of the wider arsenal remain explicit UNKNOWN, including parts of rates/macro surprise, intraday cross-asset reaction, CME, GVZ and breaking-news/official-release search. Full handover: `projects/aidy/handovers/2026-09-21-gold-cycle-toolbox-learning-live.md`.
+
 ## Gold movement capture + canonical toolbox — LIVE (2026-09-21)
 
 The Gold-first movement spine is now live and directly proven in remote D1. AIDY PR #147 (`bbbc9a59d2fcc9fc0fe0fd9bf18dd90091dfd084`) added an immutable scan ledger and bounded backlog scanning so normal and abnormal snapshots are continuously advanced rather than only checking the single latest snapshot. Live audit run `35557600712` found 2 genuine abnormal episodes: **1 UP and 1 DOWN**, both honestly `cause_unknown`. AIDY PR #148 (`5f11c13b86467e72cd178b3c92cb44e813732533`) deployed `aidy_gold_toolbox_manifest_v1`, a 30+ capability catalogue with explicit live/downstream/research-not-connected states. Super Signals PR #240 (`f33a83ffa965b4b42ab2cd579b6012ba85a601f6`) is LIVE on Render deploy `dep-daoaeau8bjmc73b6mmeg`, consumes that catalogue in `aidy_live_toolbox_manifest_v2`, and uses prompt `aidy_reasoning_prompt_v14_gold_toolbox`. Post-deploy Provider Context probe was READY. Learning-card maturity is not yet proven because the first live episodes had not reached the 60-minute forward horizon at audit time. Rates/macro surprise, intraday cross-asset reaction, CME, GVZ and breaking-news tools are known to AIDY but remain explicitly not live/PIT-connected. Full handover: `projects/aidy/handovers/2026-09-21-gold-movement-toolbox-live.md`.
@@ -23,7 +35,7 @@ Last verified: **2026-09-21**
 
 Authoritative repo: `dannythehat/Aidy-Gold-Signals`
 Authoritative branch: `main`
-Verified repository `main` SHA after temporary-audit cleanup: `bbbe8dda8836eff8b673d36ca1bbd3345cc24bac`
+Verified repository `main` SHA: `9b23e1c83fd169fb9ad08ded97a1ba4cce59ddee`
 Live Worker: `aidy-signals-test`
 
 ## Toolbox-aware decision layer + measured historical exam — ACTIVE (2026-09-20)
