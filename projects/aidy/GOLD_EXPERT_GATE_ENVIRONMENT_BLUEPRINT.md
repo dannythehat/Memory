@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-12 are COMPLETE. Build 12 Liquidity / Reclaim Expert is engineering-proven. Build 13 — Volatility / Jump Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-13 are COMPLETE. Build 13 Volatility / Jump Expert is engineering-proven. Build 14 — Session / Participation Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1031,6 +1031,8 @@ Add:
 ---
 
 ## Build 13 — Volatility / Jump Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #216, 249 focused / 1501 full tests.**
 
 **Objective:** classify movement conditions that change the usefulness of other gates.
 
