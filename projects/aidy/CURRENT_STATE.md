@@ -1,51 +1,58 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-20 COMPLETE / BUILD 21 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-21 COMPLETE / BUILD 22 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
-**Builds 1-19:** complete under their recorded acceptance gates.
+**Builds 1-20:** complete under their recorded acceptance gates.
 
-**Build 20 — Evidence Dependency & Double-Counting Engine:** complete and engineering-proven.
+**Build 21 — Environment-Aware Gate Selector:** complete and engineering-proven.
 
-Build 20 adds `aidy_gold_evidence_dependency_engine_v1`.
+Build 21 adds `aidy_gold_environment_gate_selector_v1`.
 
 What is now proven:
-- explicit dependency-family graph and parent/child roots;
-- structure, momentum and location share one `price_action` root;
-- event, rates/USD, cross-market and news share one `macro_information` root;
-- liquidity remains a separate root;
-- exact duplicates contribute zero incremental weight;
-- contradictory interpretations of the same evidence are split symmetrically;
-- same-correlation-group inputs are damped;
-- rolling signal correlations use only prior pre-outcome rows;
-- highly correlated same-root inputs are further damped;
-- same-root incremental contribution is capped so repeated price-derived signals cannot manufacture confidence;
-- independent-root bonus is bounded and only appears when at least three genuinely distinct roots agree;
-- context-only evidence stays observable but receives zero directional weight;
-- historical outcome fields are rejected from dependency diagnostics.
+- selector consumes frozen Build-2 packets plus Build-3 trust envelopes;
+- exact current environment/as-of is required;
+- exact/reduced/global trust-scope fallback is preserved;
+- hierarchical shrinkage and sample confidence are applied;
+- explicit scope backoff is applied;
+- historical calibration rows must predate the current cycle;
+- recent drift reduces recently-weaker gates and never boosts above 1;
+- Build-20 dependency multipliers are propagated into gate authority;
+- small-N star performers remain reduced;
+- strong large-N contextual performers can rise to high trust;
+- missing/unknown gates get exactly zero authority;
+- weak gates remain observable with low non-zero weight;
+- context-only gates remain observable but get zero directional authority;
+- current outcome injection fails closed;
+- deterministic replay is invariant to input ordering.
 
 Acceptance evidence:
-- exact tested head: `b5cf46b5751cb9a9f7dc565b88bd08dccf3810d4`;
-- implementation PR #229 merge: `35de6056cbbbdde2309a2185c07914f7df375797`;
-- AIDY repository handoff merge: `0fd8728d3686babd88849933cce38d6486da65c2`;
-- Build 20 workflow run `35611781428`: PASS;
-- semantic gate run `35611781415`: PASS;
+- exact tested head: `a5f4892909d5eeaffb7143a2d579c0e12eea528d`;
+- implementation PR #231 merge: `49632b75c773b207f857e23387e4f7ec5428fe52`;
+- AIDY repository handoff merge: `9c217699b15e089af78b9f8925d514ea606cb6fd`;
+- Build 21 workflow run `35613740266`: PASS;
+- semantic gate run `35613740343`: PASS;
 - static/compile: PASS;
-- focused suite: 144 passed;
-- dedicated double-counting acceptance: 5 passed;
-- full repository regression: 1607 passed;
-- duplicate-removal invariance: PASS;
-- M5/M15/momentum correlation damping: PASS;
-- price-action root cap: PASS;
-- independent liquidity + macro + structure preservation: PASS;
-- future correlation rows excluded: PASS;
-- outcome fields rejected: PASS;
-- deterministic input ordering: PASS.
+- focused suite: 84 passed;
+- dedicated selector acceptance: 6 passed;
+- full repository regression: 1622 passed;
+- small-N suppression: PASS;
+- strong large-N contextual promotion: PASS;
+- unavailable gate zero authority: PASS;
+- weak gate retained for observation: PASS;
+- recently-weaker drift reduction: PASS;
+- historical calibration adjustment: PASS;
+- future calibration exclusion: PASS;
+- Build-20 dependency penalty propagation: PASS;
+- independent liquidity/macro/structure preservation: PASS;
+- context-only zero directional authority: PASS;
+- current outcome injection rejection: PASS;
+- deterministic replay: PASS.
 
-Build 20 remains dependency infrastructure only. It does not independently choose live gates, alter Super Signals execution/provider rules, alter owner 1% risk, create formal-forward evidence or grant live-money authority.
+Build 21 selects attention only. It does not create the final Gold direction, alter Super Signals execution/provider rules, alter owner 1% risk, create formal-forward evidence or grant live-money authority.
 
-**Next:** Build 21 — Environment-Aware Gate Selector. It must combine contextual trust, sample shrinkage, calibration, recency drift and Build-20 dependency penalties so AIDY knows which gates deserve attention in the current environment.
+**Next:** Build 22 — AIDY Meta Direction Aggregator & Explanation. It must combine the selected gate set into one traceable bullish/bearish/neutral/abstain research view with contradictions, environment, trust/N, dependency adjustment and a readable why.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
