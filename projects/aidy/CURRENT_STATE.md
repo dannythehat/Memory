@@ -1,5 +1,10 @@
 # AIDY — Current State
 
+## Gold movement capture + canonical toolbox — LIVE (2026-09-21)
+
+The Gold-first movement spine is now live and directly proven in remote D1. AIDY PR #147 (`bbbc9a59d2fcc9fc0fe0fd9bf18dd90091dfd084`) added an immutable scan ledger and bounded backlog scanning so normal and abnormal snapshots are continuously advanced rather than only checking the single latest snapshot. Live audit run `35557600712` found 2 genuine abnormal episodes: **1 UP and 1 DOWN**, both honestly `cause_unknown`. AIDY PR #148 (`5f11c13b86467e72cd178b3c92cb44e813732533`) deployed `aidy_gold_toolbox_manifest_v1`, a 30+ capability catalogue with explicit live/downstream/research-not-connected states. Super Signals PR #240 (`f33a83ffa965b4b42ab2cd579b6012ba85a601f6`) is LIVE on Render deploy `dep-daoaeau8bjmc73b6mmeg`, consumes that catalogue in `aidy_live_toolbox_manifest_v2`, and uses prompt `aidy_reasoning_prompt_v14_gold_toolbox`. Post-deploy Provider Context probe was READY. Learning-card maturity is not yet proven because the first live episodes had not reached the 60-minute forward horizon at audit time. Rates/macro surprise, intraday cross-asset reaction, CME, GVZ and breaking-news tools are known to AIDY but remain explicitly not live/PIT-connected. Full handover: `projects/aidy/handovers/2026-09-21-gold-movement-toolbox-live.md`.
+
+
 ## AIDY Provider Context self-heal — LIVE (2026-09-21)
 
 AIDY main `aebb414656e9e1f6f30f2cf954366085792dca6f` is deployed to the canonical Cloudflare Worker. Deployment workflow run `35557298002` completed successfully at `2026-09-21T03:23:24Z` after lint/test cleanup. Live health is green: direct-cron, capture enabled, Twelve Data/public-independent, formal forward OFF, and both scheduled capture and Provider Context fresh at `2026-09-21T03:22:30.148000+00:00`. The bounded intraday self-heal is live and may repair only small recent <=30-minute M1 gaps needed for M5/M15/H1/H4 while preserving strict evidence and fail-closed behavior. Full handover: `projects/aidy/handovers/2026-09-21-live-self-heal-deployed.md`.
