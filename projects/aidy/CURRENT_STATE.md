@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-5 COMPLETE / BUILD 6 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-6 COMPLETE / BUILD 7 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -14,28 +14,37 @@ The 24-build expert-gate programme is underway.
 
 **Build 5 — M5 Price Structure Expert:** complete and engineering-proven.
 
-Build 5 is the first real timeframe mini-brain. It consumes Build-4 completed-bar mathematics and emits one Build-2 auditable M5 expert packet with separately visible opinions for trend/path quality, confirmed swing structure, breakout acceptance/reclaim, momentum transition and completed-candle pressure, plus context-only range-location and contradiction diagnostics.
+**Build 6 — M15 Price Structure Expert:** complete and engineering-proven.
 
-Its final conclusion is family-balanced: correlated calculators stay separately scoreable for learning, but cannot multiply current conviction simply because several versions of the same evidence agree. NEUTRAL, ABSTAIN and UNKNOWN remain first-class states.
-
-Build-3 conditional trust is attached separately to the M5 gate and every scoreable M5 sub-calculator using M5-specific environment contexts and hierarchical fallback. The legacy M5 direction remains an explicit baseline for chronological ablation/comparison.
+Build 6 adds the second timeframe mini-brain, independently calibrated for M15:
+- an explicit M15 8-bar / 120-minute path specialist using return, log-slope/R², persistence, efficiency and ATR/RV-normalised displacement;
+- a separate latest-completed-15-minute momentum specialist using one-bar return, M15 ATR and completed-candle geometry;
+- confirmed M15 swing structure;
+- breakout acceptance/reclaim;
+- M15 candle pressure;
+- context-only range location and contradiction diagnostics;
+- explicit dependency families and correlation groups so overlapping evidence stays separately scoreable without being double-counted in current conviction;
+- an independently calibrated 60-minute target horizon and M15-specific thresholds;
+- Build-3 exact/reduced/global conditional trust for the M15 gate and each scoreable calculator;
+- explicit NEUTRAL / ABSTAIN / UNKNOWN handling;
+- legacy-M15 baseline and chronological replay retained for ablation.
 
 AIDY implementation merge:
-`eaa6f49636ae4ae9f73d6a17db4c9d8f46d8743a`
-
-AIDY repository handoff merge:
-`be2760dd6daa52bdadc655b50d8bb32f02eeef60`
+`102b75170fc5f9b64b02ea5223b1c61182b802d5`
 
 Acceptance:
 - Evidence Semantic Change Gate: PASS
 - static checks: PASS
-- focused acceptance/regression suite: 148 passed
-- full repository regression: 1400 passed
-- PIT/no-lookahead, chronological freeze, trend/downtrend/chop/reversal, missing evidence, Build-3 trust attachment and legacy-baseline comparison all passed
+- focused workflow suite: 159 passed
+- full repository regression: 1411 passed
+- completed-bar/PIT/no-future tests: PASS
+- chronological freeze: PASS
+- dependency/correlation metadata acceptance: PASS
+- legacy-M15 ablation baseline retained: PASS
 
-No Worker deployment was required because Build 5 is not wired into the live weighting path. The legacy live marker brain, Super Signals execution, owner 1% risk and AIDY live-money authority remain unchanged.
+Build 6 remains research/shadow only. It does not replace the current live marker brain, change Super Signals execution/provider rules, alter the owner 1% risk directive, or grant live-money authority. No Worker deployment was required because the M15 expert is not yet wired into live gate weighting.
 
-**Next:** Build 6 — M15 Price Structure Expert. It will use the same expert contract with independently calibrated M15 horizons/thresholds, separately identify the M15 8-bar path, latest 15-minute momentum and swing/breakout evidence, preserve dependency/correlation metadata, and retain the legacy M15 baseline for ablation.
+**Next:** Build 7 — H1 Price Structure Expert. It will focus on genuine hourly trend quality, swing structure, acceleration and breakout acceptance. A positive first-to-last H1 move will not be enough to label H1 strongly bullish if persistence/quality are poor, and H1 historical trust will remain separate from M15.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
