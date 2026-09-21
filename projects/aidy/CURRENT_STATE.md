@@ -1,5 +1,23 @@
 # AIDY — Current State
 
+## Expert-gate environment blueprint — APPROVED PLAN / NOT BUILT (2026-09-21)
+
+Research and architecture for the next AIDY Gold-learning programme are complete and recorded in `GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md`.
+
+The plan contains **24 sequential builds**. It starts with Environment Contract v3, a standard Expert Gate contract and a conditional trust/score engine before any individual timeframe expert is upgraded. M5, M15, H1, H4 and D1 then become separate mini-brains rather than simple close-path votes, followed by momentum, location, liquidity/reclaim, volatility/jump, session/participation, macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism, analogue memory, dependency control, environment-aware gate selection, AIDY meta aggregation, chronological replay/ablation and live forward shadow soak.
+
+Architectural rules now frozen in the blueprint:
+- freeze the global Gold environment before gate reasoning;
+- give each expert a smaller specialist mini-environment rather than one enormous sparse environment key;
+- score every gate and scoreable sub-calculator separately by environment;
+- distinguish gate conviction from historical reliability;
+- shrink small samples and use hierarchical context backoff;
+- penalise correlated/duplicated evidence;
+- allow context-only, UNKNOWN and ABSTAIN outputs;
+- keep the current simple 15-minute gates as the legacy baseline until the new system proves incremental out-of-sample value.
+
+No AIDY implementation code was changed by this planning milestone. **Build 1 is next and has not started.**
+
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
 AIDY now freezes a canonical PIT-safe factual environment before each 15-minute Gold cycle and learns marker usefulness **by market condition** rather than one universal tool score.
