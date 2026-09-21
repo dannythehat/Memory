@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-18 are COMPLETE. Build 18 News / Movement Mechanism Expert is engineering-proven with a bounded Finnhub market-news adapter, PIT timestamp/source authority, duplicate-story collapse, disagreement/UNKNOWN preservation, unsupported-narrative rejection and no directional authority. Build 19 — Analogue / Episode Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-19 are COMPLETE. Build 19 Analogue / Episode Expert is engineering-proven with exact PIT gate/environment state binding, outcome-blind similarity, independent episode collapse, symmetric counterexamples and chronological holdout-only acceptance. Build 20 — Evidence Dependency & Double-Counting Engine — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1202,6 +1202,8 @@ Add:
 - exact PIT reconstruction;
 - positive and counterexample retrieval;
 - chronological holdout only.
+
+**Completion — 2026-09-21:** PASS. Build 19 reuses the accepted analogue v1/v2/v3, movement-memory and semantic boundaries; adds exact PIT gate/environment state snapshots; preserves independent episode collapse; keeps outcomes out of similarity; retains positive and counterexample episodes; and enforces chronological holdout with purge, embargo and no holdout tuning. Semantic gate PASS, 115 focused tests, 5 dedicated chronological/counterexample tests and 1591 full regression tests.
 
 ---
 
