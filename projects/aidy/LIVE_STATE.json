@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-21T08:13:14Z",
+  "verified_at_utc": "2026-09-21T09:35:14Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
+  "branch_head_sha": "be2760dd6daa52bdadc655b50d8bb32f02eeef60",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,7 +174,7 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILDS_1_4_COMPLETE_BUILD_5_NEXT",
+    "status": "BUILDS_1_5_COMPLETE_BUILD_6_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
@@ -182,14 +182,15 @@
       1,
       2,
       3,
-      4
+      4,
+      5
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 5 — M5 Price Structure Expert",
+    "next_build": "Build 6 — M15 Price Structure Expert",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -204,7 +205,7 @@
       "future_values_used": 0
     },
     "expert_gate_contract_version": "aidy_gold_expert_gate_contract_v1",
-    "expert_gate_contract_status": "ENGINEERING_PROVEN_NOT_YET_USED_BY_LIVE_EXPERTS",
+    "expert_gate_contract_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_EXPERT_NOT_LIVE_WEIGHTED",
     "build_2_acceptance": {
       "merge_sha": "95f1bbfbfe845ca95c6c766b16d87c42468da4f6",
       "semantic_gate": "pass",
@@ -214,7 +215,7 @@
       "worker_deploy_required": false
     },
     "expert_trust_engine_version": "aidy_gold_expert_conditional_trust_v3",
-    "expert_trust_engine_status": "PRODUCTION_VERIFIED_FOUNDATION_NOT_YET_WIRED_TO_LIVE_EXPERTS",
+    "expert_trust_engine_status": "PRODUCTION_VERIFIED_USED_BY_BUILD5_M5_EXPERT_NOT_LIVE_WEIGHTED",
     "build_3_acceptance": {
       "implementation_merge_sha": "76cbedc410dbb4f298687bdccff754f444048036",
       "aidy_handoff_sha": "538ebac3fe8799550bce99d1b65a517834081e13",
@@ -229,13 +230,29 @@
       "full_tests_passed": 1374
     },
     "price_expert_math_version": "aidy_gold_price_expert_math_v1",
-    "price_expert_math_status": "ENGINEERING_PROVEN_SHARED_LIBRARY_NOT_YET_WIRED_TO_LIVE_EXPERTS",
+    "price_expert_math_status": "ENGINEERING_PROVEN_USED_BY_BUILD5_M5_EXPERT_NOT_LIVE_WEIGHTED",
     "build_4_acceptance": {
       "merge_sha": "b3fdabe25b58ea816f282b7cfc29ab22485d4257",
       "semantic_gate": "pass",
       "static_checks": "pass",
       "focused_tests_passed": 122,
       "full_tests_passed": 1390,
+      "worker_deploy_required": false
+    },
+    "m5_price_structure_expert_version": "aidy_gold_m5_price_structure_expert_v1",
+    "m5_price_structure_expert_status": "ENGINEERING_PROVEN_NOT_LIVE_WEIGHTED",
+    "build_5_acceptance": {
+      "implementation_merge_sha": "eaa6f49636ae4ae9f73d6a17db4c9d8f46d8743a",
+      "aidy_handoff_sha": "be2760dd6daa52bdadc655b50d8bb32f02eeef60",
+      "pr": 206,
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_tests_passed": 148,
+      "full_tests_passed": 1400,
+      "pit_no_hindsight_tests": "pass",
+      "chronological_freeze_tests": "pass",
+      "legacy_m5_ablation_retained": true,
+      "complexity_grants_no_weight": true,
       "worker_deploy_required": false
     }
   }
