@@ -1,6 +1,6 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-17 COMPLETE / BUILD 18 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-18 COMPLETE / BUILD 19 NEXT (2026-09-21)
 
 The 24-build expert-gate programme is underway.
 
@@ -38,41 +38,48 @@ The 24-build expert-gate programme is underway.
 
 **Build 17 — Futures / Microstructure Expert:** complete and engineering-proven with genuine retrospective holdout evidence.
 
-Build 17 adds `aidy_gold_futures_microstructure_expert_v1` and proves the Phase-A research path using genuine historical COMEX GC TBBO plus the frozen spot-OHLC baseline:
-- genuine exchange trade volume;
-- known-side aggressor flow with unknown side preserved as UNKNOWN;
-- pre-trade BBO spread;
-- trade-price/size VWAP and anchored/session VWAP;
-- matched weekday × clock normalization;
-- official CME daily OI / active-contract / roll context;
-- chronological purge + embargo + no-holdout-tuning enforcement;
-- explicit null, underperformance and insufficient outcomes;
-- no depth/L2/L3/MBO/MBP10 claim without depth data.
+**Build 18 — News / Movement Mechanism Expert:** complete and engineering-proven.
 
-Final genuine evidence:
-- core implementation PR #220 merge: `f6ac451c90ae49f5bbe795af5a25757b65afb8ce`;
-- genuine holdout PR #223 tested head: `ca49a6dd541ec17b09b11b25604722d7ef256b32`;
-- genuine holdout merge: `b1e6e2f491c1cf31fdb30a94a88929e4f092fc18`;
-- repo completion handoff merge: `a350b23cf656f9518ac2407af2253ccd8f687dbb`;
-- Evidence Semantic Change Gate: PASS — run `35605952419`;
-- genuine acceptance workflow: PASS — run `35605952385`;
-- focused workflow suite: 313 passed;
-- full repository regression: 1565 passed;
-- 61 valid genuine weekly episodes;
-- 20 normalization episodes;
-- 10 development episodes;
-- 1 embargo episode;
-- 30 untouched holdout episodes;
-- dev-only selected rule: `override_1p5_0p5`;
-- spot-only holdout accuracy: 20.0000%;
-- spot + microstructure holdout accuracy: 23.3333%;
-- incremental holdout accuracy: +3.3333 percentage points;
-- holdout state: `incremental_value_observed`;
-- quoted Databento research spend: $0.148881077766.
+Build 18 adds `aidy_gold_news_movement_mechanism_expert_v1` plus a bounded Finnhub market-news adapter:
+- starts from the frozen Gold movement investigation;
+- scheduled-event context remains PIT-safe and cannot become causal from timing alone;
+- Finnhub `/news` adapter supports `general` and `forex` categories;
+- publisher time and local first-observed time are separate;
+- source authority is classified;
+- duplicate/syndicated stories are collapsed;
+- mechanism tags cover Fed policy, inflation, labour/growth, USD/rates, geopolitics, trade policy, risk sentiment, energy/inflation and Gold-specific context;
+- scheduled-event/news agreement is explicit;
+- credible-source disagreement remains unresolved;
+- unsupported narratives cannot become evidence;
+- future news is excluded from the frozen packet;
+- news remains context-only and cannot create BUY/SELL direction.
 
-This satisfies Build 17's blueprint requirement for genuine retrospective incremental value beyond spot OHLC. It does not make the feature statistically validated, does not create formal-forward evidence, does not grant live gate weight, and does not authorize paid/live data or live-money execution.
+Acceptance evidence:
+- exact tested Build 18 head: `6ca20729e1925dde30d2cfe123648371d437e648`;
+- implementation PR #225 merge: `5270f17b536d496d39d231b52da76ad391d4a610`;
+- AIDY repository handoff merge: `160673ea6172bb3aa182a03ab5b02475edceffd7`;
+- semantic gate run `35608776114`: PASS;
+- Build 18 acceptance run `35608776007`: PASS;
+- static/compile checks: PASS;
+- focused suite: 61 passed;
+- full repository regression: 1577 passed;
+- scheduled-event fixture: PASS;
+- credible-news fixture: PASS;
+- duplicate-collapse fixture: PASS;
+- unsupported-narrative fixture: PASS;
+- UNKNOWN fixture: PASS;
+- credible-source disagreement unresolved: PASS;
+- scheduled-event/news agreement: PASS;
+- future-news exclusion/frozen packet: PASS;
+- no directional authority: PASS;
+- Finnhub mocked HTTP schema adapter: PASS;
+- missing Finnhub key fails closed: PASS.
 
-**Next:** Build 18 — News / Movement Mechanism Expert. It must explain abnormal Gold moves using scheduled-event and source-grounded news/mechanism evidence without inventing causality. Unsupported narratives and source disagreement remain UNKNOWN/unresolved; news context does not automatically become direction.
+The optional real Finnhub smoke was not run in GitHub because `FINNHUB_API_KEY` currently exists on Render rather than AIDY GitHub secrets. That is not part of Build 18's acceptance gate. The source contract and runtime adapter are implemented and tested.
+
+Build 18 remains research/shadow only. It does not change Super Signals execution/provider rules, owner 1% risk, formal-forward authority or live-money authority.
+
+**Next:** Build 19 — Analogue / Episode Expert. It must retrieve comparable historical states without hindsight, collapse duplicate episodes, preserve positive and counterexample retrieval, and use chronological holdout only.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
