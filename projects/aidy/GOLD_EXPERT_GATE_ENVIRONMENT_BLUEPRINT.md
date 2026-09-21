@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-15 are COMPLETE. Build 15 Macro / Event Expert is engineering-proven. Build 16 — Rates / USD / Cross-Asset Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-16 are COMPLETE. Build 16 Rates / USD / Cross-Asset Expert is engineering-proven. Build 17 — Futures / Microstructure Expert — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1103,6 +1103,8 @@ Add:
 ---
 
 ## Build 16 — Rates / USD / Cross-Asset Expert
+
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #219, 292 focused / 1544 full tests.**
 
 **Objective:** model Gold's opportunity-cost/risk mechanisms without permanent sign assumptions.
 
