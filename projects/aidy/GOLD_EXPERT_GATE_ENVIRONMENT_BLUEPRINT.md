@@ -5,7 +5,7 @@
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-22 are COMPLETE. Build 22 AIDY Meta Direction Aggregator & Explanation is engineering-proven with traceable gate contributions, contradiction-driven abstention, unsigned context-only gates and confidence withheld unless historical meta-calibration is sufficient. Build 23 — Chronological Replay, Ablation & Untouched Holdout — is next. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-21:** Builds 1-23 are COMPLETE. Build 23 Chronological Replay, Ablation & Untouched Holdout is engineering-proven with immutable pre-outcome decision state, purge/embargo splits, validation-only recommendations, explicit dependency ablation, holdout immutability and acceptance-fixture/real-market evidence separation. Build 24 — Live Forward Shadow Soak & Permanent Scorecard — is next and is the final planned build. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
 
 ## 1. Purpose
 
@@ -1318,6 +1318,8 @@ Design:
 - complexity that adds no out-of-sample value is pruned or downweighted;
 - no gate promoted from in-sample beauty;
 - results reproducible from versioned PIT inputs.
+
+**Completion — 2026-09-21:** PASS. Build 23 adds immutable replay datasets, chronological development/validation/holdout splits with purge and embargo, legacy/gate-only/full/leave-one-out/dependency-off comparisons, validation-only pruning recommendations and untouched-holdout immutability. Acceptance uses an explicitly labeled synthetic adversarial fixture and does not claim real-market edge. Semantic gate PASS, 54 focused replay tests, 6 dedicated adversarial replay tests and 1652 full regression tests.
 
 ---
 

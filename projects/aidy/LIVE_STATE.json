@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-21T15:02:00Z",
+  "verified_at_utc": "2026-09-21T15:32:00Z",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
-  "branch_head_sha": "73b7668806ed35d4d223a8f5e79b6cf8636ee8d8",
+  "branch_head_sha": "0d71792813a12b62f70e2999058b7ba7780e1943",
   "live_worker": {
     "name": "aidy-signals-test",
     "runtime": "cloudflare-workers",
@@ -174,7 +174,7 @@
     "note": "No isolated-head test-suite green claim is made while Actions credits are unavailable; keep branches isolated."
   },
   "expert_gate_environment_blueprint": {
-    "status": "BUILDS_1_22_COMPLETE_BUILD_23_NEXT",
+    "status": "BUILDS_1_23_COMPLETE_BUILD_24_NEXT",
     "date": "2026-09-21",
     "document": "projects/aidy/GOLD_EXPERT_GATE_ENVIRONMENT_BLUEPRINT.md",
     "build_count": 24,
@@ -200,14 +200,15 @@
       19,
       20,
       21,
-      22
+      22,
+      23
     ],
     "current_live_environment_version": "aidy_gold_cycle_environment_v3",
     "current_live_environment_schema": "aidy_gold_environment_contract_schema_v1",
     "registered_dimension_count": 34,
     "monolithic_full_environment_key_used": false,
     "legacy_full_environment_scope_count": 0,
-    "next_build": "Build 23 — Chronological Replay, Ablation & Untouched Holdout",
+    "next_build": "Build 24 — Live Forward Shadow Soak & Permanent Scorecard",
     "aidy_implementation_started": true,
     "implementation_repo": "dannythehat/Aidy-Gold-Signals",
     "memory_repo_authoritative_for_blueprint": true,
@@ -736,6 +737,32 @@
       "deterministic_replay": "pass",
       "future_values_used": false,
       "research_only": true,
+      "formal_forward_evidence_created": false,
+      "live_money_execution_allowed": false
+    },
+    "meta_replay_version": "aidy_gold_meta_replay_report_v1",
+    "meta_replay_status": "ENGINEERING_PROVEN_ACCEPTANCE_FIXTURE_NOT_REAL_MARKET_EDGE",
+    "build_23_acceptance": {
+      "implementation_merge_sha": "12d5f0f17b6678a426890fd8bcd643d3984d1d27",
+      "corrective_verification_head_sha": "0c5e2f2a072e20e1671db13ac90f3ccce88cf11f",
+      "verified_main_sha": "5c370ac4182b96a8fb2d06be7927d8de141914a1",
+      "repository_handoff_merge_sha": "0d71792813a12b62f70e2999058b7ba7780e1943",
+      "verification_pr": 237,
+      "semantic_gate_run_id": 35619195958,
+      "acceptance_run_id": 35619195819,
+      "semantic_gate": "pass",
+      "static_checks": "pass",
+      "focused_replay_tests_passed": 54,
+      "dedicated_adversarial_replay_tests_passed": 6,
+      "full_tests_passed": 1652,
+      "development_only_star_rejected": "pass",
+      "validation_contributor_retained": "pass",
+      "dependency_penalty_ablation": "pass",
+      "holdout_recommendation_immutability": "pass",
+      "acceptance_fixture_disclosed": true,
+      "real_market_edge_proven": false,
+      "deterministic_replay": "pass",
+      "future_values_used_for_prediction": false,
       "formal_forward_evidence_created": false,
       "live_money_execution_allowed": false
     }
