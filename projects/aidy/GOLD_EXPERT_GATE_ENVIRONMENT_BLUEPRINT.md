@@ -948,6 +948,8 @@ Slow structural expert.
 
 ## Build 9 — D1 Context Expert
 
+**Status: COMPLETE / ENGINEERING PROVEN — AIDY PR #212, 199 focused / 1451 full tests.**
+
 Slowest structural/macro-location context.
 
 **Acceptance**
