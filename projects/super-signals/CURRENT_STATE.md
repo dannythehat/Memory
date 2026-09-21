@@ -1,5 +1,10 @@
 # Super Signals — Current State
 
+## AIDY canonical Gold toolbox consumer — LIVE (2026-09-21)
+
+Production branch `feature/day-10-shared-telegram-sources` now includes Super Signals PR #240, merge SHA `f33a83ffa965b4b42ab2cd579b6012ba85a601f6`. Render deploy `dep-daoaeau8bjmc73b6mmeg` finished LIVE at `2026-09-21T03:42:19.642122Z`. Live reasoning now uses `aidy_live_toolbox_manifest_v2` and prompt `aidy_reasoning_prompt_v14_gold_toolbox`, consuming the standalone AIDY `aidy_gold_toolbox_manifest_v1` capability catalogue. Post-deploy log proved `AIDY Provider Context live probe READY`. The catalogue informs AIDY of the wider arsenal without falsely marking research-only/disconnected evidence as callable. No provider routing, best-side policy, 1% risk, MT5/MetaAPI execution, or live authority changed.
+
+
 > **Owner mandate in force since 2026-09-17: read [`OWNER_MANDATE.md`](../../OWNER_MANDATE.md) every session.** It sets the goal (AIDY becomes an evidence-scored decision layer that measurably improves Super Signals' profit) and the one boundary that does not move under it (live-money authority stays OFF until explicitly graduated per class).
 
 Last verified: **2026-09-20**
