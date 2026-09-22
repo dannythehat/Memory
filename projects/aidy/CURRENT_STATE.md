@@ -1,5 +1,107 @@
 # AIDY — Current State
 
+Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
+
+## READ FIRST
+
+**The Blocker-1 repair is now on `main`** (PR #245, merge `7349331`). It had been
+sitting as a *draft PR* since 2026-09-22 09:46 with CI green — that is the only reason
+it never shipped. `main` now carries `gold_family_meta_direction.py`, wired into the
+live shadow path, plus the reusable global-core trust scope.
+
+**`main` is NOT deployed.** Deployment is a separate owner-initiated step via
+`aidy-provider-research-read-deploy.yml`.
+
+## What the live brain was doing before the merge
+
+Measured against D1 `aidy-ops-test` (3588d82a-d686-4430-872d-d4c0e62c3d5d) at
+2026-09-22T23:39Z, 110 cycles over 31 hours:
+
+| | |
+|---|---|
+| cycles returning `abstain` | **110 of 110**, `insufficient_directional_authority` |
+| directional authority mean / max | 0.0242 / 0.0643 against a **0.30** threshold |
+| cycles ever clearing the threshold | **0** |
+| meta outcomes resolved | 106, **all `correct IS NULL`** |
+
+An abstain cannot be scored, so the meta loop had produced zero labelled examples
+about itself. Expert-level scoring *was* working: 64,485 ledger rows, 116 subjects.
+
+## Accuracy against baselines — the number that matters
+
+| | accuracy |
+|---|---|
+| always answer "bearish" (majority class) | **48.46%** |
+| guess in proportion to base rates | 40.5% |
+| **AIDY gates** (n=1,362) | **37.44%** |
+| **AIDY subcalculators** (n=9,471) | **38.36%** |
+| uniform random over 3 classes | 33.3% |
+
+Class balance: bearish 48.46% / bullish 39.46% / neutral 12.07%. AIDY sits ~11 points
+below the trivial baseline. Caveat: 31 hours, one instrument, a bearish-skewed window
+that flatters majority-class.
+
+**Accuracy is flat across scopes** — `mini_exact` 0.3826 vs `gate_global` 0.3823.
+Conditioning bought nothing measurable.
+
+## Why trust never conditioned (Blocker 2, now fixed on main)
+
+| scope | rows | distinct keys | rows per key |
+|---|---|---|---|
+| `gate_global` | 11,280 | 15 | 752 |
+| `mini_exact` | 11,281 | 815 | 13.8 |
+| `global_core` | 11,280 | **1,600** | **7.05** |
+
+`global_core` needs 6 samples but generated 1,600 keys in 31 hours, because its
+dimension set carried `utc_weekday` and `utc_clock_bucket_15m` — a key can recur only
+weekly, so the current key is always new. Every subject fell back to `gate_global`.
+Fixed by `_TRUST_GLOBAL_CORE_DIMENSIONS` (8 dims, no clock/weekday).
+
+## The most important open finding: m5 may be inverted
+
+Outcome ledger joined to gate snapshots on `packet_digest`, `gate_global`:
+
+| expert | n | agreed | opposed | rate |
+|---|---|---|---|---|
+| **m5_price_structure** | 54 | 18 | **36** | **0.333** |
+| liquidity_reclaim | 45 | 21 | 24 | 0.467 |
+| momentum_impulse | 36 | 18 | 18 | 0.500 |
+| m15_price_structure | 34 | 13 | 21 | 0.382 |
+| h1_price_structure | 27 | 13 | 14 | 0.481 |
+
+m5's 95% Wilson interval `[0.222, 0.466]` excludes chance, and the inversion is
+**symmetric across both call types** (says bullish → bearish 19/32; says bearish →
+bullish 17/29), which base-rate bias cannot produce. Likely mean reversion read as
+momentum on 5-minute gold structure.
+
+**DO NOT FLIP IT YET.** Six experts were examined; Bonferroni over six widens the
+interval to `[0.192, 0.513]`, which includes chance. `gold_expert_directional_skill.py`
+(PR #248) measures this on a daily schedule with the rule frozen in advance
+(`MIN_DIRECTIONAL_N = 40`, `ALPHA = 0.05` family-wise). Let it accumulate and act when
+the family-wise interval excludes chance — not before.
+
+## Isolation from Super Signals — enforced, not assumed
+
+Six contract tests (PR #247) pin it: `Default.fetch` (serves `/provider/context`) does
+no learning-loop work; the shadow sync runs only from `scheduled`/`queue`; health
+telemetry catches `Exception` and never raises; AIDY binds exactly one datastore
+(`AIDY_OPS`); no Super Signals table name appears in AIDY source; AIDY's own Telegram
+publisher is imported by no deployed Worker entry.
+
+## What to judge next
+
+After deployment, AIDY will start emitting directions that get **scored**. Judge the
+result against **48.46%**, not against zero. If accuracy stays near 38% once trust can
+finally condition on environment, the problem is the experts themselves and no amount
+of aggregation will fix it.
+
+
+---
+
+## Previous state (superseded 2026-09-23)
+
+# AIDY — Current State
+
 ## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
 
 An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **a directional view is practically unreachable in the current production architecture.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
