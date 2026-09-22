@@ -921,5 +921,45 @@
       "adopted_aggregator_design": "separate reliability / independence / decision strength; gate reliability -> root-family aggregation -> normalised directional balance; separate evidence-sufficiency condition of at least 2 genuinely independent families with adequate trust and sample support; pre-register the rule and threshold before evaluating results",
       "agreed_priority": "fix Build 20 -> 21 -> 22 units and reachability first; reachability test second; do not pay for Databento yet"
     }
+  },
+  "blocker1_aggregation_redesign_v9": {
+    "status": "fixture_frozen_production_not_implemented",
+    "date": "2026-09-22",
+    "mathematics_frozen_since": "v7",
+    "predecessor_memory_commit": "9b3e37a86965d5978450789bea0e878112d90590",
+    "validated_aidy_source_sha": "47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a",
+    "evidence_branch": "probe/blocker1-v9-fixture-20260922",
+    "evidence_branch_head": "e4d3a92475189c5d844060d3e7d1b41effe9c8b1",
+    "ci_run_id": 35704609730,
+    "fixture_sha256": "5d99b3db701df696c5325b1146af5942319db70e05e1c8a2fe130f3e23281960",
+    "combined_manifest_digest": "cf9e44df2965ebbe2b8cbc4e1c21d2e6682dfe978466feb5f3686978bc70e1cd",
+    "packet_count": 15,
+    "connected_subcalculator_subject_count": 70,
+    "old_path": {
+      "direction": "abstain",
+      "reason": "insufficient_directional_authority",
+      "directional_total": "0.152785"
+    },
+    "frozen_replacement_path": {
+      "direction": "bullish",
+      "reason": "bullish_family_evidence",
+      "meta_balance": "1.000000",
+      "qualifying_family_count": 2,
+      "families": {
+        "price_action": "0.331592",
+        "liquidity_mechanism": "0.373330"
+      }
+    },
+    "pit_assertions": {
+      "correct_derived_from_prediction_vs_realised": true,
+      "commitments_decide_before_resolution": true,
+      "history_resolves_before_fixture_as_of": true,
+      "bar_first_observed_at_is_close_time": true
+    },
+    "production_changed": false,
+    "formal_forward_authority": false,
+    "live_money_execution_allowed": false,
+    "owner_risk_changed": false,
+    "next_gate": "implement the frozen aggregator against this fixture, promote reachability assertion into production tests, then re-run Build 23 and prospective shadow acceptance"
   }
 }
