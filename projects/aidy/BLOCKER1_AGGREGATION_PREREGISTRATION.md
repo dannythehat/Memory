@@ -1,6 +1,6 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (v8 — MATHEMATICS FROZEN, FIXTURE REBUILD IN PROGRESS, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (v9 — MATHEMATICS + EXECUTABLE FIXTURE FROZEN, 2026-09-22)
 
-**Status: v8 — the aggregation MATHEMATICS IS APPROVED AND FROZEN.** The remaining work is fixture validation only; **no aggregation change is in scope.** NOT IMPLEMENTED. No AIDY code written. No production, config or holdout touched. v1 `a8b78fe` … v7 `0738716` preserved immutably.
+**Status: v9 — the aggregation MATHEMATICS IS APPROVED AND FROZEN, and the executable T1 fixture is now FROZEN and CI-validated.** The production aggregation replacement is still **NOT IMPLEMENTED**. No AIDY production code, config, holdout, formal-forward authority, live-money authority or owner risk setting changed. v1 `a8b78fe` … v8 `9b3e37a` are preserved immutably.
 
 **v7's T1 fixture is WITHDRAWN as non-executable.** Attempting to run it through the real pipeline proved it could not work: its eight synthetic contributors (`m5s:accept`, `h1s:trend`, …) do not exist. The real production path emits **70 sub-calculator subjects** with identities of the form `gate_id:calculator_id`, e.g. `m5_price_structure_expert:m5_trend_path`. The claim "the same frozen history derives every real contributor reliability" was therefore false, exactly as review stated.
 
@@ -14,7 +14,7 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 |---|---|
 | v1–v6 | architecture, then successive corrections (see git history) |
 | v7 `0738716` | graph-first `dᵢ`; canonical equation on `dᵢ`; first "immutable" fixture. **Mathematics approved.** |
-| **v8 (this)** | **Mathematics frozen — unchanged.** v7's fixture **withdrawn as non-executable**; real 15-gate pipeline executed and the **real 70-subject manifest** captured; production-shaped windows, session-aware calendar and PIT `first_observed_at` corrected; **new latent production defect found** (§0.2). |
+| **v8 `9b3e37a`** | **Mathematics frozen — unchanged.** v7's fixture **withdrawn as non-executable**; real 15-gate pipeline executed and the **real 70-subject manifest** captured; production-shaped windows, session-aware calendar and PIT `first_observed_at` corrected; **new latent production defect found** (§0.2). |\n| **v9 (this)** | **Fixture frozen and executed.** Real builder-detected prior-day-low reclaim makes liquidity directional; production-shaped outcome/subcalculator/gate-trust history is generated with explicit `decision_time_utc` and derived correctness; the current Build 20→21→22 path and the frozen replacement path execute from the same frozen bytes. Old path abstains at `directional_total=0.152785`; replacement returns bullish with two qualifying independent families. Combined manifest digest `cf9e44df2965ebbe2b8cbc4e1c21d2e6682dfe978466feb5f3686978bc70e1cd`. |
 
 ### 0.1 What executing the real pipeline established
 
@@ -53,15 +53,40 @@ Reproduced when `price_location_expert` yields **zero references** (which happen
 
 **Not established:** whether live conditions actually produce zero references — in 41 live cycles they did not. But the crash path is real, unguarded, and reflects a genuine disagreement between the expert and the contract about what `neutral` means. It should be fixed regardless, and is logged in `KNOWN_ISSUES.md`.
 
-### 0.3 Remaining work before the fixture can be frozen
+### 0.3 Fixture freeze — COMPLETE in v9
 
-Honest status: **the fixture is not yet frozen.** Still required —
+The executable engineering fixture is now frozen and was run through the real source state at AIDY main `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`.
 
-- rebuild the frozen history against the **70 real subjects** from the committed manifest;
-- add **production-shaped Build-3 gate-level trust history**: packet/version linkage, scope keys, scoped trust rows, so Build 21 can derive its selector envelopes from the fixture alone;
-- add explicit **`decision_time_utc`** per commitment and derive `correct` as `predicted_class == realised_direction`, rather than storing `correct` as an independent knob;
-- run **both paths** off that one state and record the old-path `directional_total` and decision by execution;
-- freeze a manifest digest covering fixture SHA, packet count, subject-id list, outcome-history, trust-history and environment digests.
+**Frozen execution evidence**
+
+| fact | value |
+|---|---|
+| AIDY evidence branch | `probe/blocker1-v9-fixture-20260922` |
+| evidence branch head | `e4d3a92475189c5d844060d3e7d1b41effe9c8b1` |
+| CI workflow run | `35704609730` — PASS |
+| fixture SHA-256 | `5d99b3db701df696c5325b1146af5942319db70e05e1c8a2fe130f3e23281960` |
+| combined manifest digest | `cf9e44df2965ebbe2b8cbc4e1c21d2e6682dfe978466feb5f3686978bc70e1cd` |
+| packets | **15** |
+| connected real sub-calculator subjects | **70** |
+| old production path | **ABSTAIN** — `insufficient_directional_authority`, `directional_total=0.152785` |
+| frozen replacement path | **BULLISH** — `bullish_family_evidence`, `meta_balance=1.000000`, **2 qualifying families** |
+| price_action family strength | `0.331592` |
+| liquidity_mechanism family strength | `0.373330` |
+
+The fixture now contains all items v8 required before freeze:
+
+- history keyed to the **70 real subject identities** emitted by the production builders;
+- production-shaped Build-3 **gate-level trust history** with packet/version linkage and the current scope keys;
+- explicit **`decision_time_utc`** for every commitment;
+- `correct` mechanically derived as **`int(predicted_class == realised_direction)`**, never an independent fixture knob;
+- a PIT outcome prehistory used to compute direction-aware class baselines strictly before each commitment;
+- dependency history for the real current sub-calculator identities;
+- one frozen source state consumed by **both** the current Build 20→21→22 path and the proposed replacement path;
+- a combined manifest digest over fixture SHA, packet count, subject IDs, outcome history, gate trust history, subject history, dependency history, environment digest and current packet digests.
+
+**Real liquidity reachability is no longer synthetic.** The final fixture contains an OHLC path that the unmodified real Liquidity/Reclaim builder identifies as a prior-day-low `reclaim_retest_hold`: 1.507663 bps penetration, same-bar reclaim, 20 confirming closes, retest held. The builder concludes **bullish**. The same fixture also makes the real M5/H1 price-structure path bullish, providing the second independent root-family route required by T1.
+
+The generated full fixture is deliberately large (~8.6 MB) and is preserved on the isolated AIDY evidence branch rather than copied into production. Memory stores the validation manifest, reproduction harness and immutable digests. **This freeze does not implement or deploy the new aggregator.** Production remains on the old RED decision layer until the next engineering step.
 
 ## 1. What is being replaced
 
