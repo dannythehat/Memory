@@ -921,5 +921,56 @@
       "adopted_aggregator_design": "separate reliability / independence / decision strength; gate reliability -> root-family aggregation -> normalised directional balance; separate evidence-sufficiency condition of at least 2 genuinely independent families with adequate trust and sample support; pre-register the rule and threshold before evaluating results",
       "agreed_priority": "fix Build 20 -> 21 -> 22 units and reachability first; reachability test second; do not pay for Databento yet"
     }
+  },
+  "blocker1_aggregation_redesign_v9": {
+    "status": "MATHEMATICS_AND_EXECUTABLE_T1_FIXTURE_FROZEN_IMPLEMENTATION_NOT_STARTED",
+    "frozen_at_utc": "2026-09-22T07:01:58+00:00",
+    "audited_aidy_source_sha": "47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a",
+    "isolated_aidy_audit_pr": 243,
+    "isolated_aidy_artifact_commit": "de56823",
+    "memory_branch": "blocker1-v9-fixture-freeze-20260922",
+    "combined_fixture_digest": "0c9034382593506c409c9efcfbfa9e4782410d298efb7c90e06baf571f2d7274",
+    "counts": {
+      "expert_packets": 15,
+      "computed_packets": 10,
+      "explicit_unknown_packets": 5,
+      "learned_subcalculator_subjects": 70,
+      "packet_subcalculators_including_unknown_availability_sentinels": 75,
+      "historical_commitments": 8280,
+      "build3_scoped_trust_rows": 510,
+      "global_resolved_outcomes": 5000,
+      "dependency_history_cycles": 180
+    },
+    "old_path_execution": {
+      "direction": "abstain",
+      "reason": "insufficient_directional_authority",
+      "directional_total": "0.049046"
+    },
+    "replacement_execution_same_state": {
+      "direction": "bullish",
+      "reason": "bullish_independent_family_evidence",
+      "meta_balance": "1.000000000",
+      "qualifying_root_families": [
+        "liquidity_mechanism",
+        "price_action"
+      ]
+    },
+    "fixture_semantics": {
+      "decision_time_utc_explicit_per_commitment": true,
+      "correct_derived_from_prediction_vs_realised": true,
+      "strict_resolved_before_decision_pit_rule": true,
+      "real_builder_detected_liquidity_reclaim": true,
+      "mathematics_changed_from_v8": false
+    },
+    "artifacts": [
+      "projects/aidy/fixtures/blocker1_t1_v9_fixture.json",
+      "projects/aidy/fixtures/blocker1_t1_v9_execution.json",
+      "projects/aidy/fixtures/blocker1_t1_v9_fixture_validator.py"
+    ],
+    "production_changed": false,
+    "formal_forward_changed": false,
+    "live_money_execution_allowed": false,
+    "performance_claimed": false,
+    "next_step": "Write T1-T18 against the frozen v9 fixture, prove the old path fails the contract, then implement the frozen aggregation exactly."
   }
 }
