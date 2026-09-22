@@ -1,9 +1,9 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v5 — FREEZE CANDIDATE, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v6 — FREEZE CANDIDATE, 2026-09-22)
 
-**Status: DRAFT v5 — freeze candidate. NOT IMPLEMENTED. No code written.**
-No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f` preserved immutably.
+**Status: DRAFT v6 — freeze candidate. NOT IMPLEMENTED. No code written.**
+No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f`, v5 `c84b3ac` preserved immutably.
 
-v5 applies four required corrections and records **one new defect found by executing the real Build-20 engine instead of describing it** (§3.4.1). No frozen threshold changed.
+v6 applies five required corrections. **It withdraws v5's own `raw_weights = reliability` fix, which re-coupled reliability and independence**, and records that the identity-order defect is **deeper than the parent cap** (§3.4.1). No frozen threshold changed.
 
 Governing rule, unchanged: input distributions may be inspected for engineering sanity, but **no threshold may be tuned using the 41-cycle outcomes.** Build 23 is re-run only after constants are frozen.
 
@@ -17,7 +17,8 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 | v2 `8029712` | Direction-aware PIT excess skill; exact family mathematics; internal-family conflict; `MIN_FAMILY_STRENGTH`; withdrew `MAX_CONFLICT` as unreachable. |
 | v3 `ecdb685` | Qualifying contributors; corrected weak-family rationale; withdrew `MIN_TRUSTWORTHY_WEIGHT` and `insufficient_contributor_history`; continuous Dirichlet baseline; dedicated family ledgers. |
 | v4 `701fc8f` | `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; T1 fixtures; topology-classified reachability. |
-| **v5 (this)** | **Stage-B contributors are sub-calculators only (§3.2.1).** **`family_signed_evidence` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` is reporting-only (§3.4).** **T1 fixtures derived by executing the real Build-20 engine, not assumed (§7.1).** **Prospective root-family scoring semantics defined (§8.1).** **NEW: `raw_weights = reliability` fixes arbitrary alphabetical leader selection (§3.4.1).** |
+| v5 `c84b3ac` | **Stage-B contributors are sub-calculators only (§3.2.1).** **`family_signed_evidence` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` is reporting-only (§3.4).** **T1 fixtures derived by executing the real Build-20 engine, not assumed (§7.1).** **Prospective root-family scoring semantics defined (§8.1).** `raw_weights = reliability` (**withdrawn in v6**). |
+| **v6 (this)** | **Reliability and dependency fully decoupled: order-independent `dᵢ` computed from Build-20 structural facts (§3.4).** **Build-20's parent-root cap removed from decision consumption — root-family normalisation already supplies that cap (§3.4.2).** **Symmetric handling of tied-reliability redundant contributors (§3.4.3).** **T1 becomes one frozen 15-gate production-shaped fixture runnable through both paths (§7.1).** Test count corrected to T1–T17. |
 
 ---
 
@@ -123,7 +124,7 @@ with gates remaining human-readable specialist summaries over those same sub-cal
 | pass | signal set | purpose |
 |---|---|---|
 | **full diagnostic** (unchanged) | all currently eligible signals, including `abstain` | Build-20 diagnostics, correlation history, audit trail. Behaviour and output unchanged. |
-| **decision-consumption view** (new) | **only `family_weight_eligible` contributors** (§3.2): bullish, bearish, and denominator-only neutral. Excludes `abstain`, `unknown`, `context_only`. | supplies `uᵢ` to §3.4. |
+| **decision-consumption view** (new) | **only `family_weight_eligible` contributors** (§3.2): bullish, bearish, and denominator-only neutral. Excludes `abstain`, `unknown`, `context_only`. | supplies **structural facts only** — `correlation_group`, `evidence_identity`, `high_dependency` pairs — from which §3.4.3 computes `dᵢ`. It does **not** consume Build-20 weights or multipliers. |
 
 Build 20 itself is **not modified**. Historical rolling-correlation diagnostics continue to use the full PIT history. What changes is only *which current evidence is permitted to consume family allocation*. Both views are stored per cycle so an auditor can see exactly what each produced.
 
@@ -152,25 +153,55 @@ Because `Σpᵢ = 1` and `rᵢ ≤ 1`, correlated `price_action` contributors ca
 
 It also cannot affect any qualifying family: since `family_strength_f = family_reliability_f × |family_balance_f|` with `family_reliability_f ≤ 1`, any family meeting `family_strength_f ≥ 0.20` already has `|family_balance_f| ≥ 0.20`. So as a decision gate it was redundant — a fourth redundancy removed.
 
-#### 3.4.1 NEW DEFECT — the family leader is currently chosen alphabetically
+#### 3.4.1 Identity-order dependence — deeper than the parent cap
 
-Found by executing the real engine. Build 20 sorts signals by `(-raw_weight, signal_id)`, preserves the leader at full weight, and caps all remaining same-root evidence together at `leader_raw_weight × PARENT_GROUP_INCREMENTAL_CAP`. The leader therefore carries roughly **two-thirds** of a family's post-cap allocation.
+Found by executing the engine. Build 20 processes signals sorted by `(-raw_weight, signal_id)` and compares each against those already adjusted, so **three separate mechanisms are identity-order dependent**, not just one:
 
-`raw_weights` is **never supplied anywhere in `src/`** (§1 of the audit), so every signal enters at `raw_weight = 1.0`. With all raw weights equal, the tie-break is `signal_id` — so **the contributor that dominates each family is currently selected in alphabetical order.** Demonstrated directly:
+| mechanism | behaviour | rename test |
+|---|---|---|
+| `parent_root_incremental_cap` | leader keeps full weight; all other same-root evidence shares `leader_raw × 0.50`, so the leader carries ~2/3 of a family | ids `aaa`/`zzz` → leader `aaa:x`; renamed to `bbb`/`aab` → leader `aab:y` |
+| `same_correlation_group_damped` | first-sorted keeps 1.000, later same-group same-vote signals damped to 0.350 | `aaa:p` 1.000 / `zzz:q` 0.350 → after rename `bbb:q` 1.000 / `yyy:p` 0.350 |
+| `exact_duplicate_zero_increment` | first-sorted survives at 1.000, the duplicate is zeroed | same inversion under rename |
 
-| fixture | leader |
+So **v5's fix was wrong.** Supplying `raw_weights = reliability_i` (a) only reordered the sort, leaving ties to fall back to `signal_id`, and (b) violated design principle 1 by making reliability determine independence: `rᵢ → raw_weight → pᵢ`, then `massᵢ = pᵢ × rᵢ` — reliability applied twice, with nonlinear leverage on the leader. **`raw_weights = reliability` is withdrawn.** Using Build 20's pre-parent-cap multipliers instead would also have failed, because two of the three mechanisms above sit *before* the cap.
+
+#### 3.4.2 Build-20's parent-root cap is not used for decision consumption
+
+The parent-root cap existed because every signal formerly entered **one global weighted sum**, where N correlated signals would otherwise contribute N. Stage B already supplies that bound mathematically: `Σpᵢ = 1` within a family and `|family_signed_evidence_f| ≤ 1`, so a root family can contribute at most one bounded unit however many members it has.
+
+Applying the cap again therefore adds no protection and is the sole source of "leader carries two-thirds". **The obsolete aggregation mechanic is dropped; the dependency intelligence is kept.**
+
+- The **full diagnostic pass stays byte-for-byte unchanged** (§3.3) — cap, sequential damping, diagnostics, persistence, audit trail.
+- The **decision-consumption view** consumes Build 20's *structural facts* only: `correlation_group`, `evidence_identity`, and `high_dependency` pairs from the rolling diagnostics. It does **not** consume `dependency_multiplier`, `dependency_multiplier_pre_parent_cap` or `effective_weight`.
+
+#### 3.4.3 `dᵢ` — order-independent dependency weight
+
+Computed by the new aggregator, per root family, from those structural facts. Prototyped and verified (`projects/aidy/blocker1_dependency_weight_prototype.py`).
+
+**Step 1 — collapse exact duplicates across the whole family.** Group contributors by `(evidence_identity, vote)`. Each group yields **one duplicate slot**. The representative is the member with the highest `rᵢ`; **if several tie at the maximum, they split that one slot equally** — never resolved by `signal_id`. *(Reliability selects the representative among identical evidence; it does not set the weight.)*
+
+**Step 2 — cluster by dependency, using union-find.** Start from `correlation_group`. Union two groups when they share an `evidence_identity` (identical evidence is one cluster by definition) or when the rolling diagnostics report `high_dependency` between them. Union-find is set-based, so the result is independent of input order and of every identifier.
+
+**Step 3 — one unit per cluster.**
+
+    dᵢ = (1 / cluster_count) × (duplicate_slot_shareᵢ / Σ slot shares in i's cluster)
+    pᵢ = dᵢ / Σ_{k in family} d_k                      # Σpᵢ = 1
+
+**Step 4 — reliability applied exactly once.**
+
+    bull_mass_f = Σ pᵢ rᵢ   over bullish contributors
+    bear_mass_f = Σ pᵢ rᵢ   over bearish contributors
+
+`dᵢ` answers *"is this the same information?"*; `rᵢ` answers *"which reading of that information has historically been better?"* They are now genuinely separate, restoring design principle 1.
+
+**Verified invariances** (all three cases, prototype output):
+
+| check | result |
 |---|---|
-| equal raw weights, ids `aaa:x`, `zzz:y`, `mmm:z` | `aaa:x` |
-| same set, renamed to `bbb:x`, `aab:y`, `mmm:z` | `aab:y` — changed by a pure rename |
-| raw weights 0.30 / **0.90** / 0.20 | `zzz:y` — highest weight leads |
-
-A pure rename moves two-thirds of a family's weight. Worse, because `rᵢ` is applied *after* `pᵢ`, a low-reliability contributor that happens to sort first would dominate a family regardless of merit.
-
-**Resolution: supply `raw_weights = reliability_i` in the decision-consumption pass (§3.3).** This is precisely what that unused parameter is for: when several signals describe the same move, the **most reliable** one should be the one that survives the cap.
-
-*Property to state explicitly:* reliability then influences both a contributor's share `pᵢ` and its mass `pᵢ rᵢ`. This is **not** the original defect. The original multiplied an un-normalised redundancy *ratio* into reliability and collapsed scale by ~50×. Here `Σpᵢ = 1` by construction, so `family_reliability_f` stays in `[0,1]` and no scale collapse is possible; the effect is that a family's evidence is worth about as much as its most reliable member, discounted by internal disagreement and neutral dilution. That is the intended semantic.
-
-*Alternative considered and rejected:* keep `raw_weight = 1` for pure geometry and accept arbitrary leader selection. Rejected — an alphabetically-chosen dominant contributor is indefensible.
+| rename every `signal_id` | signed evidence identical (`0.341666667`) |
+| tied reliability, opposing votes, renamed | identical (`0.200000000`) |
+| tied exact duplicates, renamed | identical (`0.100000000`) |
+| all 24 permutations of input order | **exactly 1 distinct result** |
 
 ### 3.5 Root family graph (existing, unchanged)
 
@@ -243,7 +274,8 @@ Confidence remains **withheld** until meta-calibration exists. No number is inve
 | ~~`ALPHA`, `BASE_MIN_N`~~ | — | **WITHDRAWN (v3)** — created a baseline cliff. |
 | ~~meta `neutral` output~~ | — | **WITHDRAWN (v4)** — conceptually wrong and unreachable; see §3.6.1. |
 | ~~`sign_f`~~ | — | **WITHDRAWN (v5)** — algebraically ambiguous; replaced by `family_signed_evidence_f` (§3.4). |
-| `raw_weights` | `= reliability_i` | **NEW (v5)** — supplied to the decision-consumption pass so the family leader is the most reliable contributor, not the alphabetically-first one (§3.4.1). |
+| ~~`raw_weights = reliability_i`~~ | — | **WITHDRAWN (v6)** — re-coupled reliability and independence, and left ties resolved by `signal_id`. Replaced by order-independent `dᵢ` (§3.4.3). |
+| ~~Build-20 parent cap in decision path~~ | — | **WITHDRAWN (v6)** — root-family normalisation already bounds a family at one unit (§3.4.2). Retained unchanged in the diagnostic pass. |
 
 ---
 
@@ -307,57 +339,43 @@ Every scorecard row gains `coverage_i`, `accuracy_on_commit_i` (explicitly relab
 
 v3 referred to "pre-registered plausible mature reliability ranges" without stating them, which would have left room to choose a convenient fixture after implementation. **The exact values are therefore fixed below, before any code.** They deliberately do **not** resemble the 41 live outcomes; the purpose is to lock a reasonable mature-state engineering scenario in advance.
 
-**v4's fixture was invalid.** It stated "decision-consumption weights equal → `pᵢ = 1/6`" while also requiring "real Build-20 engine, no stubs". Those are incompatible: the parent-root cap preserves the leader and caps all other same-root evidence together, so equal raw weights do **not** produce equal `pᵢ`. That was the same class of integration error this pre-registration exists to eliminate — describing an engine instead of running it.
+**v5's fixture was still not a full-path fixture.** v5 froze eight synthetic sub-calculator signals, but current Build 21/22 do not consume that object — Build 21 consumes verified expert packets plus gate-level trust envelopes. So "run this exact fixture through current Build 20 → 21 → 22" was not yet true, and eight signals are not the production-shaped ~91-signal graph. That is acceptable for a unit fixture; it is **not** acceptable for the one acceptance test whose entire purpose is proving the assembled production-shaped machine was unreachable.
 
-**Every value below was produced by executing the real `build_evidence_dependency_engine`.** The pre-registration freezes the **inputs**; `uᵢ` and `pᵢ` are whatever the genuine engine returns.
+**T1 is therefore a single frozen full-expert fixture**, constructed once and shared by both paths:
 
-**Common mature-state assumptions (all scenarios):**
+    FROZEN SOURCE STATE (the only thing this document fixes)
+      1. one frozen synthetic market state  -> candle/aggregate inputs for all timeframes
+      2. one frozen synthetic outcome history -> resolved rows with PIT resolved_at timestamps,
+         sufficient to give every contributor its own N and excess-skill record
+      3. one frozen as_of / environment, yielding the real environment_key and scopes
+
+    DERIVED, NEVER HAND-SUPPLIED
+      - all 15 real expert packets, built by the real expert builders
+      - their gate conclusions, sub-calculators, gate_scoreable flags
+      - gate trust envelopes, N / accuracy / shrinkage, scope selection, recency state
+      - calibration state (absent -> the current 0.85 path, per §9)
+      - every reliability r_i, derived from (2) via §3.1 — NOT stated as a constant
+      - the dependency packet, selector inputs, and both dependency passes
+
+    OLD PATH:  15 packets -> Build 20 -> Build 21 -> Build 22          -> record actual result
+    NEW PATH:  same 15 packets -> same sub-calculators -> decision view
+               -> d_i (§3.4.3) -> root families -> new meta            -> record actual result
+
+**Rules for the fixture:**
+
+- **No replacement-side reliability may be supplied that is not derivable from the frozen history.** Both paths must read the same numbers from the same source state, or the comparison is not apples-to-apples.
+- The frozen history is engineered so the **mature-state** assumptions below hold once §3.1 is applied to it. They are targets the history must produce, not values injected into the aggregator.
+- The old-path `directional_total` and decision are **recorded by execution**, never estimated. v5's "~0.03 measured live multiplier" approximation is withdrawn.
+
+**Mature-state properties the frozen history must produce:**
 
     count_total(T)    = 5000 resolved outcomes
     class marginals   = bullish 0.40, bearish 0.40, neutral 0.20   (deliberately NOT the live 0.58/0.29/0.13 skew)
     baseline(bullish) = baseline(bearish) = (2000 + 10) / (5000 + 30) = 0.399602
-    topology          = all 15 real gate identities, real FAMILY_PARENT relationships,
-                        real Build-20 engine, BOTH passes per §3.3, no stubs
-    scope_mult = calibration_mult = recency_mult = 1.00   so reliability_i = quality_i
-    raw_weights      = reliability_i                      per §3.4.1
-    historical_rows  = []                                 (no rolling-correlation damping in the fixture)
+    per-contributor N in [120, 180];  shrunk_excess in [0.00, 0.09]  -> reliability in [0.00, 0.60]
+    scope = mini_exact (1.00);  calibration = unknown (0.85, per §9);  recency = stable (1.00)
 
-**Scenario A — bullish reachable. Frozen INPUTS (sub-calculators only, per §3.2.1):**
-
-| signal_id | dependency_family | correlation_group | vote | reliability `rᵢ` = raw_weight |
-|---|---|---|---|---|
-| `m5s:accept` | structure | `cg_m5` | bullish | 0.60 |
-| `m15s:break` | structure | `cg_m15` | bullish | 0.55 |
-| `h1s:trend` | structure | `cg_h1` | bullish | 0.45 |
-| `h4s:swing` | structure | `cg_h4` | bullish | 0.45 |
-| `momi:eff` | momentum | `cg_mom` | **neutral** | 0.50 |
-| `locr:conf` | location | `cg_loc` | **neutral** | 0.45 |
-| `liqp:depth` | liquidity | `cg_lq1` | bullish | 0.50 |
-| `liqr:speed` | liquidity | `cg_lq2` | bullish | 0.40 |
-
-Each signal carries a distinct `evidence_identity`, so no exact-duplicate collapse applies. Reliabilities are arranged so the leader is **not** alphabetically first — the fixture itself demonstrates §3.4.1.
-
-**Engine-derived OUTPUTS (executed, not assumed):**
-
-| root | signal | `uᵢ` | `pᵢ` | `rᵢ` |
-|---|---|---|---|---|
-| `price_action` | `m5s:accept` *(leader)* | 0.600000 | 0.666667 | 0.60 |
-| | `m15s:break` | 0.068750 | 0.076389 | 0.55 |
-| | `momi:eff` (neutral) | 0.062500 | 0.069444 | 0.50 |
-| | `h1s:trend` | 0.056250 | 0.062500 | 0.45 |
-| | `h4s:swing` | 0.056250 | 0.062500 | 0.45 |
-| | `locr:conf` (neutral) | 0.056250 | 0.062500 | 0.45 |
-| `liquidity_mechanism` | `liqp:depth` *(leader)* | 0.500000 | 0.666667 | 0.50 |
-| | `liqr:speed` | 0.250000 | 0.333333 | 0.40 |
-
-    price_action:         bull_mass = 0.498264  bear_mass = 0  signed = +0.498264  strength = 0.498264  qualifying ✓
-    liquidity_mechanism:  bull_mass = 0.466667  bear_mass = 0  signed = +0.466667  strength = 0.466667  qualifying ✓
-
-    S = 0.964931   W = 0.964931   meta_balance = 1.000000   qualifying_families = 2   -> BULLISH
-
-Note `m5s:accept` leads `price_action` on reliability 0.60 despite `h1s:trend` and `h4s:swing` sorting before it alphabetically — the §3.4.1 fix working.
-
-**Current-`main` assertion — executed, not approximated.** v4 estimated the old side using a "measured live dependency multiplier ~0.03". That is not acceptable. T1 must run **this exact frozen fixture** through the current `Build 20 → 21 → 22` chain unmodified and record its actual `directional_total` and decision. The assertion is that current `main` **abstains** on evidence the replacement can act on. The recorded number goes into the test as a regression baseline; it is **not** pre-guessed here.
+**Scenario A — bullish reachable.** The frozen history gives `price_action` four bullish and two neutral eligible sub-calculators and `liquidity_mechanism` two bullish, with the most reliable `price_action` contributor **not** alphabetically first, so the fixture itself exercises §3.4.1–§3.4.3. Expected: two qualifying families, same sign, `|meta_balance| ≥ BALANCED_ABSTAIN_BAND` → **BULLISH**, while the old path abstains on the identical source state. **Both numbers are recorded at implementation from execution, not pre-committed here** — what this document fixes is the source state and the expected *decision*, since pre-committing derived arithmetic is exactly the error v4 and v5 made.
 
 **Scenario B — bearish reachable.** Scenario A inputs with every `bullish` vote replaced by `bearish` → `S = −0.964931`, `meta_balance = −1.000000` → **BEARISH**.
 
@@ -384,7 +402,8 @@ Note `m5s:accept` leads `price_action` on reliability 0.60 despite `h1s:trend` a
 **T10 — Weak-family influence bounded.** A sub-threshold family may move `meta_balance` only within the bound implied by its own `family_strength`, and can never alone carry a decision.
 **T11 — Removed conditions stay removed.** No code path can abstain for `insufficient_trustworthy_weight`, `insufficient_contributor_history` or a `MAX_CONFLICT` test; `W ≥ 0.40` holds as an invariant whenever the family count is satisfied.
 **T12 — Neutral contributors dilute (rewritten for §3.2).** One bullish contributor plus five `family_weight_eligible` neutral contributors must yield materially lower `family_strength` than that bullish contributor alone — **without** requiring `scoreable == true` for the neutral ones, and without altering the scoring contract.
-**T14 — Leader selection is reliability-driven, not alphabetical (§3.4.1).** With `raw_weights = reliability_i`, assert the family leader is the most reliable contributor, and that renaming every `signal_id` leaves `uᵢ`, `pᵢ`, `family_strength`, `meta_balance` and the decision unchanged. Include the negative control: with all raw weights equal, a rename **does** move the leader — proving the test detects the defect it guards.
+**T14 — Identity cannot influence intelligence (§3.4.3).** Renaming every `signal_id` in the T1 fixture must leave `dᵢ`, `pᵢ`, every `family_signed_evidence`, `meta_balance` and the decision **bit-identical**. Include the negative control: the *current* Build-20 decision path under the same rename **does** change (`same_correlation_group_damped` and `exact_duplicate_zero_increment` invert), proving the test detects the defect it guards.
+**T17 — Tied-reliability redundancy is symmetric (§3.4.3).** Two highly dependent contributors with **equal** historical reliability, different `signal_id`s and **opposing current votes**: rename them and assert every meta-relevant output is identical. Repeat with tied exact duplicates (same `evidence_identity`, same vote). Also assert order invariance: all permutations of the input signal list produce one identical result.
 **T15 — Gates never enter Stage B (§3.2.1).** Assert the decision-consumption contributor set contains only sub-calculator subjects, that no gate-level signal exists in it, and that a bullish gate does not add mass alongside its own bullish sub-calculators.
 **T16 — Family scoring semantics (§8.1).** A frozen family at `strength ≥ 0.20` records bullish/bearish and is scoreable; below 0.20 records abstain and is unscoreable; a realised neutral makes a directional family prediction incorrect.
 **T13 — No neutral meta prediction.** Assert the aggregator can never emit `neutral`; balanced directional evidence produces `abstain("balanced_directional_evidence")`. Assert `neutral` remains valid as a **realised outcome** class and that a directional prediction resolving neutral scores as incorrect.
@@ -440,7 +459,7 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 
 ## 12. Sequence after approval
 
-1. Freeze constants. 2. Write T1–T13; **confirm T1 fails on current `main`**. 3. Implement §3.1–§3.6 including the §3.3 filtered view. 4. All tests plus full regression green. 5. Dedicated root-family tables and writer (§8). 6. Gate calibration producer (§9). 7. Environment cardinality fix. 8. PIT-safe H4/D1 rebuild from M1 lineage. 9. Maintenance-window bug. 10. Watchdog, append-only health history, scorecard baselines. 11. Re-run Build 23 honestly. 12. **Soak unchanged across multiple regimes.** 13. Only then judge whether the experts contain useful Gold information.
+1. Freeze constants. 2. Write T1–T17; **confirm T1 fails on current `main`**. 3. Implement §3.1–§3.6, including the §3.3 filtered view and the §3.4.3 order-independent `dᵢ`. 4. All tests plus full regression green. 5. Dedicated root-family tables and writer (§8). 6. Gate calibration producer (§9). 7. Environment cardinality fix. 8. PIT-safe H4/D1 rebuild from M1 lineage. 9. Maintenance-window bug. 10. Watchdog, append-only health history, scorecard baselines. 11. Re-run Build 23 honestly. 12. **Soak unchanged across multiple regimes.** 13. Only then judge whether the experts contain useful Gold information.
 
 ---
 
@@ -448,13 +467,14 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 
 **Approved and locked:** continuous Dirichlet baseline; `MIN_FAMILIES = 2`; `EDGE_SCALE = 0.15` over PIT baseline; `MIN_FAMILY_STRENGTH = 0.20`; weak-family bounded influence; strong-family disagreement rule; dedicated family ledgers; coverage reporting; deferred meta-calibration; `pᵢ` over all eligible contributors including neutral; `FAMILY_NEUTRAL_BAND = 0.20`.
 
-**Also approved and unchanged in v5:** `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; topology-classified reachability. **No frozen threshold was altered by v5.**
+**Approved and unchanged in v6:** sub-calculators-only aggregation; `family_signed_evidence`; BULLISH/BEARISH/ABSTAIN; the Dirichlet baseline; family scoring semantics; weak-family bounded influence; the 0.20 strength floor; dedicated family ledgers; `family_weight_eligible`; filtered decision-consumption view; topology-classified reachability; coverage reporting; deferred meta-calibration. **No frozen threshold was altered by v6.**
 
-**New in v5, submitted for approval:**
-1. Stage-B contributors are **sub-calculators only** (§3.2.1) — gates have no Build-20 `uᵢ` and would double-count.
-2. `family_signed_evidence_f` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` becomes **reporting-only** and is a fourth removed redundancy (§3.4).
-3. T1 fixtures **derived by executing the real engine**; the current-`main` side must also be executed, not approximated (§7.1).
-4. Prospective root-family scoring semantics defined before collection starts (§8.1).
-5. **New defect:** `raw_weights` is never supplied, so the family leader — carrying ~two-thirds of a family — is currently chosen **alphabetically**. Fixed by `raw_weights = reliability_i` (§3.4.1). Tests T14–T16 added.
+**New in v6, submitted for approval:**
+1. **`raw_weights = reliability` withdrawn.** It re-coupled reliability and independence (`rᵢ → pᵢ`, then `pᵢ × rᵢ` again) and left ties resolved by `signal_id`. My own v5 fix was wrong.
+2. **Identity-order dependence is deeper than the parent cap** (§3.4.1): `same_correlation_group_damped` and `exact_duplicate_zero_increment` are *also* order-dependent, so consuming pre-cap multipliers would not have fixed it either.
+3. **Build-20's parent-root cap is dropped from the decision path** (§3.4.2). It existed for the old global weighted sum; `Σpᵢ = 1` already bounds a family at one unit, so the cap added no protection and was the sole cause of leader dominance. The diagnostic pass is untouched.
+4. **Order-independent `dᵢ`** (§3.4.3): dedupe across the family, union-find clustering on shared evidence and empirical high-dependency, one unit per cluster, ties split symmetrically. Reliability appears exactly once, and only selects the representative among identical evidence. Prototyped and verified rename- and order-invariant.
+5. **T1 becomes one frozen full-expert fixture** (§7.1) with every reliability derived from the frozen history rather than supplied, so both paths read the same numbers from the same source state.
+6. T14 rewritten, **T17 added** (tied-reliability symmetry), test count corrected to **T1–T17**.
 
-**Nothing is left open. v5 is the freeze candidate.**
+**Nothing is left open. v6 is the freeze candidate.**
