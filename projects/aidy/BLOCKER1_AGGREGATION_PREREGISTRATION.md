@@ -1,9 +1,8 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v7 — FREEZE CANDIDATE, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (v8 — MATHEMATICS FROZEN, FIXTURE REBUILD IN PROGRESS, 2026-09-22)
 
-**Status: DRAFT v7 — freeze candidate. NOT IMPLEMENTED. No AIDY code written.**
-No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f`, v5 `c84b3ac`, v6 `5e78dc4` preserved immutably.
+**Status: v8 — the aggregation MATHEMATICS IS APPROVED AND FROZEN.** The remaining work is fixture validation only; **no aggregation change is in scope.** NOT IMPLEMENTED. No AIDY code written. No production, config or holdout touched. v1 `a8b78fe` … v7 `0738716` preserved immutably.
 
-v7 closes a **dependency leak in v6's own fix** (§3.4.3) and replaces T1's target properties with an **actual immutable fixture** (§7.1). No frozen threshold or constant changed.
+**v7's T1 fixture is WITHDRAWN as non-executable.** Attempting to run it through the real pipeline proved it could not work: its eight synthetic contributors (`m5s:accept`, `h1s:trend`, …) do not exist. The real production path emits **70 sub-calculator subjects** with identities of the form `gate_id:calculator_id`, e.g. `m5_price_structure_expert:m5_trend_path`. The claim "the same frozen history derives every real contributor reliability" was therefore false, exactly as review stated.
 
 Governing rule, unchanged: input distributions may be inspected for engineering sanity, but **no threshold may be tuned using the 41-cycle outcomes.** Build 23 is re-run only after constants are frozen.
 
@@ -13,15 +12,56 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 
 | version | change |
 |---|---|
-| v1 `a8b78fe` | Separate reliability / independence / balance; normalised balance; separate sufficiency gate. |
-| v2 `8029712` | Direction-aware PIT excess skill; exact family mathematics; internal-family conflict; `MIN_FAMILY_STRENGTH`; withdrew `MAX_CONFLICT` as unreachable. |
-| v3 `ecdb685` | Qualifying contributors; corrected weak-family rationale; withdrew `MIN_TRUSTWORTHY_WEIGHT` and `insufficient_contributor_history`; continuous Dirichlet baseline; dedicated family ledgers. |
-| v4 `701fc8f` | `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; T1 fixtures; topology-classified reachability. |
-| v5 `c84b3ac` | **Stage-B contributors are sub-calculators only (§3.2.1).** **`family_signed_evidence` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` is reporting-only (§3.4).** **T1 fixtures derived by executing the real Build-20 engine, not assumed (§7.1).** **Prospective root-family scoring semantics defined (§8.1).** `raw_weights = reliability` (**withdrawn in v6**). |
-| v6 `5e78dc4` | **Reliability and dependency fully decoupled: order-independent `dᵢ` computed from Build-20 structural facts (§3.4).** **Build-20's parent-root cap removed from decision consumption — root-family normalisation already supplies that cap (§3.4.2).** **Symmetric handling of tied-reliability redundant contributors (§3.4.3).** **T1 becomes one frozen 15-gate production-shaped fixture runnable through both paths (§7.1).** Test count corrected to T1–T17. |
-| **v7 (this)** | **Dependency graph built over ALL eligible contributors BEFORE reliability-based representative selection (§3.4.3)** — in v6, discarding a duplicate could delete the only `high_dependency` edge, so reliability still altered topology. **Canonical Stage-B equation now uses `dᵢ`, not the obsolete `uᵢ` (§3.4).** **Actual frozen T1 fixture committed with SHA-256 (§7.1).** Stale v5 arithmetic removed from Scenarios B/C. **T18 added.** Heading typo fixed. |
+| v1–v6 | architecture, then successive corrections (see git history) |
+| v7 `0738716` | graph-first `dᵢ`; canonical equation on `dᵢ`; first "immutable" fixture. **Mathematics approved.** |
+| **v8 (this)** | **Mathematics frozen — unchanged.** v7's fixture **withdrawn as non-executable**; real 15-gate pipeline executed and the **real 70-subject manifest** captured; production-shaped windows, session-aware calendar and PIT `first_observed_at` corrected; **new latent production defect found** (§0.2). |
 
----
+### 0.1 What executing the real pipeline established
+
+A read-only validator (`projects/aidy/fixtures/blocker1_t1_pipeline_validator.py`) now runs the frozen source state through the genuine path: session-aware M1 spine → aggregates → `build_cycle_environment` → the 10 real expert builders (+5 explicit UNKNOWN). Verified output:
+
+| fact | value |
+|---|---|
+| expert packets | **15** (10 computed + 5 explicit UNKNOWN) ✓ |
+| **real sub-calculator subjects** | **70** — not the 8 v7 assumed |
+| directional + known + vote ∈ {bullish,bearish,neutral} | 40 |
+| of which `scoreable` (bullish/bearish) | 13 |
+| manifest digest | `67de9eef1e92cd853f1b5a4bf1d4fbac96435561712dd9af9bffb2e3c2b9d437` |
+
+Per-gate subject counts: `liquidity_reclaim_expert` 15, `h4` 8, `m5`/`m15`/`h1` 7 each, `momentum_impulse` 6, `volatility_jump` 6, `d1_context` 5, `price_location` 5, `session_participation` 4.
+
+**Four fixture-shape errors found and corrected by execution:**
+
+1. **Identities were fiction.** Real subjects are `gate_id:calculator_id`. The committed manifest is now the authority.
+2. **Window shape was wrong.** Production uses **M1 = 2 days** and **aggregates = 45 days** (`private_forward_context.py:309-310`). v7 supplied a single 2-day M1 series and nothing else, so every `price_location` sub-calculator came back `insufficient`.
+3. **The timeline was impossible.** v7 generated 2,880 consecutive M1 bars backwards from a Monday, trading straight through the weekend. The validator uses a session-aware calendar (Sun 18:00 → Fri 17:00 NY, daily maintenance 17:00–18:00 NY Mon–Thu): 2,880 market-open minutes now span **50 wall-clock hours**, not 48 — closures are genuinely skipped.
+4. **`first_observed_at` was PIT-wrong.** v7 set it to the bar's **open**, though a completed bar's high/low/close cannot be known then. Corrected to the bar's **close** — which is also what the repo's own expert tests use (`first_observed_at = opened + STEP`).
+
+Also corrected: `session_code` must match `market_sessions.session_code_at()` exactly or the session expert raises. At the frozen `as_of` (2026-06-03 14:00Z) the DST-correct code is `london_new_york_overlap`, not `new_york`.
+
+### 0.2 NEW LATENT DEFECT — Liquidity/Reclaim expert can raise in the live path
+
+Found while building the validator; reproducible.
+
+`gold_liquidity_reclaim_expert._conclusion()` returns **`"neutral"`** when no sweep/reclaim proxy event carries a bullish or bearish vote. But the gate contract (`gold_expert_gate_contract.py:381-390`) requires a **known directional sub-calculator voting `neutral`** for a `neutral` conclusion. When `usable` is true (30 contiguous completed M1 present) and the event list is empty, the only sub-calculator is the `context_only` session/volatility context — so `build_liquidity_reclaim_expert` raises:
+
+    ValueError: neutral gate conclusion requires a known neutral subcalculator
+
+Reproduced when `price_location_expert` yields **zero references** (which happens whenever `exact_facts.location.mid` is absent, since `usable = mid is not None`).
+
+**Blast radius.** `_build_experts` calls the builder unguarded, but `provider_entry.py:244` wraps the whole sync in try/except. So **market capture survives while the entire shadow cycle is lost** — recorded only in the singleton `aidy_gold_expert_shadow_sync_health` row, which keeps no history (audit Finding 7). A recurrence would look like an unexplained cycle gap with no durable trace.
+
+**Not established:** whether live conditions actually produce zero references — in 41 live cycles they did not. But the crash path is real, unguarded, and reflects a genuine disagreement between the expert and the contract about what `neutral` means. It should be fixed regardless, and is logged in `KNOWN_ISSUES.md`.
+
+### 0.3 Remaining work before the fixture can be frozen
+
+Honest status: **the fixture is not yet frozen.** Still required —
+
+- rebuild the frozen history against the **70 real subjects** from the committed manifest;
+- add **production-shaped Build-3 gate-level trust history**: packet/version linkage, scope keys, scoped trust rows, so Build 21 can derive its selector envelopes from the fixture alone;
+- add explicit **`decision_time_utc`** per commitment and derive `correct` as `predicted_class == realised_direction`, rather than storing `correct` as an independent knob;
+- run **both paths** off that one state and record the old-path `directional_total` and decision by execution;
+- freeze a manifest digest covering fixture SHA, packet count, subject-id list, outcome-history, trust-history and environment digests.
 
 ## 1. What is being replaced
 

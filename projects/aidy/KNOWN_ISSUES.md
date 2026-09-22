@@ -20,6 +20,18 @@ Five blocking defects. All are engineering/wiring defects, not flaws in the arch
 
 Do not wire new data sources before these are fixed. Do not read the 41/41 abstention as calibrated caution.
 
+### 0.05 Liquidity/Reclaim expert can raise in the live Build-24 path — ACTIVE, latent
+
+Found 2026-09-22 while building the Blocker-1 T1 pipeline validator; reproducible.
+
+`gold_liquidity_reclaim_expert._conclusion()` returns `"neutral"` when no sweep/reclaim proxy carries a bullish or bearish vote, but `gold_expert_gate_contract.py:381-390` requires a known directional sub-calculator voting `neutral` for that conclusion. With `usable` true (30 contiguous completed M1) and an empty event list, the only sub-calculator is the `context_only` context calculator, so `build_liquidity_reclaim_expert` raises `ValueError: neutral gate conclusion requires a known neutral subcalculator`.
+
+Triggered whenever `price_location_expert` returns zero references, which occurs when `exact_facts.location.mid` is absent (`usable = mid is not None`).
+
+Blast radius: `_build_experts` calls the builder unguarded, but `provider_entry.py:244` catches at the sync boundary, so market capture survives while the **entire shadow cycle is lost**. The only record is the singleton `aidy_gold_expert_shadow_sync_health` row, which keeps no history (issue 0.3), so a recurrence looks like an unexplained cycle gap with no durable trace.
+
+Not established whether live conditions produce zero references — they did not in the 41 observed cycles. The expert and the contract nonetheless disagree about `neutral` semantics, which should be reconciled regardless.
+
 ### 0.1 No reachability test — process gap that allowed 0a-0d to ship — ACTIVE
 
 The 1,665-test suite proves software correctness, not reachability. `tests/test_gold_meta_direction.py` defaults to `n=100, correct=75` with 1-2 gates in a single dependency family (dependency multiplier ~1.0, authority ~0.3-0.5); production runs N<=23, ~40% accuracy and 91 mutually damped signals (~0.003). **No test asserts a non-abstain direction is reachable under the live 15-gate / 91-signal graph.** Add that assertion as part of fixing 0a. Treat any Build 23 ablation that reported non-abstain behaviour as suspect until re-run.
