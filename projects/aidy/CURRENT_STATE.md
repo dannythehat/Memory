@@ -1,5 +1,25 @@
 # AIDY — Current State
 
+## Blocker 1 aggregation repair — v9 MATH + FIXTURE FROZEN / IMPLEMENTATION NEXT (2026-09-22)
+
+The aggregation redesign preregistration is now frozen at v9. No production decision code changed.
+
+Execution proof against AIDY source `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`:
+- genuine 15-gate path, including 10 connected builders + 5 explicit UNKNOWN;
+- **70 real connected sub-calculator identities**;
+- real Liquidity/Reclaim builder detected a prior-day-low `reclaim_retest_hold` and voted bullish;
+- Build-3 trust histories are packet/version/scope-linked and every commitment has explicit decision time;
+- correctness is derived only from `predicted_class == realised_direction`;
+- current Build 20→21→22 path: **ABSTAIN**, `directional_total=0.075024`;
+- frozen replacement: **BULLISH**, `meta_balance=1.000000`, exactly two qualifying roots;
+- `price_action` strength **0.331592**; `liquidity_mechanism` **0.373330**;
+- canonical fixture SHA-256 `74e92fe4a7d38e803da8469262e9339e795d3b9d1f3d7c9594a599560c3e3c4e`;
+- combined manifest digest `53e691f0e70308030beda0fd1101f0cd032b51875ecfe2c834aacff507150ba6`.
+
+The fixture is an engineering reachability fixture, not market-edge evidence. The 41 live-cycle outcomes were not used to tune frozen thresholds. Full preregistration: `projects/aidy/BLOCKER1_AGGREGATION_PREREGISTRATION.md`.
+
+**Next:** implement T1-T18 and §3.1-§3.6 exactly as frozen. Production remains RED until that implementation passes focused/full regression and is separately accepted. Formal-forward and live-money authority remain OFF.
+
 ## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
 
 An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **a directional view is practically unreachable in the current production architecture.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
