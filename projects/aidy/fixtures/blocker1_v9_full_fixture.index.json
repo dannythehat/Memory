@@ -1,0 +1,78 @@
+{
+  "fixture_version": "blocker1_t1_full_fixture_v9",
+  "canonical_fixture_filename": "blocker1_v9_full_fixture.json",
+  "storage_mode": "ordered_raw_utf8_chunks",
+  "reconstruction": "concatenate part-01-of-12.txt through part-12-of-12.txt with no separators",
+  "canonical_char_count": 8576293,
+  "canonical_sha256": "74e92fe4a7d38e803da8469262e9339e795d3b9d1f3d7c9594a599560c3e3c4e",
+  "source_aidy_probe_branch": "probe/blocker1-v9-fixture-20260922",
+  "source_aidy_probe_head": "4f1263986cf6809ca3a44bc9afd5b29ba8f7852b",
+  "source_blob_sha1": "6db0c6eadda03e91f1caca10db93a0636ef4f987",
+  "transfer_verification": {
+    "method": "each Memory chunk compared directly to the corresponding substring of the source Git blob",
+    "all_parts_match_source": true,
+    "total_chars_verified": 8576293
+  },
+  "parts": [
+    {
+      "order": 1,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-01-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 2,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-02-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 3,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-03-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 4,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-04-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 5,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-05-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 6,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-06-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 7,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-07-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 8,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-08-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 9,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-09-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 10,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-10-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 11,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-11-of-12.txt",
+      "chars": 750000
+    },
+    {
+      "order": 12,
+      "path": "projects/aidy/fixtures/blocker1_v9_full_fixture.parts/part-12-of-12.txt",
+      "chars": 326293
+    }
+  ]
+}

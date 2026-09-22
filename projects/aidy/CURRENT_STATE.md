@@ -1,8 +1,54 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-24 COMPLETE / PROSPECTIVE SHADOW LEARNING ACTIVE (2026-09-22)
+## Blocker 1 aggregation repair — v9 MATH + FIXTURE FROZEN / IMPLEMENTATION NEXT (2026-09-22)
 
-The planned 24-build Gold expert-gate programme is complete.
+The aggregation redesign preregistration is now frozen at v9. No production decision code changed.
+
+Execution proof against AIDY source `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`:
+- genuine 15-gate path, including 10 connected builders + 5 explicit UNKNOWN;
+- **70 real connected sub-calculator identities**;
+- real Liquidity/Reclaim builder detected a prior-day-low `reclaim_retest_hold` and voted bullish;
+- Build-3 trust histories are packet/version/scope-linked and every commitment has explicit decision time;
+- correctness is derived only from `predicted_class == realised_direction`;
+- current Build 20→21→22 path: **ABSTAIN**, `directional_total=0.075024`;
+- frozen replacement: **BULLISH**, `meta_balance=1.000000`, exactly two qualifying roots;
+- `price_action` strength **0.331592**; `liquidity_mechanism` **0.373330**;
+- canonical fixture SHA-256 `74e92fe4a7d38e803da8469262e9339e795d3b9d1f3d7c9594a599560c3e3c4e`;
+- combined manifest digest `53e691f0e70308030beda0fd1101f0cd032b51875ecfe2c834aacff507150ba6`.
+
+The fixture is an engineering reachability fixture, not market-edge evidence. The 41 live-cycle outcomes were not used to tune frozen thresholds. Full preregistration: `projects/aidy/BLOCKER1_AGGREGATION_PREREGISTRATION.md`.
+
+**Next:** implement T1-T18 and §3.1-§3.6 exactly as frozen. Production remains RED until that implementation passes focused/full regression and is separately accepted. Formal-forward and live-money authority remain OFF.
+
+## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
+
+An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **a directional view is practically unreachable in the current production architecture.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
+
+**Independently verified 2026-09-22** by a second reviewer in a separate read-only run against the same SHA and live D1 (verification run `35687904986`, no production change). All headline numbers confirmed, plus average `directional_total` = **0.004491** against the required 0.30. Two wording corrections from that verification are applied below.
+
+Do not treat the 41/41 abstention as correctly-calibrated newborn caution. It is a permanent arithmetic condition.
+
+Blocking findings (full detail and line references: `projects/aidy/handovers/2026-09-22-independent-24-build-audit.md`):
+
+1. **Meta-direction abstention is arithmetic, not judgement.** `MIN_DIRECTIONAL_WEIGHT` is 0.30; measured live `directional_total` is max **0.016939**, average **0.004491** — short by 18x-67x on every cycle. Build 20's evidence-redundancy ratio (91 raw signal-units collapsed to 4.0 effective) is multiplied into Build 21's confidence chain and then summed by Build 22 against an absolute constant. Units mismatch: dependency should govern *how much independent evidence exists*, not annihilate each expert's reliability. Realistic mature ceiling is **0.179**, still below 0.30.
+
+   **Correction (verified 2026-09-22):** with *perfect* reliability across every directional gate the current formula can just exceed 0.30 (ceiling 0.5137), so this is **practically unreachable, not mathematically impossible**. Earlier phrasing here ("cannot produce a direction at any achievable N", "would still abstain at N=10,000") was too absolute. The operative conclusion is unchanged: no realistic system reaches the threshold.
+2. **Environment-conditional learning never runs.** 41 cycles produced **41 distinct `environment_key` values** because `utc_clock_bucket_15m` and `utc_weekday` sit in `GLOBAL_CORE_DIMENSIONS`. `global_core` max N=1 across 570 rows; `mini_exact` max N=3. Every gate falls back to `gate_global`, the environment-blind global average. The programme's central premise is not operating.
+3. **Two calibration subsystems are dead code.** `calibration_rows=()` and `meta_calibration_rows=()` are hardcoded empty in the live bundle, so Build 21's calibration multiplier is permanently 0.85 and Build 22 `calibrated_confidence` is permanently `None`.
+4. **The two best gates contribute exactly zero.** Gate-level `abstain` receives no directional weight. H1 abstains 29/41, H4 33/41; M5 (31.82%, worst gate) commits 25/41 and dominates. Selection is inverted. H4 has concluded bearish **0 times in 41 cycles**.
+5. **D1 and H4 experts are structurally starved.** Verified admitted depth: D1 Context **10 bars**, H4 **42 bars**, H1 156. Daily structure is not derivable from 10 observations. This is the mechanical cause of H4's never-bearish output, and means H4's "57% on N=7" is not evidence of skill. **40,771 M1 bars back to 2026-08-12 already exist** and would fix both experts at zero data cost.
+
+Non-blocking but material: the 135.2-minute gap was **not an outage** (capture ran throughout) but a zero-market-minute H1 bucket misclassified as inadmissible, recurring ~60 min every Mon-Thu (~1,000 cycles/year); **no scheduled workflow or alerting exists** and shadow health is a single overwritten row, so the loop can stop silently; **no baselines are computed** (always-bearish scores 57.9% on the resolved sample, so 36.11% legacy and 31.82% M5 are below both random and majority-class); the hindsight blacklist omits this codebase's own outcome field names.
+
+Verified sound under attack: PIT window discipline (0/41 windows start before their decision), vendor-revision immunity, explainability (630 gate snapshots = exactly 42 cycles x 15 gates, plus 3,742 sub-calculator snapshots), Build 19 analogue no-hindsight design, Build 2 contract enforcement, AIDY/Super Signals isolation, legacy MetaAPI exclusion at the data layer, 1:1 cycle yield, and 1,665 passing tests.
+
+**Test-suite caveat:** the 1,665 tests prove software correctness, not reachability. The meta-direction fixture defaults to `n=100, correct=75` with 1-2 gates in one dependency family; production has N<=23, ~40% accuracy and 91 damped signals. No test asserts a non-abstain direction is reachable under the live graph. Build 23 results that reported non-abstain behaviour should be treated as suspect until re-run.
+
+**Next step is repair, not new data.** Fix order: re-denominate the aggregator; add the reachability test; fix the environment key; wire both calibration paths; backfill H4/D1 aggregates from existing M1; fix the bucket bug and abstain weighting; add cron'd monitoring and health history; add baselines; then soak 2-4 weeks unchanged before any promotion reasoning.
+
+## Expert-gate programme — BUILDS 1-24 BUILT / ENGINEERING PROVEN / DECISION LAYER RED (2026-09-22)
+
+The planned 24-build Gold expert-gate programme is implemented end to end. The audit above supersedes any earlier reading of this section as "complete and working".
 
 **Build 24 — Live Forward Shadow Soak & Permanent Scorecard:** complete and live in research/shadow mode.
 
@@ -40,7 +86,7 @@ Initial gate-global learning remains small-N and is not promotion evidence:
 
 The five live-unconnected research gates remain explicit UNKNOWN rather than being reconstructed retrospectively: macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode.
 
-**Programme state:** BUILDS 1-24 COMPLETE. Permanent prospective shadow learning is active. Formal-forward and live-money authority remain OFF. The overnight evidence proves the machinery is capturing, resolving, scoring and learning without hindsight; it does not yet prove profitable predictive edge.
+**Programme state:** BUILDS 1-24 BUILT and ENGINEERING PROVEN; **live decision layer RED** (see READ FIRST above). Permanent prospective shadow capture, resolution and scoring are active. Formal-forward and live-money authority remain OFF. The overnight evidence proves the machinery is capturing, resolving, scoring and accumulating trust without hindsight. It does **not** prove predictive edge, and the 2026-09-22 audit established that the accumulated trust **cannot currently change the meta view at any sample size** — the learning loop closes mechanically but is disconnected from the decision.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
