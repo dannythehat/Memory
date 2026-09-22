@@ -1,9 +1,9 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v6 — FREEZE CANDIDATE, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v7 — FREEZE CANDIDATE, 2026-09-22)
 
-**Status: DRAFT v6 — freeze candidate. NOT IMPLEMENTED. No code written.**
-No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f`, v5 `c84b3ac` preserved immutably.
+**Status: DRAFT v7 — freeze candidate. NOT IMPLEMENTED. No AIDY code written.**
+No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f`, v5 `c84b3ac`, v6 `5e78dc4` preserved immutably.
 
-v6 applies five required corrections. **It withdraws v5's own `raw_weights = reliability` fix, which re-coupled reliability and independence**, and records that the identity-order defect is **deeper than the parent cap** (§3.4.1). No frozen threshold changed.
+v7 closes a **dependency leak in v6's own fix** (§3.4.3) and replaces T1's target properties with an **actual immutable fixture** (§7.1). No frozen threshold or constant changed.
 
 Governing rule, unchanged: input distributions may be inspected for engineering sanity, but **no threshold may be tuned using the 41-cycle outcomes.** Build 23 is re-run only after constants are frozen.
 
@@ -18,7 +18,8 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 | v3 `ecdb685` | Qualifying contributors; corrected weak-family rationale; withdrew `MIN_TRUSTWORTHY_WEIGHT` and `insufficient_contributor_history`; continuous Dirichlet baseline; dedicated family ledgers. |
 | v4 `701fc8f` | `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; T1 fixtures; topology-classified reachability. |
 | v5 `c84b3ac` | **Stage-B contributors are sub-calculators only (§3.2.1).** **`family_signed_evidence` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` is reporting-only (§3.4).** **T1 fixtures derived by executing the real Build-20 engine, not assumed (§7.1).** **Prospective root-family scoring semantics defined (§8.1).** `raw_weights = reliability` (**withdrawn in v6**). |
-| **v6 (this)** | **Reliability and dependency fully decoupled: order-independent `dᵢ` computed from Build-20 structural facts (§3.4).** **Build-20's parent-root cap removed from decision consumption — root-family normalisation already supplies that cap (§3.4.2).** **Symmetric handling of tied-reliability redundant contributors (§3.4.3).** **T1 becomes one frozen 15-gate production-shaped fixture runnable through both paths (§7.1).** Test count corrected to T1–T17. |
+| v6 `5e78dc4` | **Reliability and dependency fully decoupled: order-independent `dᵢ` computed from Build-20 structural facts (§3.4).** **Build-20's parent-root cap removed from decision consumption — root-family normalisation already supplies that cap (§3.4.2).** **Symmetric handling of tied-reliability redundant contributors (§3.4.3).** **T1 becomes one frozen 15-gate production-shaped fixture runnable through both paths (§7.1).** Test count corrected to T1–T17. |
+| **v7 (this)** | **Dependency graph built over ALL eligible contributors BEFORE reliability-based representative selection (§3.4.3)** — in v6, discarding a duplicate could delete the only `high_dependency` edge, so reliability still altered topology. **Canonical Stage-B equation now uses `dᵢ`, not the obsolete `uᵢ` (§3.4).** **Actual frozen T1 fixture committed with SHA-256 (§7.1).** Stale v5 arithmetic removed from Scenarios B/C. **T18 added.** Heading typo fixed. |
 
 ---
 
@@ -132,10 +133,11 @@ This makes principle 5 true rather than aspirational.
 
 ### 3.4 Stage B — Exact family aggregation
 
-For `family_weight_eligible` contributor `i` in root family `f`, with PIT reliability `rᵢ` (§3.1) and **decision-consumption** Build-20 effective weight `uᵢ` (§3.3):
+For `family_weight_eligible` contributor `i` in root family `f`, with PIT reliability `rᵢ` (§3.1) and **order-independent dependency weight `dᵢ`** (§3.4.3). **No Build-20 weight or multiplier `uᵢ` is consumed anywhere in the decision path** — that formulation is withdrawn:
 
-    pᵢ = uᵢ / Σ_{k family_weight_eligible in f} u_k     # Σpᵢ = 1 over ALL eligible contributors,
+    pᵢ = dᵢ / Σ_{k family_weight_eligible in f} d_k     # Σpᵢ = 1 over ALL eligible contributors,
                                                         # including those voting neutral
+                                                        # dᵢ per §3.4.3; Σd = 1 by construction, so pᵢ = dᵢ
 
     bull_mass_f = Σ pᵢ rᵢ   over bullish contributors
     bear_mass_f = Σ pᵢ rᵢ   over bearish contributors
@@ -174,27 +176,47 @@ Applying the cap again therefore adds no protection and is the sole source of "l
 - The **full diagnostic pass stays byte-for-byte unchanged** (§3.3) — cap, sequential damping, diagnostics, persistence, audit trail.
 - The **decision-consumption view** consumes Build 20's *structural facts* only: `correlation_group`, `evidence_identity`, and `high_dependency` pairs from the rolling diagnostics. It does **not** consume `dependency_multiplier`, `dependency_multiplier_pre_parent_cap` or `effective_weight`.
 
-#### 3.4.3 `dᵢ` — order-independent dependency weight
+#### 3.4.3 `dᵢ` — order-independent dependency weight, graph built before reliability
 
-Computed by the new aggregator, per root family, from those structural facts. Prototyped and verified (`projects/aidy/blocker1_dependency_weight_prototype.py`).
+Computed by the new aggregator, **per root family**, from Build-20 structural facts only. Prototyped and verified (`projects/aidy/blocker1_dependency_weight_prototype.py`).
 
-**Step 1 — collapse exact duplicates across the whole family.** Group contributors by `(evidence_identity, vote)`. Each group yields **one duplicate slot**. The representative is the member with the highest `rᵢ`; **if several tie at the maximum, they split that one slot equally** — never resolved by `signal_id`. *(Reliability selects the representative among identical evidence; it does not set the weight.)*
+**v6's own construction leaked.** v6 ordered it: collapse duplicates → pick the highest-reliability representative → *then* build the dependency graph on survivors. That lets reliability delete dependency edges. Counterexample, executed:
 
-**Step 2 — cluster by dependency, using union-find.** Start from `correlation_group`. Union two groups when they share an `evidence_identity` (identical evidence is one cluster by definition) or when the rolling diagnostics report `high_dependency` between them. Union-find is set-based, so the result is independent of input order and of every identifier.
+> `A1` and `A2` are exact duplicates. `A2` carries the **only** `high_dependency` edge to `B`.
+> With `A1` more reliable, `A2` is discarded and the `A2↔B` edge disappears → **2 components**.
+> With `A2` more reliable, `A2` survives and `B` joins its cluster → **1 component**.
 
-**Step 3 — one unit per cluster.**
+So reliability still changed independence, indirectly through representative selection — re-joining the two quantities separated over six rounds. **Corrected order:**
 
-    dᵢ = (1 / cluster_count) × (duplicate_slot_shareᵢ / Σ slot shares in i's cluster)
-    pᵢ = dᵢ / Σ_{k in family} d_k                      # Σpᵢ = 1
+    eligible signals -> structural graph -> connected components
+                     -> duplicate slots -> cluster weight allocation
+                     -> reliability applied ONCE
+
+**Step 1 — build the structural graph over EVERY `family_weight_eligible` contributor.** Reliability is not consulted. Undirected edge between two contributors when **any** hold:
+
+- same `correlation_group`;
+- same `evidence_identity` (identical evidence is one cluster by definition);
+- Build-20 rolling diagnostics report `high_dependency` for the pair.
+
+Take **connected components** by union-find. Set-based, so the result is independent of input order and of every identifier. **No contributor is removed before this step**, so no edge can be lost.
+
+**Step 2 — inside each completed component, collapse exact duplicates.** Group by `(evidence_identity, vote)`; each group yields **one duplicate slot**. The representative is the member with the highest `rᵢ`; **if several tie at the maximum they split that one slot equally** — never resolved by `signal_id`. *(Reliability selects the representative among identical evidence; it does not set the weight and can no longer affect topology.)*
+
+**Step 3 — one unit per component.**
+
+    dᵢ = (1 / component_count) × (duplicate_slot_shareᵢ / Σ slot shares in i's component)
+    pᵢ = dᵢ / Σ_{k in family} d_k        # Σd = 1 by construction, so pᵢ = dᵢ
+
+A discarded duplicate has no `dᵢ` and contributes nothing.
 
 **Step 4 — reliability applied exactly once.**
 
     bull_mass_f = Σ pᵢ rᵢ   over bullish contributors
     bear_mass_f = Σ pᵢ rᵢ   over bearish contributors
 
-`dᵢ` answers *"is this the same information?"*; `rᵢ` answers *"which reading of that information has historically been better?"* They are now genuinely separate, restoring design principle 1.
+`dᵢ` answers *"is this the same information?"*; `rᵢ` answers *"which reading of that information has historically been better?"* The separation is now real.
 
-**Verified invariances** (all three cases, prototype output):
+**Verified invariances** (prototype output):
 
 | check | result |
 |---|---|
@@ -202,6 +224,7 @@ Computed by the new aggregator, per root family, from those structural facts. Pr
 | tied reliability, opposing votes, renamed | identical (`0.200000000`) |
 | tied exact duplicates, renamed | identical (`0.100000000`) |
 | all 24 permutations of input order | **exactly 1 distinct result** |
+| **duplicate carrying the only `high_dependency` edge, reliabilities swapped** | **components = 1 either way; signed evidence identical (`0.100000000`)** — was 2 vs 1 under v6 |
 
 ### 3.5 Root family graph (existing, unchanged)
 
@@ -255,7 +278,7 @@ Confidence remains **withheld** until meta-calibration exists. No number is inve
 
 ---
 
-## 4. Pre-registered constants — FREEZE ON APPROVAL OF v4
+## 4. Pre-registered constants — FREEZE ON APPROVAL OF v7
 
 | constant | value | status |
 |---|---|---|
@@ -339,47 +362,52 @@ Every scorecard row gains `coverage_i`, `accuracy_on_commit_i` (explicitly relab
 
 v3 referred to "pre-registered plausible mature reliability ranges" without stating them, which would have left room to choose a convenient fixture after implementation. **The exact values are therefore fixed below, before any code.** They deliberately do **not** resemble the 41 live outcomes; the purpose is to lock a reasonable mature-state engineering scenario in advance.
 
-**v5's fixture was still not a full-path fixture.** v5 froze eight synthetic sub-calculator signals, but current Build 21/22 do not consume that object — Build 21 consumes verified expert packets plus gate-level trust envelopes. So "run this exact fixture through current Build 20 → 21 → 22" was not yet true, and eight signals are not the production-shaped ~91-signal graph. That is acceptable for a unit fixture; it is **not** acceptable for the one acceptance test whose entire purpose is proving the assembled production-shaped machine was unreachable.
+**v6 still only froze target *properties*** — 5,000 outcomes, 40/40/20 classes, N in [120,180], excess in [0,0.09]. Many different histories satisfy those, and different ones make the real experts behave differently. That is still "construct a source state later that satisfies these properties", not "freeze the source state, then see what happens".
 
-**T1 is therefore a single frozen full-expert fixture**, constructed once and shared by both paths:
+**The actual fixture is therefore committed now, immutable:**
 
-    FROZEN SOURCE STATE (the only thing this document fixes)
-      1. one frozen synthetic market state  -> candle/aggregate inputs for all timeframes
-      2. one frozen synthetic outcome history -> resolved rows with PIT resolved_at timestamps,
-         sufficient to give every contributor its own N and excess-skill record
-      3. one frozen as_of / environment, yielding the real environment_key and scopes
+    projects/aidy/fixtures/blocker1_t1_fixture_generator.py    # every parameter fixed, seed 20260922
+    projects/aidy/fixtures/blocker1_t1_full_fixture.json       # 1,323,314 bytes
 
-    DERIVED, NEVER HAND-SUPPLIED
-      - all 15 real expert packets, built by the real expert builders
-      - their gate conclusions, sub-calculators, gate_scoreable flags
-      - gate trust envelopes, N / accuracy / shrinkage, scope selection, recency state
-      - calibration state (absent -> the current 0.85 path, per §9)
-      - every reliability r_i, derived from (2) via §3.1 — NOT stated as a constant
-      - the dependency packet, selector inputs, and both dependency passes
+    SHA-256: 656e56bfdbd5e2eb3f54d1f0eb1449a620b95893c7f594f9dd2492fb5287e5f3
 
-    OLD PATH:  15 packets -> Build 20 -> Build 21 -> Build 22          -> record actual result
-    NEW PATH:  same 15 packets -> same sub-calculators -> decision view
-               -> d_i (§3.4.3) -> root families -> new meta            -> record actual result
+Regenerable byte-identically (`--verify` confirms the digest). **Neither reviewer may change it after approval.** It contains exactly:
 
-**Rules for the fixture:**
+| element | frozen content |
+|---|---|
+| `as_of_utc` | `2026-06-01T12:00:00+00:00` |
+| resolved outcome history | 5,000 rows with PIT `resolved_at_utc`, classes 2000/2000/1000 |
+| PIT baselines at `as_of` | bullish `0.399602`, bearish `0.399602`, neutral `0.200795` — **derived**, per §3.1 |
+| contributor histories | 8 contributors, 1,136 individual commitment rows with per-row `correct` and PIT timestamps |
+| M1 series | 2,880 bars with `first_observed_at` and `revision_index`, the deterministic source for every aggregate |
+| expected counts | 15 gates, 8 eligible contributors |
 
-- **No replacement-side reliability may be supplied that is not derivable from the frozen history.** Both paths must read the same numbers from the same source state, or the comparison is not apples-to-apples.
-- The frozen history is engineered so the **mature-state** assumptions below hold once §3.1 is applied to it. They are targets the history must produce, not values injected into the aggregator.
-- The old-path `directional_total` and decision are **recorded by execution**, never estimated. v5's "~0.03 measured live multiplier" approximation is withdrawn.
+**Every reliability is derived from that history, never stated.** Applying §3.1 (`PRIOR_STRENGTH = 20`, `EDGE_SCALE = 0.15`, calibration `unknown` → 0.85 per §9) yields, for the record:
 
-**Mature-state properties the frozen history must produce:**
+| contributor | family | vote | N | correct | `shrunk_excess` | `rᵢ` |
+|---|---|---|---|---|---|---|
+| `m5s:accept` | structure | bullish | 168 | 82 | 0.079079 | 0.448113 |
+| `m15s:break` | structure | bullish | 156 | 74 | 0.066262 | 0.375482 |
+| `h1s:trend` | structure | bullish | 144 | 66 | 0.051569 | 0.292222 |
+| `h4s:swing` | structure | bullish | 132 | 59 | 0.041135 | 0.233097 |
+| `momi:eff` | momentum | **neutral** | 150 | 69 | 0.053292 | 0.301988 |
+| `locr:conf` | location | **neutral** | 138 | 61 | 0.037056 | 0.209985 |
+| `liqp:depth` | liquidity | bullish | 162 | 77 | 0.067387 | 0.381859 |
+| `liqr:speed` | liquidity | bullish | 126 | 54 | 0.025001 | 0.141671 |
 
-    count_total(T)    = 5000 resolved outcomes
-    class marginals   = bullish 0.40, bearish 0.40, neutral 0.20   (deliberately NOT the live 0.58/0.29/0.13 skew)
-    baseline(bullish) = baseline(bearish) = (2000 + 10) / (5000 + 30) = 0.399602
-    per-contributor N in [120, 180];  shrunk_excess in [0.00, 0.09]  -> reliability in [0.00, 0.60]
-    scope = mini_exact (1.00);  calibration = unknown (0.85, per §9);  recency = stable (1.00)
+The generator's `target_shrunk_excess` field is a construction aid only; **the derived values above are authoritative** (shrinkage over `N + 20` puts them slightly under target).
 
-**Scenario A — bullish reachable.** The frozen history gives `price_action` four bullish and two neutral eligible sub-calculators and `liquidity_mechanism` two bullish, with the most reliable `price_action` contributor **not** alphabetically first, so the fixture itself exercises §3.4.1–§3.4.3. Expected: two qualifying families, same sign, `|meta_balance| ≥ BALANCED_ABSTAIN_BAND` → **BULLISH**, while the old path abstains on the identical source state. **Both numbers are recorded at implementation from execution, not pre-committed here** — what this document fixes is the source state and the expected *decision*, since pre-committing derived arithmetic is exactly the error v4 and v5 made.
+**Both paths read this one fixture:**
 
-**Scenario B — bearish reachable.** Scenario A inputs with every `bullish` vote replaced by `bearish` → `S = −0.964931`, `meta_balance = −1.000000` → **BEARISH**.
+    OLD PATH:  fixture -> real expert builders -> 15 packets -> Build 20 -> 21 -> 22
+    NEW PATH:  same fixture -> same 15 packets -> same sub-calculators
+               -> decision view -> dᵢ (§3.4.3) -> root families -> new meta
 
-**Scenario C — genuine independent disagreement.** Scenario A inputs with both `liquidity` votes flipped to `bearish`: `price_action` signed +0.498264, `liquidity_mechanism` signed −0.466667. Two qualifying families, opposite signs → **ABSTAIN `genuine_independent_disagreement`**.
+**Scenario A — bullish reachable.** Verified against the frozen fixture: `price_action` signed `+0.224819`, `liquidity_mechanism` signed `+0.261765`, two qualifying families, `meta_balance = 1.000000` → **BULLISH**. Both families clear the 0.20 floor only narrowly, so the fixture is realistically tight rather than engineered to pass. **The expected decision is what this document freezes**; the old path's `directional_total` is recorded by execution at implementation, never estimated.
+
+**Scenario B — bearish reachable.** The identical frozen fixture with every directional vote mirrored → expected **BEARISH**. No arithmetic is pre-committed; v5's `S = −0.964931` came from the withdrawn weighting scheme and is removed.
+
+**Scenario C — genuine independent disagreement.** The identical frozen fixture with `liquidity_mechanism`'s directional evidence reversed → expected **ABSTAIN `genuine_independent_disagreement`**. v5's `+0.498264` / `−0.466667` values are likewise withdrawn.
 
 **Scenario D — insufficient independent families.** Scenario A inputs, but both `liquidity` sub-calculators have `N = 8 < MIN_CONTRIBUTOR_N` so are not `family_weight_eligible` and never enter the decision-consumption pass → one qualifying family → **ABSTAIN `insufficient_independent_families`**.
 
@@ -403,6 +431,7 @@ v3 referred to "pre-registered plausible mature reliability ranges" without stat
 **T11 — Removed conditions stay removed.** No code path can abstain for `insufficient_trustworthy_weight`, `insufficient_contributor_history` or a `MAX_CONFLICT` test; `W ≥ 0.40` holds as an invariant whenever the family count is satisfied.
 **T12 — Neutral contributors dilute (rewritten for §3.2).** One bullish contributor plus five `family_weight_eligible` neutral contributors must yield materially lower `family_strength` than that bullish contributor alone — **without** requiring `scoreable == true` for the neutral ones, and without altering the scoring contract.
 **T14 — Identity cannot influence intelligence (§3.4.3).** Renaming every `signal_id` in the T1 fixture must leave `dᵢ`, `pᵢ`, every `family_signed_evidence`, `meta_balance` and the decision **bit-identical**. Include the negative control: the *current* Build-20 decision path under the same rename **does** change (`same_correlation_group_damped` and `exact_duplicate_zero_increment` invert), proving the test detects the defect it guards.
+**T18 — Dependency topology is invariant to duplicate reliability (§3.4.3).** Two exact duplicates where **only the lower-reliability one carries a `high_dependency` edge** to a third contributor: swap their reliabilities and assert the component count, every `dᵢ`, `family_signed_evidence`, `meta_balance` and the decision are identical. Negative control: the v6 ordering (dedupe before graph) **must** change the component count from 1 to 2 under the same swap, proving the test detects the leak it guards.
 **T17 — Tied-reliability redundancy is symmetric (§3.4.3).** Two highly dependent contributors with **equal** historical reliability, different `signal_id`s and **opposing current votes**: rename them and assert every meta-relevant output is identical. Repeat with tied exact duplicates (same `evidence_identity`, same vote). Also assert order invariance: all permutations of the input signal list produce one identical result.
 **T15 — Gates never enter Stage B (§3.2.1).** Assert the decision-consumption contributor set contains only sub-calculator subjects, that no gate-level signal exists in it, and that a bullish gate does not add mass alongside its own bullish sub-calculators.
 **T16 — Family scoring semantics (§8.1).** A frozen family at `strength ≥ 0.20` records bullish/bearish and is scoreable; below 0.20 records abstain and is unscoreable; a realised neutral makes a directional family prediction incorrect.
@@ -459,7 +488,7 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 
 ## 12. Sequence after approval
 
-1. Freeze constants. 2. Write T1–T17; **confirm T1 fails on current `main`**. 3. Implement §3.1–§3.6, including the §3.3 filtered view and the §3.4.3 order-independent `dᵢ`. 4. All tests plus full regression green. 5. Dedicated root-family tables and writer (§8). 6. Gate calibration producer (§9). 7. Environment cardinality fix. 8. PIT-safe H4/D1 rebuild from M1 lineage. 9. Maintenance-window bug. 10. Watchdog, append-only health history, scorecard baselines. 11. Re-run Build 23 honestly. 12. **Soak unchanged across multiple regimes.** 13. Only then judge whether the experts contain useful Gold information.
+1. Freeze constants. 2. Write T1–T18; **confirm T1 fails on current `main`** using the committed fixture (digest verified first). 3. Implement §3.1–§3.6, including the §3.3 filtered view and the §3.4.3 order-independent `dᵢ`. 4. All tests plus full regression green. 5. Dedicated root-family tables and writer (§8). 6. Gate calibration producer (§9). 7. Environment cardinality fix. 8. PIT-safe H4/D1 rebuild from M1 lineage. 9. Maintenance-window bug. 10. Watchdog, append-only health history, scorecard baselines. 11. Re-run Build 23 honestly. 12. **Soak unchanged across multiple regimes.** 13. Only then judge whether the experts contain useful Gold information.
 
 ---
 
@@ -467,14 +496,14 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 
 **Approved and locked:** continuous Dirichlet baseline; `MIN_FAMILIES = 2`; `EDGE_SCALE = 0.15` over PIT baseline; `MIN_FAMILY_STRENGTH = 0.20`; weak-family bounded influence; strong-family disagreement rule; dedicated family ledgers; coverage reporting; deferred meta-calibration; `pᵢ` over all eligible contributors including neutral; `FAMILY_NEUTRAL_BAND = 0.20`.
 
-**Approved and unchanged in v6:** sub-calculators-only aggregation; `family_signed_evidence`; BULLISH/BEARISH/ABSTAIN; the Dirichlet baseline; family scoring semantics; weak-family bounded influence; the 0.20 strength floor; dedicated family ledgers; `family_weight_eligible`; filtered decision-consumption view; topology-classified reachability; coverage reporting; deferred meta-calibration. **No frozen threshold was altered by v6.**
+**Approved and unchanged in v7:** sub-calculators-only aggregation; `family_signed_evidence`; BULLISH/BEARISH/ABSTAIN; the Dirichlet baseline; family scoring semantics; weak-family bounded influence; the 0.20 strength floor; dedicated family ledgers; `family_weight_eligible`; filtered decision-consumption view; parent cap dropped from the decision path; topology-classified reachability; coverage reporting; deferred meta-calibration. **No frozen threshold or constant was altered by v7.**
 
-**New in v6, submitted for approval:**
-1. **`raw_weights = reliability` withdrawn.** It re-coupled reliability and independence (`rᵢ → pᵢ`, then `pᵢ × rᵢ` again) and left ties resolved by `signal_id`. My own v5 fix was wrong.
-2. **Identity-order dependence is deeper than the parent cap** (§3.4.1): `same_correlation_group_damped` and `exact_duplicate_zero_increment` are *also* order-dependent, so consuming pre-cap multipliers would not have fixed it either.
-3. **Build-20's parent-root cap is dropped from the decision path** (§3.4.2). It existed for the old global weighted sum; `Σpᵢ = 1` already bounds a family at one unit, so the cap added no protection and was the sole cause of leader dominance. The diagnostic pass is untouched.
-4. **Order-independent `dᵢ`** (§3.4.3): dedupe across the family, union-find clustering on shared evidence and empirical high-dependency, one unit per cluster, ties split symmetrically. Reliability appears exactly once, and only selects the representative among identical evidence. Prototyped and verified rename- and order-invariant.
-5. **T1 becomes one frozen full-expert fixture** (§7.1) with every reliability derived from the frozen history rather than supplied, so both paths read the same numbers from the same source state.
-6. T14 rewritten, **T17 added** (tied-reliability symmetry), test count corrected to **T1–T17**.
+**New in v7, submitted for approval:**
+1. **Dependency leak in v6's own fix closed** (§3.4.3). The structural graph is now built over **every** eligible contributor *before* reliability selects any representative. Under v6, discarding a duplicate could delete the only `high_dependency` edge — executed counterexample: component count moved 2 → 1 purely by swapping two reliabilities. Reliability could still alter topology; now it cannot.
+2. **Canonical Stage-B equation uses `dᵢ`** (§3.4). The obsolete `uᵢ = Build-20 effective weight` formulation is removed, so no implementer can follow the stale section and rebuild the mechanic §3.4.2 discards.
+3. **T1's fixture is now real and immutable** (§7.1): `blocker1_t1_full_fixture.json`, 1,323,314 bytes, SHA-256 `656e56bf…87e5f3`, regenerable byte-identically from a committed generator with every parameter fixed. All 8 reliabilities are **derived** from its 1,136 frozen commitment rows, and Scenario A is verified to reach **BULLISH** with both families only narrowly clearing the 0.20 floor.
+4. **Stale v5 arithmetic removed** from Scenarios B and C; they now freeze only the source transformation and the expected decision.
+5. **T18 added** (topology invariance to duplicate reliability, with the v6 ordering as negative control); test count **T1–T18**.
+6. §4 heading corrected to "FREEZE ON APPROVAL OF v7".
 
-**Nothing is left open. v6 is the freeze candidate.**
+**Nothing is left open. v7 is the freeze candidate.**
