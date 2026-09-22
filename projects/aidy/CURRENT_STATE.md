@@ -2,13 +2,17 @@
 
 ## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
 
-An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **AIDY cannot currently produce a directional view under any achievable amount of learning.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
+An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **a directional view is practically unreachable in the current production architecture.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
+
+**Independently verified 2026-09-22** by a second reviewer in a separate read-only run against the same SHA and live D1 (verification run `35687904986`, no production change). All headline numbers confirmed, plus average `directional_total` = **0.004491** against the required 0.30. Two wording corrections from that verification are applied below.
 
 Do not treat the 41/41 abstention as correctly-calibrated newborn caution. It is a permanent arithmetic condition.
 
 Blocking findings (full detail and line references: `projects/aidy/handovers/2026-09-22-independent-24-build-audit.md`):
 
-1. **Meta-direction abstention is arithmetic, not judgement.** `MIN_DIRECTIONAL_WEIGHT` is 0.30; measured live `directional_total` is max **0.016939**, typically 0.002-0.009 — short by 18x-150x on every cycle. Build 20's evidence-redundancy ratio (91 raw signal-units collapsed to 4.0 effective) is multiplied into Build 21's confidence chain and then summed by Build 22 against an absolute constant. Units mismatch. Realistic mature ceiling is **0.179**, still below 0.30. AIDY would still abstain at N=10,000.
+1. **Meta-direction abstention is arithmetic, not judgement.** `MIN_DIRECTIONAL_WEIGHT` is 0.30; measured live `directional_total` is max **0.016939**, average **0.004491** — short by 18x-67x on every cycle. Build 20's evidence-redundancy ratio (91 raw signal-units collapsed to 4.0 effective) is multiplied into Build 21's confidence chain and then summed by Build 22 against an absolute constant. Units mismatch: dependency should govern *how much independent evidence exists*, not annihilate each expert's reliability. Realistic mature ceiling is **0.179**, still below 0.30.
+
+   **Correction (verified 2026-09-22):** with *perfect* reliability across every directional gate the current formula can just exceed 0.30 (ceiling 0.5137), so this is **practically unreachable, not mathematically impossible**. Earlier phrasing here ("cannot produce a direction at any achievable N", "would still abstain at N=10,000") was too absolute. The operative conclusion is unchanged: no realistic system reaches the threshold.
 2. **Environment-conditional learning never runs.** 41 cycles produced **41 distinct `environment_key` values** because `utc_clock_bucket_15m` and `utc_weekday` sit in `GLOBAL_CORE_DIMENSIONS`. `global_core` max N=1 across 570 rows; `mini_exact` max N=3. Every gate falls back to `gate_global`, the environment-blind global average. The programme's central premise is not operating.
 3. **Two calibration subsystems are dead code.** `calibration_rows=()` and `meta_calibration_rows=()` are hardcoded empty in the live bundle, so Build 21's calibration multiplier is permanently 0.85 and Build 22 `calibrated_confidence` is permanently `None`.
 4. **The two best gates contribute exactly zero.** Gate-level `abstain` receives no directional weight. H1 abstains 29/41, H4 33/41; M5 (31.82%, worst gate) commits 25/41 and dominates. Selection is inverted. H4 has concluded bearish **0 times in 41 cycles**.

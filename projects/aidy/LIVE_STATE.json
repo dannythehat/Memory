@@ -826,7 +826,7 @@
     "memory_sha_at_audit_start": "4a26d811728a585dfe9395c49268783f95ad1214",
     "handover": "projects/aidy/handovers/2026-09-22-independent-24-build-audit.md",
     "programme_status": "BUILT and ENGINEERING PROVEN",
-    "decision_layer_status": "RED — cannot produce a directional view at any achievable sample size",
+    "decision_layer_status": "RED — a directional view is practically unreachable in the current production architecture",
     "cycles_examined": 42,
     "resolved_outcomes_examined": 38,
     "full_regression_at_audited_sha": 1665,
@@ -836,7 +836,10 @@
         "measured_directional_total_max": "0.016939",
         "measured_directional_total_typical": "0.002-0.009",
         "realistic_mature_ceiling": "0.179",
-        "cause": "Build 20 evidence-redundancy ratio (91 raw signal-units to 4.0 effective) multiplied into Build 21 confidence product, then summed by Build 22 against an absolute constant — units mismatch"
+        "cause": "Build 20 evidence-redundancy ratio (91 raw signal-units to 4.0 effective) multiplied into Build 21 confidence product, then summed by Build 22 against an absolute constant — units mismatch",
+        "measured_directional_total_average": "0.004491",
+        "perfect_trust_ceiling": "0.5137",
+        "reachability_wording": "practically unreachable, NOT mathematically impossible — with perfect reliability across every directional gate the formula can just exceed 0.30. Earlier absolute phrasing was withdrawn 2026-09-22."
       },
       "environment_key_state_explosion": {
         "cycles": 41,
@@ -846,7 +849,7 @@
         "global_core_max_sample_n": 1,
         "mini_exact_rows": 300,
         "mini_exact_max_sample_n": 3,
-        "effect": "100 percent fallback to gate_global environment-blind average"
+        "effect": "zero contextual scopes ever qualify; 196 gate_global and 50 neutral_prior selections among directional gates (neutral_prior in early cycles before history existed). Corrects an earlier \"100 percent fallback to gate_global\" overstatement; substance unchanged — AIDY learns broad gate-global performance only."
       },
       "calibration_paths_dead": {
         "selector_calibration_rows": "hardcoded empty in live bundle",
@@ -858,7 +861,8 @@
         "h1_abstain_cycles": "29/41",
         "h4_abstain_cycles": "33/41",
         "h4_bearish_conclusions": "0/41",
-        "m5_directional_commits": "25/41 at 31.82 percent accuracy"
+        "m5_directional_commits": "25/41 at 31.82 percent accuracy",
+        "remedy_corrected": "Do NOT give gate-level abstain a directional weight — an abstention must never become a hidden vote. Real defect is discarding directional sub-evidence by collapsing each gate to one of four labels before the meta-brain sees it. Surface sub-calculator-level directional evidence, or move gates to continuous/probabilistic output. Coverage accounting is secondary."
       },
       "d1_h4_starved": {
         "d1_admitted_bars": 10,
@@ -866,7 +870,8 @@
         "h1_admitted_bars": 156,
         "m1_bars_available": 40771,
         "m1_earliest": "2026-08-12",
-        "cheap_fix": "backfill H4/D1 aggregates from existing M1 — zero new data cost"
+        "cheap_fix": "backfill H4/D1 aggregates from existing M1 — zero new data cost",
+        "mandatory_pit_condition": "Reconstructed H4/D1 bars must carry each source M1 bar original first_observed_at and PIT lineage. Forward use is fine; retrospective evaluation must never treat a reconstructed bar as available earlier than its underlying M1 evidence was. Missed in the original audit, added by independent review."
       }
     },
     "material_non_blocking": [
@@ -891,6 +896,30 @@
     "test_suite_caveat": "1,665 tests prove software correctness, not reachability. Meta-direction fixture defaults to n=100/correct=75 with 1-2 gates in one dependency family; production runs N<=23, ~40 percent accuracy, 91 damped signals. No test asserts a non-abstain direction is reachable under the live graph. Build 23 ablations reporting non-abstain behaviour are suspect until re-run.",
     "audit_scope_limits": "Builds 4-19 mathematics and Build 23 ablations were not audited line-by-line. R2/BigQuery/queue internals not audited. Super Signals isolation verified by code inspection rather than by reading its architecture docs.",
     "safety_unchanged": true,
-    "production_changed": false
+    "production_changed": false,
+    "independent_verification": {
+      "performed_by": "second independent reviewer, separate read-only run",
+      "verification_run": "35687904986",
+      "production_changed": false,
+      "temporary_audit_pr": "closed after verification",
+      "outcome": "all headline audit numbers confirmed against the audited SHA and live D1",
+      "confirmed": [
+        "max directional_total 0.016939 vs required 0.30",
+        "average directional_total 0.004491",
+        "41 cycles / 41 distinct environment keys",
+        "H1 abstains 29/41",
+        "H4 abstains 33/41",
+        "calibration state unknown on every live-known gate",
+        "D1 admitted bars 10, H4 42, H1 156"
+      ],
+      "corrections_to_original_audit": [
+        "reachability: practically unreachable rather than mathematically impossible (perfect-trust ceiling 0.5137)",
+        "scope fallback: 196 gate_global + 50 neutral_prior, not \"100 percent gate_global\"",
+        "backfill: reconstructed H4/D1 bars must preserve original M1 first_observed_at PIT lineage",
+        "abstain remedy: recover sub-evidence or go continuous/probabilistic; never let abstain vote directionally"
+      ],
+      "adopted_aggregator_design": "separate reliability / independence / decision strength; gate reliability -> root-family aggregation -> normalised directional balance; separate evidence-sufficiency condition of at least 2 genuinely independent families with adequate trust and sample support; pre-register the rule and threshold before evaluating results",
+      "agreed_priority": "fix Build 20 -> 21 -> 22 units and reachability first; reachability test second; do not pay for Databento yet"
+    }
   }
 }

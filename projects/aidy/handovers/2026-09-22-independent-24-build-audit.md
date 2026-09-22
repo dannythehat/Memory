@@ -6,7 +6,9 @@ Source repo: `dannythehat/Aidy-Gold-Signals`
 Branch: `main`
 Verified SHA: `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`
 Memory SHA at audit start: `4a26d811728a585dfe9395c49268783f95ad1214`
-Status: **RED** — Builds 1-24 are BUILT and ENGINEERING PROVEN, but the live decision layer is **non-functional**. AIDY cannot currently produce a directional view under any achievable amount of learning.
+Status: **RED** — Builds 1-24 are BUILT and ENGINEERING PROVEN, but the live decision layer is **non-functional in practice**: a directional view is practically unreachable in the current production architecture.
+
+**Independently verified 2026-09-22** by a second reviewer in a separate read-only run against the same SHA and live D1 (verification run `35687904986`, no production change, temporary audit PR closed afterwards). Every headline number confirmed, plus average `directional_total` = **0.004491**. Two wording corrections and three remedy refinements from that verification are recorded inline below.
 
 Audit type: independent adversarial audit requested by the owner. Read-only. No production, code, config, holdout or Super Signals change was made.
 
@@ -32,7 +34,9 @@ Live per-gate dependency multipliers: h1 0.2168, h4 0.1817, liquidity 0.0500, m5
 
 Ceiling analysis: with perfect trust (accuracy 1.0, N infinite, `mini_exact` scope, strong calibration) and all six directional gates agreeing, the sum of dependency multipliers is **0.5137**. Under realistic mature conditions (accuracy 0.65, N=180, `gate_global` scope, calibration unwired) it is **0.179 — still below 0.30**. In practice only 2-3 gates conclude directionally per cycle, giving ~0.05-0.10.
 
-**AIDY will still abstain at N=10,000.** The 39/39 (now 41/41) abstention is not correctly-calibrated caution; it is a dead end that resembles caution, which is why it passed acceptance.
+The 39/39 (now 41/41) abstention is not correctly-calibrated caution; it is a dead end that resembles caution, which is why it passed acceptance.
+
+**Correction (verified 2026-09-22):** with perfect reliability across every directional gate the formula *can* just exceed 0.30 (the 0.5137 ceiling above), so the correct claim is **practically unreachable, not mathematically impossible**. Earlier phrasing ("AIDY will still abstain at N=10,000") was too absolute and is withdrawn. The operative conclusion stands: no realistic system reaches the threshold, and the average live value is 0.004491.
 
 ### 2. Environment-conditional learning never runs — RED
 
@@ -49,7 +53,7 @@ Live scope depth (`aidy_gold_expert_context_scores`, gate subjects):
 | best reduced context | 99 | 6-7 | ~8 | never |
 | `gate_global` | 15 | 23 | 1 | always |
 
-Every directional gate in every live cycle resolves to `context_label: gate_global`, `scope multiplier 0.70`. **100% fallback to the environment-blind global average.** The central premise of the programme — "in THIS environment, which expert is reliable" — is not operating. AIDY currently learns exactly one number per gate.
+**Zero contextual scopes ever qualify.** Independent verification counted **196 `gate_global` selections and 50 `neutral_prior` selections** among the directional gates — the latter in early cycles before any history existed. This corrects an earlier overstatement here of "100% fallback to gate_global", which generalised from a single late cycle. The substance is unchanged: the central premise of the programme — "in THIS environment, which expert is reliable" — is not operating, and AIDY is learning broad gate-global performance only.
 
 ### 3. Two calibration subsystems are dead code in production — RED
 
@@ -68,6 +72,8 @@ Measured over 41 cycles: H1 concludes `abstain` **29/41**; H4 **33/41**. So the 
 
 H4 has concluded **bearish 0 times in 41 cycles** (33 abstain, 8 bullish) against a 58%-bearish tape. See finding 5 for the mechanical cause.
 
+**Remedy corrected (2026-09-22).** The fix is **not** to give a gate-level `abstain` directional weight — an abstention must never become a hidden bullish or bearish vote. The original audit proposed giving abstain a *cost* via coverage accounting, which penalises the symptom without recovering the lost information. The better remedy, from independent review: the real defect is that useful directional sub-evidence is discarded too early by collapsing each gate to one of `bullish`/`bearish`/`neutral`/`abstain` before the meta-brain sees anything. Either let a gate surface sub-calculator-level directional evidence ("net gate result uncertain, but these two directional subcalculators have historically been valuable"), or move gates to a continuous/probabilistic output. Coverage accounting may still be worth adding, but it is secondary.
+
 ### 5. D1 and H4 experts are structurally starved — RED (data)
 
 Price experts read only `source = 'twelve_data_session_aggregate_v1'` over a 45-day window (`private_forward_context.py:310`). Verified admitted depth in live D1 `market_candles`:
@@ -79,6 +85,10 @@ Price experts read only `source = 'twelve_data_session_aggregate_v1'` over a 45-
 Confirmed HH/HL/LH/LL, confirmed swings, prior-day range position and daily ATR are not derivable from 10 daily observations. Build 9 output is not daily context. This is also the mechanical cause of H4's degenerate never-bearish behaviour in finding 4, and it means H4's "57% on N=7" is not evidence of skill.
 
 **Cheap fix available:** D1 already holds **40,771 M1 bars back to 2026-08-12** (essentially complete coverage for ~29 trading days), while the daily aggregate series only begins 2026-09-01. Rebuilding H4/D1 aggregates from existing M1 would take D1 from 10 to ~28 bars and H4 from 42 to ~170 with **zero new data cost and no new vendor**. Higher value than wiring any of the five UNKNOWN gates.
+
+**Mandatory PIT condition (added 2026-09-22, missed in the original audit):** reconstructed H4/D1 bars must carry each source M1 bar's original `first_observed_at` and PIT lineage. Forward use of reconstructed aggregates is fine, but retrospective evaluation must never treat a reconstructed bar as having been available earlier than its underlying M1 evidence actually was — that would silently inject hindsight into exactly the layer the PIT contract exists to protect. The original audit recommended the backfill without this qualification.
+
+Also noted: ~28 reconstructed D1 bars is a material improvement on 10 but is still not a deep daily history. Substantially more D1 history remains desirable later.
 
 ## Findings — non-blocking but material
 
@@ -180,7 +190,14 @@ Unchanged and re-verified. No AIDY live-money execution. No formal-forward autho
 
 Fix in this order. Do not wire new data sources first.
 
-1. **Re-denominate the aggregator** (finding 1). Preferred: treat dependency as an **effective-independent-family count** gate (require k independent families) rather than folding a redundancy ratio into the confidence product. Alternative: compare a normalised share `signed / sum(|authority|)` plus a separate minimum-evidence gate. **Pre-register the new threshold before looking at outcomes.**
+1. **Re-denominate the aggregator** (finding 1). **Adopted design (independent review, 2026-09-22)** — separate the three quantities currently multiplied together:
+   - **Reliability** — how good is this expert historically in comparable circumstances?
+   - **Independence** — how much genuinely new information does this evidence add?
+   - **Decision strength** — among the independent trustworthy evidence, how one-sided is the current case?
+
+   Flow becomes `gate reliability -> root-family aggregation -> normalised directional balance`, with a **separate evidence-sufficiency condition** (for example: at least 2 genuinely independent evidence families with adequate trust/sample support). Final direction then uses a normalised score such as `signed trustworthy evidence / total trustworthy directional evidence`, instead of comparing an arbitrarily shrunken absolute sum against 0.30. Build 20 already holds most of the raw machinery.
+
+   This supersedes the original audit's simpler "independent-family count gate": family coverage belongs separately from the confidence multiplication, but agreement across families is **not** by itself a direction — trust, contradiction and directional strength must still operate *within* the families. **Pre-register the new aggregation rule and threshold before evaluating its results.**
 2. **Add a reachability test** asserting a non-abstain direction is achievable under the live 15-gate / 91-signal graph with realistic accumulated trust. This is the guard whose absence allowed findings 1-4.
 3. **Fix the environment key** (finding 2): remove `utc_clock_bucket_15m` and `utc_weekday` from `GLOBAL_CORE_DIMENSIONS`; keep them as factor dimensions for reduced contexts. `session` and `session_phase` already carry time-of-day at learnable granularity.
 4. **Wire both calibration paths** (finding 3).
