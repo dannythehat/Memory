@@ -1,55 +1,46 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-23 COMPLETE / BUILD 24 NEXT (2026-09-21)
+## Expert-gate programme — BUILDS 1-24 COMPLETE / PROSPECTIVE SHADOW LEARNING ACTIVE (2026-09-22)
 
-The 24-build expert-gate programme is underway.
+The planned 24-build Gold expert-gate programme is complete.
 
-**Builds 1-22:** complete under their recorded acceptance gates.
+**Build 24 — Live Forward Shadow Soak & Permanent Scorecard:** complete and live in research/shadow mode.
 
-**Build 23 — Chronological Replay, Ablation & Untouched Holdout:** complete and engineering-proven.
+Final engineering/live evidence:
+- implementation PR #238 tested head `a0b8710abc3fe4ea569deed868ea6538294169ad`;
+- implementation merge `6644892d12be6ae497f07db2a69119eaa58e0d27`;
+- health-telemetry fix merge `c472d761b25f7c7a91880e2de99d27189bbf43f8`;
+- Build-24 acceptance run `35623113260`: PASS;
+- semantic gate run `35623113461`: PASS;
+- focused/component suite: 103 passed;
+- full repository regression: 1664 passed;
+- final rollout run `35630952162`: PASS;
+- final D1 diagnostic run `35630952252`: PASS;
+- health-hotfix deploy run `35630952178`: PASS;
+- final semantic verification `35630952012`: PASS.
 
-Build 23 adds the versioned `aidy_gold_meta_replay_*_v1` contracts.
+Overnight prospective proof as of 2026-09-22 03:42 UTC:
+- activation: 2026-09-21 16:06:57 UTC;
+- 39 prospective shadow cycles frozen;
+- 36 outcomes resolved/scored;
+- 39 AIDY final views = 39 abstentions because directional authority remains insufficient;
+- 20 bearish, 11 bullish and 5 neutral realised outcomes among the 36 resolved cycles;
+- all cycles carry 15 expected gate identities: 10 currently live-known, 5 explicit UNKNOWN;
+- latest shadow sync health = OK, no error;
+- one 135.2-minute cycle gap occurred from 20:55 to 23:10 UTC and the loop recovered automatically;
+- old/simple 15-minute view on the same 36 resolved cycles was correct 13 and incorrect 23 (36.11% exact-direction accuracy).
 
-What is now proven:
-- immutable replay cases separate pre-outcome decision state from later evaluation-only outcomes;
-- deterministic versioned input, case and report digests;
-- chronological development, validation and untouched holdout partitions;
-- purge and embargo around split boundaries;
-- holdout tuning and holdout-driven recommendation changes are forbidden;
-- frozen comparisons cover legacy simple 15m, every gate alone, full system, full-minus-each-gate and full system with/without dependency penalties;
-- metrics cover directional accuracy by class, +2/+1/-1/-2 impact score, Brier where confidence exists, coverage/abstention, environment performance, time stability, incremental contribution and sample N;
-- gate pruning/retention recommendations are derived from validation only;
-- a flashy development-only gate cannot earn promotion from in-sample beauty;
-- changing holdout outcomes cannot change gate/dependency recommendations;
-- dependency penalty is explicitly ablated rather than assumed useful;
-- acceptance data are tagged `acceptance_fixture` and cannot be represented as real-market edge;
-- future values are not prediction inputs;
-- formal-forward authority and live-money authority remain OFF.
+Initial gate-global learning remains small-N and is not promotion evidence:
+- H1 structure: N=4, 75.0%, net +3;
+- H4 structure: N=7, 57.14%, net +2;
+- liquidity/reclaim: N=15, 40.0%, net -4;
+- M15 structure: N=12, 41.67%, net -5;
+- M5 structure: N=22, 31.82%, net -15;
+- momentum/impulse: N=12, 41.67%, net -4.
 
-Acceptance evidence:
-- implementation merge from PR #235: `12d5f0f17b6678a426890fd8bcd643d3984d1d27`;
-- corrective post-merge verification PR #237 tested head: `0c5e2f2a072e20e1671db13ac90f3ccce88cf11f`;
-- verified main after corrective merge: `5c370ac4182b96a8fb2d06be7927d8de141914a1`;
-- AIDY repository handoff merge: `0d71792813a12b62f70e2999058b7ba7780e1943`;
-- Build 23 verification workflow run `35619195819`: PASS;
-- semantic gate run `35619195958`: PASS;
-- static/compile: PASS;
-- focused replay suite: 54 passed;
-- dedicated adversarial replay suite: 6 passed;
-- full repository regression: 1652 passed;
-- development-only star rejected by validation: PASS;
-- strong validation contributor retained candidate: PASS;
-- dependency-penalty ablation: PASS;
-- holdout recommendation immutability: PASS;
-- fixture/real-market evidence separation: PASS;
-- deterministic replay: PASS.
+The five live-unconnected research gates remain explicit UNKNOWN rather than being reconstructed retrospectively: macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode.
 
-Important evidence boundary:
-- Build 23 proves the replay, ablation, pruning and untouched-holdout machinery.
-- Its acceptance fixture is synthetic and is not evidence that AIDY has already demonstrated real-market predictive edge.
-- Fresh prospective market evidence is the purpose of Build 24.
-
-**Next:** Build 24 — Live Forward Shadow Soak & Permanent Scorecard. This is the final planned build. It must persist fresh expert packets, selector state, final AIDY view and later outcomes on every eligible cycle and expose the permanent environment-specific scorecard.
+**Programme state:** BUILDS 1-24 COMPLETE. Permanent prospective shadow learning is active. Formal-forward and live-money authority remain OFF. The overnight evidence proves the machinery is capturing, resolving, scoring and learning without hindsight; it does not yet prove profitable predictive edge.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
