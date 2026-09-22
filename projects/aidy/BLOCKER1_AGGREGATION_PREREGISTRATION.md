@@ -1,6 +1,41 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (v8 — MATHEMATICS FROZEN, FIXTURE REBUILD IN PROGRESS, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (v9 — MATHEMATICS + EXECUTABLE FIXTURE FROZEN, 2026-09-22)
 
-**Status: v8 — the aggregation MATHEMATICS IS APPROVED AND FROZEN.** The remaining work is fixture validation only; **no aggregation change is in scope.** NOT IMPLEMENTED. No AIDY code written. No production, config or holdout touched. v1 `a8b78fe` … v7 `0738716` preserved immutably.
+**Status: v9 — the aggregation MATHEMATICS AND THE T1 EXECUTABLE FIXTURE ARE FROZEN.** The redesign is still **NOT IMPLEMENTED** in AIDY. No production, config, formal-forward state, live-money path or untouched holdout was changed. v1 `a8b78fe` … v8 `9b3e37a` remain preserved immutably.
+
+## 0. v9 executable fixture freeze — COMPLETE
+
+Fixture validation is complete. The frozen mathematics was **not changed**.
+
+The production-shaped fixture was executed against AIDY source `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` using the real builders on isolated audit PR #243. The audit branch was not merged or deployed. The real source state now contains an explicit OHLC prior-day-low sweep/reclaim/retest scenario so the Liquidity/Reclaim expert itself, rather than the fixture, produces bullish liquidity evidence.
+
+**Frozen v9 evidence:**
+
+| item | frozen result |
+|---|---|
+| real expert packets | **15** = 10 computed + 5 explicit UNKNOWN |
+| learned production sub-calculators | **70** |
+| packet sub-calculators incl. 5 UNKNOWN availability sentinels | **75** |
+| historical commitments | **8,280** |
+| Build-3 scoped trust rows | **510** |
+| global resolved outcomes | **5,000** |
+| dependency-history cycles | **180** |
+| old Build-20→21→22 result | **ABSTAIN — insufficient_directional_authority** |
+| old `directional_total` | **0.049046** |
+| replacement result, same state | **BULLISH — bullish_independent_family_evidence** |
+| qualifying independent root families | **liquidity_mechanism, price_action** |
+| replacement `meta_balance` | **1.000000000** |
+| injected prior-day-low reference | **3648.03** |
+| combined fixture digest | `0c9034382593506c409c9efcfbfa9e4782410d298efb7c90e06baf571f2d7274` |
+
+Committed authoritative artifacts:
+
+- `projects/aidy/fixtures/blocker1_t1_v9_fixture.json`
+- `projects/aidy/fixtures/blocker1_t1_v9_execution.json`
+- `projects/aidy/fixtures/blocker1_t1_v9_fixture_validator.py`
+
+Every commitment now has an explicit `decision_time_utc`, packet/version linkage and scope keys. `correct` is asserted as a derivation only: `int(predicted_class == realised_direction)`. Outcome history is strictly PIT-safe: only rows with `resolved_at_utc < decision_time_utc` enter the baseline or trust calculation. The validator itself caught and rejected an intermediate fixture whose newest outcome resolved exactly at the decision timestamp; that row was moved one cycle earlier before the freeze.
+
+The 70/75 distinction is intentional: **70** are the learned sub-calculator subjects emitted by the ten computed experts; the other **5** are explicit UNKNOWN runtime-availability sentinels for disconnected context gates. They stay in the 15-packet execution graph but are not misrepresented as learned calculators.
 
 **v7's T1 fixture is WITHDRAWN as non-executable.** Attempting to run it through the real pipeline proved it could not work: its eight synthetic contributors (`m5s:accept`, `h1s:trend`, …) do not exist. The real production path emits **70 sub-calculator subjects** with identities of the form `gate_id:calculator_id`, e.g. `m5_price_structure_expert:m5_trend_path`. The claim "the same frozen history derives every real contributor reliability" was therefore false, exactly as review stated.
 
@@ -53,9 +88,9 @@ Reproduced when `price_location_expert` yields **zero references** (which happen
 
 **Not established:** whether live conditions actually produce zero references — in 41 live cycles they did not. But the crash path is real, unguarded, and reflects a genuine disagreement between the expert and the contract about what `neutral` means. It should be fixed regardless, and is logged in `KNOWN_ISSUES.md`.
 
-### 0.3 Remaining work before the fixture can be frozen
+### 0.3 v8 remaining-work list — CLOSED BY v9
 
-Honest status: **the fixture is not yet frozen.** Still required —
+All items below were completed by the v9 executable freeze:
 
 - rebuild the frozen history against the **70 real subjects** from the committed manifest;
 - add **production-shaped Build-3 gate-level trust history**: packet/version linkage, scope keys, scoped trust rows, so Build 21 can derive its selector envelopes from the fixture alone;
@@ -318,7 +353,7 @@ Confidence remains **withheld** until meta-calibration exists. No number is inve
 
 ---
 
-## 4. Pre-registered constants — FREEZE ON APPROVAL OF v7
+## 4. Pre-registered constants — FROZEN IN v7, UNCHANGED THROUGH v9
 
 | constant | value | status |
 |---|---|---|
@@ -398,7 +433,7 @@ Every scorecard row gains `coverage_i`, `accuracy_on_commit_i` (explicitly relab
 
 ## 7. Acceptance tests
 
-### 7.1 T1 — Production-realistic reachability, fixture fully specified here
+### 7.1 T1 — historical v7 fixture specification — WITHDRAWN; v9 artifacts in §0 are authoritative
 
 v3 referred to "pre-registered plausible mature reliability ranges" without stating them, which would have left room to choose a convenient fixture after implementation. **The exact values are therefore fixed below, before any code.** They deliberately do **not** resemble the 41 live outcomes; the purpose is to lock a reasonable mature-state engineering scenario in advance.
 
@@ -546,4 +581,4 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 5. **T18 added** (topology invariance to duplicate reliability, with the v6 ordering as negative control); test count **T1–T18**.
 6. §4 heading corrected to "FREEZE ON APPROVAL OF v7".
 
-**Nothing is left open. v7 is the freeze candidate.**
+**SUPERSEDED BY v9.** The mathematics remains unchanged; the authoritative executable fixture and dual-path result are the v9 artifacts and combined digest in §0.
