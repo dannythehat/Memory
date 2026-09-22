@@ -6,52 +6,58 @@ This file distinguishes confirmed active issues from historical incidents. Do no
 
 ## Confirmed active issues / priorities
 
-### 0. Balance reporting had six different answers; orphaned broker fills — FIX ON BRANCH, NOT DEPLOYED
+### 0. THE BALANCE — SETTLED BY OWNER RULING. FIX ON BRANCH, NOT DEPLOYED
 
-Independent reconciliation on 2026-09-22 against the production database.
+**The Vantage account value is the balance. Universally, permanently, for every
+surface. Nothing may ever disagree with it.** This is an owner ruling given on
+2026-09-22 and it is not open for re-derivation by any future session.
 
-**The ledger.** $1,000.00 start (6 Aug) + $47.71 realised trading across 1,448 closed
-trades + $317.16 of four manual `DEAL_TYPE_BALANCE` corrections = **$1,364.87**, which
-ties to the broker end-of-day balance to the cent on 29 of 30 trading days. The four
-corrections (18, 19, 26 Aug) were deliberate owner fixes and belong in the record.
-Trading alone: August +$52.17, September -$4.46. 14 Sep lost -$308.32 in one day.
+The number is the account value shown on the Vantage account card — balance plus
+floating — which read $2,050.64 on 2026-09-22. It is not the broker's
+closed-trade `balance` field and it is not any Super Signals derivation.
 
-**Six conflicting figures existed**, each correct per its own code:
-$1,047.71 (trading only) · $1,364.87 (broker balance) · $1,437.67 (with overrides and
-reviewed-provider cash) · $1,508.57 (`displayed_balance()`, used for execution sizing)
-· ~$1,828.57 (dashboard calendar) · $2,050.64 (Telegram / Vantage card).
+**Do not repeat these errors.** The four `DEAL_TYPE_BALANCE` adjustments on the
+Owner demo account (18 Aug +$509.78, 19 Aug -$439.34, 26 Aug +$308.72 and
+-$62.00, net +$317.16) are **real trade results the owner recovered by hand
+after MetaAPI failed to place the trades**. They are trading, not top-ups, not
+inflation of the record. Any characterisation of them as anything else is wrong.
 
-Causes, in order of size:
-1. `paper_run_epoch.py:24` hard-codes `PAPER_RUN_BASELINE_BALANCE = 1517.23` dated
-   31 Aug — a value the account never held, which also discards all of August.
-2. +$320.00 of `reviewed_provider_result_*` outcomes with `broker_deal_count = 0`
-   (39 rows 11 Sep, 3 rows 10 Sep) counted as profit with no broker trade behind them.
-   **Unresolved — owner has not yet said whether these are corrections or estimates.**
-3. Telegram and the dashboard publish equity, which carried $685.77 of unbanked
-   floating profit. Fixed on branch in `98ea5c7c`: the published 1% is derived from the
-   account value (the company paper balance), and a stale snapshot suppresses it.
+Six mutually inconsistent balances previously existed, each correct per its own
+code: $1,047.71, $1,364.87, $1,437.67, $1,508.57 (what execution sized from),
+~$1,828.57 and $2,050.64. Root cause was `displayed_balance()` returning
+`OWNER_DEMO_BASELINE_BALANCE + all_time_pnl`, anchored to a hard-coded 1517.23
+dated 31 Aug — a value the account never held, which also discarded August.
 
-**Orphaned broker fills (root cause of the floating).**
-`pending_reconciliation_canonical._persist_filled_not_visible` records a confirmed
-broker fill as `status='error'` with `close_reason='broker_filled_position_not_visible'`
-and audits `mt5.pending_broker_fill_requires_settlement`. That settlement was never
-implemented, and `owner_manual_close.py:172,196` select `p.status='open'`, so the
-position became unreachable by every code path. Three positions stayed live at Vantage
-for up to four weeks (1845153776, 1867467917, 2002783268); two more (1792311887,
-1878491156) closed at the broker while still `error` locally, losing -$14.00 and
--$36.00 from position-level reporting.
+Fixed on branch `claude/trading-bot-prompt-review-hrxbkw`:
 
-Fixed on branch in `0b02278d`: `app/broker_fill_settlement.py` settles stranded fills
-from ingested broker deals (never contacts the broker), plus a broker-deal invariant
-that catches an orphan from any future code path, run each reconciler cycle and logged
-at ERROR while any survives. On first run it adopts the three live positions to `open`
-— which makes them closeable from the owner UI with no broker call.
+- `8567f3bc` — `displayed_balance()` returns the broker account value unmodified
+  for every account; `OWNER_DEMO_BASELINE_BALANCE` deleted; the calendar
+  reconstructs backwards from the account value through all balance-changing
+  deals (which keeps the four corrections inside the ledger); every caller
+  passes the account value, including execution sizing. Nine contract tests in
+  `test_universal_balance_contract.py` pin the invariant, seven of which fail
+  against the previous code.
+- `98ea5c7c` — Telegram publishes the account value and derives its 1% from it.
+- `0b02278d` — orphaned broker fills settled (see below).
 
-**Still open:** the $320 question above; retiring the $1,517.23 / 31 Aug origin so every
-surface reads one number; and the 4 Sep restart override, which will exclude the three
-orphans' realised P&L from reporting when they close, creating a fresh balance-vs-report
-gap unless handled at the same time.
+**Sizing effect when deployed:** execution risks 1% of ~$2,053 instead of 1% of
+~$1,508, so position sizes rise about 36%. The 1% itself is unchanged and stays
+owner-controlled. 1% is per TP leg by design — owner confirmed, do not "fix" it.
 
+**Orphaned broker fills.** `_persist_filled_not_visible` recorded confirmed
+broker fills as `status='error'` and audited
+`mt5.pending_broker_fill_requires_settlement`; that settlement was never
+implemented, and `owner_manual_close.py` selects `status='open'`, so three
+positions stayed live at Vantage for up to four weeks (1845153776, 1867467917,
+2002783268) and two more (1792311887, 1878491156) closed at the broker while
+still `error` locally, losing -$14.00 and -$36.00 from position reporting.
+`app/broker_fill_settlement.py` settles them from ingested broker deals without
+contacting the broker, and adds a broker-deal invariant that catches an orphan
+from any future code path, logged at ERROR every cycle while one survives.
+
+**Still open:** the 4 Sep restart override excludes the three orphans' realised
+P&L from reporting when they close, which would open a fresh balance-vs-report
+gap; handle it in the same deploy.
 
 ### 1. Upstream AIDY Provider Context is NOT_READY — ACTIVE / RED
 
