@@ -1,9 +1,9 @@
-# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v4 — FREEZE CANDIDATE, 2026-09-22)
+# AIDY Blocker 1 — Aggregation Redesign Pre-Registration (DRAFT v5 — FREEZE CANDIDATE, 2026-09-22)
 
-**Status: DRAFT v4 — freeze candidate. NOT IMPLEMENTED. No code written.**
-No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685` preserved immutably.
+**Status: DRAFT v5 — freeze candidate. NOT IMPLEMENTED. No code written.**
+No production, config or holdout touched. v1 `a8b78fe`, v2 `8029712`, v3 `ecdb685`, v4 `701fc8f` preserved immutably.
 
-v4 applies five required changes. **Two were hard contradictions with the existing contract, both confirmed in source, and both were errors in v3 of mine.**
+v5 applies four required corrections and records **one new defect found by executing the real Build-20 engine instead of describing it** (§3.4.1). No frozen threshold changed.
 
 Governing rule, unchanged: input distributions may be inspected for engineering sanity, but **no threshold may be tuned using the 41-cycle outcomes.** Build 23 is re-run only after constants are frozen.
 
@@ -16,7 +16,8 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 | v1 `a8b78fe` | Separate reliability / independence / balance; normalised balance; separate sufficiency gate. |
 | v2 `8029712` | Direction-aware PIT excess skill; exact family mathematics; internal-family conflict; `MIN_FAMILY_STRENGTH`; withdrew `MAX_CONFLICT` as unreachable. |
 | v3 `ecdb685` | Qualifying contributors; corrected weak-family rationale; withdrew `MIN_TRUSTWORTHY_WEIGHT` and `insufficient_contributor_history`; continuous Dirichlet baseline; dedicated family ledgers. |
-| **v4 (this)** | **`family_weight_eligible` replaces the impossible `scoreable`+neutral conjunction (§3.2).** **Final meta output is BULLISH / BEARISH / ABSTAIN — neutral withdrawn as a prediction (§3.6).** **Filtered decision-consumption dependency view so ABSTAIN has zero indirect influence (§3.3).** **Exact T1 fixture values specified in this document (§7.1).** Reachability classified by topology (§5.1). |
+| v4 `701fc8f` | `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; T1 fixtures; topology-classified reachability. |
+| **v5 (this)** | **Stage-B contributors are sub-calculators only (§3.2.1).** **`family_signed_evidence` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` is reporting-only (§3.4).** **T1 fixtures derived by executing the real Build-20 engine, not assumed (§7.1).** **Prospective root-family scoring semantics defined (§8.1).** **NEW: `raw_weights = reliability` fixes arbitrary alphabetical leader selection (§3.4.1).** |
 
 ---
 
@@ -46,6 +47,7 @@ Governing rule, unchanged: input distributions may be inspected for engineering 
 4. Abstain stays reachable for **principled** reasons, never from a unit artifact.
 5. **An ABSTAIN contributor has zero influence — direct or indirect** (§3.3).
 6. **AIDY predicts direction or declines. It does not predict "no movement"** (§3.6).
+7. **Written mathematics must describe the machine that actually runs.** Every fixture in this document is derived by executing the real engine (§7.1), never by assuming its output.
 
 ---
 
@@ -95,6 +97,18 @@ A neutral contributor's `reliability_i` comes **entirely from its prior bullish/
 
 This preserves the dilution property without touching target or scoring semantics.
 
+#### 3.2.1 Stage-B contributors are SUB-CALCULATORS ONLY
+
+v4 spoke generically of a "contributor" while also saying an abstaining *gate* contributes zero but its sub-calculators may enter. That left the contributor universe undefined.
+
+Verified: `extract_dependency_signals` (`gold_evidence_dependency.py:184-236`) iterates **`packet["subcalculators"]` only** and never emits a gate-level signal. **There is therefore no Build-20 `uᵢ` for a gate at all**, and admitting gates alongside their own sub-calculators would count the same evidence twice.
+
+**Ruling: for aggregation v1, `family_weight_eligible` applies to sub-calculators only.** Gate conclusions remain fully used for expert-level explanation, gate trust and scorecards, contradictions, gate diagnostics and judging whether the expert itself was right — but the root-family meta calculation consumes the underlying sub-calculator evidence graph **once**.
+
+    sub-calculators -> dependency -> root families -> meta brain
+
+with gates remaining human-readable specialist summaries over those same sub-calculators.
+
 ### 3.3 Decision-consumption dependency view — closing the ABSTAIN leak
 
 **v3 asserted "an abstaining contributor consumes nothing at all". That was false.** `gold_evidence_dependency.py:271-276`:
@@ -125,15 +139,38 @@ For `family_weight_eligible` contributor `i` in root family `f`, with PIT reliab
     bull_mass_f = Σ pᵢ rᵢ   over bullish contributors
     bear_mass_f = Σ pᵢ rᵢ   over bearish contributors
 
-    family_reliability_f = bull_mass_f + bear_mass_f                           ∈ [0, 1]
-    family_balance_f     = (bull_mass_f − bear_mass_f) / family_reliability_f  ∈ [−1, +1]
-    family_strength_f    = family_reliability_f × |family_balance_f|
+    family_signed_evidence_f = bull_mass_f − bear_mass_f                  ∈ [−1, +1]
+    family_strength_f        = | family_signed_evidence_f |               ∈ [ 0, +1]
+    family_reliability_f     = bull_mass_f + bear_mass_f                  ∈ [ 0, +1]   (reporting)
+    family_balance_f         = family_signed_evidence_f / family_reliability_f          (reporting)
 
-Because `Σpᵢ = 1` and `rᵢ ≤ 1`, six correlated `price_action` contributors cannot create six units of authority. Internally contradictory families weaken themselves.
+Because `Σpᵢ = 1` and `rᵢ ≤ 1`, correlated `price_action` contributors cannot create several units of authority. Internally contradictory families weaken themselves, because opposing mass cancels inside `family_signed_evidence_f`.
 
-**Verified identity:** `family_strength_f ≡ |bull_mass_f − bear_mass_f|`, and `sign_f × family_strength_f ≡ bull_mass_f − bear_mass_f`.
+**This replaces v4's `sign_f`, which was algebraically ambiguous.** v4 said `family_direction_f = sign(family_balance_f)` "treated as no-direction when `|family_balance_f| < FAMILY_NEUTRAL_BAND`", while simultaneously asserting `S = Σ sign_f × family_strength_f ≡ Σ (bull_mass_f − bear_mass_f)`. Those cannot both hold: at `family_balance_f = +0.10` a zeroed `sign_f` contributes 0 to `S`, yet `bull_mass_f − bear_mass_f ≠ 0`, so the identity breaks. There is now **one** definition and no sign function.
 
-`family_direction_f = sign(family_balance_f)`, treated as no-direction when `|family_balance_f| < FAMILY_NEUTRAL_BAND`.
+**`FAMILY_NEUTRAL_BAND` is therefore reporting/diagnostic only** and never zeroes evidence. A family inside the band is labelled `weak_no_directional_consensus` while its small signed evidence still influences `S` and `W` proportionally — exactly the bounded weak-family behaviour intended.
+
+It also cannot affect any qualifying family: since `family_strength_f = family_reliability_f × |family_balance_f|` with `family_reliability_f ≤ 1`, any family meeting `family_strength_f ≥ 0.20` already has `|family_balance_f| ≥ 0.20`. So as a decision gate it was redundant — a fourth redundancy removed.
+
+#### 3.4.1 NEW DEFECT — the family leader is currently chosen alphabetically
+
+Found by executing the real engine. Build 20 sorts signals by `(-raw_weight, signal_id)`, preserves the leader at full weight, and caps all remaining same-root evidence together at `leader_raw_weight × PARENT_GROUP_INCREMENTAL_CAP`. The leader therefore carries roughly **two-thirds** of a family's post-cap allocation.
+
+`raw_weights` is **never supplied anywhere in `src/`** (§1 of the audit), so every signal enters at `raw_weight = 1.0`. With all raw weights equal, the tie-break is `signal_id` — so **the contributor that dominates each family is currently selected in alphabetical order.** Demonstrated directly:
+
+| fixture | leader |
+|---|---|
+| equal raw weights, ids `aaa:x`, `zzz:y`, `mmm:z` | `aaa:x` |
+| same set, renamed to `bbb:x`, `aab:y`, `mmm:z` | `aab:y` — changed by a pure rename |
+| raw weights 0.30 / **0.90** / 0.20 | `zzz:y` — highest weight leads |
+
+A pure rename moves two-thirds of a family's weight. Worse, because `rᵢ` is applied *after* `pᵢ`, a low-reliability contributor that happens to sort first would dominate a family regardless of merit.
+
+**Resolution: supply `raw_weights = reliability_i` in the decision-consumption pass (§3.3).** This is precisely what that unused parameter is for: when several signals describe the same move, the **most reliable** one should be the one that survives the cap.
+
+*Property to state explicitly:* reliability then influences both a contributor's share `pᵢ` and its mass `pᵢ rᵢ`. This is **not** the original defect. The original multiplied an un-normalised redundancy *ratio* into reliability and collapsed scale by ~50×. Here `Σpᵢ = 1` by construction, so `family_reliability_f` stays in `[0,1]` and no scale collapse is possible; the effect is that a family's evidence is worth about as much as its most reliable member, discounted by internal disagreement and neutral dilution. That is the intended semantic.
+
+*Alternative considered and rejected:* keep `raw_weight = 1` for pure geometry and accept arbitrary leader selection. Rejected — an alphabetically-chosen dominant contributor is indefensible.
 
 ### 3.5 Root family graph (existing, unchanged)
 
@@ -149,8 +186,8 @@ Because `Σpᵢ = 1` and `rᵢ ≤ 1`, six correlated `price_action` contributor
 
 ### 3.6 Stage C/D/E — Meta balance, sufficiency, decision
 
-    S            = Σ_f  sign_f × family_strength_f      ( ≡ Σ_f (bull_mass_f − bear_mass_f) )
-    W            = Σ_f  family_strength_f
+    S            = Σ_f  family_signed_evidence_f
+    W            = Σ_f  family_strength_f                ( = Σ_f |family_signed_evidence_f| )
     meta_balance = S / W                                 ∈ [−1, +1], defined only when W > 0
 
 Sums run over **every** family with `family_strength_f > 0`.
@@ -196,7 +233,7 @@ Confidence remains **withheld** until meta-calibration exists. No number is inve
 | `MIN_FAMILY_STRENGTH` | `0.20` | **LOCKED** |
 | `MIN_CONTRIBUTOR_N` | `12` | **LOCKED** — conservative **engineering eligibility floor**, matching the existing `mini_exact` minimum. Explicitly **not** a statistical-distinguishability claim. Never summed across correlated members. |
 | `BALANCED_ABSTAIN_BAND` | `0.20` | **RENAMED from `NEUTRAL_BAND` (v4)** — same value, now an abstain band, per §3.6.1. |
-| `FAMILY_NEUTRAL_BAND` | `0.20` | **LOCKED** — internal family no-direction band; matches the meta band for interpretability. |
+| `FAMILY_NEUTRAL_BAND` | `0.20` | **REPORTING ONLY (v5)** — labels a family `weak_no_directional_consensus`. Never zeroes evidence and cannot affect a qualifying family, since `family_strength ≥ 0.20` already implies `\|family_balance\| ≥ 0.20`. |
 | `PRIOR_STRENGTH` | `20` | reused (`TRUST_PRIOR_STRENGTH`). |
 | `BASELINE_PRIOR_PER_CLASS` | `10` | **LOCKED** |
 | `BASELINE_PRIOR_STRENGTH` | `30` | **LOCKED** — `= 3 × 10`; exactly 1/3 at zero history. |
@@ -205,6 +242,8 @@ Confidence remains **withheld** until meta-calibration exists. No number is inve
 | ~~`MIN_TRUSTWORTHY_WEIGHT`~~ | — | **WITHDRAWN (v3)** — unreachable as an independent condition. |
 | ~~`ALPHA`, `BASE_MIN_N`~~ | — | **WITHDRAWN (v3)** — created a baseline cliff. |
 | ~~meta `neutral` output~~ | — | **WITHDRAWN (v4)** — conceptually wrong and unreachable; see §3.6.1. |
+| ~~`sign_f`~~ | — | **WITHDRAWN (v5)** — algebraically ambiguous; replaced by `family_signed_evidence_f` (§3.4). |
+| `raw_weights` | `= reliability_i` | **NEW (v5)** — supplied to the decision-consumption pass so the family leader is the most reliable contributor, not the alphabetically-first one (§3.4.1). |
 
 ---
 
@@ -268,30 +307,63 @@ Every scorecard row gains `coverage_i`, `accuracy_on_commit_i` (explicitly relab
 
 v3 referred to "pre-registered plausible mature reliability ranges" without stating them, which would have left room to choose a convenient fixture after implementation. **The exact values are therefore fixed below, before any code.** They deliberately do **not** resemble the 41 live outcomes; the purpose is to lock a reasonable mature-state engineering scenario in advance.
 
+**v4's fixture was invalid.** It stated "decision-consumption weights equal → `pᵢ = 1/6`" while also requiring "real Build-20 engine, no stubs". Those are incompatible: the parent-root cap preserves the leader and caps all other same-root evidence together, so equal raw weights do **not** produce equal `pᵢ`. That was the same class of integration error this pre-registration exists to eliminate — describing an engine instead of running it.
+
+**Every value below was produced by executing the real `build_evidence_dependency_engine`.** The pre-registration freezes the **inputs**; `uᵢ` and `pᵢ` are whatever the genuine engine returns.
+
 **Common mature-state assumptions (all scenarios):**
 
     count_total(T)    = 5000 resolved outcomes
     class marginals   = bullish 0.40, bearish 0.40, neutral 0.20   (deliberately NOT the live 0.58/0.29/0.13 skew)
     baseline(bullish) = baseline(bearish) = (2000 + 10) / (5000 + 30) = 0.399602
-    topology          = all 15 real gate identities, ~91 signals, real FAMILY_PARENT relationships,
-                        real Build-20 engine (both passes per §3.3), no stubs
-    scope_mult        = 1.00 (mini_exact)     calibration_mult = 1.00 (strong)
-    recency_mult      = 1.00 (stable)         so reliability_i = quality_i
+    topology          = all 15 real gate identities, real FAMILY_PARENT relationships,
+                        real Build-20 engine, BOTH passes per §3.3, no stubs
+    scope_mult = calibration_mult = recency_mult = 1.00   so reliability_i = quality_i
+    raw_weights      = reliability_i                      per §3.4.1
+    historical_rows  = []                                 (no rolling-correlation damping in the fixture)
 
-**Scenario A — bullish reachable.**
-`price_action`: 6 eligible contributors, each `N = 150`, `shrunk_excess = 0.09` → `quality = 0.09/0.15 = 0.60`. Four vote bullish, two vote neutral. Decision-consumption weights equal → `pᵢ = 1/6`.
-`bull_mass = 4 × (1/6) × 0.60 = 0.40`, `bear_mass = 0` → `family_strength = 0.40` ✓
-`liquidity_mechanism`: 2 contributors, both bullish, `N = 120`, `shrunk_excess = 0.075` → `quality = 0.50`, `pᵢ = 1/2`.
-`bull_mass = 0.50` → `family_strength = 0.50` ✓
-`S = 0.90`, `W = 0.90`, `meta_balance = 1.0`, qualifying families = 2 → **BULLISH**.
+**Scenario A — bullish reachable. Frozen INPUTS (sub-calculators only, per §3.2.1):**
 
-*Same fixture on current `main`:* `shrunk_accuracy ≈ 0.49`, `sample_confidence = 150/170 = 0.882`, and the measured live dependency multiplier (~0.03 for price gates, ~0.05 for liquidity) gives per-gate authority ≈ `0.49 × 0.882 × 0.03 ≈ 0.013`; summed over the directional gates ≈ **0.08 < 0.30 → abstain.** T1 therefore **fails on `main`** and passes after.
+| signal_id | dependency_family | correlation_group | vote | reliability `rᵢ` = raw_weight |
+|---|---|---|---|---|
+| `m5s:accept` | structure | `cg_m5` | bullish | 0.60 |
+| `m15s:break` | structure | `cg_m15` | bullish | 0.55 |
+| `h1s:trend` | structure | `cg_h1` | bullish | 0.45 |
+| `h4s:swing` | structure | `cg_h4` | bullish | 0.45 |
+| `momi:eff` | momentum | `cg_mom` | **neutral** | 0.50 |
+| `locr:conf` | location | `cg_loc` | **neutral** | 0.45 |
+| `liqp:depth` | liquidity | `cg_lq1` | bullish | 0.50 |
+| `liqr:speed` | liquidity | `cg_lq2` | bullish | 0.40 |
 
-**Scenario B — bearish reachable.** Mirror of A with bullish/bearish exchanged → **BEARISH**.
+Each signal carries a distinct `evidence_identity`, so no exact-duplicate collapse applies. Reliabilities are arranged so the leader is **not** alphabetically first — the fixture itself demonstrates §3.4.1.
 
-**Scenario C — genuine independent disagreement.** `price_action` as in A (strength 0.40 bullish); `liquidity_mechanism` both contributors bearish at `quality = 0.50` (strength 0.50 bearish). Two qualifying families, opposite signs → **ABSTAIN `genuine_independent_disagreement`**.
+**Engine-derived OUTPUTS (executed, not assumed):**
 
-**Scenario D — insufficient independent families.** `price_action` as in A (0.40 bullish); `liquidity_mechanism` contributors have `N = 8 < MIN_CONTRIBUTOR_N` so are not eligible → one qualifying family → **ABSTAIN `insufficient_independent_families`**.
+| root | signal | `uᵢ` | `pᵢ` | `rᵢ` |
+|---|---|---|---|---|
+| `price_action` | `m5s:accept` *(leader)* | 0.600000 | 0.666667 | 0.60 |
+| | `m15s:break` | 0.068750 | 0.076389 | 0.55 |
+| | `momi:eff` (neutral) | 0.062500 | 0.069444 | 0.50 |
+| | `h1s:trend` | 0.056250 | 0.062500 | 0.45 |
+| | `h4s:swing` | 0.056250 | 0.062500 | 0.45 |
+| | `locr:conf` (neutral) | 0.056250 | 0.062500 | 0.45 |
+| `liquidity_mechanism` | `liqp:depth` *(leader)* | 0.500000 | 0.666667 | 0.50 |
+| | `liqr:speed` | 0.250000 | 0.333333 | 0.40 |
+
+    price_action:         bull_mass = 0.498264  bear_mass = 0  signed = +0.498264  strength = 0.498264  qualifying ✓
+    liquidity_mechanism:  bull_mass = 0.466667  bear_mass = 0  signed = +0.466667  strength = 0.466667  qualifying ✓
+
+    S = 0.964931   W = 0.964931   meta_balance = 1.000000   qualifying_families = 2   -> BULLISH
+
+Note `m5s:accept` leads `price_action` on reliability 0.60 despite `h1s:trend` and `h4s:swing` sorting before it alphabetically — the §3.4.1 fix working.
+
+**Current-`main` assertion — executed, not approximated.** v4 estimated the old side using a "measured live dependency multiplier ~0.03". That is not acceptable. T1 must run **this exact frozen fixture** through the current `Build 20 → 21 → 22` chain unmodified and record its actual `directional_total` and decision. The assertion is that current `main` **abstains** on evidence the replacement can act on. The recorded number goes into the test as a regression baseline; it is **not** pre-guessed here.
+
+**Scenario B — bearish reachable.** Scenario A inputs with every `bullish` vote replaced by `bearish` → `S = −0.964931`, `meta_balance = −1.000000` → **BEARISH**.
+
+**Scenario C — genuine independent disagreement.** Scenario A inputs with both `liquidity` votes flipped to `bearish`: `price_action` signed +0.498264, `liquidity_mechanism` signed −0.466667. Two qualifying families, opposite signs → **ABSTAIN `genuine_independent_disagreement`**.
+
+**Scenario D — insufficient independent families.** Scenario A inputs, but both `liquidity` sub-calculators have `N = 8 < MIN_CONTRIBUTOR_N` so are not `family_weight_eligible` and never enter the decision-consumption pass → one qualifying family → **ABSTAIN `insufficient_independent_families`**.
 
 **Scenario E — no directional evidence.** All contributors have `shrunk_excess ≤ 0` → `reliability = 0` → none eligible → `W = 0` → **ABSTAIN `no_directional_evidence`**.
 
@@ -304,7 +376,7 @@ v3 referred to "pre-registered plausible mature reliability ranges" without stat
 **T2 — Redundancy.** Six agreeing `price_action` contributors must not outvote one `price_action` plus one `liquidity_mechanism`.
 **T3 — Abstain never votes.** Gate-level `abstain` contributes exactly zero, with and without qualifying sub-calculators.
 **T4 — Outcome reachability.** The four live-reachable outcomes asserted on the 2-root topology; `balanced_directional_evidence` on Scenario F. Each correctly named with its diagnostic payload.
-**T5 — Bounds.** `rᵢ, pᵢ, family_reliability ∈ [0,1]`; `family_balance, meta_balance ∈ [−1,+1]`; `Σpᵢ = 1` over eligible contributors; `W = 0` never divides.
+**T5 — Bounds.** `rᵢ, pᵢ, family_reliability ∈ [0,1]`; `family_signed_evidence, family_balance, meta_balance ∈ [−1,+1]`; `family_strength = |family_signed_evidence|`; `Σpᵢ = 1` over eligible contributors; `W = 0` never divides; and the identity `S ≡ Σ family_signed_evidence_f` holds with no sign function anywhere.
 **T6 — PIT.** `baseline`, `excess_j`, `reliability` and all calibration inputs use only evidence resolved strictly before `as_of`; hindsight guards extended to the new field names and to those the audit found missing (`realised_direction`, `realised_return_bps`, `return_bps`, `score`, `correct`, `impact_class`).
 **T7 — No-edge silence.** A contributor at or below its PIT baseline contributes zero.
 **T8 — Baseline continuity.** Continuous across **every** N with no rule switch; nothing discontinuous at N=29→30; exactly 1/3 at N=0.
@@ -312,6 +384,9 @@ v3 referred to "pre-registered plausible mature reliability ranges" without stat
 **T10 — Weak-family influence bounded.** A sub-threshold family may move `meta_balance` only within the bound implied by its own `family_strength`, and can never alone carry a decision.
 **T11 — Removed conditions stay removed.** No code path can abstain for `insufficient_trustworthy_weight`, `insufficient_contributor_history` or a `MAX_CONFLICT` test; `W ≥ 0.40` holds as an invariant whenever the family count is satisfied.
 **T12 — Neutral contributors dilute (rewritten for §3.2).** One bullish contributor plus five `family_weight_eligible` neutral contributors must yield materially lower `family_strength` than that bullish contributor alone — **without** requiring `scoreable == true` for the neutral ones, and without altering the scoring contract.
+**T14 — Leader selection is reliability-driven, not alphabetical (§3.4.1).** With `raw_weights = reliability_i`, assert the family leader is the most reliable contributor, and that renaming every `signal_id` leaves `uᵢ`, `pᵢ`, `family_strength`, `meta_balance` and the decision unchanged. Include the negative control: with all raw weights equal, a rename **does** move the leader — proving the test detects the defect it guards.
+**T15 — Gates never enter Stage B (§3.2.1).** Assert the decision-consumption contributor set contains only sub-calculator subjects, that no gate-level signal exists in it, and that a bullish gate does not add mass alongside its own bullish sub-calculators.
+**T16 — Family scoring semantics (§8.1).** A frozen family at `strength ≥ 0.20` records bullish/bearish and is scoreable; below 0.20 records abstain and is unscoreable; a realised neutral makes a directional family prediction incorrect.
 **T13 — No neutral meta prediction.** Assert the aggregator can never emit `neutral`; balanced directional evidence produces `abstain("balanced_directional_evidence")`. Assert `neutral` remains valid as a **realised outcome** class and that a directional prediction resolving neutral scores as incorrect.
 
 ---
@@ -324,6 +399,18 @@ v3 referred to "pre-registered plausible mature reliability ranges" without stat
     aidy_gold_root_family_context_scores
 
 carrying `family_id`, `family_version`, `family_balance`, `family_strength`, `bull_mass`, `bear_mass`, member ids/digest, environment/scope keys, resolved outcome and PIT timestamps, with the same `research_only` / `live_money_execution_allowed` guards.
+
+### 8.1 Prospective root-family scoring semantics (defined before collection starts)
+
+Because family scorebooks begin on day one, how a family is scored is fixed **now**, so direct family reliability has a clean definition from the first recorded cycle:
+
+| frozen family state | recorded family prediction | scoreable |
+|---|---|---|
+| `family_strength_f ≥ MIN_FAMILY_STRENGTH` and `family_signed_evidence_f > 0` | **bullish** | yes |
+| `family_strength_f ≥ MIN_FAMILY_STRENGTH` and `family_signed_evidence_f < 0` | **bearish** | yes |
+| `family_strength_f < MIN_FAMILY_STRENGTH` | **abstain** | no — unscoreable |
+
+A realised `neutral` outcome remains legitimate and makes a bullish or bearish family prediction **incorrect**, exactly as for gates. Family excess skill uses the same §3.1 estimator (`excess_j` against the PIT baseline of the predicted class, shrunk toward zero edge), so family reliability will one day be directly comparable with contributor reliability.
 
 Family quality is initially *inferred* from member histories. After enough prospective cycles AIDY gains direct evidence — "`price_action` in London-open/high-volatility: N=87, edge +X" — and the proxy can be replaced by the family's own learned PIT record, without pretending a family was ever an expert gate packet. Starting the writer on day one is the only way that history exists.
 
@@ -361,6 +448,13 @@ Multi-horizon targets; magnitude, no-move or distribution prediction; MAE/MFE ex
 
 **Approved and locked:** continuous Dirichlet baseline; `MIN_FAMILIES = 2`; `EDGE_SCALE = 0.15` over PIT baseline; `MIN_FAMILY_STRENGTH = 0.20`; weak-family bounded influence; strong-family disagreement rule; dedicated family ledgers; coverage reporting; deferred meta-calibration; `pᵢ` over all eligible contributors including neutral; `FAMILY_NEUTRAL_BAND = 0.20`.
 
-**New in v4, submitted for approval:** `family_weight_eligible` (§3.2); BULLISH/BEARISH/ABSTAIN only, neutral withdrawn as a prediction (§3.6.1); filtered decision-consumption dependency view (§3.3); exact T1 fixtures (§7.1); topology-classified reachability (§5.1); T12 rewritten and T13 added.
+**Also approved and unchanged in v5:** `family_weight_eligible`; BULLISH/BEARISH/ABSTAIN only; filtered decision-consumption view; topology-classified reachability. **No frozen threshold was altered by v5.**
 
-**Nothing is left open. v4 is the freeze candidate.**
+**New in v5, submitted for approval:**
+1. Stage-B contributors are **sub-calculators only** (§3.2.1) — gates have no Build-20 `uᵢ` and would double-count.
+2. `family_signed_evidence_f` replaces the ambiguous `sign_f`; `FAMILY_NEUTRAL_BAND` becomes **reporting-only** and is a fourth removed redundancy (§3.4).
+3. T1 fixtures **derived by executing the real engine**; the current-`main` side must also be executed, not approximated (§7.1).
+4. Prospective root-family scoring semantics defined before collection starts (§8.1).
+5. **New defect:** `raw_weights` is never supplied, so the family leader — carrying ~two-thirds of a family — is currently chosen **alphabetically**. Fixed by `raw_weights = reliability_i` (§3.4.1). Tests T14–T16 added.
+
+**Nothing is left open. v5 is the freeze candidate.**
