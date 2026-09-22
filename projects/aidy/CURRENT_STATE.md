@@ -1,34 +1,46 @@
 # AIDY — Current State
 
-## Expert-gate programme — BUILDS 1-23 COMPLETE / BUILD 24 LIVE PROOF IN PROGRESS (2026-09-21)
+## Expert-gate programme — BUILDS 1-24 COMPLETE / PROSPECTIVE SHADOW LEARNING ACTIVE (2026-09-22)
 
-Build 24 — Live Forward Shadow Soak & Permanent Scorecard — is merged and deployed, but this Memory branch deliberately remains unmerged until the delayed outcome score for the first genuine prospective cycle passes.
+The planned 24-build Gold expert-gate programme is complete.
 
-Engineering/live state already proven:
-- AIDY implementation PR #238 tested head `a0b8710abc3fe4ea569deed868ea6538294169ad`;
+**Build 24 — Live Forward Shadow Soak & Permanent Scorecard:** complete and live in research/shadow mode.
+
+Final engineering/live evidence:
+- implementation PR #238 tested head `a0b8710abc3fe4ea569deed868ea6538294169ad`;
 - implementation merge `6644892d12be6ae497f07db2a69119eaa58e0d27`;
-- semantic gate run `35623113461`: PASS;
+- health-telemetry fix merge `c472d761b25f7c7a91880e2de99d27189bbf43f8`;
 - Build-24 acceptance run `35623113260`: PASS;
-- focused/component suite: **103 passed**;
-- full repository regression: **1664 passed**;
-- live public Worker exposes `aidy_gold_expert_shadow_v1` and `aidy_gold_expert_scorecard_v1`;
-- capture and Provider Context are fresh;
-- formal-forward remains OFF;
-- live rollout run `35623618474` has passed schema, deployment, Worker safety and the first genuine post-activation 15-minute shadow cycle.
+- semantic gate run `35623113461`: PASS;
+- focused/component suite: 103 passed;
+- full repository regression: 1664 passed;
+- final rollout run `35630952162`: PASS;
+- final D1 diagnostic run `35630952252`: PASS;
+- health-hotfix deploy run `35630952178`: PASS;
+- final semantic verification `35630952012`: PASS.
 
-Build-24 runtime:
-- prospective activation boundary prevents pre-activation backfill;
-- every eligible cycle stores all 15 expected gate identities;
-- connected PIT experts run from the exact admitted cycle snapshot;
-- currently disconnected macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode live sources remain explicit UNKNOWN context gates;
-- Build-20 dependency state, Build-21 selector and Build-22 final AIDY view are frozen before outcome;
-- later scoring reuses the Build-3 +/-2/+/-1/0 engine and updates permanent environment-specific scorebooks;
-- Provider Context exposes a read-only permanent scorecard;
-- scorecard state is not fed back into private-forward decision inputs.
+Overnight prospective proof as of 2026-09-22 03:42 UTC:
+- activation: 2026-09-21 16:06:57 UTC;
+- 39 prospective shadow cycles frozen;
+- 36 outcomes resolved/scored;
+- 39 AIDY final views = 39 abstentions because directional authority remains insufficient;
+- 20 bearish, 11 bullish and 5 neutral realised outcomes among the 36 resolved cycles;
+- all cycles carry 15 expected gate identities: 10 currently live-known, 5 explicit UNKNOWN;
+- latest shadow sync health = OK, no error;
+- one 135.2-minute cycle gap occurred from 20:55 to 23:10 UTC and the loop recovered automatically;
+- old/simple 15-minute view on the same 36 resolved cycles was correct 13 and incorrect 23 (36.11% exact-direction accuracy).
 
-**Completion gate still open:** live rollout run `35623618474` must prove the later resolved result, 15-gate outcome-ledger coverage, permanent scorebook update and healthy sync. Until then the authoritative programme status remains Builds 1-23 complete / Build 24 live proof in progress.
+Initial gate-global learning remains small-N and is not promotion evidence:
+- H1 structure: N=4, 75.0%, net +3;
+- H4 structure: N=7, 57.14%, net +2;
+- liquidity/reclaim: N=15, 40.0%, net -4;
+- M15 structure: N=12, 41.67%, net -5;
+- M5 structure: N=22, 31.82%, net -15;
+- momentum/impulse: N=12, 41.67%, net -4.
 
-This final wait is the no-hindsight proof, not a build failure. No AIDY live-money authority, formal-forward authority, Super Signals execution/provider rule or owner 1% risk setting changes.
+The five live-unconnected research gates remain explicit UNKNOWN rather than being reconstructed retrospectively: macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode.
+
+**Programme state:** BUILDS 1-24 COMPLETE. Permanent prospective shadow learning is active. Formal-forward and live-money authority remain OFF. The overnight evidence proves the machinery is capturing, resolving, scoring and learning without hindsight; it does not yet prove profitable predictive edge.
 
 ## Factual cycle-start environment v2 — LIVE (2026-09-21)
 
