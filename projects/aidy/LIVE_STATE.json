@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "project": "aidy",
-  "verified_at_utc": "2026-09-22T03:42:22+00:00",
+  "verified_at_utc": "2026-09-22T04:25:00+00:00",
   "source_repo": "dannythehat/Aidy-Gold-Signals",
   "authoritative_branch": "main",
   "branch_head_sha": "47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a",
@@ -13,18 +13,24 @@
     "market_data_source": "twelve_data",
     "market_data_ownership": "public_independent",
     "formal_forward_enabled": false,
-    "deployed_source_sha": "76cbedc410dbb4f298687bdccff754f444048036",
-    "worker_version": "bb0a1553-5b85-44aa-8ca7-6cba85fad081"
+    "deployed_source_sha": "unknown_stale_value_removed_2026-09-22",
+    "worker_version": "bb0a1553-5b85-44aa-8ca7-6cba85fad081",
+    "deployed_source_sha_note": "PREVIOUS VALUE 76cbedc410dbb4f298687bdccff754f444048036 WAS STALE AND WRONG. That commit is \"Build 3: Conditional Trust & Score Engine v3\" (2026-09-21T11:58), 34 commits behind branch_head_sha, and contains none of gold_evidence_dependency.py, gold_environment_gate_selector.py, gold_meta_direction.py, gold_meta_replay.py or gold_expert_shadow.py. Production is demonstrably running Build 24 (42 shadow cycles in D1; worker modified 2026-09-22T04:08:28Z), so this was stale metadata, not old code in production. Exact deployed SHA is not independently verifiable from this session (no deploy ledger read); treat as unknown rather than trusting the old value.",
+    "deployed_build_24_confirmed_by_runtime": true,
+    "worker_last_modified_utc": "2026-09-22T04:08:28+00:00"
   },
   "data_health": {
-    "status": "degraded",
-    "health_code": "stale_provider_context",
-    "reason": "market capture is fresh but complete Provider Context is stale or missing",
+    "status": "ok",
+    "health_code": "market_capture_and_shadow_loop_healthy",
+    "reason": "Live D1 verified: market capture and Build-24 shadow sync both current.",
+    "verified_from": "live D1 aidy-ops-test 3588d82a-d686-4430-872d-d4c0e62c3d5d, read-only",
     "session_open": true,
-    "latest_scheduled_success_utc": "2026-09-16T18:22:09.331000+00:00",
-    "capture_success_lag_seconds_at_check": 88,
-    "latest_provider_context_snapshot_utc": "2026-09-15T20:57:36.761999+00:00",
-    "provider_context_snapshot_lag_seconds_at_check": 77161
+    "latest_capture_utc": "2026-09-22T04:22:35.547000+00:00",
+    "captures_since_2026_09_21T06_00": 266,
+    "shadow_sync_status": "ok",
+    "shadow_sync_observed_at_utc": "2026-09-22T04:20:13.208000+00:00",
+    "latest_meta_direction": "abstain",
+    "superseded_stale_block_note": "Previous data_health claimed status=degraded / stale_provider_context with latest_scheduled_success_utc 2026-09-16T18:22:09.331000+00:00 inside a file dated 2026-09-22. Contradicted by live D1. Corrected per AGENTS.md authority ordering (runtime beats Memory)."
   },
   "provider_context_recovery": {
     "status": "MERGED_NOT_DEPLOYED",
@@ -813,5 +819,78 @@
       "formal_forward_enabled": false,
       "live_money_execution_allowed": false
     }
+  },
+  "independent_audit_2026_09_22": {
+    "audit_type": "independent adversarial audit of Builds 1-24, owner-requested, read-only",
+    "audited_source_sha": "47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a",
+    "memory_sha_at_audit_start": "4a26d811728a585dfe9395c49268783f95ad1214",
+    "handover": "projects/aidy/handovers/2026-09-22-independent-24-build-audit.md",
+    "programme_status": "BUILT and ENGINEERING PROVEN",
+    "decision_layer_status": "RED — cannot produce a directional view at any achievable sample size",
+    "cycles_examined": 42,
+    "resolved_outcomes_examined": 38,
+    "full_regression_at_audited_sha": 1665,
+    "blocking_findings": {
+      "aggregator_threshold_unreachable": {
+        "min_directional_weight": "0.30",
+        "measured_directional_total_max": "0.016939",
+        "measured_directional_total_typical": "0.002-0.009",
+        "realistic_mature_ceiling": "0.179",
+        "cause": "Build 20 evidence-redundancy ratio (91 raw signal-units to 4.0 effective) multiplied into Build 21 confidence product, then summed by Build 22 against an absolute constant — units mismatch"
+      },
+      "environment_key_state_explosion": {
+        "cycles": 41,
+        "distinct_environment_keys": 41,
+        "cause": "utc_clock_bucket_15m and utc_weekday in GLOBAL_CORE_DIMENSIONS",
+        "global_core_rows": 570,
+        "global_core_max_sample_n": 1,
+        "mini_exact_rows": 300,
+        "mini_exact_max_sample_n": 3,
+        "effect": "100 percent fallback to gate_global environment-blind average"
+      },
+      "calibration_paths_dead": {
+        "selector_calibration_rows": "hardcoded empty in live bundle",
+        "meta_calibration_rows": "hardcoded empty in live bundle",
+        "effect": "Build 21 calibration multiplier permanently 0.85; Build 22 calibrated_confidence permanently null"
+      },
+      "best_gates_contribute_zero": {
+        "cause": "gate-level abstain receives no directional_authority_weight",
+        "h1_abstain_cycles": "29/41",
+        "h4_abstain_cycles": "33/41",
+        "h4_bearish_conclusions": "0/41",
+        "m5_directional_commits": "25/41 at 31.82 percent accuracy"
+      },
+      "d1_h4_starved": {
+        "d1_admitted_bars": 10,
+        "h4_admitted_bars": 42,
+        "h1_admitted_bars": 156,
+        "m1_bars_available": 40771,
+        "m1_earliest": "2026-08-12",
+        "cheap_fix": "backfill H4/D1 aggregates from existing M1 — zero new data cost"
+      }
+    },
+    "material_non_blocking": [
+      "zero-market-minute bucket misclassified as inadmissible; root cause of the 135.2-minute gap, which was NOT an outage; recurs ~60 min every Mon-Thu (~1,000 cycles/year)",
+      "no scheduled workflow or alerting; shadow health is a single overwritten row, so the loop can stop silently with no record",
+      "no baselines computed — always-bearish scores 57.9 percent on the resolved sample, so legacy 36.11 percent and M5 31.82 percent are below both random and majority-class",
+      "outcome labels not volatility-normalised (LARGE_MOVE_BPS 5, CYCLE_NEUTRAL_BAND_BPS 2)",
+      "abstain carries no cost, so chronic abstainers can earn trust while contributing nothing",
+      "hindsight blacklist omits realised_direction, realised_return_bps, score, correct, impact_class"
+    ],
+    "verified_sound": [
+      "PIT window discipline — 0/41 windows start before their decision; 4.2-4.8 min embargo; disjoint 15-min windows",
+      "serial dependence mild — 21 runs observed vs ~22.4 expected under independence",
+      "vendor revisions cannot alter frozen history (first_observed_at <= cutoff, revision_index)",
+      "explainability — 630 gate snapshots = exactly 42 cycles x 15 gates, plus 3,742 sub-calculator snapshots",
+      "Build 19 analogue retrieval is genuinely hindsight-free",
+      "Build 2 gate contract enforces substantive invariants",
+      "AIDY/Super Signals isolation clean; no broker, MetaAPI, MT5 or follower state read",
+      "legacy MetaAPI rows excluded at the data layer by aggregate source filter",
+      "1:1 cycle yield — 41 cycle views after activation produced 41 shadow cycles"
+    ],
+    "test_suite_caveat": "1,665 tests prove software correctness, not reachability. Meta-direction fixture defaults to n=100/correct=75 with 1-2 gates in one dependency family; production runs N<=23, ~40 percent accuracy, 91 damped signals. No test asserts a non-abstain direction is reachable under the live graph. Build 23 ablations reporting non-abstain behaviour are suspect until re-run.",
+    "audit_scope_limits": "Builds 4-19 mathematics and Build 23 ablations were not audited line-by-line. R2/BigQuery/queue internals not audited. Super Signals isolation verified by code inspection rather than by reading its architecture docs.",
+    "safety_unchanged": true,
+    "production_changed": false
   }
 }
