@@ -32,9 +32,13 @@ Blast radius: `_build_experts` calls the builder unguarded, but `provider_entry.
 
 Not established whether live conditions produce zero references — they did not in the 41 observed cycles. The expert and the contract nonetheless disagree about `neutral` semantics, which should be reconciled regardless.
 
-### 0.1 No reachability test — process gap that allowed 0a-0d to ship — ACTIVE
+### 0.1 Reachability-test process gap — FIXTURE PROOF RESOLVED / PRODUCTION TEST PENDING
 
-The 1,665-test suite proves software correctness, not reachability. `tests/test_gold_meta_direction.py` defaults to `n=100, correct=75` with 1-2 gates in a single dependency family (dependency multiplier ~1.0, authority ~0.3-0.5); production runs N<=23, ~40% accuracy and 91 mutually damped signals (~0.003). **No test asserts a non-abstain direction is reachable under the live 15-gate / 91-signal graph.** Add that assertion as part of fixing 0a. Treat any Build 23 ablation that reported non-abstain behaviour as suspect until re-run.
+The original process gap was real: the 1,665-test suite proved software correctness but did not assert that a non-abstain direction was reachable under the real connected graph.
+
+Blocker-1 v9 now closes the **engineering-fixture** part of that gap. CI run `35704609730` executed the real 15-gate path with **70 connected sub-calculator identities** and the frozen replacement mathematics from one immutable fixture. The current path abstained at `directional_total=0.152785`; the replacement reached bullish with two qualifying independent families (`price_action=0.331592`, `liquidity_mechanism=0.373330`). Combined manifest digest: `cf9e44df2965ebbe2b8cbc4e1c21d2e6682dfe978466feb5f3686978bc70e1cd`.
+
+This issue is **not fully closed** until the same assertion is promoted into the actual AIDY production test suite alongside the implementation. Until then, blocker 0a remains ACTIVE/RED and Build 23 non-abstain findings remain non-authoritative.
 
 ### 0.2 Cycle loss from zero-market-minute bucket — ACTIVE, ~1,000 cycles/year
 
