@@ -1,91 +1,124 @@
 # AIDY expert-gate Build 24 — live forward shadow closeout
 
-Date: 2026-09-21
+Date: 2026-09-22
 
-Status at draft time: **engineering complete; final delayed live score proof running**
+Status: **PRODUCTION VERIFIED / COMPLETE — PROSPECTIVE SHADOW LEARNING ACTIVE**
 
 ## Build
 
 Build 24 — Live Forward Shadow Soak & Permanent Scorecard
 
-This is the final planned numbered build in the 24-build expert-gate programme.
+This closes the planned 24-build Gold expert-gate programme.
 
-## What was implemented
+## What is live
 
-AIDY now has a prospective-only shadow runtime tied to the existing fresh 15-minute Gold cycle.
+AIDY now runs a prospective-only shadow loop on the existing fresh 15-minute Gold cycle.
 
-Every eligible cycle after the persisted Build-24 activation boundary stores:
-- the exact frozen cycle/environment identity;
+Every eligible post-activation cycle stores, before the outcome:
+- exact frozen cycle/environment identity;
 - all 15 expected expert-gate identities;
 - gate packets and sub-calculators;
-- pre-outcome conditional trust;
+- conditional trust;
 - Build-20 dependency state;
-- Build-21 environment-aware selector state;
-- Build-22 final AIDY research view;
-- the later outcome only after the target window resolves;
-- post-outcome gate/subcalculator/meta scores;
-- permanent environment-specific scorebook state.
+- Build-21 selector state;
+- Build-22 final AIDY research view.
 
-The permanent scorecard exposes mini-environment, N, raw/shrunk reliability, net score, drift, uncertainty, dependency adjustment, calibration/current trust and last score time.
+After the target window resolves, the runtime stores:
+- realised outcome;
+- gate/subcalculator/meta scores;
+- updated environment-specific trust scorebooks.
+
+The permanent scorecard exposes gate mini-environment, sample N, raw/shrunk reliability, net score, recent performance, drift, uncertainty, dependency adjustment, calibration/current trust and last score time.
 
 ## Live source honesty
 
-The current admitted live PIT stack can genuinely compute the price/structure/location/momentum/liquidity/volatility/session experts.
+Currently live-known each cycle:
+- M5 Price Structure
+- M15 Price Structure
+- H1 Price Structure
+- H4 Price Structure
+- D1 Context
+- Price Location
+- Momentum / Impulse
+- Liquidity / Reclaim
+- Volatility / Jump
+- Session / Participation
 
-The current live source contract does not yet connect all accepted research feeds into every fresh cycle. Macro/event, rates/USD/cross-asset, futures/microstructure, news/mechanism and analogue/episode therefore remain explicit UNKNOWN context gates in Build 24. They receive zero invented directional authority.
+Explicit UNKNOWN until a valid live source is connected:
+- Macro / Event
+- Rates / USD / Cross-Asset
+- Futures / Microstructure
+- News / Movement Mechanism
+- Analogue / Episode
 
-This is intentional. A missing source is not substituted with retrospective data.
+UNKNOWN gates receive no invented directional authority.
 
 ## Prospective / no-hindsight boundary
 
-- activation is written before a Build-24 cycle can qualify;
-- cycles decided before activation are excluded rather than backfilled;
-- all pre-outcome expert/dependency/selector/meta artifacts bind to the already-admitted snapshot at T;
-- the scorecard never feeds back into the private-forward input builder;
-- scoring reads only the later existing Gold-cycle outcome;
-- frozen packets are not rewritten after the outcome;
-- inserts are idempotent under restart/retry.
+- activation is persisted before a Build-24 cycle can qualify;
+- pre-activation cycles are excluded, not backfilled;
+- pre-outcome artifacts bind to the already-admitted snapshot at T;
+- outcome rows are read only after the target window resolves;
+- frozen packets are never rewritten after the outcome;
+- restart/retry writes are idempotent;
+- the scorecard is read-only and not fed back into the private-forward input builder.
 
-## Engineering evidence
+## Engineering acceptance
 
-AIDY PR #238  
+AIDY implementation PR #238  
 Exact tested head: `a0b8710abc3fe4ea569deed868ea6538294169ad`  
-Implementation merge: `6644892d12be6ae497f07db2a69119eaa58e0d27`
+Implementation merge: `6644892d12be6ae497f07db2a69119eaa58e0d27`  
+Health-telemetry fix merge: `c472d761b25f7c7a91880e2de99d27189bbf43f8`  
+AIDY repository closeout merge: `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`
 
-- semantic gate: run `35623113461` PASS
-- Build-24 acceptance: run `35623113260` PASS
-- focused/component tests: **103 passed**
-- full repository regression: **1664 passed**
-- Day-53 feed and safety checks on exact head: PASS
+- semantic gate `35623113461`: PASS
+- Build-24 acceptance `35623113260`: PASS
+- focused/component tests: 103 passed
+- full regression: 1664 passed
+- final rollout `35630952162`: PASS
+- final D1 diagnostic `35630952252`: PASS
+- corrected health deploy `35630952178`: PASS
+- final semantic verification `35630952012`: PASS
+- overnight report `35684106808`: PASS
 
-Public live Worker after merge:
-- Build-24 shadow version: `aidy_gold_expert_shadow_v1`
-- scorecard version: `aidy_gold_expert_scorecard_v1`
-- capture: ON
-- Twelve Data/public-independent
-- Provider Context: fresh
-- formal-forward: OFF
+## Overnight prospective evidence
 
-## Final live acceptance
+Activation: `2026-09-21T16:06:57.440000+00:00`
 
-PR #239 / run `35623618474` was created specifically to prove the genuine prospective path.
+As of `2026-09-22T03:42:22+00:00`:
+- 39 prospective shadow cycles frozen;
+- 36 outcomes resolved and scored;
+- 3 latest cycles not yet resolved at report cut;
+- AIDY final layer: 39 abstentions, 0 bullish, 0 bearish, 0 neutral;
+- reason: insufficient directional authority;
+- realised outcomes: 20 bearish, 11 bullish, 5 neutral;
+- every cycle stored 15 expected gate identities: 10 live-known + 5 explicit UNKNOWN;
+- sync health: OK, no error;
+- one 135.2-minute cycle gap occurred from 20:55 to 23:10 UTC and the loop recovered automatically.
 
-Already passed at draft time:
-- migration/schema;
-- deploy;
-- Worker health/safety;
-- first genuine post-activation shadow cycle;
-- all 15 expected gate identities present.
+The old/simple 15-minute view on the same 36 resolved cycles:
+- correct: 13
+- incorrect: 23
+- exact-direction accuracy: 36.11%
 
-The delayed outcome/score step is intentionally still running at draft time. Do not merge this Memory closeout or call Build 24 complete until that step is PASS and its exact realised-cycle evidence is copied below.
+Initial gate-global learning is small-N and must not be treated as promotion evidence:
+- H1 structure: N=4, 75.0%, net +3;
+- H4 structure: N=7, 57.14%, net +2;
+- Liquidity/Reclaim: N=15, 40.0%, net -4;
+- M15 structure: N=12, 41.67%, net -5;
+- M5 structure: N=22, 31.82%, net -15;
+- Momentum/Impulse: N=12, 41.67%, net -4.
 
-## Authority boundary
+## Interpretation
 
-- research/shadow only;
-- AIDY formal-forward authority OFF;
-- AIDY live-money execution authority OFF;
-- Super Signals execution/provider rules unchanged;
-- owner 1% risk unchanged.
+Build 24 proves the prospective learning machinery is operating without hindsight and can accumulate real market evidence.
 
-Passing Build 24 starts the permanent prospective soak/learning programme. It does not by itself claim profitable predictive edge.
+It does **not** prove profitable predictive edge yet.
 
+AIDY is currently doing the correct conservative thing: abstaining while the selector lacks enough trustworthy directional sample size.
+
+Formal-forward authority remains OFF. Live-money execution authority remains OFF.
+
+## Final programme state
+
+**BUILDS 1-24 COMPLETE / PROSPECTIVE SHADOW LEARNING ACTIVE**
