@@ -2,6 +2,13 @@
 
 ## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
 
+### Blocker 1 repair status — v9 fixture frozen, redesign still NOT IMPLEMENTED
+
+The aggregation redesign mathematics is frozen and its production-shaped T1 fixture is now executable and frozen at combined digest `0c9034382593506c409c9efcfbfa9e4782410d298efb7c90e06baf571f2d7274`. Against the same real 15-packet state, the existing Build-20→21→22 path executes to **ABSTAIN / insufficient_directional_authority** with `directional_total=0.049046`; the frozen replacement mathematics executes to **BULLISH** with two qualifying independent root families, `price_action` and `liquidity_mechanism`.
+
+This is an **engineering reachability proof, not a performance claim**. The fixture deliberately constructs a mature PIT-safe history and a real builder-detected bullish liquidity reclaim. Production remains unchanged and RED; the redesign is not live and has no live-money authority. Next Blocker-1 work is to write T1-T18 against the frozen v9 fixture, confirm the old path fails the acceptance contract, then implement the already-frozen aggregation exactly.
+
+
 An independent adversarial audit of Builds 1-24 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a` found that **a directional view is practically unreachable in the current production architecture.** Builds 1-24 are BUILT and ENGINEERING PROVEN. The live decision layer is RED.
 
 **Independently verified 2026-09-22** by a second reviewer in a separate read-only run against the same SHA and live D1 (verification run `35687904986`, no production change). All headline numbers confirmed, plus average `directional_total` = **0.004491** against the required 0.30. Two wording corrections from that verification are applied below.
@@ -24,7 +31,7 @@ Verified sound under attack: PIT window discipline (0/41 windows start before th
 
 **Test-suite caveat:** the 1,665 tests prove software correctness, not reachability. The meta-direction fixture defaults to `n=100, correct=75` with 1-2 gates in one dependency family; production has N<=23, ~40% accuracy and 91 damped signals. No test asserts a non-abstain direction is reachable under the live graph. Build 23 results that reported non-abstain behaviour should be treated as suspect until re-run.
 
-**Next step is repair, not new data.** Fix order: re-denominate the aggregator; add the reachability test; fix the environment key; wire both calibration paths; backfill H4/D1 aggregates from existing M1; fix the bucket bug and abstain weighting; add cron'd monitoring and health history; add baselines; then soak 2-4 weeks unchanged before any promotion reasoning.
+**Next step is repair, not new data.** Blocker-1 mathematics and its executable v9 fixture are now frozen. Fix order: write T1-T18 and implement the frozen re-denominated aggregator; fix the environment key; wire both calibration paths; backfill H4/D1 aggregates from existing M1 while preserving original PIT lineage; fix the bucket bug and recover directional sub-evidence without making abstain vote; add cron'd monitoring and health history; add baselines; then soak 2-4 weeks unchanged before any promotion reasoning.
 
 ## Expert-gate programme — BUILDS 1-24 BUILT / ENGINEERING PROVEN / DECISION LAYER RED (2026-09-22)
 
