@@ -20,6 +20,23 @@ Five blocking defects. All are engineering/wiring defects, not flaws in the arch
 
 Do not wire new data sources before these are fixed. Do not read the 41/41 abstention as calibrated caution.
 
+### 0.01 AIDY/Super Signals RESOURCE coupling caused a live-trading stoppage — RESOLVED ON THE DEPLOYED LINE, MERGE HAZARD OPEN
+
+**Correction to the 2026-09-22 audit.** That audit reported "AIDY/Super Signals isolation is clean". That was true only at the **evidence** level — no gold expert module reads broker, MetaAPI, MT5 or follower state, and the data manifest asserts `super_signals_dependency_allowed: false`. It was **blind to resource-level coupling**, and the owner reports AIDY research contended with live execution badly enough to **stop real trading**. The audit should have checked shared connection pools and runtime lanes, not only shared evidence. Isolation claims must in future cover data, execution authority **and** shared infrastructure.
+
+**Current state — the deployed line is protected.** On `feature/day-10-shared-telegram-sources` (the production line; `main` is NOT deployed):
+- `get_engine()` is deliberately bounded: `pool_size=5, max_overflow=3, pool_timeout=15, pool_recycle=120, pool_use_lifo=True`, with the stated purpose of stopping a research burst from starving the trading listener on the small Render Postgres instance.
+- A separate `get_research_engine()` gives AIDY one connection, no overflow, plus server-side `statement_timeout`/`lock_timeout`/`idle_in_transaction_session_timeout`, and it is genuinely wired (`main.py:151`).
+
+**MERGE HAZARD — do not merge `main` into the deployed line as-is.** `main`'s `1a5488d2 "Hard-isolate AIDY research from live trading"` is a mixed change:
+- *Better:* the AIDY lane becomes stricter — `pool_timeout` 30s → **1s**, `statement_timeout` 15s → **5s**, `idle_in_transaction_session_timeout` 15s → **5s**. A runaway research query dies fast in its own lane.
+- *Worse:* it **removes every bound from the live engine**, leaving only `pool_pre_ping`/`future`. SQLAlchemy defaults then apply (verified: `pool_size=5, max_overflow=10, timeout=30`), so live connections can reach **15** instead of 8, and `pool_recycle=120` — added explicitly to recover from Render/Postgres connection resets — is gone.
+- *Also lost:* `application_name="super-signals-aidy-research"` (which made AIDY connections identifiable in `pg_stat_activity`) and the env-tunable `AIDY_RESEARCH_DB_STATEMENT_TIMEOUT_MS` / `AIDY_RESEARCH_DB_POOL_TIMEOUT_SECONDS` overrides, so timeouts become hardcoded and cannot be tuned without a deploy.
+
+**Recommended target state:** `main`'s tighter AIDY lane **plus** the deployed line's bounded live engine and connection recycling, retaining the `application_name` tag and the env overrides. Merging `main` wholesale would raise the live ceiling 8 → 15 and drop reset recovery on the exact instance that already failed.
+
+`main` also diverges from the deployed line by 372 commits and carries 2 commits the live line lacks; that divergence should be reconciled deliberately rather than by a bulk merge.
+
 ### 0.05 Liquidity/Reclaim expert can raise in the live Build-24 path — ACTIVE, latent
 
 Found 2026-09-22 while building the Blocker-1 T1 pipeline validator; reproducible.
