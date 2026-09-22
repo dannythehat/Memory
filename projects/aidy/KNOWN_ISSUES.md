@@ -28,12 +28,14 @@ Do not wire new data sources before these are fixed. Do not read the 41/41 abste
 - `get_engine()` is deliberately bounded: `pool_size=5, max_overflow=3, pool_timeout=15, pool_recycle=120, pool_use_lifo=True`, with the stated purpose of stopping a research burst from starving the trading listener on the small Render Postgres instance.
 - A separate `get_research_engine()` gives AIDY one connection, no overflow, plus server-side `statement_timeout`/`lock_timeout`/`idle_in_transaction_session_timeout`, and it is genuinely wired (`main.py:151`).
 
-**MERGE HAZARD — do not merge `main` into the deployed line as-is.** `main`'s `1a5488d2 "Hard-isolate AIDY research from live trading"` is a mixed change:
-- *Better:* the AIDY lane becomes stricter — `pool_timeout` 30s → **1s**, `statement_timeout` 15s → **5s**, `idle_in_transaction_session_timeout` 15s → **5s**. A runaway research query dies fast in its own lane.
-- *Worse:* it **removes every bound from the live engine**, leaving only `pool_pre_ping`/`future`. SQLAlchemy defaults then apply (verified: `pool_size=5, max_overflow=10, timeout=30`), so live connections can reach **15** instead of 8, and `pool_recycle=120` — added explicitly to recover from Render/Postgres connection resets — is gone.
+**MERGE HAZARD — do not merge `main` into the deployed line.** `main`'s `1a5488d2 "Hard-isolate AIDY research from live trading"` is **worse on both counts**, not a mixed change:
+- It **removes every bound from the live engine**, leaving only `pool_pre_ping`/`future`. SQLAlchemy defaults then apply (verified: `pool_size=5, max_overflow=10, timeout=30`), so live connections can reach **15** instead of 8, and `pool_recycle=120` — added explicitly to recover from Render/Postgres connection resets — is gone.
+- It **reverts the self-starvation fix.** `a61e665d "Fix AIDY research self-starvation"` on the deployed line had already moved the research lane from `statement_timeout` 5000 → **15000** and `pool_timeout` 2 → **30**, because the tighter settings stopped research completing. `main` proposes **5000** and **1** — at or below values already proven broken.
 - *Also lost:* `application_name="super-signals-aidy-research"` (which made AIDY connections identifiable in `pg_stat_activity`) and the env-tunable `AIDY_RESEARCH_DB_STATEMENT_TIMEOUT_MS` / `AIDY_RESEARCH_DB_POOL_TIMEOUT_SECONDS` overrides, so timeouts become hardcoded and cannot be tuned without a deploy.
 
-**Recommended target state:** `main`'s tighter AIDY lane **plus** the deployed line's bounded live engine and connection recycling, retaining the `application_name` tag and the env overrides. Merging `main` wholesale would raise the live ceiling 8 → 15 and drop reset recovery on the exact instance that already failed.
+**CORRECTION.** An earlier version of this entry recommended "`main`'s tighter AIDY lane plus the deployed line's bounded live engine". That was **wrong** — it treated `main`'s tighter research timeouts as an improvement when they are a regression of a lesson the deployed line had already learned. **The deployed line is strictly better on `db.py`; take nothing from `main` here.**
+
+**Guarded.** `services/api/tests/test_db_pool_isolation_contract.py` (branch `claude/trading-bot-prompt-review-hrxbkw`) pins all of it with configuration-only assertions: live pool bounds present, research lane single-connection with no overflow, server-side timeouts present, timeouts env-tunable, defaults not regressed to 5000/2, `application_name` tag retained, engines separate. Verified as a negative control — **all seven fail against `main`'s `db.py`**, so a merge trips the guard instead of silently removing the protections.
 
 `main` also diverges from the deployed line by 372 commits and carries 2 commits the live line lacks; that divergence should be reconciled deliberately rather than by a bulk merge.
 
@@ -57,13 +59,21 @@ The 1,665-test suite proves software correctness, not reachability. `tests/test_
 
 `twelve_data_market.py:216,229` classifies a bucket with **no market minutes** as inadmissible rather than not-applicable. Traced root cause of the 135.2-minute gap of 2026-09-21, which was **not an outage** — capture ran every 5 minutes throughout. The H1 bucket 21:00-22:00 UTC (CME daily maintenance break) reports `expected_market_minutes: 0`, `coverage_ratio: "0.000000"`, `admissible: false`, forcing `capture_status: partial` until the bucket rolls at 23:02. Recurs every Monday-Thursday, ~4 lost cycles/day, concentrated at the post-reopen hour. Fail-closed behaviour is safe; the classification is wrong.
 
-### 0.3 No automated monitoring of the learning loop — ACTIVE
+### 0.3 No automated monitoring of the learning loop — FIXED ON BRANCH, NOT MERGED
 
-No scheduled workflows exist (only `ops-aidy-live-recovery-20260913.yml` has a cron, a one-off ops recovery). Every watchdog triggers only on `workflow_dispatch` or a push editing its own file. `aidy_gold_expert_shadow_sync_health` is a singleton row that each sync overwrites, so no health history survives. The 135-minute gap had to be reconstructed from `market_snapshots` because telemetry could not show it. The loop can stop learning with no alert and no record.
+No scheduled workflows existed (only `ops-aidy-live-recovery-20260913.yml` had a cron, a one-off ops recovery). Every watchdog triggered only on `workflow_dispatch` or a push editing its own file. `aidy_gold_expert_shadow_sync_health` is a singleton row that each sync overwrites, so no health history survived. The 135-minute gap had to be reconstructed from `market_snapshots` because telemetry could not show it.
 
-### 0.4 No baselines; outcome labels not volatility-normalised — ACTIVE
+**Fixed on `claude/trading-bot-prompt-review-hrxbkw` (Aidy-Gold-Signals), branched from the repair branch so it composes with it. Not merged, not deployed.**
+- Migration `0028_gold_expert_shadow_health_history.sql` adds an append-only history table, written on both the success and error paths of `provider_entry.py`, recording `minutes_since_previous_cycle` so a stall is visible in telemetry itself. The helper swallows its own failures — health must never endanger capture.
+- `.github/workflows/aidy-shadow-loop-watchdog.yml` is the first genuinely scheduled watchdog in the repo (hourly; 24 runs/day to stay credit-light). It fails on a stalled loop, stale health, a recorded sync error, or an unexpected gate count. Thresholds env-tunable.
+- `scripts/aidy_shadow_loop_watchdog.py` is strictly read-only — one bounded D1 SELECT, never writes.
+- Six tests pin the alert conditions, including the liquidity `ValueError` as a worked example.
 
-Nothing computes a baseline, so recorded accuracy figures are uninterpretable. On the 38-outcome resolved sample (22 bearish / 11 bullish / 5 neutral) always answering "bearish" scores **57.9%**; legacy 36.11% and M5 31.82% are below both random 3-class (33%) and majority-class. Add majority-class, persistence and random baselines to the scorecard before any promotion reasoning. Separately, `LARGE_MOVE_BPS = 5` and `CYCLE_NEUTRAL_BAND_BPS = 2` are fixed rather than volatility-normalised, so a label means different things in Asian chop versus an NY event. Abstain also carries no cost, so chronic abstainers can earn trust while contributing nothing.
+### 0.4 No baselines (FIXED ON BRANCH); outcome labels not volatility-normalised — PARTLY ACTIVE
+
+**Baselines fixed on `claude/trading-bot-prompt-review-hrxbkw` (not merged):** `scorecard_snapshot` now publishes `outcome_baselines` with majority-class, persistence and uniform-random accuracies, class counts, and a reading note that any accuracy at or below them shows no demonstrated skill. Strictly pre-decision; an empty sample yields an explicit `no_resolved_outcomes_yet` rather than a fabricated number. A test reproduces the live sample exactly (22/38 = 0.578947). **Volatility-normalised labels remain outstanding.**
+
+Original finding: nothing computed a baseline, so recorded accuracy figures were uninterpretable. On the 38-outcome resolved sample (22 bearish / 11 bullish / 5 neutral) always answering "bearish" scores **57.9%**; legacy 36.11% and M5 31.82% are below both random 3-class (33%) and majority-class. Add majority-class, persistence and random baselines to the scorecard before any promotion reasoning. Separately, `LARGE_MOVE_BPS = 5` and `CYCLE_NEUTRAL_BAND_BPS = 2` are fixed rather than volatility-normalised, so a label means different things in Asian chop versus an NY event. Abstain also carries no cost, so chronic abstainers can earn trust while contributing nothing.
 
 ### 0.5 Hindsight blacklist omits this codebase's own outcome fields — ACTIVE, low severity
 
