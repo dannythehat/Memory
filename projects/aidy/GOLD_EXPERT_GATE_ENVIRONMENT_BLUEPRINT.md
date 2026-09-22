@@ -1,11 +1,11 @@
 # AIDY Gold Expert Gates & Environment Learning Blueprint
 
-**Status:** RESEARCH BLUEPRINT ONLY — NO AIDY IMPLEMENTATION AUTHORIZED BY THIS DOCUMENT  
+**Status:** IMPLEMENTED — BUILDS 1-24 COMPLETE / PROSPECTIVE SHADOW LEARNING ACTIVE  
 **Date:** 2026-09-21  
 **Implementation repository when builds begin:** `dannythehat/Aidy-Gold-Signals`  
 **Blueprint/continuity repository:** `dannythehat/Memory`
 
-> **Progress update — 2026-09-21:** Builds 1-23 are COMPLETE. Build 23 Chronological Replay, Ablation & Untouched Holdout is engineering-proven with immutable pre-outcome decision state, purge/embargo splits, validation-only recommendations, explicit dependency ablation, holdout immutability and acceptance-fixture/real-market evidence separation. Build 24 — Live Forward Shadow Soak & Permanent Scorecard — is next and is the final planned build. The blueprint remains the authoritative sequential plan; do not skip acceptance gates.
+> **Progress update — 2026-09-22:** Builds 1-24 are COMPLETE. Build 24 Live Forward Shadow Soak & Permanent Scorecard is live in prospective research/shadow mode with no hindsight, all 15 gate identities, delayed outcome scoring, environment-specific scorebooks and final overnight health proof. The numbered build programme is complete; permanent prospective learning continues. Formal-forward and live-money authority remain OFF.
 
 ## 1. Purpose
 
@@ -1355,6 +1355,8 @@ Permanent scorecard exposes:
 - exact environment-specific history inspectable;
 - fresh live examples prove different gate weights under different environments;
 - formal-forward/live-money authority remains OFF.
+
+**Completion — 2026-09-22: PASS.** Build 24 is live as `aidy_gold_expert_shadow_v1` with `aidy_gold_expert_scorecard_v1`. Final rollout, D1 diagnostic, health deploy and semantic verification all passed. Overnight proof recorded 39 prospective cycles, 36 resolved outcomes, all 15 gate identities per cycle (10 live-known + 5 explicit UNKNOWN), delayed post-window scoring, permanent scorebook updates and health status OK. The new meta layer abstained on all 39 cycles because directional authority remained insufficient; the old/simple view was correct 13/36 (36.11%) on the same resolved sample. This proves prospective operation and no-hindsight learning, not profitable predictive edge.
 
 Only after a separate future owner decision would any decision class be considered for live authority. This blueprint does not authorize that step.
 
