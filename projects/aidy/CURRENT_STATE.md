@@ -17,8 +17,31 @@ rule. The failure raises inside the scoring loop, which aborts the whole schedul
 so no new cycles were created either — and the unscored cycle stayed at the head of the
 queue and failed again every minute. A permanent wedge.
 
-Fixed in PR #250 by versioning the contract: `v1` = old rule (the 1,785 stored packets),
-`v2` = new rule, and verification dispatches on the packet's own declared version.
+Fixed in TWO parts. PR #250 versioned the contract (`v1` old rule, `v2` new rule,
+verification dispatching on the packet's own declared version). **That was incomplete and
+AIDY stayed down**, because `v1` does not identify one rule: the rule changed without a
+version bump, so packets written either side of the #249 deploy both say `v1`.
+
+Measured with `json_each` over the stored subcalculators:
+
+| contract_version | neutral `scoreable` | packets | window |
+|---|---|---|---|
+| v1 | `false` | 673 | 09-21T16:10 → 09-23T01:25 |
+| v1 | `true` | **5** | 09-23T01:40:21.480Z only |
+
+Those 5 are the whole of cycle `aidy_cycle_a4d43ad0d391e11a782a421b3b0ebb1e` — the last
+cycle created before the break and the single unscored cycle at the head of the queue.
+Treating v1 as strictly the old rule rejected exactly those 5, so the loop stayed wedged
+on the same cycle. PR #251 makes a v1 `directional`/`known`/`neutral` flag tolerant of
+either value and nothing else; validated in SQL against all 10,749 stored
+subcalculators with **zero violations**.
+
+**I asserted in #250 that no packet was ever written under the new rule. That was false.**
+The check matched `'"vote": "neutral"'` *with a space* against compact stored JSON, so it
+could never match anything, and I read the zero as evidence. Third time this session a
+broken query produced a confident wrong conclusion — **a query returning zero must be
+proven able to return non-zero before it is used as evidence.**
+
 Stored packets are never rewritten — `calculator_digest` seals `scoreable`, so amending
 one would mean recomputing the digest that is the only reason it counts as evidence.
 
