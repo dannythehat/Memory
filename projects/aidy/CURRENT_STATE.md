@@ -2,6 +2,73 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## CORRECTION 2026-09-23: THE "NOT ENOUGH DATA" CONCLUSION WAS WRONG
+
+The owner challenged it and he was right. I measured AIDY's own three-day gold shadow log
+and called that "the data". The actual data holdings are far larger, and one of them shows
+the **first positive signal in this project**.
+
+### What actually exists
+
+| dataset | volume | span |
+|---|---|---|
+| `messages` (Telegram providers, Super Signals PG) | **37,467** | **2023-09-08 → 2026-09-23 (1,111 days)** |
+| `audit_events` | 265,776 | 47 days |
+| `provider_trade_observations` | 21,312 | 8 days (live) |
+| XAUUSD M1 candles (D1) | **41,631** | **42.5 days, 37 trading days, no revisions** |
+| `shadow_trade_legs` | 7,713 | 21 days |
+| `broker_deals` | 3,328 | 43 days |
+| `aidy_decisions` / `aidy_decision_outcomes` | 3,295 / **2,639** | 5 days (09-17 → 09-22) |
+| `aidy_historical_replay_runs` | 6,045 runs, 1,120 cases, 1,949 scores | 09-19 → 09-23 |
+
+The gold experts are **pure functions over candles**. They do not need the live shadow loop
+to be evaluated — they can be replayed over all 37 trading days, which is roughly **3,550
+fifteen-minute windows against the 247 outcomes I actually used. A 14x larger test set,
+already collected.**
+
+### THE FINDING: Super Signals' AIDY decision layer looks positive
+
+`aidy_decision_outcomes`, 2,639 rows: 2,103 neutral (AIDY changed nothing), 337 still open
+at window end (-$399.78), **115 confirmed_helped (+$2,779.26)**, **84 confirmed_hurt
+(-$1,850.15)**.
+
+Of the **199 decisions that actually resolved, 115 helped = 57.8%**, net **+$929.11**
+(+$529.33 including the open ones).
+
+- exact two-sided binomial vs a coin flip: **p = 0.0332**
+- 95% Wilson interval on the help-rate: **[0.508, 0.644] — excludes 0.50**
+
+**This is the only positive result the project has produced, and it is in a dataset nobody
+had analysed.** Note this is a DIFFERENT AIDY from the gold expert gates: it is the
+Super Signals decision layer acting on provider signals.
+
+### Why it is not yet a green light
+
+1. **`holdout_opened = 0` across all 6,045 replay runs.** Nothing is confirmed
+   out-of-sample. In-sample edge is not edge, and this is the single thing that decides
+   whether the +$929 is real.
+2. Only **7.5%** of decisions did anything (199 of 2,639).
+3. Five-day window, and **`aidy_decision_outcomes` stopped writing on 2026-09-22 14:46** —
+   a stalled engine nobody noticed.
+4. p=0.033 is nominal; it would not survive correction if several variants were tried.
+
+### This AMENDS the freeze decision below
+
+The freeze was premised on "there is not enough data to evaluate anything". **That premise
+was false.** The freeze on *building new features* still stands, but the "wait 4-6 weeks
+before re-testing" instruction was wrong and is withdrawn.
+
+The priority is now **analysis of data already held**, which is read-only and cannot break
+production:
+
+1. **Open a genuine holdout and re-score the decision layer out-of-sample.** This decides
+   whether +$929 is real. Highest value item in the project.
+2. **Replay the gold experts over all 37 trading days of M1** instead of 3 days. Turns 247
+   outcomes into ~3,550.
+3. **Find out why `aidy_decision_outcomes` stopped on 09-22** and restart it.
+4. Analyse the **1,111 days of provider messages** — never touched, and the largest
+   holding by span.
+
 ## DECISION 2026-09-23: AIDY FEATURE WORK IS FROZEN. IT COLLECTS DATA AND NOTHING ELSE.
 
 This is a standing decision, not a suggestion. Read it before proposing any AIDY work.
