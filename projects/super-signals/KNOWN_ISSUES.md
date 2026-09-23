@@ -52,7 +52,51 @@ instances, and idempotency matters more than HTTP downtime.
 **Policy from here:** new work targets the live branch until the Render repoint lands;
 after it, `main` for PRs, `production` as the promotion ref, Render deploys `production`.
 
-### 0.1 Balance work — VERIFIED ON THE LIVE BRANCH, NOT YET DEPLOYED
+### 0.1 Balance work — DEPLOYED AND LIVE 2026-09-23 00:41 UTC
+
+Deploy `dep-daphvi67bikc73c4ubsg`, commit `0ee52795`, build to live in 2 minutes.
+All three refs (`main`, `production`, `feature/day-10-shared-telegram-sources`) now
+sit at `0ee52795`, the accepted deployed SHA.
+
+**Outcome.** The Vantage account value is the only balance on every surface. Execution
+sizes 1% from it. Telegram publishes it and its 1% from the same number
+(account value $2,036.64, published 1% = $20.37 at time of writing).
+
+**The orphan settlement resolved seven stranded fills, not the five known:**
+
+| broker id | outcome |
+|---|---|
+| 1845153776 (25 Aug SELL 4650) | adopted `open` |
+| 1867467917 (27 Aug SELL 4635) | adopted `open` |
+| 2002783268 (14 Sep SELL 4353) | adopted `open` |
+| 1792311887 | settled `closed`, -$14.00 attributed |
+| 1878491156 | settled `closed`, -$36.00 attributed |
+| **2073470674** (22 Sep 23:50 BUY 4359) | adopted `open` |
+| **2073470690** (22 Sep 23:50 BUY 4359) | adopted `open` |
+
+The last two did not exist 15 minutes before the deploy. The bug was still actively
+stranding fills right up to the fix. `stranded` count is now **0**.
+
+**KNOWN SIDE-EFFECT — adopted positions come under automatic profit protection.**
+Signal `806c5843-2194-4613-955d-d60efa21e671` (position 2002783268) now emits
+`mt5.automatic_profit_protection_critical_failure` with `metaapi_trade_rejected`,
+`retryable_on_next_poll: true`, roughly every 2 minutes. Cause: breakeven protection
+tries to set the stop at entry 4353 while gold trades above it, which is an invalid
+stop for a short, and MetaAPI rejects the modification. No trade is placed and nothing
+is damaged, but it loops until the position closes. **Closing the three adopted shorts
+from the owner UI stops it** — which is the owner's stated intent anyway.
+
+**Overall failure rate fell sharply.** `telegram.day34_live_board_failed` ran 140 times
+in the 2h39m before the deploy (0.88/min) versus 2 in the 15m after (0.13/min).
+Those are pre-existing background failures, not deploy-caused.
+
+**Still open:** repointing Render from the `feature/day-10-shared-telegram-sources`
+alias to `production`. Deliberately not done. Both refs hold the identical SHA so the
+current state is consistent and correct; the repoint buys hygiene, not function, and it
+changes the deploy contract (pushes to the feature branch would stop deploying), which
+everyone working on the repo needs to know before it happens. Treat it as deploy-capable.
+
+### 0.2 Superseded — balance work before deployment
 
 Merging commits `98ea5c7c`, `0b02278d`, `8567f3bc`, `63bc1c40` onto
 `feature/day-10-shared-telegram-sources` is **clean, zero conflicts**, full
