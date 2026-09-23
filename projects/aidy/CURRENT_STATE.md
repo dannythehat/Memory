@@ -2,6 +2,101 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## FOUR ANALYSES RUN 2026-09-23 ~13:40Z — RESULTS
+
+### 1. The +$929 was IN-SAMPLE. Out-of-sample it is negative.
+
+`aidy_decisions` has no replay flag, but a replay decision is made long after its signal
+was posted. Splitting on that lag:
+
+| sample | helped | hurt | help% | p vs coin | net $ | still open |
+|---|---|---|---|---|---|---|
+| **LIVE** (<10 min lag) | 6 | 10 | **37.5%** | 0.454 | **−460.81** | 183 |
+| delayed (<1 day) | 27 | 23 | 54.0% | 0.672 | +416.04 | 61 |
+| **REPLAY** (≥1 day, signals back to 2024-11-05) | 82 | 51 | **61.7%** | **0.009** | +574.10 | 93 |
+
+**The effect reverses as you move from replayed history to live decisions** — 61.7% → 54%
+→ 37.5%. That is the textbook signature of in-sample fitting. 2,641 of 3,295 decisions are
+replays; only 318 are live. On 09-20 alone the harness ran 5,303 times across **8
+replay_versions** — that is the fitting.
+
+Live n is only 16 because **183 of 277 live outcomes are still open**. So the verdict is
+NOT "it loses money", it is "there is no usable live evidence yet and what exists points
+down". `holdout_opened = 0` across all 6,045 runs.
+
+### 2. AIDY's decision layer is DOWN in production (not an outcome-writing bug)
+
+Zero `aidy_decisions` on 2026-09-23 despite 877 messages, 94 signal observations, 578
+provider observations and **113 telegram publications**. Comparable days produced 100–162
+decisions. Last decision **2026-09-22 14:28:51**; outcomes stopped 14:46 only because
+there was nothing left to resolve. 656 decisions have no outcome.
+
+The replay harness has also materialised **zero cases since 09-21** (155–219 idle runs/day).
+
+Trading itself is FINE: positions opened as recently as 13:18 today, 4 open, 1,725 closed.
+The MetaAPI errors (`metaapi_timeout`, `metaapi_temporarily_unavailable`,
+`metaapi_trade_rejected`, 758 live-board failures, 269 reconcile failures, 129 "critical"
+profit-protection failures) are retryable connectivity noise, not a stopped system — but
+that volume is not normal and deserves its own look.
+
+### 3. THE MARKET IS ~50/50 OVER 42 DAYS — WHICH DESTROYS THE "DEFICIT"
+
+2,743 fifteen-minute windows over 2026-08-12 → 2026-09-23, from 41,631 M1 bars:
+
+| outcome | count | share |
+|---|---|---|
+| bullish | 1,280 | **46.66%** |
+| bearish | 1,307 | **47.65%** |
+| neutral | 156 | 5.69% |
+
+**The true majority baseline is 47.65%, not the 57.9–60.1% I measured on three days.** The
+benchmark I spent the day beating the experts with was a three-day bearish fluke that is
+not achievable going forward.
+
+The experts scored **47.97%** on the live gate sample. Against the real 42-day baseline of
+47.65%, **they are not behind at all.** Combined with p vs random = 0.4855, the accurate
+statement is: **15-minute gold direction is a coin flip, and the experts are a coin flip.
+No skill, no anti-skill, and no 12-point deficit.** Every "massive deficit" claim I made
+today was an artifact of an unrepresentative comparison window.
+
+One real calibration fault survives: only **5.69%** of windows are neutral, yet the
+directional experts vote neutral ~30% of the time. That over-neutrality is genuine and
+measurable against the full sample.
+
+### 4. PROVIDER EDGE IS REAL AND ACTIONABLE — the most valuable finding of the day
+
+3,161 provider trades scored across **44 providers**, one benchmark model, no
+double-counting. 14 providers have ≥30 resolved trades. Bonferroni α = 0.05/14 = 0.00357.
+
+| provider | resolved | win% | R/trade | P&L | verdict |
+|---|---|---|---|---|---|
+| **TIG's Asia Trades** | 364 | **64.3%** | +0.313 | +1,140 | **SIGNIFICANT, 8.8% unresolvable — most trustworthy** |
+| TDC V2 | 237 | 63.3% | +0.464 | +1,101 | SIGNIFICANT but **33.9% unresolvable** |
+| GOLDHUNTER \| PAUL | 44 | 79.5% | +2.990 | +1,316 | SIGNIFICANT, small n, 14.8% unresolvable |
+| **TRADE GLOBAL** | 305 | **40.0%** | **−1.008** | **−3,073** | **SIGNIFICANTLY BAD** |
+
+Wilson intervals: TIG's Asia **[0.592, 0.690]** entirely above 0.50; TRADE GLOBAL
+**[0.347, 0.456]** entirely below.
+
+Combined P&L across the 14: **+$4,889**. **Dropping TRADE GLOBAL alone: +$7,962 — a
++$3,073 swing.**
+
+**Why this is trustworthy where the AIDY decision replay is not:** replaying a provider's
+own stated entry/SL/TP against actual price history has **no free parameters**. Nothing is
+being fitted. It is measurement, not optimisation. (`forward_evidence_eligible=0` on all
+rows, so it is not certified forward evidence — but the overfitting objection does not
+apply.)
+
+Caveat that does apply: unresolvable rates range 2.4%–33.9% and are not random, so rank
+ordering is soft. TIG's Asia (8.8%) and TRADE GLOBAL (25.8%, n=305) are the two robust
+conclusions.
+
+### The single highest-value action available
+
+**Stop following TRADE GLOBAL.** 305 trades, 40% win rate, −$3,073, significant after
+correction, confidence interval entirely below break-even. This is a business decision
+available today from data already collected.
+
 ## CORRECTION 2026-09-23: THE "NOT ENOUGH DATA" CONCLUSION WAS WRONG
 
 The owner challenged it and he was right. I measured AIDY's own three-day gold shadow log
