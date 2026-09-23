@@ -2,7 +2,94 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
-## READ FIRST
+## READ FIRST — WHY AIDY IS NOT SMART (measured 2026-09-23)
+
+The machinery is not the problem. The evidence base and the label are. All figures
+below were measured directly against production D1 `aidy-ops-test`.
+
+### 1. The 68,000-row ledger is 240 observations
+
+`aidy_gold_expert_outcome_ledger` holds 68,058 rows. Those are 11,908 results fanned
+across 3,648 scope keys. At `gate_global` — the scope every expert actually falls back
+to — the entire scored evidence base is **240 directional gate calls** (126 bullish,
+114 bearish).
+
+This is why `sample_confidence` climbs while accuracy never moves: the trust engine
+counts the same handful of events hundreds of times. **Confidence is growing while
+information is not.**
+
+### 2. The higher timeframes barely exist
+
+| timeframe | bars in existence |
+|---|---|
+| 1m | 41,222 (42 days) |
+| 5m | 1,933 |
+| 15m | 736 |
+| 1h | 184 |
+| **4h** | **50** |
+| **1d** | **12** |
+
+`h4_price_structure_expert` made 7 directional calls all session because it has 50 bars.
+The daily context expert has 12. They are starving, not broken.
+
+News (`market_event_observations`) = **123 rows**. Cross-market = **75 rows**.
+`aidy_memory_episodes` = **0**. `aidy_forward_outcomes` = **0**. There is no rich
+multi-source dataset yet — there is 42 days of gold M1 and very little else.
+
+### 3. The label is close to noise
+
+Horizon 15 minutes, 15 M1 bars. Mean move: bullish +11.53 bps, bearish −11.27 bps,
+neutral band roughly ±2 bps. On gold near $4,350 that is about $5 of movement — roughly
+three times the spread.
+
+Accuracy does improve with horizon but never reaches the baseline:
+
+| horizon | accuracy | majority baseline | gap |
+|---|---|---|---|
+| 15 min | 0.3775 | 0.5076 | −13.0 |
+| 60 min | 0.3659 | 0.4499 | −8.4 |
+| 240 min | 0.3831 | 0.4845 | −10.1 |
+| 960 min | 0.4185 | 0.4665 | −4.8 |
+
+### 4. THE FINDING — the experts are anti-correlated, symmetrically
+
+| expert says | scored | correct | accuracy | base rate | gap |
+|---|---|---|---|---|---|
+| bullish | 126 | 40 | 31.75% | 39.0% | **−7.25** |
+| bearish | 114 | 50 | 43.86% | 50.8% | **−6.94** |
+
+Both call types underperform their own base rate by almost exactly 7 points. A
+directional bias would help one side and hurt the other; this hurts both equally.
+Expected correct under random guessing with the same call mix: 107. Observed: 90.
+**z = −2.22, p ≈ 0.026.**
+
+No skill sits *at* base rate. This is consistent, significant, anti-correlated
+information — the experts are reading something real and reporting it backwards. Same
+signature as the m5 finding (`gold_expert_directional_skill.py`), now at ensemble level.
+**Do not flip anything yet**; the daily skill report will say when it clears the
+family-wise threshold.
+
+### 5. Two-thirds of the brain's output is discarded
+
+Directional experts vote: **abstain 34.1%, neutral 30.0%**, bullish 19.0%, bearish 17.0%.
+The market is neutral **10.2%** of the time.
+
+Experts call neutral three times too often, and a neutral vote is not scoreable, so
+**64% of expert output never becomes evidence**. That is why 156 cycle outcomes produced
+only 240 scored gate calls across six directional experts.
+
+### Priority order
+
+1. **Neutral band** — experts' neutral threshold and the outcome's ±2 bps definition are
+   measuring different things by a factor of three. Fixing this roughly triples the
+   evidence base with no new data collection. **In progress.**
+2. **Stop counting 156 events as 68,000** — `sample_confidence` must key on distinct
+   cycles, not ledger rows.
+3. **Backfill H1/H4/D1 from the 42 days of M1** — cheapest capability gain available;
+   three of fifteen experts cannot function without it.
+4. **Then** test the inversion, once it clears family-wise significance.
+
+## PREVIOUS READ FIRST
 
 **The Blocker-1 repair is now on `main`** (PR #245, merge `7349331`). It had been
 sitting as a *draft PR* since 2026-09-22 09:46 with CI green — that is the only reason
