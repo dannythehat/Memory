@@ -290,9 +290,12 @@ Only call these active if fresh production evidence confirms recurrence:
 
 `super-signals-day-8-db`, plan `basic_256mb`, `diskSizeGB: 1`,
 `diskAutoscalingEnabled: false`. If it fills, Postgres stops accepting writes and trading
-cannot record anything. Rough runway at the ~10 MB/day average since 2026-08-07: about
-two months, less if growth keeps accelerating. **Owner decision:** enable disk
-autoscaling (small cost) and/or cut the noise below.
+cannot record anything. **Measured growth over the last 7 days: ~20 MB/day** (double the
+~10 MB/day long-run average), so **~4 weeks of runway from 2026-09-23**. Owner has been
+given the fix: enable Disk Autoscaling (or set 5 GB) on
+https://dashboard.render.com/d/dpg-d9qmc6cs728c73a54kc0-a — the Render MCP tools here are
+read-only for Postgres settings and cannot change it. **Check `diskAutoscalingEnabled` /
+`diskSizeGB` via `get_postgres` at the start of the next session.**
 
 **The main thing filling it:** `audit_events` is 119 MB, and in the last 24h
 `telegram.message_edit_missing_original` was **8,509 of 13,373 rows (64%)** — an audit
