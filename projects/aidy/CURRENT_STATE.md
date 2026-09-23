@@ -2,6 +2,105 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## FULL SYSTEMS CHECK 2026-09-23 12:36Z — AND A CORRECTION TO THE BUDGET FINDING
+
+### CORRECTION: the budget is NOT exhausted in steady state
+
+The 108.6 s average gap recorded below was measured **during backfill catch-up**, when
+every run was also clearing a scoring backlog. With the backlog cleared, over 90 minutes:
+
+| | |
+|---|---|
+| cron interval | 60 s |
+| runs | **89, all ok, 0 failures** |
+| average gap between completed runs | **60.0 s** — tracking the cron exactly |
+| max gap | 116.3 s |
+| cycles created | 6 in 90 min = the 15-minute cadence, exactly |
+
+So the loop completes inside its interval in steady state. The earlier conclusion
+("headroom was already negative") was an artifact of measuring under load, and the gate
+it implied was wrong.
+
+**The gap cannot measure headroom once runs finish inside the cron interval** — it floors
+at 60 s whatever the run takes. So the honest position is: run duration is still
+UNMEASURED, and the useful next measurement is duration itself, not gaps. What remains
+true is that the loop had no spare capacity *while backfilling*, and that is when the
+rates connection was added and killed it. Whether it is affordable in steady state is
+genuinely unknown — do not assume either way.
+
+### Engines LIVE and healthy (all fresh within minutes of 12:36Z)
+
+| engine | volume | state |
+|---|---|---|
+| cycle engine | 161 cycles, last 12:25:29 | 15-min cadence, on time |
+| safety flags | — | `research_only=1`, `formal_forward_authority=0`, `live_money_execution_allowed=0` |
+| trust engine | 36,766 context scores | fresh 12:32 |
+| marker brain | 1,206 results, 3,816 context scores | fresh 12:32 |
+| movement investigator | 353 investigations, 348 cards, 1,637 scans | fresh 12:32 |
+| gold cycle views | 204 views, 201 outcomes | fresh |
+| scoring | 158 scored cycles, **0 unscored backlog** | caught up |
+| archiving | 56,679 archived, **0 pending, 0 dead-letter** | clean |
+| data health | — | `fresh`, `alert=0`, lag 248 s |
+| worker | `aidy-signals-test` | deployed 08:11:14 (the revert); nothing since |
+
+### Engines DEAD — zero rows, ever
+
+`aidy_memory_episodes`, `aidy_memory_outcomes`, `aidy_learning_cards`,
+`aidy_forward_outcomes`, `aidy_end_to_end_cycles`.
+
+`aidy_forward_evaluations` has **121 rows but 0 outcomes** — evaluations are created and
+never resolved. Note the gold-specific equivalents ARE alive
+(`aidy_gold_movement_learning_cards` 348, `aidy_gold_movement_investigations` 353), so
+this may be a superseded generic path rather than a fault — **but it has not been
+confirmed either way, and it is the same shape as the orphaned rates path: tables written
+or half-written that nothing completes.** Worth one deliberate decision: finish them or
+delete them.
+
+### Data feeds: stale or dead
+
+| feed | last data | state |
+|---|---|---|
+| XAUUSD M1 / M5 / M15 | 12:31 / 12:25 / 12:15 | healthy |
+| XAUUSD H1 | 11:00, 188 bars | lagging, thin |
+| XAUUSD H4 | 08:00, 51 bars | lagging, thin |
+| **XAUUSD D1** | **2026-09-21, 12 bars** | **38 hours stale** |
+| UST 2Y/10Y/REAL_10Y | 2026-09-22 | normal (publishes evenings) |
+| **DTWEXBGS** (broad dollar) | 2026-09-18 | **5 days stale** |
+| federal_reserve_rss | 2026-09-22T14:20 | 22 hours stale |
+| **bea_releases / bea_schedule / federal_reserve_calendar** | 09-05 / 09-04 / 09-01 | **dead 18–22 days** |
+
+41,606 M1 bars exist (~29 days) while H1/H4/D1 hold 188/51/12. The higher timeframes can
+be derived from M1 and are not being.
+
+### Stats refreshed — the baseline conclusion STRENGTHENED
+
+Gates at `gate_global`: **351 scored** (was 286), accuracy **0.4046** vs majority baseline
+**0.5071**, p=1.45e-04, Wilson [0.3545, 0.4567]. Subcalculators: 3,902 scored, accuracy
+0.3311.
+
+Strategy comparison over **296** directional outcomes (was 247):
+
+| strategy | now | this morning |
+|---|---|---|
+| follow the experts | 0.4797 | 0.4530 |
+| **always bearish (the bar)** | **0.6014** | 0.5790 |
+| invert the experts | 0.5203 | 0.5470 |
+| random 50/50 | 0.5000 | 0.5000 |
+
+- p vs **majority**: **1.92e-05** — the deficit is real and persists
+- p vs **random**: **0.4855** (was 0.143) — now *completely* indistinguishable from a coin
+
+So with 20% more data the "experts are backwards" reading is dead beyond doubt, and
+inverting has got *worse* (0.5203 against a 0.6014 bar). The entire deficit is failure to
+exploit a bearish drift that has **intensified** (57.9% → 60.1% bearish). Confirms: do not
+invert any polarity.
+
+### Write cost per cycle (unchanged, re-measured)
+
+612 ledger rows per cycle (9,186 rows over 15 cycles), plus ~89 subcalculator and 15 gate
+snapshots — ~715 rows/cycle, ~69,000/day at the 15-minute cadence. Database 661 MB of a
+10 GB limit.
+
 ## INVOCATION BUDGET MEASURED (2026-09-23) — IT WAS ALREADY EXHAUSTED
 
 Measured read-only from production, 26 completed runs after the revert.
