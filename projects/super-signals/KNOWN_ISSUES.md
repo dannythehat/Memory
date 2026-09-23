@@ -283,3 +283,49 @@ Only call these active if fresh production evidence confirms recurrence:
 - login persistence/account-page issues;
 - calendar trade-visibility issues;
 - balance/equity presentation issues.
+
+## 2026-09-23 — FOUND DURING AIDY CLEANUP (verified against production PG)
+
+### 1. DISK: 452 MB used of a 1 GB disk with autoscaling OFF
+
+`super-signals-day-8-db`, plan `basic_256mb`, `diskSizeGB: 1`,
+`diskAutoscalingEnabled: false`. If it fills, Postgres stops accepting writes and trading
+cannot record anything. Rough runway at the ~10 MB/day average since 2026-08-07: about
+two months, less if growth keeps accelerating. **Owner decision:** enable disk
+autoscaling (small cost) and/or cut the noise below.
+
+**The main thing filling it:** `audit_events` is 119 MB, and in the last 24h
+`telegram.message_edit_missing_original` was **8,509 of 13,373 rows (64%)** — an audit
+row every time a provider edits a message whose original was never captured.
+
+### 2. Publisher bot has LEFT a destination group
+
+`telegram.publisher_startup_status` (every ~5 min, 268/day) reports
+`bot_membership_status: "left"`, `minimum_permissions_ok: false`. This is what drives
+`telegram.day34_live_board_failed` (769/day). **Members are unaffected:** the main
+channel `-5314636936` received 91 signals on 09-23, last 13:41Z, only 2 failures (HTTP
+429). Fix is an owner action in Telegram: re-add the bot to the live-board group, or
+disable the live board.
+
+### 3. AIDY decision layer stopped 2026-09-22 14:28
+
+Zero `aidy_decisions` on 09-23 despite 94 signal observations and 113 publications.
+Not urgent: under the agreed direction it is rebuilt as a rule on measured provider
+records, not restarted as the fitted model.
+
+### 4. Research labs inside the live process — state checked, nothing removed
+
+11 research runtimes share one research DB connection inside the API process.
+- `aidy_historical_replay_runtime`: **already off** (`AIDY_HISTORICAL_REPLAY_ENABLED` not
+  `1`). Its 270 rows/day are it recording `disabled_by_configuration`. Harmless.
+- `aidy_historical_stress_runtime`: off by default (`AIDY_HISTORICAL_STRESS_ENABLED`).
+- `aidy_grounding_acceptance_runtime`: **on** (default `1`), 697 runs/day re-checking the
+  same 148 rows, all `accepted`. Low cost. Set `AIDY_GROUNDING_ACCEPTANCE_ENABLED=0` at the
+  **next planned deploy** — not worth restarting live trading for on its own.
+- `provider_scoring_runtime` produced 145 useful scores in the same 24h. **Protect it.**
+
+### 5. TRADE GLOBAL removed from live entries
+
+Production commit `67791f05` "Shadow all scalpers and Trade Global for new entries"
+(owner, via ChatGPT) — follows the provider scoring result: 305 trades, 40.0% win,
+-$3,073, Wilson [0.347, 0.456].

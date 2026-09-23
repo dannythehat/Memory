@@ -2,6 +2,33 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## CLEANUP 2026-09-23 (after the direction was agreed)
+
+**Removed — three workflows that could silently stop AIDY data capture (PR #255).**
+Each redeployed the live Worker `aidy-signals-test` with `crons=[]`, which succeeds and
+quietly stops capture, shadow cycles and scoring. This already happened on 2026-09-21.
+
+| deleted workflow | what would have fired it |
+|---|---|
+| `day11-calibration-backfill.yml` | any edit to `src/provider_entry.py` |
+| `day6-archive-dead-letter-rollout.yml` | any edit to `src/aidy/cross_market_storage.py` |
+| `ops-provider-entry-queue-repair-20260908.yml` | a dated one-off repair |
+
+Deleted rather than patched: editing a workflow file triggers it, and patching Day 11
+would have re-run its 56-window backfill. `tests/test_worker_deploy_ownership.py` now
+fails CI for any workflow that deploys a Worker with an empty cron unless it is
+allowlisted as targeting a different Worker (`day53` → `aidy-day53-twelve-package-test`,
+`ops-provider-market-rollout-20260905` → `aidy-signals-scheduler-test`). Verified it fails
+with `day6` restored. **Do not re-add any of the three.**
+
+**Closed — five stale PRs:** #181 (superseded by #255), #243 (do-not-merge probe),
+#240 (Build 24 re-verification), #197 (one-off audit), #222 (Build 17 NO-GO — result
+stands, and matches the direction).
+
+**Deliberately left alone** (inert and zero-cost, removal would mean touching the live
+loop): the four stubbed gold experts, the five empty D1 tables, `day53` and
+`ops-provider-market-rollout` workflows.
+
 ## DIRECTION — AGREED WITH THE OWNER 2026-09-23. READ THIS FIRST.
 
 **AIDY's job is scoring signal providers, not predicting gold every 15 minutes.**
