@@ -2,6 +2,70 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## BASELINE TEST RESULT (2026-09-23) — NOTHING BEATS THE BASELINE, AND NOTHING IS BACKWARDS
+
+Read-only test at `scope_type='gate_global'` (the other scope types re-count the same
+cycles). 3-class label: bullish / bearish / neutral. Baseline is each subject's OWN
+majority class, never 0.5. Two-sided exact binomial, Bonferroni across subjects tested.
+
+### Headline
+
+**53 subjects with n>=20. ZERO beat their baseline. All 53 have negative edge.**
+
+Four survive Bonferroni (alpha 0.05/53 = 0.000943) and all four are significantly
+*worse* than baseline: `liquidity_new_york_opening_30m_low` (0.150 vs 0.650, n=20),
+`h1_breakout_acceptance` (0.303 vs 0.526, n=76), `liquidity_confirmed_m15_swing_low`
+(0.219 vs 0.562, n=32), `m5_breakout_acceptance` (0.316 vs 0.513, n=76). A further 23
+are nominally significant and die under correction.
+
+Pooled (indicative only — subjects share cycles): n=2,843, accuracy 0.3510 vs baseline
+0.4798, z=-13.74. Sign test on unanimous direction: p≈2.2e-16.
+
+### The decisive nuance — do NOT read this as "the experts are backwards"
+
+Gate confusion matrix, 247 directional outcomes:
+
+| strategy | accuracy |
+|---|---|
+| follow the experts | **45.3%** |
+| always bearish (the majority baseline) | **57.9%** |
+| invert the experts | 54.7% |
+| random 50/50 calling | 50.0% |
+
+- experts vs **majority** baseline: z=-4.00, **p=6.5e-05** — a real, large deficit
+- experts vs **random** (0.50): z=-1.46, **p=0.14** — **NOT significant**
+
+So they are not measurably worse than coin-flipping. What they fail to do is exploit the
+drift: the sample went **57.9% bearish** while the experts called **51.7% bearish**, i.e.
+near 50/50 into a trending market. That asymmetry, not a reversed mechanism, produces the
+whole below-baseline result.
+
+And **inversion is not exploitable**: inverting gives 54.7%, still below always-bearish.
+Neither conditional is significant — said bearish → 53.1% bearish (p=0.27); said bullish
+→ 63.0% bearish (p=0.26).
+
+### What this actually means
+
+The honest conclusion is **not** "there is no edge" and **not** "invert the polarity".
+It is: **247 directional outcomes over ~3 days cannot establish or refute edge.** A
+57.9% bearish base rate is a three-day trend, not a law, and an ensemble that leans
+neutral-to-balanced will look terrible against it and would look good in a bullish
+sample. The measured deficit is confounded with the sample period.
+
+Therefore:
+1. **Do NOT invert any expert's polarity.** The inversion is not significant, not
+   exploitable, and most likely a sample artifact.
+2. **Do NOT conclude the experts are broken.** They are uninformative on this sample,
+   which is a different and much weaker claim.
+3. **The binding need is labelled data across varied regimes**, which is why keeping the
+   loop alive matters more than adding experts.
+4. The abstention is correct behaviour throughout. The gate is refusing to act on
+   evidence that has not earned it.
+
+This also retires the momentum-extrapolation hypothesis as a *primary* explanation: the
+ensemble is not significantly worse than random, so there is no large anti-skill to
+explain.
+
 ## THE PER-INVOCATION BUDGET IS THE REAL REASON EXPERTS ARE STUBBED (2026-09-23)
 
 **Connecting the rates expert took AIDY down, and reverting it fixed it. Measured, not inferred.**
