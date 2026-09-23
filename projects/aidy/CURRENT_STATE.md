@@ -2,6 +2,89 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## READ FIRST — OUTAGE + THE REAL BINDING CONSTRAINT (2026-09-23 07:00)
+
+### AIDY was down for five hours and I caused it
+
+Last cycle 2026-09-23T01:40:21Z. First error 01:47:54Z. 307 consecutive failed runs,
+`RuntimeError: stored Build 24 expert packet failed verification`. Candle ingestion was
+healthy the whole time, so only the shadow loop was dead.
+
+PR #249 changed `subcalculator_is_scoreable` (scoring neutral votes) **without giving the
+packet contract a new version**. Verification re-derives `scoreable` and compares it to
+the stored value, so all 1,785 packets written before the change failed against the new
+rule. The failure raises inside the scoring loop, which aborts the whole scheduled run,
+so no new cycles were created either — and the unscored cycle stayed at the head of the
+queue and failed again every minute. A permanent wedge.
+
+Fixed in PR #250 by versioning the contract: `v1` = old rule (the 1,785 stored packets),
+`v2` = new rule, and verification dispatches on the packet's own declared version.
+Stored packets are never rewritten — `calculator_digest` seals `scoreable`, so amending
+one would mean recomputing the digest that is the only reason it counts as evidence.
+
+**Rule for the future: `scoreable` is sealed inside the packet digest. Any change to the
+scoreable rule MUST ship a new contract version in the same commit.** A test now pins
+both versions' rules so CI fails if this is forgotten again.
+
+**Two signals fired and both were ignored:** the #249 deploy run itself FAILED
+(run #39, 01:35→02:21), and the `AIDY Shadow Loop Watchdog` ran at 04:01 and FAILED.
+Nobody was reading either. A watchdog that nothing watches is not a watchdog.
+
+### Correction: I had the two families backwards
+
+An earlier entry said price_action is the qualifier and the single-member
+liquidity_mechanism is dead weight. **Measured over the 8 cycles that have family data,
+the opposite is true:**
+
+| family | members | cycles qualified | best strength | max possible if unanimous |
+|---|---|---|---|---|
+| liquidity_mechanism | 1 | **2 of 8** | 0.339 | **0.582** |
+| price_action | 8–9 | **0 of 8** | 0.042 | **0.093** |
+
+`min_family_strength` is **0.20**.
+
+### The binding constraint is not the family count. It is reliability.
+
+**price_action cannot qualify even if every one of its nine members voted the same way.**
+Its ceiling is Σ(dependency_weight × reliability) = **0.093 against a 0.20 bar** — 46 per
+cent of the threshold. Two things cause it:
+
+1. **Dependency discount.** Eight members share one price series, so each is weighted
+   0.125. This is correct — they are not independent evidence — but it means the family's
+   total influence is capped near one member's worth.
+2. **Low reliabilities.** Most members sit under 0.07, because `quality` is 0.000 for
+   many of them: no measured edge over baseline. `calibration_state` is still `unknown`
+   (×0.85) across the board.
+
+So the abstention is **not a plumbing failure. It is the gate correctly refusing to
+trade on experts that have no measured edge.** That is the machinery working.
+
+### Why the reliabilities are honest
+
+Over 246 resolved directional calls at gate_global: **38.21 per cent correct** against a
+majority baseline of **51.22 per cent** (always-bearish). That is ~13 points below
+baseline, and below a coin flip, at z ≈ −3.7 (p ≈ 0.0002). The experts are momentum
+extrapolators committing when momentum looks strongest, which is when it stops.
+
+Being reliably wrong is information — but the specific mechanism is still under-powered
+(n=138, p=0.27), so it is measured per expert and nothing is inverted.
+
+### What this means for the plan
+
+Adding a new directional family is still necessary (2 families needed, only 1 can ever
+qualify today), but it is **not sufficient**: a new expert with no edge would carry the
+same low reliability and fail the same 0.20 bar. The order is:
+
+1. Keep AIDY alive and accruing labelled evidence — the scarcest resource here, and the
+   only thing that can move `quality` off 0.000.
+2. Fix the orphaned rates path (below) so macro evidence exists at all.
+3. Then build a directional expert in an empty root family, judged on measured edge
+   rather than on being new.
+
+Do NOT lower `min_family_strength` or `min_families` to make this go away. That is
+making the threshold fit the answer. The thresholds are the only thing currently
+preventing AIDY from acting on experts that are provably worse than a coin flip.
+
 ## READ FIRST — THE FULL BLOCKER CHAIN (2026-09-23, diagnosis complete)
 
 ### Correction to an earlier entry
