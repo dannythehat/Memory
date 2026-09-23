@@ -2,7 +2,50 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
-## RATES PATH CONNECTED (2026-09-23, PR #252)
+## THE PER-INVOCATION BUDGET IS THE REAL REASON EXPERTS ARE STUBBED (2026-09-23)
+
+**Connecting the rates expert took AIDY down, and reverting it fixed it. Measured, not inferred.**
+
+| | with rates connected | after revert (#253) |
+|---|---|---|
+| cycle creation | frozen at 05:25 for ~45 min | resumed, 05:25 → 06:25 |
+| gate snapshots | stuck at 2,010 | 2,070 (+4 cycles × 15 gates) |
+| shadow health | no row since 07:48:31 | `ok @ 08:11:25, created=4` |
+| candle ingestion | stopped 07:52:24 | flowing again, 08:12:25 |
+
+**Candle ingestion stopping is the key evidence.** It is a different code path from the
+expert loop, so the whole scheduled invocation was being terminated — not just cycle
+creation. That is why no error row was ever written: an invocation killed by a platform
+limit never reaches its error handler. A try/except would not have caught it either.
+
+### What this means for the four remaining stubs
+
+`_DISCONNECTED_CONTEXT_GATES` is very likely **not** neglect. It is probably a capacity
+decision: the cron invocation cannot afford 15 real expert builds alongside candle
+capture and the scoring fan-out. Adding the 15th was enough to kill it.
+
+So "connect the four dark experts" is **not** a wiring task, and the earlier plan that
+treated it as one was wrong. Before connecting any of them, the work is:
+
+1. Measure the per-invocation cost budget and where it currently goes (candle capture,
+   scoring fan-out, 14 expert builds).
+2. Reduce the scoring fan-out. The ledger is ~79,000 rows for ~138 cycles because each
+   result fans across many scope keys; that is the dominant write cost and it grows.
+3. Only then consider splitting expert builds across invocations, or moving scoring to a
+   separate scheduled path, so adding an expert is affordable.
+
+Do NOT retry connecting an expert without doing 1–3 first. It will fail the same way, and
+it takes the whole loop down when it does — candle ingestion included.
+
+### The adapter itself is fine and is not the problem
+
+`treasury_rate_vintages` is a pure function over rows with 19 tests against the real 69
+production rows, and the `macro_vintages` `us_treasury` source change is sound (see the
+reverted section below for the point-in-time reasoning, which still holds). Both were
+reverted with #253 only for predictability while production was down. They can be
+re-landed unconnected at any time; the commit is 6d760ec.
+
+## REVERTED — RATES PATH CONNECTION (2026-09-23, PR #252, reverted by #253)
 
 The orphaned rates pipeline is joined. `treasury_rate_vintages` adapts the Treasury
 curve AIDY has stored since 2026-08-18 into the FRED-shaped version records the rates
