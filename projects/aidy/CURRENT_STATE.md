@@ -2,6 +2,48 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## RATES PATH CONNECTED (2026-09-23, PR #252)
+
+The orphaned rates pipeline is joined. `treasury_rate_vintages` adapts the Treasury
+curve AIDY has stored since 2026-08-18 into the FRED-shaped version records the rates
+expert asks for, and `rates_usd_cross_asset_expert` is **no longer a stub** — it was
+removed from `_DISCONNECTED_CONTEXT_GATES`, so four remain (macro_event,
+futures_microstructure, news_mechanism, analogue).
+
+| FRED series the expert asks for | Treasury source |
+|---|---|
+| DGS2 | UST_NOMINAL_2Y |
+| DGS10 | UST_NOMINAL_10Y |
+| DFII10 | UST_REAL_10Y |
+| T10YIE | UST_NOMINAL_10Y − UST_REAL_10Y (derived, marked as derived) |
+
+### The point-in-time rule, and why last night's fear was misplaced
+
+`conservative_available_after(D)` is midnight UTC on **D+1** and is source-agnostic.
+Treasury publishes date D's curve on D itself, about 19:30–22:00 UTC, so the existing
+bound is already 2–4.5 hours **later** than real publication. **No new availability rule
+was needed and no lookahead is introduced** — the thing I refused to rush was smaller
+than I thought.
+
+Availability is `max(conservative_available_after(D), first_observed_at)`, because ingest
+sometimes lags: the 2026-09-11 curve was not in the database until 2026-09-13T07:00Z.
+`verify_version_record` therefore accepts `>=` for a Treasury record and keeps `==` for
+ALFRED. The argument that makes this safe: **moving availability later can only withhold
+evidence the system might have used; it can never manufacture knowledge it did not
+have.** Tests pin that the relaxation does not leak to ALFRED and that earlier-than-bound
+is refused under both sources.
+
+### What this does and does not do
+
+It does NOT break the family deadlock and cannot. The expert is `context_only`, so every
+subcalculator is non-scoreable and it contributes zero directional mass — pinned by test.
+It turns the rates block from `unknown` on every cycle into `known`, which is context the
+trust engine can condition on, and it stops a live daily feed being written and never read.
+
+19 tests, **all driven by the real 69 rows exported from production**, including the real
+expert builder against the real data and the empty-rows case. That choice was deliberate:
+this morning a synthetic fixture passed while production stayed broken.
+
 ## READ FIRST — RECOVERED 2026-09-23 07:19Z
 
 AIDY is back up. `status=ok`, the wedge cycle
