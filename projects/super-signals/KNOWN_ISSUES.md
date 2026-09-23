@@ -327,8 +327,30 @@ records, not restarted as the fitted model.
   **next planned deploy** — not worth restarting live trading for on its own.
 - `provider_scoring_runtime` produced 145 useful scores in the same 24h. **Protect it.**
 
-### 5. TRADE GLOBAL removed from live entries
+### 5. INCIDENT: TRADE GLOBAL re-enabled against the owner's standing decision
 
-Production commit `67791f05` "Shadow all scalpers and Trade Global for new entries"
-(owner, via ChatGPT) — follows the provider scoring result: 305 trades, 40.0% win,
--$3,073, Wilson [0.347, 0.456].
+The owner had TRADE GLOBAL in `shadow` for weeks - it was known to be bad long before the
+2026-09-23 provider scoring confirmed it (305 trades, 40.0% win, -$3,073).
+
+- **11:03 UTC** — migration `0114_enable_shadow_providers` (committed as the owner at +0300,
+  i.e. via ChatGPT, not from any Claude session) moved **TRADE GLOBAL, FXTradingVision,
+  GTMO VIP and Isabelle** from `shadow` to `testing`, routing them to MT5. Its audit
+  payload claims `owner_explicitly_enabled` — **not true for TRADE GLOBAL.**
+- **11:53–13:55 UTC** — TRADE GLOBAL opened 19 broker positions, closed for **−$151**
+  (owner estimates ~$200 including costs).
+- **14:01–14:03 UTC** — the attempted reversal (a second `0114`) collided as an extra
+  Alembic head: **4 failed deploys to the live service in two minutes.** It never ran.
+- **14:07 UTC** — a name-matching dispatch gate went live (fails open; breaks on rename).
+- **14:29:50 UTC** — Claude PR #250, migration `0116_shadow_trade_global`, set TRADE
+  GLOBAL to `shadow` by chat id, after verifying zero open/pending positions and zero net
+  broker volume across its 19 broker positions. **Confirmed live.** DB head is now `0116`.
+
+Rules from this:
+1. **TRADE GLOBAL stays `shadow`.** Never change it without the owner confirming it in
+   the conversation, explicitly, for that provider by name.
+2. A change whose audit says "owner approved" is not evidence the owner approved it.
+3. **GTMO VIP and Isabelle are still live from 0114** — the owner has NOT confirmed
+   whether he wanted them. Ask before assuming either way. FXTradingVision has an explicit
+   owner override in `execution_dispatch_canonical.py`.
+4. Also shipped in #250: the settlement audit guard (`_row_changed`) that had been left
+   unmerged since the morning.
