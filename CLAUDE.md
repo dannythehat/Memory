@@ -30,4 +30,4 @@ Then verify relevant facts against `dannythehat/super-signals` and the live Rend
 
 Memory can tell you where to look and why past decisions were made. It cannot replace source/runtime verification.
 
-When finishing a material build, update Memory so the next ChatGPT/Claude session starts from the verified endpoint instead of reconstructing the project from chat history.
+When finishing a material build, update Memory so the next Claude session starts from the verified endpoint instead of reconstructing the project from chat history.
