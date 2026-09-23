@@ -6,6 +6,50 @@ This file distinguishes confirmed active issues from historical incidents. Do no
 
 ## Confirmed active issues / priorities
 
+### THE BALANCE — OWNER RULING, FINAL, NOT OPEN TO REVISION
+
+**The balance is the Vantage account value. Whatever it currently reads. Period.**
+
+Owner ruling, 2026-09-23, restated and hardened: *"The balance is correct... $2040 or
+whatever it is. This must never be changed again. We work with this current balance.
+End of story."*
+
+This is not a starting point for a better model. It is the answer. A future session
+that finds a "more accurate" balance has misunderstood the requirement, not improved it.
+
+**Never do any of these:**
+
+- Do not add, subtract or reconcile anything to make the balance match a calculation.
+- Do not introduce a baseline, carry-in, epoch value or synthetic starting figure.
+- Do not derive the balance from P&L, realised or otherwise.
+- Do not create reviewed-cash entries, override rows or adjustments whose purpose is to
+  move the balance or make a report agree with it.
+- Do not reconcile the balance to Memory, to the calendar, to a spreadsheet, or to a
+  previously recorded figure. Vantage wins against all of them.
+
+When the account value moves, that IS the balance. Closing a position, a broker
+correction, a drawdown — the number changes because the account changed. Nothing needs
+adjusting.
+
+**Enforced in code** by `services/api/tests/test_universal_balance_contract.py`
+(nine tests, seven of which fail against the pre-2026-09-23 behaviour):
+`displayed_balance()` returns the broker account value unmodified and identically for
+every account; no hard-coded baseline may exist in any balance path; the function body
+may not reference `all_time_pnl`, `realised_between` or any baseline; every caller must
+pass an account value, never the broker's closed-trade balance field; Telegram's
+published figure and its 1% must come from that one number.
+
+If those tests fail, someone is reintroducing a second balance. Fix the code, not the
+tests.
+
+**Known and accepted, not a problem to solve:** the 4 Sep restart override
+(`restart-2026-09-04-1100-*`, cutoff 2026-09-04T08:00Z) excludes trades opened before it
+from user-facing day-level P&L. The two August shorts (`1845153776`, `1867467917`)
+qualify. When they close, the balance will move by roughly +$567 while the calendar's
+daily P&L does not show those two trades. **That is a reporting-window artifact, not a
+balance error, and the balance is still correct.** Leave it alone unless the owner asks.
+
+
 ### 0.0 BRANCH TOPOLOGY — REPAIRED 2026-09-23. READ BEFORE TOUCHING ANY BRANCH
 
 **Production deploys from `feature/day-10-shared-telegram-sources`** (Render web
