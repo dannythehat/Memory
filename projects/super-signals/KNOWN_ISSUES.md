@@ -6,6 +6,64 @@ This file distinguishes confirmed active issues from historical incidents. Do no
 
 ## Confirmed active issues / priorities
 
+### 0.0 BRANCH TOPOLOGY — REPAIRED 2026-09-23. READ BEFORE TOUCHING ANY BRANCH
+
+**Production deploys from `feature/day-10-shared-telegram-sources`** (Render web
+service `super-signals-day-8`, `srv-d9qmcgks728c73a555m0`, **autoDeploy = yes**).
+Pushing to that branch **IS a deploy**. There is no gap between merging and going live.
+
+Until 2026-09-23 the three refs had drifted badly:
+
+| ref | was | now |
+|---|---|---|
+| `main` | `1a5488d2` | **`1b35bd16`** |
+| `production` | `ade297e7` (9 Sep, 393 behind) | **`1b35bd16`** |
+| `feature/day-10-shared-telegram-sources` | `1b35bd16` | `1b35bd16` (untouched) |
+
+**Root cause.** A 9 Sep "stabilisation" pinned `main` and `production` at `ade297e7`
+and neither ref ever moved again while all real work continued on the feature branch.
+PR #241 ("Hard-isolate AIDY research from live trading") was then authored on 22 Sep
+but **built from the 10 Sep base `4bb664bd`**. Against that stale base it deleted
+`get_research_engine()`/`get_research_session_factory()` — the `a61e665d` anti-starvation
+lane — removed all seven AIDY research runtimes from app startup, and deleted README and
+all of `docs/`. **Those removals were stale-base fallout, not a decision.** They never
+reached production, because nothing deploys from `main`.
+
+This had happened before: `backup/main-pre-production-consolidation-20260830`,
+`backup/main-pre-stabilisation-20260909-bfa4d8b`. Third occurrence.
+
+**Repair executed 2026-09-23** (ChatGPT concurred; owner approved):
+backups `backup/{main,production,render-live}-20260923` pushed first, then
+`production` fast-forwarded and `main` force-corrected (`--force-with-lease`) to
+`1b35bd16`. The Render branch was not touched, so no deploy was triggered. PR #241
+remains fully recoverable at `backup/main-20260923`.
+
+**Do NOT replay #241's documentation deletion.** `docs/PRODUCTION_START_HERE.md` is the
+canonical topology definition and is now doing the job. Any docs reduction must be a
+separate, targeted commit that preserves the production authority/runbook material.
+
+**Remaining steps, in order:** deploy the balance work (below) to the feature branch →
+verify health and trading → fast-forward `main`/`production` to the accepted SHA →
+only then repoint Render from the feature alias to `production`. Treat that final
+repoint as deploy-capable even though the SHA is identical: the web process hosts the
+Telegram and background runtimes, so Render's zero-downtime replacement briefly runs two
+instances, and idempotency matters more than HTTP downtime.
+
+**Policy from here:** new work targets the live branch until the Render repoint lands;
+after it, `main` for PRs, `production` as the promotion ref, Render deploys `production`.
+
+### 0.1 Balance work — VERIFIED ON THE LIVE BRANCH, NOT YET DEPLOYED
+
+Merging commits `98ea5c7c`, `0b02278d`, `8567f3bc`, `63bc1c40` onto
+`feature/day-10-shared-telegram-sources` is **clean, zero conflicts**, full
+`services/api` suite exits 0. The `a61e665d` research lane survives intact
+(15000 ms / 30 s), not #241's 5000 ms / 1 s.
+
+Deploying it changes execution sizing from the broker balance field to the broker
+account value: owner demo ~$1,952 → ~$2,054 (+5.2%), and on live member account
+35720622 the delta equals floating P&L at sizing time. **Awaiting explicit owner go.**
+
+
 ### 0. THE BALANCE — SETTLED BY OWNER RULING. FIX ON BRANCH, NOT DEPLOYED
 
 **The Vantage account value is the balance. Universally, permanently, for every
