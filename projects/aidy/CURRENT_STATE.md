@@ -2,7 +2,67 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
-## READ FIRST — WHY AIDY IS NOT SMART (measured 2026-09-23)
+## READ FIRST — THE STRUCTURAL DEADLOCK (2026-09-23, brain deployed 00:22 UTC)
+
+The Blocker-1 brain is **deployed and running**. Proof: the abstain reason changed from
+`insufficient_directional_authority` (old 0.30 weight gate) to
+`insufficient_independent_families` (new family aggregator).
+
+It still abstains, and now we know exactly why — and it is not a data-volume problem.
+
+### Only 6 of 15 experts can ever vote a direction
+
+| | count | experts |
+|---|---|---|
+| **directional** | **6** | liquidity_reclaim, momentum_impulse, h1/h4/m5/m15_price_structure |
+| context_only, available | 4 | price_location, session_participation, d1_context, volatility_jump |
+| **context_only, DARK** | **5** | analogue_episode, macro_event, futures_microstructure, news_movement_mechanism, rates_usd_cross_asset |
+
+A `context_only` gate emits `conclusion = "context_only"`. It can **never** contribute
+directional evidence. So nine of the fifteen experts cannot, by design, move the
+decision — and five of those nine are `explicit_unknown` because their data sources are
+effectively empty (news 123 rows, cross-market 75 rows).
+
+### Those 6 collapse into 2 root families, against a requirement for 2
+
+Live family view at 2026-09-23T01:25:
+
+| family | members | reliability | strength | qualifies |
+|---|---|---|---|---|
+| price_action (structure + momentum) | 8 | 0.069476 | 0.014078 | no |
+| **liquidity_mechanism** | **1** | 0.000000 | 0.000000 | no |
+
+`qualifying_family_count = 0`, threshold 2.
+
+**There is no third family and no margin.** AIDY can only ever speak when BOTH
+price_action AND a single-expert family qualify at the same moment. The headline "15
+experts, 24 builds" hides that the decision rests on six voters in two groups, one of
+which is one expert.
+
+### Do NOT fix this by lowering the family threshold
+
+That is the frozen pre-registered spec, and relaxing it to 1 family would be making the
+threshold fit the answer — the exact error this programme keeps catching. The fix is to
+**add genuine evidence diversity**: populate the five dark experts' data sources, and/or
+promote context_only experts that legitimately carry direction.
+
+### Why the neutral fix matters more than it first appeared
+
+`liquidity_mechanism` shows reliability 0.000000 partly because its single member voted
+neutral, and a neutral vote carried no mass and produced no trust. Scoring neutral
+(merged in #249, deployed) lets that single-member family accumulate reliability at all
+instead of sitting at zero — it is the specific unblocker for the family that gates the
+whole aggregator, not just "more evidence in general".
+
+### The data context that still applies
+
+Entire labelled history is **three days**: 66 cycles (21 Sep), 88 (22 Sep), 7 (23 Sep) —
+88/day, one per 15-minute window. 156 outcomes. No regime filter, polarity verdict or
+per-expert conclusion is reachable yet at any significance. Session continuation rates
+order sensibly (asia 60%, overlap 45.2%) but at z = 1.16, p = 0.25 — nowhere near, and
+Bonferroni over three pre-registered hypotheses makes it worse.
+
+## PREVIOUS READ FIRST — WHY AIDY IS NOT SMART (measured 2026-09-23)
 
 The machinery is not the problem. The evidence base and the label are. All figures
 below were measured directly against production D1 `aidy-ops-test`.
