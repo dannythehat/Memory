@@ -8,6 +8,8 @@ Only keep unresolved or deliberately deferred items here. Verify source/runtime 
 
 ### 0. Expert-gate decision layer cannot produce a direction — ACTIVE / RED, BLOCKING
 
+**Repair preregistration update (2026-09-22):** Blocker-1 aggregation mathematics and the executable v9 fixture are now frozen, but **not implemented in production**. Dual-path execution on the frozen fixture records current-path ABSTAIN at `directional_total=0.075024` and replacement BULLISH with two qualifying roots. Fixture SHA-256 `74e92fe4…3e3c4e`; combined manifest `53e691f0…150ba6`. This issue remains RED until the frozen implementation and regression/acceptance gates pass.
+
 Found by independent adversarial audit on 2026-09-22 at verified SHA `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`. Full detail, line references and fix order: `projects/aidy/handovers/2026-09-22-independent-24-build-audit.md`.
 
 Five blocking defects. All are engineering/wiring defects, not flaws in the architecture:

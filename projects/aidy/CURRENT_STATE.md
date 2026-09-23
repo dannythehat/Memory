@@ -2,6 +2,32 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## DIRECTION — AGREED WITH THE OWNER 2026-09-23. READ THIS FIRST.
+
+**AIDY's job is scoring signal providers, not predicting gold every 15 minutes.**
+
+Why: over 42 days (2,743 windows) 15-minute gold direction is ~50/50 (46.66% up, 47.65%
+down). The gold experts are a coin flip because the target is one. More experts or tuning
+cannot fix that. Meanwhile, replaying each provider's own entry/SL/TP against real price
+produced the only robust, money-relevant result: TRADE GLOBAL -$3,073 over 305 trades
+(40.0%, significantly bad) and TIG's Asia +$1,140 over 364 (64.3%, significantly good).
+The owner is removing TRADE GLOBAL.
+
+Standing rules:
+
+1. **Keep the gold loop running** as a free, research-only data collector. Do not delete it.
+2. **No more 15-minute prediction build work.** No new gold experts, no connecting the
+   four stubs, no weight or polarity tuning.
+3. **Monthly provider scorecard** is AIDY's primary output: who makes money, who costs
+   money, who is deteriorating. Rank changes need more than one reading, because
+   unresolvable rates run 2.4–33.9%; only TRADE GLOBAL and TIG's Asia are robust today.
+4. **When the Super Signals decision layer is rebuilt, it is a rule on measured records**
+   (follow proven providers, skip proven bad ones), not a fitted model. The fitted version
+   looked good on replayed history and lost money live.
+5. **Removal policy:** remove things that cost money, cause noise or mislead. Leave inert,
+   zero-cost things alone unless there is a reason — touching the live loop caused the
+   5h39m outage on 2026-09-23.
+
 ## CLEANUP 2026-09-23 (after the direction was agreed)
 
 **Removed — three workflows that could silently stop AIDY data capture (PR #255).**
@@ -28,32 +54,6 @@ stands, and matches the direction).
 **Deliberately left alone** (inert and zero-cost, removal would mean touching the live
 loop): the four stubbed gold experts, the five empty D1 tables, `day53` and
 `ops-provider-market-rollout` workflows.
-
-## DIRECTION — AGREED WITH THE OWNER 2026-09-23. READ THIS FIRST.
-
-**AIDY's job is scoring signal providers, not predicting gold every 15 minutes.**
-
-Why: over 42 days (2,743 windows) 15-minute gold direction is ~50/50 (46.66% up, 47.65%
-down). The gold experts are a coin flip because the target is one. More experts or tuning
-cannot fix that. Meanwhile, replaying each provider's own entry/SL/TP against real price
-produced the only robust, money-relevant result: TRADE GLOBAL -$3,073 over 305 trades
-(40.0%, significantly bad) and TIG's Asia +$1,140 over 364 (64.3%, significantly good).
-The owner is removing TRADE GLOBAL.
-
-Standing rules:
-
-1. **Keep the gold loop running** as a free, research-only data collector. Do not delete it.
-2. **No more 15-minute prediction build work.** No new gold experts, no connecting the
-   four stubs, no weight or polarity tuning.
-3. **Monthly provider scorecard** is AIDY's primary output: who makes money, who costs
-   money, who is deteriorating. Rank changes need more than one reading, because
-   unresolvable rates run 2.4–33.9%; only TRADE GLOBAL and TIG's Asia are robust today.
-4. **When the Super Signals decision layer is rebuilt, it is a rule on measured records**
-   (follow proven providers, skip proven bad ones), not a fitted model. The fitted version
-   looked good on replayed history and lost money live.
-5. **Removal policy:** remove things that cost money, cause noise or mislead. Leave inert,
-   zero-cost things alone unless there is a reason — touching the live loop caused the
-   5h39m outage on 2026-09-23.
 
 ## FOUR ANALYSES RUN 2026-09-23 ~13:40Z — RESULTS
 
@@ -1060,6 +1060,31 @@ of aggregation will fix it.
 ## Previous state (superseded 2026-09-23)
 
 # AIDY — Current State
+
+## Blocker 1 aggregation repair — v9 MATH + FIXTURE FROZEN / IMPLEMENTATION NEXT (2026-09-22)
+
+> **Status 2026-09-23:** the family aggregator shipped (PR #247) and is live. Any further
+> 15-minute prediction build work, including remaining T1-T18 items, is **stopped** by the
+> agreed DIRECTION section above. Kept below as the record of what was frozen on 2026-09-22.
+
+
+The aggregation redesign preregistration is now frozen at v9. No production decision code changed.
+
+Execution proof against AIDY source `47ffe131b9a8d2180c8d78ba3c1dc1b9253b9e4a`:
+- genuine 15-gate path, including 10 connected builders + 5 explicit UNKNOWN;
+- **70 real connected sub-calculator identities**;
+- real Liquidity/Reclaim builder detected a prior-day-low `reclaim_retest_hold` and voted bullish;
+- Build-3 trust histories are packet/version/scope-linked and every commitment has explicit decision time;
+- correctness is derived only from `predicted_class == realised_direction`;
+- current Build 20→21→22 path: **ABSTAIN**, `directional_total=0.075024`;
+- frozen replacement: **BULLISH**, `meta_balance=1.000000`, exactly two qualifying roots;
+- `price_action` strength **0.331592**; `liquidity_mechanism` **0.373330**;
+- canonical fixture SHA-256 `74e92fe4a7d38e803da8469262e9339e795d3b9d1f3d7c9594a599560c3e3c4e`;
+- combined manifest digest `53e691f0e70308030beda0fd1101f0cd032b51875ecfe2c834aacff507150ba6`.
+
+The fixture is an engineering reachability fixture, not market-edge evidence. The 41 live-cycle outcomes were not used to tune frozen thresholds. Full preregistration: `projects/aidy/BLOCKER1_AGGREGATION_PREREGISTRATION.md`.
+
+**Next:** implement T1-T18 and §3.1-§3.6 exactly as frozen. Production remains RED until that implementation passes focused/full regression and is separately accepted. Formal-forward and live-money authority remain OFF.
 
 ## READ FIRST — independent audit found the decision layer non-functional — RED (2026-09-22)
 
