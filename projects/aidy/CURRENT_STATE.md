@@ -2,6 +2,63 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## INVOCATION BUDGET MEASURED (2026-09-23) — IT WAS ALREADY EXHAUSTED
+
+Measured read-only from production, 26 completed runs after the revert.
+
+### The loop already overruns its own schedule
+
+| | |
+|---|---|
+| cron interval | **60 s** (`* * * * *`, verified against Cloudflare) |
+| average gap between completed runs | **108.6 s** |
+| fastest run | 37.1 s |
+| slowest gap observed | **1,080 s** (18 minutes) |
+
+So a healthy AIDY takes ~1.8× its own cadence to complete a run. **The headroom was
+already negative before anything was added.** That is the whole explanation for this
+morning: connecting a 15th expert did not create a new problem, it pushed an
+already-overrunning invocation past the point where the platform kills it — taking candle
+capture down with it, because they share the invocation.
+
+### Where the cost goes, per cycle
+
+| written per cycle | rows | share |
+|---|---|---|
+| outcome ledger | **~596** | **85%** |
+| subcalculator snapshots | ~89 | 13% |
+| gate snapshots | 15 | 2% |
+| **total** | **~700** | |
+
+From 147 cycles / 143 scored: 85,230 ledger rows, 13,139 subcalculator snapshots, 2,205
+gate snapshots.
+
+**The ledger is 85% of the write volume**, because each result is repeated across the
+applicable members of **24 scope types** (~5.7 per subject on average). That fan-out
+exists to support conditional trust scope backoff — it is not waste, but it is the cost
+driver, and it grows with history.
+
+At the normal 15-minute cadence that is ~96 cycles/day, so roughly **67,000 rows and
+~10 MB of database per day** even without a backfill.
+
+### What this means — the roadmap changes
+
+**The binding constraint on AIDY is the invocation budget, not the experts.** Every item
+that was queued behind "connect more experts" is behind this instead:
+
+1. **Reduce the ledger fan-out** — 85% of per-cycle writes. Options worth measuring:
+   write scope rows lazily (only scopes a subject actually backs off to), or batch the
+   insert, or move scoring out of the cycle-creation invocation entirely.
+2. **Split scoring from cycle creation** into separate scheduled paths, so a slow scoring
+   pass cannot starve cycle creation or candle capture. They are coupled today only by
+   sharing one cron handler, and that coupling is what made one failure total.
+3. Only then connect an expert. Re-measure the gap after each change; if the average gap
+   is not comfortably under 60 s, do not add work to the loop.
+
+Do NOT connect any of the four remaining stubbed experts, and do NOT re-land the rates
+connection, until the average completed-run gap is under 60 s. The measurement above is
+the gate, and it is cheap to re-run.
+
 ## BASELINE TEST RESULT (2026-09-23) — NOTHING BEATS THE BASELINE, AND NOTHING IS BACKWARDS
 
 Read-only test at `scope_type='gate_global'` (the other scope types re-count the same
