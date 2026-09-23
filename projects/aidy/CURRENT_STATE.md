@@ -2,6 +2,52 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## DECISION 2026-09-23: AIDY FEATURE WORK IS FROZEN. IT COLLECTS DATA AND NOTHING ELSE.
+
+This is a standing decision, not a suggestion. Read it before proposing any AIDY work.
+
+### Why
+
+AIDY cannot be evaluated yet and no amount of building changes that. It has **three days**
+of labelled outcomes, in **one market regime** (a bearish drift that strengthened from
+57.9% to 60.1% over the day). Its experts are statistically indistinguishable from a coin
+flip (p=0.49 against random). That is the expected result for any predictor with three
+days of data. It is **not evidence that AIDY is broken** and it is **not evidence that
+AIDY works**. It is an absence of evidence, and the only cure is time.
+
+Every hour spent adding experts, connecting stubs or tuning weights before there is a
+real sample is wasted, and each one risks the outage cycle that cost 5h39m on 2026-09-23.
+
+### What is frozen
+
+- No new experts.
+- No connecting the four remaining stubbed experts.
+- No re-landing the rates connection (it is preserved at 6d760ec).
+- No weight, threshold or polarity changes. **Especially no polarity inversion** - twice
+  measured as not exploitable, and the case against it strengthened with more data.
+
+### What is allowed
+
+1. **Let it run.** It is stable, costs nothing, and accrues the one thing it needs.
+2. **Data plumbing only**, because it makes the eventual verdict valid rather than
+   changing behaviour: derive H1/H4/D1 from the 41,606 M1 bars (currently 188/51/12),
+   restart the four dead feeds, and decide finish-or-delete on the five empty tables.
+   None of these touch the decision path.
+3. **Re-run `scripts/aidy_baseline_edge_report.py` in 4-6 weeks, not days.** That is the
+   verdict point. Before then the answer is "not enough data" whatever the numbers say.
+
+### What to tell the owner when he asks how AIDY is doing
+
+The truthful short answer: it is alive, honest, and refusing to trade because nothing has
+earned its trust yet. That refusal is the feature. It is why AIDY has never lost money.
+Do not dress the absence of a result up as a result, in either direction.
+
+### Where the effort should go instead
+
+Super Signals is the live business with real money moving through it. AIDY is the research
+arm and was never going to be the earner this quarter. Default to Super Signals work
+unless the owner says otherwise.
+
 ## FULL SYSTEMS CHECK 2026-09-23 12:36Z — AND A CORRECTION TO THE BUDGET FINDING
 
 ### CORRECTION: the budget is NOT exhausted in steady state
