@@ -2,6 +2,32 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
+## DIRECTION — AGREED WITH THE OWNER 2026-09-23. READ THIS FIRST.
+
+**AIDY's job is scoring signal providers, not predicting gold every 15 minutes.**
+
+Why: over 42 days (2,743 windows) 15-minute gold direction is ~50/50 (46.66% up, 47.65%
+down). The gold experts are a coin flip because the target is one. More experts or tuning
+cannot fix that. Meanwhile, replaying each provider's own entry/SL/TP against real price
+produced the only robust, money-relevant result: TRADE GLOBAL -$3,073 over 305 trades
+(40.0%, significantly bad) and TIG's Asia +$1,140 over 364 (64.3%, significantly good).
+The owner is removing TRADE GLOBAL.
+
+Standing rules:
+
+1. **Keep the gold loop running** as a free, research-only data collector. Do not delete it.
+2. **No more 15-minute prediction build work.** No new gold experts, no connecting the
+   four stubs, no weight or polarity tuning.
+3. **Monthly provider scorecard** is AIDY's primary output: who makes money, who costs
+   money, who is deteriorating. Rank changes need more than one reading, because
+   unresolvable rates run 2.4–33.9%; only TRADE GLOBAL and TIG's Asia are robust today.
+4. **When the Super Signals decision layer is rebuilt, it is a rule on measured records**
+   (follow proven providers, skip proven bad ones), not a fitted model. The fitted version
+   looked good on replayed history and lost money live.
+5. **Removal policy:** remove things that cost money, cause noise or mislead. Leave inert,
+   zero-cost things alone unless there is a reason — touching the live loop caused the
+   5h39m outage on 2026-09-23.
+
 ## FOUR ANALYSES RUN 2026-09-23 ~13:40Z — RESULTS
 
 ### 1. The +$929 was IN-SAMPLE. Out-of-sample it is negative.
