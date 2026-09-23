@@ -51,6 +51,42 @@ Accuracy does improve with horizon but never reaches the baseline:
 | 240 min | 0.3831 | 0.4845 | −10.1 |
 | 960 min | 0.4185 | 0.4665 | −4.8 |
 
+### 3b. WHY THEY READ IT BACKWARDS — momentum extrapolation (2026-09-23)
+
+**Ruled out: the label.** Six consecutive outcomes recomputed from raw M1 candles match
+the stored values exactly to six decimal places (e.g. 4357.95862 → 4349.03998 = −20.465
+bps, stored −20.465178). Sign convention correct, 15 bars each, and every outcome window
+opens strictly after its decision. No label bug, no inverted sign, no lookahead.
+
+**Ruled out: simple mean reversion.** Across contiguous cycle pairs gold *continues* the
+prior 15-minute move **56.9%** of the time. A trivial "same as last 15 minutes" rule
+would beat every expert.
+
+**The mechanism.** Over the 138 gate calls where the previous resolved move was known:
+
+| | |
+|---|---|
+| experts voted WITH the prior move | **66.7%** |
+| market continued the prior move | **43.5%** |
+| followed momentum | n=92, accuracy **0.4022** |
+| faded momentum | n=46, accuracy **0.5000** |
+
+The experts are **momentum extrapolators**. Conditional on the moments they commit to a
+direction, gold reverts more often than it continues — they commit when momentum looks
+strongest, which is exactly when it stops. That reconciles everything: clean label,
+clean PIT, no simple reversion, ensemble consistently below baseline.
+
+**Not yet proven.** At n=138 the follow/fade split is z = −1.1, p = 0.27. Only the
+aggregate inversion is significant (p = 0.026). **Do not flip, weight or invert anything
+on this.** `gold_expert_momentum_stance.py` measures it per expert on the daily report
+(`MIN_STANCE_N = 40`, frozen before the result was examined) so the hypothesis hardens
+or dies on evidence.
+
+If it does harden, the options in order of honesty are: (a) move the primary horizon to
+where momentum persists — the baseline gap already narrows from −13.0 at 15 min to −4.8
+at 960 min; (b) teach the experts a regime filter so they only extrapolate when
+continuation is likely; (c) invert. (c) is last for a reason.
+
 ### 4. THE FINDING — the experts are anti-correlated, symmetrically
 
 | expert says | scored | correct | accuracy | base rate | gap |
