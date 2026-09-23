@@ -1,6 +1,20 @@
 # AGENTS.md
 
-These rules apply to ChatGPT, Claude and any other agent using this repository.
+These rules apply to Claude and any other agent using this repository.
+
+> **2026-09-23 — owner decision: ChatGPT is removed as a development agent.** Claude is
+> the only AI assistant that changes these repositories or production. Do not "ask ChatGPT",
+> relay prompts to it, or treat a ChatGPT-authored change as reviewed.
+>
+> **This is NOT the OpenAI API.** Super Signals calls OpenAI models inside the live product
+> to read provider Telegram messages and turn them into trades (`ai_message_decisions`:
+> 2,413 decisions in the 24h to 2026-09-23 14:12Z). **Never remove, rotate or disable the
+> OpenAI API key in Render as part of "removing ChatGPT"** — it would stop signal
+> ingestion. Only the ChatGPT GitHub connection is being revoked.
+>
+> ChatGPT committed as the owner (`dannythehat`), so older commits cannot be told apart by
+> author. Historical notes below that mention ChatGPT are kept as history.
+
 
 ## Purpose
 

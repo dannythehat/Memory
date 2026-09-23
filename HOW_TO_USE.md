@@ -6,7 +6,7 @@ It does not trade. It does not make AIDY smarter by itself. It remembers where t
 
 ## When working on AIDY
 
-Tell ChatGPT or Claude:
+Tell Claude:
 
 > Read the Memory repo for AIDY first. Then verify the real AIDY repo/runtime and continue from the latest handover.
 
@@ -14,7 +14,7 @@ The AI reads the compact AIDY memory, then checks the real AIDY repository befor
 
 ## When working on Super Signals
 
-Tell ChatGPT or Claude:
+Tell Claude:
 
 > Read the Memory repo for Super Signals first. Then verify the live Super Signals repo/Render state before changing anything.
 

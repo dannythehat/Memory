@@ -143,7 +143,9 @@ These were attacked and held up:
 - **Build 19 analogue design is correct.** Similarity computed first, outcomes read strictly post-selection, with guards that raise if outcome values touched selection.
 - **Build 2 gate contract is substantive**, not superficial. `_validate_conclusion` enforces real invariants.
 - **Legacy MetaAPI boundary is enforced at the data layer**, not only in docs: `market_candles` still holds legacy `metaapi` rows (1 D1, 27 H1, 7 H4) but the aggregate source filter excludes them.
-- **AIDY/Super Signals isolation is clean.** No gold expert module reads broker, MetaAPI, MT5 or follower state. Manifest asserts `super_signals_dependency_allowed: false`. Only matches were inert toolbox registry declarations and an unrelated local variable named `follower_total`.
+- **AIDY/Super Signals isolation — EVIDENCE level only; see correction.** No gold expert module reads broker, MetaAPI, MT5 or follower state. Manifest asserts `super_signals_dependency_allowed: false`. Only matches were inert toolbox registry declarations and an unrelated local variable named `follower_total`.
+
+  **CORRECTION (2026-09-22, post-audit):** this check covered *evidence* isolation only and was **blind to resource-level coupling**. AIDY research contended with live execution through the shared Render Postgres connection pool badly enough to **stop real trading**. The audit should have examined shared pools and runtime lanes, not only shared data. Full detail, current protection and an open merge hazard: `KNOWN_ISSUES.md` issue **0.01**. Future isolation claims must cover data, execution authority **and** shared infrastructure.
 - **Cycle yield is 1:1.** 41 cycle views after activation produced 41 shadow cycles — no post-activation loss.
 - **Full regression suite passes**: 1,665 tests locally at the audited SHA.
 

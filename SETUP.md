@@ -2,7 +2,7 @@
 
 ## What works immediately
 
-The repository can be used immediately by ChatGPT/Claude as a shared project-memory layer. No secret is required for humans/agents that already have GitHub access.
+The repository can be used immediately by Claude as a shared project-memory layer. No secret is required for humans/agents that already have GitHub access.
 
 ## Optional automatic live-state sync
 
@@ -43,7 +43,7 @@ For Super Signals substitute `projects/super-signals`.
 
 You do not need to paste project history into Claude. The whole point of Memory is to keep the bootstrap compact and versioned.
 
-## ChatGPT usage
+## Starting a session
 
 When GitHub is connected, say:
 

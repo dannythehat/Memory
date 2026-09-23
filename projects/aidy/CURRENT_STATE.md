@@ -1,6 +1,1072 @@
 # AIDY — Current State
 
+Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
+
+## DIRECTION — AGREED WITH THE OWNER 2026-09-23. READ THIS FIRST.
+
+**AIDY's job is scoring signal providers, not predicting gold every 15 minutes.**
+
+Why: over 42 days (2,743 windows) 15-minute gold direction is ~50/50 (46.66% up, 47.65%
+down). The gold experts are a coin flip because the target is one. More experts or tuning
+cannot fix that. Meanwhile, replaying each provider's own entry/SL/TP against real price
+produced the only robust, money-relevant result: TRADE GLOBAL -$3,073 over 305 trades
+(40.0%, significantly bad) and TIG's Asia +$1,140 over 364 (64.3%, significantly good).
+The owner is removing TRADE GLOBAL.
+
+Standing rules:
+
+1. **Keep the gold loop running** as a free, research-only data collector. Do not delete it.
+2. **No more 15-minute prediction build work.** No new gold experts, no connecting the
+   four stubs, no weight or polarity tuning.
+3. **Monthly provider scorecard** is AIDY's primary output: who makes money, who costs
+   money, who is deteriorating. Rank changes need more than one reading, because
+   unresolvable rates run 2.4–33.9%; only TRADE GLOBAL and TIG's Asia are robust today.
+4. **When the Super Signals decision layer is rebuilt, it is a rule on measured records**
+   (follow proven providers, skip proven bad ones), not a fitted model. The fitted version
+   looked good on replayed history and lost money live.
+5. **Removal policy:** remove things that cost money, cause noise or mislead. Leave inert,
+   zero-cost things alone unless there is a reason — touching the live loop caused the
+   5h39m outage on 2026-09-23.
+
+## CLEANUP 2026-09-23 (after the direction was agreed)
+
+**Removed — three workflows that could silently stop AIDY data capture (PR #255).**
+Each redeployed the live Worker `aidy-signals-test` with `crons=[]`, which succeeds and
+quietly stops capture, shadow cycles and scoring. This already happened on 2026-09-21.
+
+| deleted workflow | what would have fired it |
+|---|---|
+| `day11-calibration-backfill.yml` | any edit to `src/provider_entry.py` |
+| `day6-archive-dead-letter-rollout.yml` | any edit to `src/aidy/cross_market_storage.py` |
+| `ops-provider-entry-queue-repair-20260908.yml` | a dated one-off repair |
+
+Deleted rather than patched: editing a workflow file triggers it, and patching Day 11
+would have re-run its 56-window backfill. `tests/test_worker_deploy_ownership.py` now
+fails CI for any workflow that deploys a Worker with an empty cron unless it is
+allowlisted as targeting a different Worker (`day53` → `aidy-day53-twelve-package-test`,
+`ops-provider-market-rollout-20260905` → `aidy-signals-scheduler-test`). Verified it fails
+with `day6` restored. **Do not re-add any of the three.**
+
+**Closed — five stale PRs:** #181 (superseded by #255), #243 (do-not-merge probe),
+#240 (Build 24 re-verification), #197 (one-off audit), #222 (Build 17 NO-GO — result
+stands, and matches the direction).
+
+**Deliberately left alone** (inert and zero-cost, removal would mean touching the live
+loop): the four stubbed gold experts, the five empty D1 tables, `day53` and
+`ops-provider-market-rollout` workflows.
+
+## FOUR ANALYSES RUN 2026-09-23 ~13:40Z — RESULTS
+
+### 1. The +$929 was IN-SAMPLE. Out-of-sample it is negative.
+
+`aidy_decisions` has no replay flag, but a replay decision is made long after its signal
+was posted. Splitting on that lag:
+
+| sample | helped | hurt | help% | p vs coin | net $ | still open |
+|---|---|---|---|---|---|---|
+| **LIVE** (<10 min lag) | 6 | 10 | **37.5%** | 0.454 | **−460.81** | 183 |
+| delayed (<1 day) | 27 | 23 | 54.0% | 0.672 | +416.04 | 61 |
+| **REPLAY** (≥1 day, signals back to 2024-11-05) | 82 | 51 | **61.7%** | **0.009** | +574.10 | 93 |
+
+**The effect reverses as you move from replayed history to live decisions** — 61.7% → 54%
+→ 37.5%. That is the textbook signature of in-sample fitting. 2,641 of 3,295 decisions are
+replays; only 318 are live. On 09-20 alone the harness ran 5,303 times across **8
+replay_versions** — that is the fitting.
+
+Live n is only 16 because **183 of 277 live outcomes are still open**. So the verdict is
+NOT "it loses money", it is "there is no usable live evidence yet and what exists points
+down". `holdout_opened = 0` across all 6,045 runs.
+
+### 2. AIDY's decision layer is DOWN in production (not an outcome-writing bug)
+
+Zero `aidy_decisions` on 2026-09-23 despite 877 messages, 94 signal observations, 578
+provider observations and **113 telegram publications**. Comparable days produced 100–162
+decisions. Last decision **2026-09-22 14:28:51**; outcomes stopped 14:46 only because
+there was nothing left to resolve. 656 decisions have no outcome.
+
+The replay harness has also materialised **zero cases since 09-21** (155–219 idle runs/day).
+
+Trading itself is FINE: positions opened as recently as 13:18 today, 4 open, 1,725 closed.
+The MetaAPI errors (`metaapi_timeout`, `metaapi_temporarily_unavailable`,
+`metaapi_trade_rejected`, 758 live-board failures, 269 reconcile failures, 129 "critical"
+profit-protection failures) are retryable connectivity noise, not a stopped system — but
+that volume is not normal and deserves its own look.
+
+### 3. THE MARKET IS ~50/50 OVER 42 DAYS — WHICH DESTROYS THE "DEFICIT"
+
+2,743 fifteen-minute windows over 2026-08-12 → 2026-09-23, from 41,631 M1 bars:
+
+| outcome | count | share |
+|---|---|---|
+| bullish | 1,280 | **46.66%** |
+| bearish | 1,307 | **47.65%** |
+| neutral | 156 | 5.69% |
+
+**The true majority baseline is 47.65%, not the 57.9–60.1% I measured on three days.** The
+benchmark I spent the day beating the experts with was a three-day bearish fluke that is
+not achievable going forward.
+
+The experts scored **47.97%** on the live gate sample. Against the real 42-day baseline of
+47.65%, **they are not behind at all.** Combined with p vs random = 0.4855, the accurate
+statement is: **15-minute gold direction is a coin flip, and the experts are a coin flip.
+No skill, no anti-skill, and no 12-point deficit.** Every "massive deficit" claim I made
+today was an artifact of an unrepresentative comparison window.
+
+One real calibration fault survives: only **5.69%** of windows are neutral, yet the
+directional experts vote neutral ~30% of the time. That over-neutrality is genuine and
+measurable against the full sample.
+
+### 4. PROVIDER EDGE IS REAL AND ACTIONABLE — the most valuable finding of the day
+
+3,161 provider trades scored across **44 providers**, one benchmark model, no
+double-counting. 14 providers have ≥30 resolved trades. Bonferroni α = 0.05/14 = 0.00357.
+
+| provider | resolved | win% | R/trade | P&L | verdict |
+|---|---|---|---|---|---|
+| **TIG's Asia Trades** | 364 | **64.3%** | +0.313 | +1,140 | **SIGNIFICANT, 8.8% unresolvable — most trustworthy** |
+| TDC V2 | 237 | 63.3% | +0.464 | +1,101 | SIGNIFICANT but **33.9% unresolvable** |
+| GOLDHUNTER \| PAUL | 44 | 79.5% | +2.990 | +1,316 | SIGNIFICANT, small n, 14.8% unresolvable |
+| **TRADE GLOBAL** | 305 | **40.0%** | **−1.008** | **−3,073** | **SIGNIFICANTLY BAD** |
+
+Wilson intervals: TIG's Asia **[0.592, 0.690]** entirely above 0.50; TRADE GLOBAL
+**[0.347, 0.456]** entirely below.
+
+Combined P&L across the 14: **+$4,889**. **Dropping TRADE GLOBAL alone: +$7,962 — a
++$3,073 swing.**
+
+**Why this is trustworthy where the AIDY decision replay is not:** replaying a provider's
+own stated entry/SL/TP against actual price history has **no free parameters**. Nothing is
+being fitted. It is measurement, not optimisation. (`forward_evidence_eligible=0` on all
+rows, so it is not certified forward evidence — but the overfitting objection does not
+apply.)
+
+Caveat that does apply: unresolvable rates range 2.4%–33.9% and are not random, so rank
+ordering is soft. TIG's Asia (8.8%) and TRADE GLOBAL (25.8%, n=305) are the two robust
+conclusions.
+
+### The single highest-value action available
+
+**Stop following TRADE GLOBAL.** 305 trades, 40% win rate, −$3,073, significant after
+correction, confidence interval entirely below break-even. This is a business decision
+available today from data already collected.
+
+## CORRECTION 2026-09-23: THE "NOT ENOUGH DATA" CONCLUSION WAS WRONG
+
+The owner challenged it and he was right. I measured AIDY's own three-day gold shadow log
+and called that "the data". The actual data holdings are far larger, and one of them shows
+the **first positive signal in this project**.
+
+### What actually exists
+
+| dataset | volume | span |
+|---|---|---|
+| `messages` (Telegram providers, Super Signals PG) | **37,467** | **2023-09-08 → 2026-09-23 (1,111 days)** |
+| `audit_events` | 265,776 | 47 days |
+| `provider_trade_observations` | 21,312 | 8 days (live) |
+| XAUUSD M1 candles (D1) | **41,631** | **42.5 days, 37 trading days, no revisions** |
+| `shadow_trade_legs` | 7,713 | 21 days |
+| `broker_deals` | 3,328 | 43 days |
+| `aidy_decisions` / `aidy_decision_outcomes` | 3,295 / **2,639** | 5 days (09-17 → 09-22) |
+| `aidy_historical_replay_runs` | 6,045 runs, 1,120 cases, 1,949 scores | 09-19 → 09-23 |
+
+The gold experts are **pure functions over candles**. They do not need the live shadow loop
+to be evaluated — they can be replayed over all 37 trading days, which is roughly **3,550
+fifteen-minute windows against the 247 outcomes I actually used. A 14x larger test set,
+already collected.**
+
+### THE FINDING: Super Signals' AIDY decision layer looks positive
+
+`aidy_decision_outcomes`, 2,639 rows: 2,103 neutral (AIDY changed nothing), 337 still open
+at window end (-$399.78), **115 confirmed_helped (+$2,779.26)**, **84 confirmed_hurt
+(-$1,850.15)**.
+
+Of the **199 decisions that actually resolved, 115 helped = 57.8%**, net **+$929.11**
+(+$529.33 including the open ones).
+
+- exact two-sided binomial vs a coin flip: **p = 0.0332**
+- 95% Wilson interval on the help-rate: **[0.508, 0.644] — excludes 0.50**
+
+**This is the only positive result the project has produced, and it is in a dataset nobody
+had analysed.** Note this is a DIFFERENT AIDY from the gold expert gates: it is the
+Super Signals decision layer acting on provider signals.
+
+### Why it is not yet a green light
+
+1. **`holdout_opened = 0` across all 6,045 replay runs.** Nothing is confirmed
+   out-of-sample. In-sample edge is not edge, and this is the single thing that decides
+   whether the +$929 is real.
+2. Only **7.5%** of decisions did anything (199 of 2,639).
+3. Five-day window, and **`aidy_decision_outcomes` stopped writing on 2026-09-22 14:46** —
+   a stalled engine nobody noticed.
+4. p=0.033 is nominal; it would not survive correction if several variants were tried.
+
+### This AMENDS the freeze decision below
+
+The freeze was premised on "there is not enough data to evaluate anything". **That premise
+was false.** The freeze on *building new features* still stands, but the "wait 4-6 weeks
+before re-testing" instruction was wrong and is withdrawn.
+
+The priority is now **analysis of data already held**, which is read-only and cannot break
+production:
+
+1. **Open a genuine holdout and re-score the decision layer out-of-sample.** This decides
+   whether +$929 is real. Highest value item in the project.
+2. **Replay the gold experts over all 37 trading days of M1** instead of 3 days. Turns 247
+   outcomes into ~3,550.
+3. **Find out why `aidy_decision_outcomes` stopped on 09-22** and restart it.
+4. Analyse the **1,111 days of provider messages** — never touched, and the largest
+   holding by span.
+
+## DECISION 2026-09-23: AIDY FEATURE WORK IS FROZEN. IT COLLECTS DATA AND NOTHING ELSE.
+
+This is a standing decision, not a suggestion. Read it before proposing any AIDY work.
+
+### Why
+
+AIDY cannot be evaluated yet and no amount of building changes that. It has **three days**
+of labelled outcomes, in **one market regime** (a bearish drift that strengthened from
+57.9% to 60.1% over the day). Its experts are statistically indistinguishable from a coin
+flip (p=0.49 against random). That is the expected result for any predictor with three
+days of data. It is **not evidence that AIDY is broken** and it is **not evidence that
+AIDY works**. It is an absence of evidence, and the only cure is time.
+
+Every hour spent adding experts, connecting stubs or tuning weights before there is a
+real sample is wasted, and each one risks the outage cycle that cost 5h39m on 2026-09-23.
+
+### What is frozen
+
+- No new experts.
+- No connecting the four remaining stubbed experts.
+- No re-landing the rates connection (it is preserved at 6d760ec).
+- No weight, threshold or polarity changes. **Especially no polarity inversion** - twice
+  measured as not exploitable, and the case against it strengthened with more data.
+
+### What is allowed
+
+1. **Let it run.** It is stable, costs nothing, and accrues the one thing it needs.
+2. **Data plumbing only**, because it makes the eventual verdict valid rather than
+   changing behaviour: derive H1/H4/D1 from the 41,606 M1 bars (currently 188/51/12),
+   restart the four dead feeds, and decide finish-or-delete on the five empty tables.
+   None of these touch the decision path.
+3. **Re-run `scripts/aidy_baseline_edge_report.py` in 4-6 weeks, not days.** That is the
+   verdict point. Before then the answer is "not enough data" whatever the numbers say.
+
+### What to tell the owner when he asks how AIDY is doing
+
+The truthful short answer: it is alive, honest, and refusing to trade because nothing has
+earned its trust yet. That refusal is the feature. It is why AIDY has never lost money.
+Do not dress the absence of a result up as a result, in either direction.
+
+### Where the effort should go instead
+
+Super Signals is the live business with real money moving through it. AIDY is the research
+arm and was never going to be the earner this quarter. Default to Super Signals work
+unless the owner says otherwise.
+
+## FULL SYSTEMS CHECK 2026-09-23 12:36Z — AND A CORRECTION TO THE BUDGET FINDING
+
+### CORRECTION: the budget is NOT exhausted in steady state
+
+The 108.6 s average gap recorded below was measured **during backfill catch-up**, when
+every run was also clearing a scoring backlog. With the backlog cleared, over 90 minutes:
+
+| | |
+|---|---|
+| cron interval | 60 s |
+| runs | **89, all ok, 0 failures** |
+| average gap between completed runs | **60.0 s** — tracking the cron exactly |
+| max gap | 116.3 s |
+| cycles created | 6 in 90 min = the 15-minute cadence, exactly |
+
+So the loop completes inside its interval in steady state. The earlier conclusion
+("headroom was already negative") was an artifact of measuring under load, and the gate
+it implied was wrong.
+
+**The gap cannot measure headroom once runs finish inside the cron interval** — it floors
+at 60 s whatever the run takes. So the honest position is: run duration is still
+UNMEASURED, and the useful next measurement is duration itself, not gaps. What remains
+true is that the loop had no spare capacity *while backfilling*, and that is when the
+rates connection was added and killed it. Whether it is affordable in steady state is
+genuinely unknown — do not assume either way.
+
+### Engines LIVE and healthy (all fresh within minutes of 12:36Z)
+
+| engine | volume | state |
+|---|---|---|
+| cycle engine | 161 cycles, last 12:25:29 | 15-min cadence, on time |
+| safety flags | — | `research_only=1`, `formal_forward_authority=0`, `live_money_execution_allowed=0` |
+| trust engine | 36,766 context scores | fresh 12:32 |
+| marker brain | 1,206 results, 3,816 context scores | fresh 12:32 |
+| movement investigator | 353 investigations, 348 cards, 1,637 scans | fresh 12:32 |
+| gold cycle views | 204 views, 201 outcomes | fresh |
+| scoring | 158 scored cycles, **0 unscored backlog** | caught up |
+| archiving | 56,679 archived, **0 pending, 0 dead-letter** | clean |
+| data health | — | `fresh`, `alert=0`, lag 248 s |
+| worker | `aidy-signals-test` | deployed 08:11:14 (the revert); nothing since |
+
+### Engines DEAD — zero rows, ever
+
+`aidy_memory_episodes`, `aidy_memory_outcomes`, `aidy_learning_cards`,
+`aidy_forward_outcomes`, `aidy_end_to_end_cycles`.
+
+`aidy_forward_evaluations` has **121 rows but 0 outcomes** — evaluations are created and
+never resolved. Note the gold-specific equivalents ARE alive
+(`aidy_gold_movement_learning_cards` 348, `aidy_gold_movement_investigations` 353), so
+this may be a superseded generic path rather than a fault — **but it has not been
+confirmed either way, and it is the same shape as the orphaned rates path: tables written
+or half-written that nothing completes.** Worth one deliberate decision: finish them or
+delete them.
+
+### Data feeds: stale or dead
+
+| feed | last data | state |
+|---|---|---|
+| XAUUSD M1 / M5 / M15 | 12:31 / 12:25 / 12:15 | healthy |
+| XAUUSD H1 | 11:00, 188 bars | lagging, thin |
+| XAUUSD H4 | 08:00, 51 bars | lagging, thin |
+| **XAUUSD D1** | **2026-09-21, 12 bars** | **38 hours stale** |
+| UST 2Y/10Y/REAL_10Y | 2026-09-22 | normal (publishes evenings) |
+| **DTWEXBGS** (broad dollar) | 2026-09-18 | **5 days stale** |
+| federal_reserve_rss | 2026-09-22T14:20 | 22 hours stale |
+| **bea_releases / bea_schedule / federal_reserve_calendar** | 09-05 / 09-04 / 09-01 | **dead 18–22 days** |
+
+41,606 M1 bars exist (~29 days) while H1/H4/D1 hold 188/51/12. The higher timeframes can
+be derived from M1 and are not being.
+
+### Stats refreshed — the baseline conclusion STRENGTHENED
+
+Gates at `gate_global`: **351 scored** (was 286), accuracy **0.4046** vs majority baseline
+**0.5071**, p=1.45e-04, Wilson [0.3545, 0.4567]. Subcalculators: 3,902 scored, accuracy
+0.3311.
+
+Strategy comparison over **296** directional outcomes (was 247):
+
+| strategy | now | this morning |
+|---|---|---|
+| follow the experts | 0.4797 | 0.4530 |
+| **always bearish (the bar)** | **0.6014** | 0.5790 |
+| invert the experts | 0.5203 | 0.5470 |
+| random 50/50 | 0.5000 | 0.5000 |
+
+- p vs **majority**: **1.92e-05** — the deficit is real and persists
+- p vs **random**: **0.4855** (was 0.143) — now *completely* indistinguishable from a coin
+
+So with 20% more data the "experts are backwards" reading is dead beyond doubt, and
+inverting has got *worse* (0.5203 against a 0.6014 bar). The entire deficit is failure to
+exploit a bearish drift that has **intensified** (57.9% → 60.1% bearish). Confirms: do not
+invert any polarity.
+
+### Write cost per cycle (unchanged, re-measured)
+
+612 ledger rows per cycle (9,186 rows over 15 cycles), plus ~89 subcalculator and 15 gate
+snapshots — ~715 rows/cycle, ~69,000/day at the 15-minute cadence. Database 661 MB of a
+10 GB limit.
+
+## INVOCATION BUDGET MEASURED (2026-09-23) — IT WAS ALREADY EXHAUSTED
+
+Measured read-only from production, 26 completed runs after the revert.
+
+### The loop already overruns its own schedule
+
+| | |
+|---|---|
+| cron interval | **60 s** (`* * * * *`, verified against Cloudflare) |
+| average gap between completed runs | **108.6 s** |
+| fastest run | 37.1 s |
+| slowest gap observed | **1,080 s** (18 minutes) |
+
+So a healthy AIDY takes ~1.8× its own cadence to complete a run. **The headroom was
+already negative before anything was added.** That is the whole explanation for this
+morning: connecting a 15th expert did not create a new problem, it pushed an
+already-overrunning invocation past the point where the platform kills it — taking candle
+capture down with it, because they share the invocation.
+
+### Where the cost goes, per cycle
+
+| written per cycle | rows | share |
+|---|---|---|
+| outcome ledger | **~596** | **85%** |
+| subcalculator snapshots | ~89 | 13% |
+| gate snapshots | 15 | 2% |
+| **total** | **~700** | |
+
+From 147 cycles / 143 scored: 85,230 ledger rows, 13,139 subcalculator snapshots, 2,205
+gate snapshots.
+
+**The ledger is 85% of the write volume**, because each result is repeated across the
+applicable members of **24 scope types** (~5.7 per subject on average). That fan-out
+exists to support conditional trust scope backoff — it is not waste, but it is the cost
+driver, and it grows with history.
+
+At the normal 15-minute cadence that is ~96 cycles/day, so roughly **67,000 rows and
+~10 MB of database per day** even without a backfill.
+
+### What this means — the roadmap changes
+
+**The binding constraint on AIDY is the invocation budget, not the experts.** Every item
+that was queued behind "connect more experts" is behind this instead:
+
+1. **Reduce the ledger fan-out** — 85% of per-cycle writes. Options worth measuring:
+   write scope rows lazily (only scopes a subject actually backs off to), or batch the
+   insert, or move scoring out of the cycle-creation invocation entirely.
+2. **Split scoring from cycle creation** into separate scheduled paths, so a slow scoring
+   pass cannot starve cycle creation or candle capture. They are coupled today only by
+   sharing one cron handler, and that coupling is what made one failure total.
+3. Only then connect an expert. Re-measure the gap after each change; if the average gap
+   is not comfortably under 60 s, do not add work to the loop.
+
+Do NOT connect any of the four remaining stubbed experts, and do NOT re-land the rates
+connection, until the average completed-run gap is under 60 s. The measurement above is
+the gate, and it is cheap to re-run.
+
+## BASELINE TEST RESULT (2026-09-23) — NOTHING BEATS THE BASELINE, AND NOTHING IS BACKWARDS
+
+Read-only test at `scope_type='gate_global'` (the other scope types re-count the same
+cycles). 3-class label: bullish / bearish / neutral. Baseline is each subject's OWN
+majority class, never 0.5. Two-sided exact binomial, Bonferroni across subjects tested.
+
+### Headline
+
+**53 subjects with n>=20. ZERO beat their baseline. All 53 have negative edge.**
+
+Four survive Bonferroni (alpha 0.05/53 = 0.000943) and all four are significantly
+*worse* than baseline: `liquidity_new_york_opening_30m_low` (0.150 vs 0.650, n=20),
+`h1_breakout_acceptance` (0.303 vs 0.526, n=76), `liquidity_confirmed_m15_swing_low`
+(0.219 vs 0.562, n=32), `m5_breakout_acceptance` (0.316 vs 0.513, n=76). A further 23
+are nominally significant and die under correction.
+
+Pooled (indicative only — subjects share cycles): n=2,843, accuracy 0.3510 vs baseline
+0.4798, z=-13.74. Sign test on unanimous direction: p≈2.2e-16.
+
+### The decisive nuance — do NOT read this as "the experts are backwards"
+
+Gate confusion matrix, 247 directional outcomes:
+
+| strategy | accuracy |
+|---|---|
+| follow the experts | **45.3%** |
+| always bearish (the majority baseline) | **57.9%** |
+| invert the experts | 54.7% |
+| random 50/50 calling | 50.0% |
+
+- experts vs **majority** baseline: z=-4.00, **p=6.5e-05** — a real, large deficit
+- experts vs **random** (0.50): z=-1.46, **p=0.14** — **NOT significant**
+
+So they are not measurably worse than coin-flipping. What they fail to do is exploit the
+drift: the sample went **57.9% bearish** while the experts called **51.7% bearish**, i.e.
+near 50/50 into a trending market. That asymmetry, not a reversed mechanism, produces the
+whole below-baseline result.
+
+And **inversion is not exploitable**: inverting gives 54.7%, still below always-bearish.
+Neither conditional is significant — said bearish → 53.1% bearish (p=0.27); said bullish
+→ 63.0% bearish (p=0.26).
+
+### What this actually means
+
+The honest conclusion is **not** "there is no edge" and **not** "invert the polarity".
+It is: **247 directional outcomes over ~3 days cannot establish or refute edge.** A
+57.9% bearish base rate is a three-day trend, not a law, and an ensemble that leans
+neutral-to-balanced will look terrible against it and would look good in a bullish
+sample. The measured deficit is confounded with the sample period.
+
+Therefore:
+1. **Do NOT invert any expert's polarity.** The inversion is not significant, not
+   exploitable, and most likely a sample artifact.
+2. **Do NOT conclude the experts are broken.** They are uninformative on this sample,
+   which is a different and much weaker claim.
+3. **The binding need is labelled data across varied regimes**, which is why keeping the
+   loop alive matters more than adding experts.
+4. The abstention is correct behaviour throughout. The gate is refusing to act on
+   evidence that has not earned it.
+
+This also retires the momentum-extrapolation hypothesis as a *primary* explanation: the
+ensemble is not significantly worse than random, so there is no large anti-skill to
+explain.
+
+## THE PER-INVOCATION BUDGET IS THE REAL REASON EXPERTS ARE STUBBED (2026-09-23)
+
+**Connecting the rates expert took AIDY down, and reverting it fixed it. Measured, not inferred.**
+
+| | with rates connected | after revert (#253) |
+|---|---|---|
+| cycle creation | frozen at 05:25 for ~45 min | resumed, 05:25 → 06:25 |
+| gate snapshots | stuck at 2,010 | 2,070 (+4 cycles × 15 gates) |
+| shadow health | no row since 07:48:31 | `ok @ 08:11:25, created=4` |
+| candle ingestion | stopped 07:52:24 | flowing again, 08:12:25 |
+
+**Candle ingestion stopping is the key evidence.** It is a different code path from the
+expert loop, so the whole scheduled invocation was being terminated — not just cycle
+creation. That is why no error row was ever written: an invocation killed by a platform
+limit never reaches its error handler. A try/except would not have caught it either.
+
+### What this means for the four remaining stubs
+
+`_DISCONNECTED_CONTEXT_GATES` is very likely **not** neglect. It is probably a capacity
+decision: the cron invocation cannot afford 15 real expert builds alongside candle
+capture and the scoring fan-out. Adding the 15th was enough to kill it.
+
+So "connect the four dark experts" is **not** a wiring task, and the earlier plan that
+treated it as one was wrong. Before connecting any of them, the work is:
+
+1. Measure the per-invocation cost budget and where it currently goes (candle capture,
+   scoring fan-out, 14 expert builds).
+2. Reduce the scoring fan-out. The ledger is ~79,000 rows for ~138 cycles because each
+   result fans across many scope keys; that is the dominant write cost and it grows.
+3. Only then consider splitting expert builds across invocations, or moving scoring to a
+   separate scheduled path, so adding an expert is affordable.
+
+Do NOT retry connecting an expert without doing 1–3 first. It will fail the same way, and
+it takes the whole loop down when it does — candle ingestion included.
+
+### The adapter itself is fine and is not the problem
+
+`treasury_rate_vintages` is a pure function over rows with 19 tests against the real 69
+production rows, and the `macro_vintages` `us_treasury` source change is sound (see the
+reverted section below for the point-in-time reasoning, which still holds). Both were
+reverted with #253 only for predictability while production was down. They can be
+re-landed unconnected at any time; the commit is 6d760ec.
+
+## REVERTED — RATES PATH CONNECTION (2026-09-23, PR #252, reverted by #253)
+
+The orphaned rates pipeline is joined. `treasury_rate_vintages` adapts the Treasury
+curve AIDY has stored since 2026-08-18 into the FRED-shaped version records the rates
+expert asks for, and `rates_usd_cross_asset_expert` is **no longer a stub** — it was
+removed from `_DISCONNECTED_CONTEXT_GATES`, so four remain (macro_event,
+futures_microstructure, news_mechanism, analogue).
+
+| FRED series the expert asks for | Treasury source |
+|---|---|
+| DGS2 | UST_NOMINAL_2Y |
+| DGS10 | UST_NOMINAL_10Y |
+| DFII10 | UST_REAL_10Y |
+| T10YIE | UST_NOMINAL_10Y − UST_REAL_10Y (derived, marked as derived) |
+
+### The point-in-time rule, and why last night's fear was misplaced
+
+`conservative_available_after(D)` is midnight UTC on **D+1** and is source-agnostic.
+Treasury publishes date D's curve on D itself, about 19:30–22:00 UTC, so the existing
+bound is already 2–4.5 hours **later** than real publication. **No new availability rule
+was needed and no lookahead is introduced** — the thing I refused to rush was smaller
+than I thought.
+
+Availability is `max(conservative_available_after(D), first_observed_at)`, because ingest
+sometimes lags: the 2026-09-11 curve was not in the database until 2026-09-13T07:00Z.
+`verify_version_record` therefore accepts `>=` for a Treasury record and keeps `==` for
+ALFRED. The argument that makes this safe: **moving availability later can only withhold
+evidence the system might have used; it can never manufacture knowledge it did not
+have.** Tests pin that the relaxation does not leak to ALFRED and that earlier-than-bound
+is refused under both sources.
+
+### What this does and does not do
+
+It does NOT break the family deadlock and cannot. The expert is `context_only`, so every
+subcalculator is non-scoreable and it contributes zero directional mass — pinned by test.
+It turns the rates block from `unknown` on every cycle into `known`, which is context the
+trust engine can condition on, and it stops a live daily feed being written and never read.
+
+19 tests, **all driven by the real 69 rows exported from production**, including the real
+expert builder against the real data and the empty-rows case. That choice was deliberate:
+this morning a synthetic fixture passed while production stayed broken.
+
+## READ FIRST — RECOVERED 2026-09-23 07:19Z
+
+AIDY is back up. `status=ok`, the wedge cycle
+`aidy_cycle_a4d43ad0d391e11a782a421b3b0ebb1e` is scored, and the loop is
+**backfilling the missed window** in 15-minute steps (01:55 → 03:25 and climbing).
+
+Verification of the fix, from production:
+
+- packets split cleanly by version: **1,785 v1** frozen at 01:40:21 (never rewritten)
+  and **105 v2** from 01:55 onward. The builder emits v2; old evidence stays verifiable.
+- the scoreable rule validated in SQL against **all 10,749 stored subcalculators: zero
+  violations**.
+- the outcome ledger is growing again (246 → 251 resolutions) and now contains **29
+  neutral outcomes** — neutral votes are being scored for the first time, which is what
+  #249 was for.
+- accuracy 0.3825 vs 0.3821 before, i.e. flat so far on a small number of new rows.
+
+Total outage: **01:40:21Z → 07:19:25Z, five hours 39 minutes**, entirely self-inflicted,
+across two incomplete fixes before the correct one.
+
+### Deploy mechanics worth knowing next time
+
+The deploy workflow has `concurrency: aidy-worker-deploy` with
+`cancel-in-progress: false`, and its last step ("Prove first genuine Build 24 prospective
+cycle and score") polls for up to ~22 minutes. So a failed deploy **blocks the next
+deploy for 22 minutes** — including the deploy that fixes it. Cancelling the doomed run
+releases the group immediately; its Deploy step has already completed by then, so
+cancelling costs only the verification.
+
+## OUTAGE DETAIL AND THE REAL BINDING CONSTRAINT (2026-09-23 07:00)
+
+### AIDY was down for five hours and I caused it
+
+Last cycle 2026-09-23T01:40:21Z. First error 01:47:54Z. 307 consecutive failed runs,
+`RuntimeError: stored Build 24 expert packet failed verification`. Candle ingestion was
+healthy the whole time, so only the shadow loop was dead.
+
+PR #249 changed `subcalculator_is_scoreable` (scoring neutral votes) **without giving the
+packet contract a new version**. Verification re-derives `scoreable` and compares it to
+the stored value, so all 1,785 packets written before the change failed against the new
+rule. The failure raises inside the scoring loop, which aborts the whole scheduled run,
+so no new cycles were created either — and the unscored cycle stayed at the head of the
+queue and failed again every minute. A permanent wedge.
+
+Fixed in TWO parts. PR #250 versioned the contract (`v1` old rule, `v2` new rule,
+verification dispatching on the packet's own declared version). **That was incomplete and
+AIDY stayed down**, because `v1` does not identify one rule: the rule changed without a
+version bump, so packets written either side of the #249 deploy both say `v1`.
+
+Measured with `json_each` over the stored subcalculators:
+
+| contract_version | neutral `scoreable` | packets | window |
+|---|---|---|---|
+| v1 | `false` | 673 | 09-21T16:10 → 09-23T01:25 |
+| v1 | `true` | **5** | 09-23T01:40:21.480Z only |
+
+Those 5 are the whole of cycle `aidy_cycle_a4d43ad0d391e11a782a421b3b0ebb1e` — the last
+cycle created before the break and the single unscored cycle at the head of the queue.
+Treating v1 as strictly the old rule rejected exactly those 5, so the loop stayed wedged
+on the same cycle. PR #251 makes a v1 `directional`/`known`/`neutral` flag tolerant of
+either value and nothing else; validated in SQL against all 10,749 stored
+subcalculators with **zero violations**.
+
+**I asserted in #250 that no packet was ever written under the new rule. That was false.**
+The check matched `'"vote": "neutral"'` *with a space* against compact stored JSON, so it
+could never match anything, and I read the zero as evidence. Third time this session a
+broken query produced a confident wrong conclusion — **a query returning zero must be
+proven able to return non-zero before it is used as evidence.**
+
+Stored packets are never rewritten — `calculator_digest` seals `scoreable`, so amending
+one would mean recomputing the digest that is the only reason it counts as evidence.
+
+**Rule for the future: `scoreable` is sealed inside the packet digest. Any change to the
+scoreable rule MUST ship a new contract version in the same commit.** A test now pins
+both versions' rules so CI fails if this is forgotten again.
+
+**Two signals fired and both were ignored:** the #249 deploy run itself FAILED
+(run #39, 01:35→02:21), and the `AIDY Shadow Loop Watchdog` ran at 04:01 and FAILED.
+Nobody was reading either. A watchdog that nothing watches is not a watchdog.
+
+### Correction: I had the two families backwards
+
+An earlier entry said price_action is the qualifier and the single-member
+liquidity_mechanism is dead weight. **Measured over the 8 cycles that have family data,
+the opposite is true:**
+
+| family | members | cycles qualified | best strength | max possible if unanimous |
+|---|---|---|---|---|
+| liquidity_mechanism | 1 | **2 of 8** | 0.339 | **0.582** |
+| price_action | 8–9 | **0 of 8** | 0.042 | **0.093** |
+
+`min_family_strength` is **0.20**.
+
+### The binding constraint is not the family count. It is reliability.
+
+**price_action cannot qualify even if every one of its nine members voted the same way.**
+Its ceiling is Σ(dependency_weight × reliability) = **0.093 against a 0.20 bar** — 46 per
+cent of the threshold. Two things cause it:
+
+1. **Dependency discount.** Eight members share one price series, so each is weighted
+   0.125. This is correct — they are not independent evidence — but it means the family's
+   total influence is capped near one member's worth.
+2. **Low reliabilities.** Most members sit under 0.07, because `quality` is 0.000 for
+   many of them: no measured edge over baseline. `calibration_state` is still `unknown`
+   (×0.85) across the board.
+
+So the abstention is **not a plumbing failure. It is the gate correctly refusing to
+trade on experts that have no measured edge.** That is the machinery working.
+
+### Why the reliabilities are honest
+
+Over 246 resolved directional calls at gate_global: **38.21 per cent correct** against a
+majority baseline of **51.22 per cent** (always-bearish). That is ~13 points below
+baseline, and below a coin flip, at z ≈ −3.7 (p ≈ 0.0002). The experts are momentum
+extrapolators committing when momentum looks strongest, which is when it stops.
+
+Being reliably wrong is information — but the specific mechanism is still under-powered
+(n=138, p=0.27), so it is measured per expert and nothing is inverted.
+
+### What this means for the plan
+
+Adding a new directional family is still necessary (2 families needed, only 1 can ever
+qualify today), but it is **not sufficient**: a new expert with no edge would carry the
+same low reliability and fail the same 0.20 bar. The order is:
+
+1. Keep AIDY alive and accruing labelled evidence — the scarcest resource here, and the
+   only thing that can move `quality` off 0.000.
+2. Fix the orphaned rates path (below) so macro evidence exists at all.
+3. Then build a directional expert in an empty root family, judged on measured edge
+   rather than on being new.
+
+Do NOT lower `min_family_strength` or `min_families` to make this go away. That is
+making the threshold fit the answer. The thresholds are the only thing currently
+preventing AIDY from acting on experts that are provably worse than a coin flip.
+
+## READ FIRST — THE FULL BLOCKER CHAIN (2026-09-23, diagnosis complete)
+
+### Correction to an earlier entry
+
+An earlier note said the fix was to "populate the five dark experts' data sources".
+**That is wrong and must not be actioned.** All nine context experts are
+`gate_mode="context_only"` — verified in source. A context_only gate emits
+`conclusion="context_only"` and contributes **zero directional mass**. Feeding them data
+cannot break the family deadlock. It would add context, not votes.
+
+### The five dark experts are not data-starved. They are never called.
+
+`gold_expert_shadow.py` defines `_DISCONNECTED_CONTEXT_GATES` containing
+macro_event, rates_usd_cross_asset, futures_microstructure, news_movement_mechanism and
+analogue_episode. At line ~627 the shadow loop iterates that set and emits
+`_build_unknown_with_history(...)` for each — **the real expert builder is never
+invoked**. Five fully built, fully tested experts are hardcoded stubs in the live path.
+
+### Two parallel rates pipelines, neither connected
+
+| | |
+|---|---|
+| `cross_market.py` writes | `UST_NOMINAL_2Y`, `UST_NOMINAL_10Y`, `UST_REAL_10Y` — **live, fresh to 2026-09-22T20:01** |
+| read by | **nothing** (only `ENABLED_SERIES`, a config list, is imported) |
+| `gold_rates_usd_cross_asset_expert` reads | FRED series `DGS2`, `DGS10`, `DFII10`, `T10YIE` via ALFRED |
+| stored FRED data | none in D1 |
+
+All four FRED series are available or derivable from the orphaned Treasury data —
+`T10YIE = DGS10 − DFII10` is its actual definition (`macro_vintages.py:517`).
+
+**Why this was not fixed tonight:** `verify_version_record` (`macro_vintages.py:396`)
+hard-requires `source == "fred_alfred"`. Adapting Treasury data means either falsifying
+provenance — never — or extending a point-in-time integrity contract with a correct
+conservative availability rule for Treasury publication times (~15:30 ET, different
+vintage semantics from ALFRED). Getting that rule wrong injects lookahead into the one
+subsystem proven clean. It needs doing carefully and awake, not quickly.
+
+### News feeds: three of four stalled
+
+| feed | rows | last observed |
+|---|---|---|
+| federal_reserve_rss | 55 | **2026-09-22** (live) |
+| bea_releases | 16 | 2026-09-05 (stalled) |
+| bea_schedule | 46 | 2026-09-04 (stalled) |
+| federal_reserve_calendar | 6 | 2026-09-01 (stalled) |
+
+### The deadlock, and what actually breaks it
+
+Need 2 qualifying independent families. Only 2 produce directional mass: price_action
+(8 members) and liquidity_mechanism (**1 member**). Measured since the brain deployed at
+00:22: best achieved is **1** qualifying family, and it stays 1 even when liquidity
+abstains — so the qualifier is price_action and the single-member family never gets
+there. **The deadlock does not resolve on its own.**
+
+Do NOT break it by:
+- lowering the family threshold (fitting the threshold to the answer);
+- splitting `momentum` out of `price_action` to manufacture a third family — they derive
+  from the same price series and the folding is a correct dependency claim;
+- promoting volatility_jump or session_participation to directional — volatility and
+  participation are not directional phenomena and forcing a vote invents signal.
+
+**The one legitimate route is a genuinely independent directional evidence source.**
+Real yields → gold is the honest candidate: it is a real economic mechanism, it lands in
+the empty `macro_information` root family, and the data is already arriving daily.
+
+### Ordered build plan
+
+1. Extend the vintage contract to accept a `us_treasury` source with its own correct
+   conservative availability rule. Prerequisite for everything macro.
+2. Connect `rates_usd_cross_asset_expert` — remove it from `_DISCONNECTED_CONTEXT_GATES`
+   and feed it real records. Adds context, not votes.
+3. Build a **directional** macro expert on real yields in `macro_information`. This is
+   the step that breaks the deadlock.
+4. Restart the three stalled news feeds.
+
+## PREVIOUS READ FIRST — THE STRUCTURAL DEADLOCK (2026-09-23, brain deployed 00:22 UTC)
+
+The Blocker-1 brain is **deployed and running**. Proof: the abstain reason changed from
+`insufficient_directional_authority` (old 0.30 weight gate) to
+`insufficient_independent_families` (new family aggregator).
+
+It still abstains, and now we know exactly why — and it is not a data-volume problem.
+
+### Only 6 of 15 experts can ever vote a direction
+
+| | count | experts |
+|---|---|---|
+| **directional** | **6** | liquidity_reclaim, momentum_impulse, h1/h4/m5/m15_price_structure |
+| context_only, available | 4 | price_location, session_participation, d1_context, volatility_jump |
+| **context_only, DARK** | **5** | analogue_episode, macro_event, futures_microstructure, news_movement_mechanism, rates_usd_cross_asset |
+
+A `context_only` gate emits `conclusion = "context_only"`. It can **never** contribute
+directional evidence. So nine of the fifteen experts cannot, by design, move the
+decision — and five of those nine are `explicit_unknown` because their data sources are
+effectively empty (news 123 rows, cross-market 75 rows).
+
+### Those 6 collapse into 2 root families, against a requirement for 2
+
+Live family view at 2026-09-23T01:25:
+
+| family | members | reliability | strength | qualifies |
+|---|---|---|---|---|
+| price_action (structure + momentum) | 8 | 0.069476 | 0.014078 | no |
+| **liquidity_mechanism** | **1** | 0.000000 | 0.000000 | no |
+
+`qualifying_family_count = 0`, threshold 2.
+
+**There is no third family and no margin.** AIDY can only ever speak when BOTH
+price_action AND a single-expert family qualify at the same moment. The headline "15
+experts, 24 builds" hides that the decision rests on six voters in two groups, one of
+which is one expert.
+
+### Do NOT fix this by lowering the family threshold
+
+That is the frozen pre-registered spec, and relaxing it to 1 family would be making the
+threshold fit the answer — the exact error this programme keeps catching. The fix is to
+**add genuine evidence diversity**: populate the five dark experts' data sources, and/or
+promote context_only experts that legitimately carry direction.
+
+### Why the neutral fix matters more than it first appeared
+
+`liquidity_mechanism` shows reliability 0.000000 partly because its single member voted
+neutral, and a neutral vote carried no mass and produced no trust. Scoring neutral
+(merged in #249, deployed) lets that single-member family accumulate reliability at all
+instead of sitting at zero — it is the specific unblocker for the family that gates the
+whole aggregator, not just "more evidence in general".
+
+### The data context that still applies
+
+Entire labelled history is **three days**: 66 cycles (21 Sep), 88 (22 Sep), 7 (23 Sep) —
+88/day, one per 15-minute window. 156 outcomes. No regime filter, polarity verdict or
+per-expert conclusion is reachable yet at any significance. Session continuation rates
+order sensibly (asia 60%, overlap 45.2%) but at z = 1.16, p = 0.25 — nowhere near, and
+Bonferroni over three pre-registered hypotheses makes it worse.
+
+## PREVIOUS READ FIRST — WHY AIDY IS NOT SMART (measured 2026-09-23)
+
+The machinery is not the problem. The evidence base and the label are. All figures
+below were measured directly against production D1 `aidy-ops-test`.
+
+### 1. The 68,000-row ledger is 240 observations
+
+`aidy_gold_expert_outcome_ledger` holds 68,058 rows. Those are 11,908 results fanned
+across 3,648 scope keys. At `gate_global` — the scope every expert actually falls back
+to — the entire scored evidence base is **240 directional gate calls** (126 bullish,
+114 bearish).
+
+This is why `sample_confidence` climbs while accuracy never moves: the trust engine
+counts the same handful of events hundreds of times. **Confidence is growing while
+information is not.**
+
+### 2. The higher timeframes barely exist
+
+| timeframe | bars in existence |
+|---|---|
+| 1m | 41,222 (42 days) |
+| 5m | 1,933 |
+| 15m | 736 |
+| 1h | 184 |
+| **4h** | **50** |
+| **1d** | **12** |
+
+`h4_price_structure_expert` made 7 directional calls all session because it has 50 bars.
+The daily context expert has 12. They are starving, not broken.
+
+News (`market_event_observations`) = **123 rows**. Cross-market = **75 rows**.
+`aidy_memory_episodes` = **0**. `aidy_forward_outcomes` = **0**. There is no rich
+multi-source dataset yet — there is 42 days of gold M1 and very little else.
+
+### 3. The label is close to noise
+
+Horizon 15 minutes, 15 M1 bars. Mean move: bullish +11.53 bps, bearish −11.27 bps,
+neutral band roughly ±2 bps. On gold near $4,350 that is about $5 of movement — roughly
+three times the spread.
+
+Accuracy does improve with horizon but never reaches the baseline:
+
+| horizon | accuracy | majority baseline | gap |
+|---|---|---|---|
+| 15 min | 0.3775 | 0.5076 | −13.0 |
+| 60 min | 0.3659 | 0.4499 | −8.4 |
+| 240 min | 0.3831 | 0.4845 | −10.1 |
+| 960 min | 0.4185 | 0.4665 | −4.8 |
+
+### 3b. WHY THEY READ IT BACKWARDS — momentum extrapolation (2026-09-23)
+
+**Ruled out: the label.** Six consecutive outcomes recomputed from raw M1 candles match
+the stored values exactly to six decimal places (e.g. 4357.95862 → 4349.03998 = −20.465
+bps, stored −20.465178). Sign convention correct, 15 bars each, and every outcome window
+opens strictly after its decision. No label bug, no inverted sign, no lookahead.
+
+**Ruled out: simple mean reversion.** Across contiguous cycle pairs gold *continues* the
+prior 15-minute move **56.9%** of the time. A trivial "same as last 15 minutes" rule
+would beat every expert.
+
+**The mechanism.** Over the 138 gate calls where the previous resolved move was known:
+
+| | |
+|---|---|
+| experts voted WITH the prior move | **66.7%** |
+| market continued the prior move | **43.5%** |
+| followed momentum | n=92, accuracy **0.4022** |
+| faded momentum | n=46, accuracy **0.5000** |
+
+The experts are **momentum extrapolators**. Conditional on the moments they commit to a
+direction, gold reverts more often than it continues — they commit when momentum looks
+strongest, which is exactly when it stops. That reconciles everything: clean label,
+clean PIT, no simple reversion, ensemble consistently below baseline.
+
+**Not yet proven.** At n=138 the follow/fade split is z = −1.1, p = 0.27. Only the
+aggregate inversion is significant (p = 0.026). **Do not flip, weight or invert anything
+on this.** `gold_expert_momentum_stance.py` measures it per expert on the daily report
+(`MIN_STANCE_N = 40`, frozen before the result was examined) so the hypothesis hardens
+or dies on evidence.
+
+If it does harden, the options in order of honesty are: (a) move the primary horizon to
+where momentum persists — the baseline gap already narrows from −13.0 at 15 min to −4.8
+at 960 min; (b) teach the experts a regime filter so they only extrapolate when
+continuation is likely; (c) invert. (c) is last for a reason.
+
+### 4. THE FINDING — the experts are anti-correlated, symmetrically
+
+| expert says | scored | correct | accuracy | base rate | gap |
+|---|---|---|---|---|---|
+| bullish | 126 | 40 | 31.75% | 39.0% | **−7.25** |
+| bearish | 114 | 50 | 43.86% | 50.8% | **−6.94** |
+
+Both call types underperform their own base rate by almost exactly 7 points. A
+directional bias would help one side and hurt the other; this hurts both equally.
+Expected correct under random guessing with the same call mix: 107. Observed: 90.
+**z = −2.22, p ≈ 0.026.**
+
+No skill sits *at* base rate. This is consistent, significant, anti-correlated
+information — the experts are reading something real and reporting it backwards. Same
+signature as the m5 finding (`gold_expert_directional_skill.py`), now at ensemble level.
+**Do not flip anything yet**; the daily skill report will say when it clears the
+family-wise threshold.
+
+### 5. Two-thirds of the brain's output is discarded
+
+Directional experts vote: **abstain 34.1%, neutral 30.0%**, bullish 19.0%, bearish 17.0%.
+The market is neutral **10.2%** of the time.
+
+Experts call neutral three times too often, and a neutral vote is not scoreable, so
+**64% of expert output never becomes evidence**. That is why 156 cycle outcomes produced
+only 240 scored gate calls across six directional experts.
+
+### Priority order
+
+1. **Neutral band** — experts' neutral threshold and the outcome's ±2 bps definition are
+   measuring different things by a factor of three. Fixing this roughly triples the
+   evidence base with no new data collection. **In progress.**
+2. **Stop counting 156 events as 68,000** — `sample_confidence` must key on distinct
+   cycles, not ledger rows.
+3. **Backfill H1/H4/D1 from the 42 days of M1** — cheapest capability gain available;
+   three of fifteen experts cannot function without it.
+4. **Then** test the inversion, once it clears family-wise significance.
+
+## PREVIOUS READ FIRST
+
+**The Blocker-1 repair is now on `main`** (PR #245, merge `7349331`). It had been
+sitting as a *draft PR* since 2026-09-22 09:46 with CI green — that is the only reason
+it never shipped. `main` now carries `gold_family_meta_direction.py`, wired into the
+live shadow path, plus the reusable global-core trust scope.
+
+**`main` is NOT deployed.** Deployment is a separate owner-initiated step via
+`aidy-provider-research-read-deploy.yml`.
+
+## What the live brain was doing before the merge
+
+Measured against D1 `aidy-ops-test` (3588d82a-d686-4430-872d-d4c0e62c3d5d) at
+2026-09-22T23:39Z, 110 cycles over 31 hours:
+
+| | |
+|---|---|
+| cycles returning `abstain` | **110 of 110**, `insufficient_directional_authority` |
+| directional authority mean / max | 0.0242 / 0.0643 against a **0.30** threshold |
+| cycles ever clearing the threshold | **0** |
+| meta outcomes resolved | 106, **all `correct IS NULL`** |
+
+An abstain cannot be scored, so the meta loop had produced zero labelled examples
+about itself. Expert-level scoring *was* working: 64,485 ledger rows, 116 subjects.
+
+## Accuracy against baselines — the number that matters
+
+| | accuracy |
+|---|---|
+| always answer "bearish" (majority class) | **48.46%** |
+| guess in proportion to base rates | 40.5% |
+| **AIDY gates** (n=1,362) | **37.44%** |
+| **AIDY subcalculators** (n=9,471) | **38.36%** |
+| uniform random over 3 classes | 33.3% |
+
+Class balance: bearish 48.46% / bullish 39.46% / neutral 12.07%. AIDY sits ~11 points
+below the trivial baseline. Caveat: 31 hours, one instrument, a bearish-skewed window
+that flatters majority-class.
+
+**Accuracy is flat across scopes** — `mini_exact` 0.3826 vs `gate_global` 0.3823.
+Conditioning bought nothing measurable.
+
+## Why trust never conditioned (Blocker 2, now fixed on main)
+
+| scope | rows | distinct keys | rows per key |
+|---|---|---|---|
+| `gate_global` | 11,280 | 15 | 752 |
+| `mini_exact` | 11,281 | 815 | 13.8 |
+| `global_core` | 11,280 | **1,600** | **7.05** |
+
+`global_core` needs 6 samples but generated 1,600 keys in 31 hours, because its
+dimension set carried `utc_weekday` and `utc_clock_bucket_15m` — a key can recur only
+weekly, so the current key is always new. Every subject fell back to `gate_global`.
+Fixed by `_TRUST_GLOBAL_CORE_DIMENSIONS` (8 dims, no clock/weekday).
+
+## The most important open finding: m5 may be inverted
+
+Outcome ledger joined to gate snapshots on `packet_digest`, `gate_global`:
+
+| expert | n | agreed | opposed | rate |
+|---|---|---|---|---|
+| **m5_price_structure** | 54 | 18 | **36** | **0.333** |
+| liquidity_reclaim | 45 | 21 | 24 | 0.467 |
+| momentum_impulse | 36 | 18 | 18 | 0.500 |
+| m15_price_structure | 34 | 13 | 21 | 0.382 |
+| h1_price_structure | 27 | 13 | 14 | 0.481 |
+
+m5's 95% Wilson interval `[0.222, 0.466]` excludes chance, and the inversion is
+**symmetric across both call types** (says bullish → bearish 19/32; says bearish →
+bullish 17/29), which base-rate bias cannot produce. Likely mean reversion read as
+momentum on 5-minute gold structure.
+
+**DO NOT FLIP IT YET.** Six experts were examined; Bonferroni over six widens the
+interval to `[0.192, 0.513]`, which includes chance. `gold_expert_directional_skill.py`
+(PR #248) measures this on a daily schedule with the rule frozen in advance
+(`MIN_DIRECTIONAL_N = 40`, `ALPHA = 0.05` family-wise). Let it accumulate and act when
+the family-wise interval excludes chance — not before.
+
+## Isolation from Super Signals — enforced, not assumed
+
+Six contract tests (PR #247) pin it: `Default.fetch` (serves `/provider/context`) does
+no learning-loop work; the shadow sync runs only from `scheduled`/`queue`; health
+telemetry catches `Exception` and never raises; AIDY binds exactly one datastore
+(`AIDY_OPS`); no Super Signals table name appears in AIDY source; AIDY's own Telegram
+publisher is imported by no deployed Worker entry.
+
+## What to judge next
+
+After deployment, AIDY will start emitting directions that get **scored**. Judge the
+result against **48.46%**, not against zero. If accuracy stays near 38% once trust can
+finally condition on environment, the problem is the experts themselves and no amount
+of aggregation will fix it.
+
+
+---
+
+## Previous state (superseded 2026-09-23)
+
+# AIDY — Current State
+
 ## Blocker 1 aggregation repair — v9 MATH + FIXTURE FROZEN / IMPLEMENTATION NEXT (2026-09-22)
+
+> **Status 2026-09-23:** the family aggregator shipped (PR #247) and is live. Any further
+> 15-minute prediction build work, including remaining T1-T18 items, is **stopped** by the
+> agreed DIRECTION section above. Kept below as the record of what was frozen on 2026-09-22.
+
 
 The aggregation redesign preregistration is now frozen at v9. No production decision code changed.
 
