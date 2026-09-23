@@ -2,7 +2,36 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
-## READ FIRST — OUTAGE + THE REAL BINDING CONSTRAINT (2026-09-23 07:00)
+## READ FIRST — RECOVERED 2026-09-23 07:19Z
+
+AIDY is back up. `status=ok`, the wedge cycle
+`aidy_cycle_a4d43ad0d391e11a782a421b3b0ebb1e` is scored, and the loop is
+**backfilling the missed window** in 15-minute steps (01:55 → 03:25 and climbing).
+
+Verification of the fix, from production:
+
+- packets split cleanly by version: **1,785 v1** frozen at 01:40:21 (never rewritten)
+  and **105 v2** from 01:55 onward. The builder emits v2; old evidence stays verifiable.
+- the scoreable rule validated in SQL against **all 10,749 stored subcalculators: zero
+  violations**.
+- the outcome ledger is growing again (246 → 251 resolutions) and now contains **29
+  neutral outcomes** — neutral votes are being scored for the first time, which is what
+  #249 was for.
+- accuracy 0.3825 vs 0.3821 before, i.e. flat so far on a small number of new rows.
+
+Total outage: **01:40:21Z → 07:19:25Z, five hours 39 minutes**, entirely self-inflicted,
+across two incomplete fixes before the correct one.
+
+### Deploy mechanics worth knowing next time
+
+The deploy workflow has `concurrency: aidy-worker-deploy` with
+`cancel-in-progress: false`, and its last step ("Prove first genuine Build 24 prospective
+cycle and score") polls for up to ~22 minutes. So a failed deploy **blocks the next
+deploy for 22 minutes** — including the deploy that fixes it. Cancelling the doomed run
+releases the group immediately; its Deploy step has already completed by then, so
+cancelling costs only the verification.
+
+## OUTAGE DETAIL AND THE REAL BINDING CONSTRAINT (2026-09-23 07:00)
 
 ### AIDY was down for five hours and I caused it
 
