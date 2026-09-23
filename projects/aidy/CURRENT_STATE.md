@@ -2,7 +2,82 @@
 
 Updated: **2026-09-23** (post Blocker-1 merge + directional skill measurement)
 
-## READ FIRST — THE STRUCTURAL DEADLOCK (2026-09-23, brain deployed 00:22 UTC)
+## READ FIRST — THE FULL BLOCKER CHAIN (2026-09-23, diagnosis complete)
+
+### Correction to an earlier entry
+
+An earlier note said the fix was to "populate the five dark experts' data sources".
+**That is wrong and must not be actioned.** All nine context experts are
+`gate_mode="context_only"` — verified in source. A context_only gate emits
+`conclusion="context_only"` and contributes **zero directional mass**. Feeding them data
+cannot break the family deadlock. It would add context, not votes.
+
+### The five dark experts are not data-starved. They are never called.
+
+`gold_expert_shadow.py` defines `_DISCONNECTED_CONTEXT_GATES` containing
+macro_event, rates_usd_cross_asset, futures_microstructure, news_movement_mechanism and
+analogue_episode. At line ~627 the shadow loop iterates that set and emits
+`_build_unknown_with_history(...)` for each — **the real expert builder is never
+invoked**. Five fully built, fully tested experts are hardcoded stubs in the live path.
+
+### Two parallel rates pipelines, neither connected
+
+| | |
+|---|---|
+| `cross_market.py` writes | `UST_NOMINAL_2Y`, `UST_NOMINAL_10Y`, `UST_REAL_10Y` — **live, fresh to 2026-09-22T20:01** |
+| read by | **nothing** (only `ENABLED_SERIES`, a config list, is imported) |
+| `gold_rates_usd_cross_asset_expert` reads | FRED series `DGS2`, `DGS10`, `DFII10`, `T10YIE` via ALFRED |
+| stored FRED data | none in D1 |
+
+All four FRED series are available or derivable from the orphaned Treasury data —
+`T10YIE = DGS10 − DFII10` is its actual definition (`macro_vintages.py:517`).
+
+**Why this was not fixed tonight:** `verify_version_record` (`macro_vintages.py:396`)
+hard-requires `source == "fred_alfred"`. Adapting Treasury data means either falsifying
+provenance — never — or extending a point-in-time integrity contract with a correct
+conservative availability rule for Treasury publication times (~15:30 ET, different
+vintage semantics from ALFRED). Getting that rule wrong injects lookahead into the one
+subsystem proven clean. It needs doing carefully and awake, not quickly.
+
+### News feeds: three of four stalled
+
+| feed | rows | last observed |
+|---|---|---|
+| federal_reserve_rss | 55 | **2026-09-22** (live) |
+| bea_releases | 16 | 2026-09-05 (stalled) |
+| bea_schedule | 46 | 2026-09-04 (stalled) |
+| federal_reserve_calendar | 6 | 2026-09-01 (stalled) |
+
+### The deadlock, and what actually breaks it
+
+Need 2 qualifying independent families. Only 2 produce directional mass: price_action
+(8 members) and liquidity_mechanism (**1 member**). Measured since the brain deployed at
+00:22: best achieved is **1** qualifying family, and it stays 1 even when liquidity
+abstains — so the qualifier is price_action and the single-member family never gets
+there. **The deadlock does not resolve on its own.**
+
+Do NOT break it by:
+- lowering the family threshold (fitting the threshold to the answer);
+- splitting `momentum` out of `price_action` to manufacture a third family — they derive
+  from the same price series and the folding is a correct dependency claim;
+- promoting volatility_jump or session_participation to directional — volatility and
+  participation are not directional phenomena and forcing a vote invents signal.
+
+**The one legitimate route is a genuinely independent directional evidence source.**
+Real yields → gold is the honest candidate: it is a real economic mechanism, it lands in
+the empty `macro_information` root family, and the data is already arriving daily.
+
+### Ordered build plan
+
+1. Extend the vintage contract to accept a `us_treasury` source with its own correct
+   conservative availability rule. Prerequisite for everything macro.
+2. Connect `rates_usd_cross_asset_expert` — remove it from `_DISCONNECTED_CONTEXT_GATES`
+   and feed it real records. Adds context, not votes.
+3. Build a **directional** macro expert on real yields in `macro_information`. This is
+   the step that breaks the deadlock.
+4. Restart the three stalled news feeds.
+
+## PREVIOUS READ FIRST — THE STRUCTURAL DEADLOCK (2026-09-23, brain deployed 00:22 UTC)
 
 The Blocker-1 brain is **deployed and running**. Proof: the abstain reason changed from
 `insufficient_directional_authority` (old 0.30 weight gate) to
