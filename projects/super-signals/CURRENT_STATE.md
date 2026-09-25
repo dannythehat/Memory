@@ -406,4 +406,16 @@ Super Signals Gold-first integration merged to the live deploy branch:
 - Historical replay v8 is complete at 571/571.
 - Gold-first historical replay v9 has started and was at 45/571 decisions at this status check, all 45 carrying the frozen independent Gold-view fields.
 
+
+## Telegram settlement day-boundary + broker-fill reconciliation fixes — 2026-09-25
+
+Full detail: `handovers/2026-09-25-telegram-settlement-day-boundary-and-broker-fill-reconciliation.md`
+
+- Fixed a real bug where the 24 Sep "pre-day settlement replay" hotfix (`5de252ff`) was deleting genuine, already-sent SL/close Telegram messages every night at the Sofia day rollover, and blocking late-arriving settlements from ever sending. Night-hours providers (TIG's Asia Trades) were hit hardest. PR #255, live commit `0bff1b1c`, deployed and verified.
+- Also fixed the SL-wording gap the owner flagged: a trade's final closing leg that is itself a stop loss now says so instead of generic "TRADE LOSS".
+- Separately found and fixed a broker-fill reconciliation gap: 11 real Owner positions (19 Aug – 23 Sep) were stuck `status='error'` forever because `BrokerFillSettlementService` only matched stranded fills by `broker_position_id`, which some execution failure paths never record. Extended it to also resolve via `broker_client_id` (always locally assigned, unlike `broker_position_id`). PR #256, live commit `eafe4aa8`, deployed; all 11 self-healed within ~90s of deploy with correct broker-confirmed P&L backfilled.
+- One trade (`SS_f3abd98151e0_1`, 22 Sep, -$24.86) remains a **documented, deliberately unfixed gap**: no `positions` row was ever created for it and no audit trail exists for its placement at all — owner confirmed (25 Sep) not worth chasing further given its age and size.
+- `LIVE_STATE.json` was not updated this pass (its `branch_head_sha`/`render` pointers were already stale from 20 Sep and this build didn't touch AIDY) — refresh from source before relying on it for exact deploy state.
+- Both fixes are Telegram-publishing/reconciliation-layer only: no changes to signal parsing, risk sizing, trade dispatch/execution, or the OpenAI API key.
+
 Therefore: Super Signals side is deployed and operational; the wider Gold-first programme is not complete until v9 finishes/evaluates and the standalone AIDY Cloudflare deployment is proven live.
