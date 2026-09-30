@@ -133,6 +133,22 @@ of the high/low. Other patterns: wait for a confirming next candle. **Stops:** o
 - Overlaps sources 1 and 3 (engulfing, harami, hammer, stars, inside bar): fix one definition
   each.
 
+### Source 5 — Investing.com gold candlestick page (a real "candle reader" product, 2026-09-30)
+
+`investing.com/commodities/gold-candlestick`: live Gold futures chart (GCZ6, ~4,205 at fetch time)
+with an automatic pattern scanner (extracted by a small model, wording not verified). Table of
+about 60 detected patterns per view (Hanging Man, Morning Star, Bullish Engulfing, etc.), columns:
+pattern, timeframe (15 min to 1 month), **"reliability" rating** (values seen from 2 to 67),
+candles ago, timestamp.
+
+- The reliability number is **not defined on the page** as fetched, and no hit rate, sample size
+  or backtest is shown. Do not assume it is a measured win rate.
+- This is the closest thing to the product the owner asked about ("many candle reader apps that
+  people love"). It shows what the market sells: an always-on scanner across many timeframes.
+- Possible later use: its output could be checked against what price actually did next, as an
+  outside benchmark for our own pattern tests. Not attempted; scraping or reusing its data would
+  need the site's terms checked first.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
