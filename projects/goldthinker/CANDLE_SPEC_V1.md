@@ -35,9 +35,8 @@ a constant name so a change is a version bump, never a silent edit.
 - **Source-pip conversion (confirmed in 0.3.2, D-040):** the sources quote gold "pips". `PIP_SRC_USD = 0.10`
   **[CONFIRMED FROM THE SOURCES]**: Pro-Scalper's own gold pip page defines "1 pip = $0.10 price move" (0.01 lot =
   $0.10 per pip, 1.0 lot = $10.00 per pip), and the same site's Bullish Engulfing page pairs "a $6-12 per ounce swing
-  in a single hour" on H1 with "50-150 pips" of follow-through (= $5-15 at $0.10). Other values fail the same pages'
-  own numbers ($0.01 makes the 15-25 pip buffers smaller than the 0.20 test spread; $1.00 makes an H1 "20-35 pip" stop
-  larger than the $6-12 H1 swing). It is the sources' convention, not Vantage's. It is used ONLY inside
+  in a single hour" on H1 with "50-150 pips" of follow-through (= $5-15 at $0.10); the explicit definition is the
+  strongest evidence. It is the sources' convention, not Vantage's. It is used ONLY inside
   source-normalized variants (`SRC-*`) to convert a source's distance to dollars (`pips x PIP_SRC_USD`). **No canonical
   (BASE) pattern identity may depend on it.** The ten `SRC-PS` variants that use it (P01, P02, P03, P04, P05, P06,
   P07, P09, P10, P11) are **ENABLED** (the state `DISABLED_PENDING_PIP_CONFIRMATION` is retired). No source page gives a
@@ -342,7 +341,7 @@ plus the stated prior state (G0b).
 24. **Open:** "upper third" vs "upper 40%" in the source (this spec: 35%); `MIN_RANGE_SINGLE` and ratios [SPEC].
 25. PROPOSED v1.0 = fields 5+6+7.
 26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Source deviation notes:** "initial bullish momentum" replaced by a close test; "15-20 pips" converted at an
-    assumed $0.10/pip; "downtrend or known support" implemented with the G3/G4 definitions.
+    confirmed $0.10/pip (D-040); "downtrend or known support" implemented with the G3/G4 definitions.
 
 ### P02 SHOOTING STAR (bearish) — `GT-SHOOTINGSTAR-BEAR-v1.0`
 
@@ -872,8 +871,8 @@ source supports it.
 1. **Rollover/pause window, swap table, tick size/value, contract specification and server calendar** come from the real Vantage
    demo account (fixtures are used until then).
 2. ~~`PIP_SRC_USD`~~ **confirmed 0.10 in 0.3.2 (D-040)**; the ten SRC-PS variants are enabled.
-3. **Validation-stage pass/fail rule:** drafted in `VALIDATION_RULES.md` (0.1, D-041); awaiting ChatGPT's challenge.
-4. **Portfolio Simulation rules** (sizing, exposure cap); until defined the hub's top figure is "Total Experimental P&L".
+3. **Validation-stage pass/fail rule:** `VALIDATION_RULES.md` v0.2 (D-041, approved).
+4. **Portfolio Simulation rules:** `PORTFOLIO_RULES.md` v0.1 (D-042, awaiting ChatGPT's challenge) and `tests/portfolio/`.
 5. **Not enforced in v1:** DXY, volume, RSI/MACD divergence, Fibonacci-location requirements, weekly-trend checks,
    trailing stops, second targets where the split is not given. **Deferred to v1.1:** pullback entries, continuation
    reading of engulfing, strict-gap Piercing/Dark Cloud, automatic role-reversal of zones, multi-bar inside-bar false break.
