@@ -268,7 +268,7 @@ so the guides are marketing-adjacent. This is a candidate list for the ~50 candl
 | Status | Patterns |
 |---|---|
 | **Read (7)** | Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji, Pin Bar, Evening Star |
-| **Not read yet (18)** | Morning Star, Three White Soldiers, Three Black Crows, Dragonfly Doji, Gravestone Doji, Inside Bar, Outside Bar, Harami, Tweezer Top, Tweezer Bottom, Spinning Top, Marubozu, Dark Cloud Cover, Piercing Line, Rising Three Methods, Falling Three Methods, Kicker, Abandoned Baby |
+| **Read later the same day (18)** | Morning Star, Three White Soldiers, Three Black Crows, Dragonfly Doji, Gravestone Doji, Inside Bar, Outside Bar, Harami, Tweezer Top, Tweezer Bottom, Spinning Top, Marubozu, Dark Cloud Cover, Piercing Line, Rising Three Methods, Falling Three Methods, Kicker, Abandoned Baby |
 
 Other candle types seen elsewhere in the research but not on this list (Investing.com scanner,
 Shankar A.G. notes): Belt Hold (bullish), Doji Star (bullish/bearish), Morning Doji Star, Harami
@@ -279,3 +279,5 @@ duplicates gives the working candle list; not yet done, awaiting owner's go-ahea
 Continuation patterns (Three White Soldiers, Three Black Crows, Marubozu, Rising/Falling Three
 Methods) imply trading WITH the move, the opposite of the reversal group, so their trade plans
 differ in kind, not just direction.
+
+All 18 remaining pages were read on 2026-09-30 (the Marubozu page lives at `/candlestick-patterns/marubozu-candlestick`). Their rules are merged into `MASTER_CANDLE_LIST.md`; per-page extracts were not kept separately.
