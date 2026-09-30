@@ -872,7 +872,7 @@ source supports it.
 1. **Rollover/pause window, swap table, tick size/value, contract specification and server calendar** come from the real Vantage
    demo account (fixtures are used until then).
 2. ~~`PIP_SRC_USD`~~ **confirmed 0.10 in 0.3.2 (D-040)**; the ten SRC-PS variants are enabled.
-3. **Validation-stage pass/fail rule** (day-block bootstrap, multiple-testing control) to be written before validation.
+3. **Validation-stage pass/fail rule:** drafted in `VALIDATION_RULES.md` (0.1, D-041); awaiting ChatGPT's challenge.
 4. **Portfolio Simulation rules** (sizing, exposure cap); until defined the hub's top figure is "Total Experimental P&L".
 5. **Not enforced in v1:** DXY, volume, RSI/MACD divergence, Fibonacci-location requirements, weekly-trend checks,
    trailing stops, second targets where the split is not given. **Deferred to v1.1:** pullback entries, continuation
