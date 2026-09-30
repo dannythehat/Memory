@@ -67,3 +67,8 @@ someone's decision. Nothing here authorises building or any live trading.
 - At integration, query the MT5 account: hedging vs netting, contract size, tick value, leverage/margin, commission, swap, EURUSD feed (`PORTFOLIO_RULES.md` section 9).
 - Portfolio Simulation rules (position sizing and any exposure cap) - to be defined.
 - Vantage demo account created; its symbol/contract/swap/timezone/calendar details recorded (replaces the test fixtures).
+
+### D-051 Windows portability: tzdata dependency, explicit UTF-8, research-clock diagnostics (engineering, Claude)
+- Windows Python has no IANA time zone database, so the G6 session rules (Asia/Tokyo, Europe/London, America/New_York) raised `ZoneInfoNotFoundError` on the owner's machine (26 pattern vectors, all crashes, no value mismatches). `tzdata` is now in `requirements.txt`; `core/sessions.py` raises a clear "pip install tzdata" error if it is missing.
+- All text file reads/writes in `src/`, `tools/` and `tests_unit/` now pass `encoding="utf-8"` explicitly (Windows defaults to a legacy code page).
+- `feed.health --update-gate` now prints, per enabled timeframe, own complete bars, bars completed after the enable time and the bars each unit needs (`research.capability_report`). "0 research clocks started" is expected until a unit's warm-up bars exist behind a bar that completed after the enable time; the builder must be run first so recent bars are included. No rule changed.
