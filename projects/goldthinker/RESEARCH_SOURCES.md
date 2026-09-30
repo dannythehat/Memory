@@ -259,3 +259,23 @@ pin bars are most common".
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
+
+### Source 13 — Pro-Scalper.com index of 25 candlestick guides (owner-pasted, 2026-09-30)
+
+The site's own list: 17 reversal, 5 continuation, 2 neutral, 1 breakout. It sells MT5 gold EAs,
+so the guides are marketing-adjacent. This is a candidate list for the ~50 candle types.
+
+| Status | Patterns |
+|---|---|
+| **Read (7)** | Bullish Engulfing, Bearish Engulfing, Hammer, Shooting Star, Doji, Pin Bar, Evening Star |
+| **Not read yet (18)** | Morning Star, Three White Soldiers, Three Black Crows, Dragonfly Doji, Gravestone Doji, Inside Bar, Outside Bar, Harami, Tweezer Top, Tweezer Bottom, Spinning Top, Marubozu, Dark Cloud Cover, Piercing Line, Rising Three Methods, Falling Three Methods, Kicker, Abandoned Baby |
+
+Other candle types seen elsewhere in the research but not on this list (Investing.com scanner,
+Shankar A.G. notes): Belt Hold (bullish), Doji Star (bullish/bearish), Morning Doji Star, Harami
+Cross, Three Inside Up/Down, Three Outside Up/Down, Three Line Strike, Advance Block, Upside Gap
+Three Methods, Inverted Hammer, Hanging Man, Evening Star Doji. Merging the lists and removing
+duplicates gives the working candle list; not yet done, awaiting owner's go-ahead.
+
+Continuation patterns (Three White Soldiers, Three Black Crows, Marubozu, Rising/Falling Three
+Methods) imply trading WITH the move, the opposite of the reversal group, so their trade plans
+differ in kind, not just direction.
