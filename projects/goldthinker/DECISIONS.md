@@ -20,7 +20,7 @@ confirmation. Nothing here authorises building or any live trading.
 | D-012 | 2026-09-30 | Ambiguous stop/target trades (no tick data) are scored STOP FIRST and tagged; a target-first sensitivity figure is also reported; they are never deleted. | PROPOSED |
 | D-013 | 2026-09-30 | Indicator filters (RSI/MACD/DXY/Bollinger) are recorded as context and the plain candle is tested first; where a source requires a filter, that source version also exists as its own variant. | PROPOSED |
 | D-014 | 2026-09-30 | Classical gap patterns stay as defined; any gold adaptation gets a different name. | PROPOSED |
-| D-015 | 2026-09-30 | Source-language "pips" are never used internally; store dollars/ATR fractions. `PIP_SRC_USD = 0.10` is an unconfirmed assumption. | PROPOSED |
+| D-015 | 2026-09-30 | Source-language "pips" are never used internally; store dollars/ATR fractions. `PIP_SRC_USD = 0.10` is an unconfirmed assumption; it is to be confirmed from the sources' own worked examples (stated pips against the actual gold move), not from the broker's pip convention. | PROPOSED |
 | D-016 | 2026-09-30 | Confirmation must occur on the immediately following completed bar unless a source explicitly allows longer (max 3 bars); expiry = no trade. | PROPOSED |
 | D-017 | 2026-09-30 | Wave 1 = the 22 patterns with FULL plans; other patterns join later with their own clocks. Every rule must be fully defined before its detector is enabled. | PROPOSED |
 | D-018 | 2026-09-30 | Discovery (3 months) -> freeze survivors -> untouched validation period -> live candidate. A Month-3 winner does not go straight to real money. | PROPOSED |
@@ -35,18 +35,18 @@ confirmation. Nothing here authorises building or any live trading.
 | D-027 | 2026-09-30 | Layer C is renamed SOURCE-NORMALIZED and every variant carries `source_deviation_notes`. Canonical (BASE) identities must not depend on the unconfirmed source-pip assumption. | PROPOSED (ChatGPT review) |
 | D-028 | 2026-09-30 | Bar completion follows the broker calendar (next bar start or scheduled closure), never `open + duration`. Stale-entry rule counts market-open time only. Sizing uses the broker's tick size, tick value and lot step. | PROPOSED (ChatGPT review) |
 | D-029 | 2026-09-30 | Structural targets use the NEAREST support/resistance or swing and are skipped if that gives under the minimum R; targets must be strictly beyond the actual entry (else skip). | PROPOSED (ChatGPT review) |
-| D-030 | 2026-09-30 | Candle Specification moved to Draft 0.2 (32 pattern sides, up to about 657 strategies). Golden test vectors wait until 0.2 is approved. Superseded in part by D-031/D-032 (0.2.1). | PROPOSED |
+| D-030 | 2026-09-30 | Candle Specification moved to Draft 0.2 (32 pattern sides, up to about 657 strategies). Golden test vectors wait until 0.2 is approved. | SUPERSEDED BY D-031/D-032 |
 | D-031 | 2026-09-30 | Draft 0.2.1: early-setup triggers (Kicker Early, Abandoned Baby Early) are tested on the BID/chart opening price and executed at ask (buy) / bid (sell); S/R and swing targets are computed once at entry from data confirmed at `entry_eligible_time` and frozen for the trade (`zones_prepattern` for location flags kept separate from `zones_at_entry` for targets). | PROPOSED (ChatGPT review) |
-| D-032 | 2026-09-30 | Every source-normalized variant that depends on `PIP_SRC_USD` (SRC-PS of Hammer, Shooting Star, Pin Bar, Dragonfly, Gravestone, Bullish/Bearish Engulfing, Inside Bar, Tweezer Top/Bottom) is `DISABLED_PENDING_PIP_CONFIRMATION` until the pip definition is confirmed; BASE strategies and pip-free variants run regardless. | PROPOSED (ChatGPT review) |
+| D-032 | 2026-09-30 | Every source-normalized variant that depends on `PIP_SRC_USD` (SRC-PS of Hammer, Shooting Star, Pin Bar, Dragonfly, Gravestone, Bullish/Bearish Engulfing, Inside Bar, Tweezer Top/Bottom) is `DISABLED_PENDING_PIP_CONFIRMATION` until `PIP_SRC_USD` is confirmed from the sources' worked examples (not from Vantage's pip convention); BASE strategies and pip-free variants run regardless. | PROPOSED (ChatGPT review) |
 | D-033 | 2026-09-30 | `MAX_HOLD = 50` bars of each pattern's own timeframe for all timeframes (W1/MN1 samples will be very slow). Reviewer-approved; owner has not yet stated it. | PROPOSED (ChatGPT review) |
 
 ## Open
 
 - Owner's explicit confirmation of the PROPOSED items above.
 - `CANDLE_SPEC_V1.md` Draft 0.2.1 (second-pass fixes applied) goes to the reviewer; then golden test vectors, before any code.
-- Owner to approve or reject every PROPOSED item (D-006 to D-021 and D-023 to D-033). ChatGPT recommends approving D-006 to D-024 and D-026 to D-033 (D-025 in its reworded form); the owner has not yet said so.
+- Owner to approve or reject every PROPOSED item (D-006 to D-029 and D-031 to D-033; D-030 is superseded). ChatGPT (third pass, 2026-09-30) supports all of them, D-025 in its reworded form and `MAX_HOLD = 50`; the owner has not yet said so.
 - Owner confirmation of `MAX_HOLD = 50` bars (D-033).
-- Confirm `PIP_SRC_USD` (D-032) to enable the disabled SRC-PS variants.
+- Confirm `PIP_SRC_USD` (D-032) from the sources' own examples to enable the disabled SRC-PS variants.
 - Validation-stage pass/fail rule (day-block bootstrap, multiple-testing control) to be written before validation.
 - Portfolio Simulation rules (position sizing and any exposure cap) - to be defined and approved.
 - Vantage demo account created; its symbol/contract/swap/timezone details recorded.

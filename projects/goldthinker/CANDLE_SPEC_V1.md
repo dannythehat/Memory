@@ -1,9 +1,10 @@
-# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.2.1 FOR REVIEW
+# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.2.2 FOR REVIEW
 
-Status: **DRAFT 0.2.1, 2026-09-30. NOT approved. Nothing is to be coded from this until the owner and the
+Status: **DRAFT 0.2.2, 2026-09-30. NOT approved. Nothing is to be coded from this until the owner and the
 independent reviewer (ChatGPT) have approved it and golden test vectors exist.** Author: Claude.
 Draft 0.2 answered ChatGPT's review of Draft 0.1. Draft 0.2.1 is a small revision answering ChatGPT's
-second-pass review (six fixes, section 4). Nothing else changed.
+second-pass review (six fixes, section 4). Draft 0.2.2 fixes four small points from ChatGPT's third pass. Nothing else
+changed.
 
 Wave 1 = the 22 patterns marked FULL in `MASTER_CANDLE_LIST.md`, plus two "early setup" companions
 (Kicker, Abandoned Baby) added in 0.2: 24 pattern families, 32 direction-specific versions.
@@ -28,8 +29,11 @@ a constant name so a change is a version bump, never a silent edit.
   **Disabled until confirmed (0.2.1):** every variant whose rules use `PIP_SRC_USD` carries the status
   `DISABLED_PENDING_PIP_CONFIRMATION`: it is not evaluated, opens no trades and has no ledger, and the hub shows it
   as disabled. The variants are `SRC-PS` of P01, P02, P03, P04, P05, P06, P07, P09, P10, P11. BASE strategies and
-  every other variant run regardless. Enabling one needs the pip definition confirmed from the broker/owner and is
-  logged as a decision.
+  every other variant run regardless. Enabling one needs `PIP_SRC_USD` confirmed and logged as a decision.
+  **How it is confirmed (0.2.2):** by deriving it from explicit worked examples in the source pages where both the
+  stated pip distance and the actual XAUUSD price move are given. The broker's own pip convention (what Vantage
+  calls a pip) is useful context but is NOT evidence of what the source author meant; the two may differ, and
+  the source-normalized strategies must follow the author.
 - Time is UTC internally. Timeframes (TF): M1, M5, M15, M30, H1, H4, D1, W1, MN1, built from the tick
   stream (bid prices, like an MT5 chart) on the Vantage broker calendar [TO CONFIRM from the demo account:
   server timezone/DST, day boundary, week start, month boundary]. No empty bars for closed intervals.
@@ -50,7 +54,7 @@ a constant name so a change is a version bump, never a silent edit.
     for tick-based signals the bar containing the tick;
   - `entry_eligible_time` = `signal_time` for every entry. `STOP_ENTRY` is the one case with an earlier step:
     the order is armed at `arm_time` = `complete_time(f)` and fills at the trigger tick, which is `signal_time`.
-  - RAW (Layer A) always uses the BASE variant's `signal_time`/`signal_bar`, so it is variant-independent.
+  - RAW (Layer A) uses only the BASE variant's `signal_time`/`signal_bar`; no BASE signal means no RAW record (G8).
 - Candle maths for bar k: `R=H-L`, `B=|C-O|`, `UW=H-max(O,C)`, `LW=min(O,C)-L`. Bull: `C>O`. Bear: `C<O`.
   A bar with `R=0` never takes part in any pattern.
 - **Data integrity:** a pattern is evaluated only if all its bars and its ATR/swing/zone look-back bars exist
@@ -150,12 +154,19 @@ and round numbers are context flags only (`ROUND_50`: extreme within `0.10*ATR` 
 ### G8 Measurement layers
 
 **Layer A - RAW (candle prices only, no trading assumptions).** Direction `d=+1` bullish, `-1` bearish (for
-Inside Bar and Outside Bar, `d` comes from the pattern's own direction rule). Reference price `ref` = open
-of the bar AFTER `signal_bar` (for a tick-based BASE signal, P14E/P19E: `ref` = the trigger tick's executable
-price and horizon `h` counts `close[s+h-1]`, i.e. the signal bar is bar 1). For `h in {1,3,5,10,20}` bars after the signal: `ret_h = d*(close[s+h]-ref)`
-(USD and ATR units); `MFE_h` = best `d*(extreme-ref)` (bar high for d=+1, low for d=-1); `MAE_h` = worst
-adverse; `dir_ok_h = ret_h>0`; with ticks also `mfe_before_mae_h`. A data gap in the window gives `NULL`.
-RAW is variant-independent (uses the baseline signal bar) and is computed for every SIGNAL.
+Inside Bar and Outside Bar, `d` comes from the pattern's own direction rule). **RAW is generated once per
+canonical BASE signal only (0.2.2).** A signal that exists only in a source variant (no BASE signal, e.g. a
+source Hammer at support without the canonical downtrend) produces NO RAW record. Forward behaviour after
+variant-specific signals, if ever wanted, is a separate metric `VARIANT_FORWARD_BEHAVIOUR`, never Layer A.
+- Reference price `ref`: close-based signal -> open of the bar after `signal_bar`; tick-based BASE signal
+  (P14E/P19E) -> the trigger tick's executable price (ask for `d=+1`, bid for `d=-1`).
+- **Horizon end (0.2.2):** for `h in {1,3,5,10,20}`: close-based signal `horizon_end(h) = s + h`; tick-based
+  opening signal `horizon_end(h) = s + h - 1` (the signal bar itself is bar 1). All of `ret_h`, `MFE_h` and
+  `MAE_h` use the bars from the first bar after the reference up to and including `horizon_end(h)`
+  (close-based: bars `s+1 .. s+h`; tick-based: bars `s .. s+h-1`).
+- `ret_h = d*(close[horizon_end(h)] - ref)` (USD and ATR units); `MFE_h` = best `d*(extreme-ref)` over those bars
+  (bar high for `d=+1`, low for `d=-1`); `MAE_h` = worst adverse; `dir_ok_h = ret_h>0`; with ticks also
+  `mfe_before_mae_h`. A data gap in the window gives `NULL`.
 
 **Layer B - BASELINE (identical mechanics for every pattern).**
 - **Entry:** first executable tick with `time >= entry_eligible_time` (= `signal_time`). BUY at ask, SELL at bid. If
@@ -244,7 +255,7 @@ ratios of the pattern bars, `cluster_id`.
 
 ## 2. Test-vector requirement
 
-After Draft 0.2.1 is reviewed, **golden test vectors** are written (drafted by Claude, checked by the reviewer): small OHLC/tick
+After Draft 0.2.2 is reviewed, **golden test vectors** are written (drafted by Claude, checked by the reviewer): small OHLC/tick
 sequences with the expected yes/no and expected entry/stop/target, so an implementation can be checked.
 Worked examples below are illustrative only.
 
@@ -500,7 +511,8 @@ plus the stated prior state (G0b).
 1. IDs as given (BASE, SRC-PS-COMPLETED)  2. Kicker (completed)  3. both  4. 2
 5. **Shape (fixed in 0.2):** bullish: C1 bear `LARGE`; C2 bull `LARGE`; **`O2>=O1`** (C2 opens at or above
    C1's open, so C2's body does not overlap C1's body); `C2>=H2-0.10*R2`. Bearish: C1 bull `LARGE`; C2 bear
-   `LARGE`; `O2<=O1`; `C2<=L2+0.10*R2`. Flag: `O2>=O1+gap_thr` (true gap).
+   `LARGE`; `O2<=O1`; `C2<=L2+0.10*R2`. Flags: `bull_gap_flag = O2>=O1+gap_thr` (bullish
+   Kicker), `bear_gap_flag = O2<=O1-gap_thr` (bearish Kicker).
 6. **Prior state:** bullish `TREND=DOWN`; bearish `TREND=UP`.  7. Formation = signal = C2 completion.
 8-11. **Baseline:** entry NEXT_TICK; stop `min(L1,L2)-G_BUFFER` / `max(H1,H2)+G_BUFFER`; 2R.
 12. **SRC-PS-COMPLETED entry:** NEXT_TICK after C2 completes.  13. **Stop:** beyond C1's far extreme:
@@ -747,6 +759,15 @@ source supports it.
 | 6 | Pip assumption unconfirmed | G0: variants using `PIP_SRC_USD` are `DISABLED_PENDING_PIP_CONFIRMATION`; BASE runs regardless |
 | - | `MAX_HOLD` | Kept at 50 bars; reviewer-approved, owner confirmation pending |
 
+### Draft 0.2.1 -> 0.2.2 changes (ChatGPT third-pass review)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | RAW claimed variant-independence but a source-only variant signal has no BASE `signal_time` | G8: RAW once per canonical BASE signal only; source-only signals get none; `VARIANT_FORWARD_BEHAVIOUR` reserved as a separate future metric |
+| 2 | Tick-based RAW horizon: text said `close[s+h-1]`, formula said `close[s+h]` | G8: explicit `horizon_end(h)`: `s+h` close-based, `s+h-1` tick-based; all metrics use it (must be in the golden tests) |
+| 3 | Bearish Kicker gap flag not written | P14: `bull_gap_flag` and `bear_gap_flag` |
+| 4 | Pip confirmation wording could adopt the broker's pip instead of the author's | G0: `PIP_SRC_USD` derived from the sources' worked examples; broker convention is context only |
+
 ### Still open for the reviewer / owner
 
 1. **`MAX_HOLD` = 50 bars:** approved by the reviewer; owner to confirm (W1/MN1 samples will be very slow).
@@ -757,7 +778,7 @@ source supports it.
    checks, trailing stops, second targets where the split is not given.
 5. **Deferred to v1.1:** conservative pullback entries; continuation reading of engulfing; strict-gap variants
    of Piercing/Dark Cloud; role-flipped support/resistance; multi-bar inside-bar false break.
-6. **`PIP_SRC_USD=0.10`** to be confirmed; until then the affected SRC-PS variants stay disabled (G0).
+6. **`PIP_SRC_USD=0.10`** to be confirmed from the sources' own worked examples (G0); until then the affected SRC-PS variants stay disabled.
 7. **Multiple testing:** up to about 657 strategies; the untouched validation stage is mandatory. The exact
    validation pass/fail rule (day-block bootstrap, multiple-testing control) is to be written before validation
    starts.
@@ -770,3 +791,5 @@ source supports it.
 - 0.2 (2026-09-30): applies the review above; adds P14E and P19E; renames P22; adds the event model, field 26 and
   the nearest-only target rule.
 - 0.2.1 (2026-09-30): applies the six second-pass fixes (section 4); `MAX_HOLD=50` recorded as reviewer-approved.
+- 0.2.2 (2026-09-30): applies four third-pass fixes (RAW once per BASE signal, explicit `horizon_end(h)`, bearish
+  Kicker gap flag, pip confirmed from source examples).
