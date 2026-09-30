@@ -173,6 +173,26 @@ a small model, wording not verified. **The most complete rule set so far, but st
   need a numeric rule. Daily/H4 sample would be tiny on 42 days of data.
 - The mirror-image morning star page on the same site likely exists and would pair with this.
 
+### Source 7 — Pro-Scalper.com, "Bullish Engulfing" (2026-09-30)
+
+Same commercial site as source 6 (sells XAUUSD EAs). Extracted by a small model, wording not
+verified. **No win rate, sample size or backtest.**
+
+- **Definition:** two candles at the end of a downtrend or at significant support. Candle 1
+  bearish; candle 2 opens at or below candle 1's close, closes at or above candle 1's open, and
+  its body is larger than candle 1's. Strongest when candle 2 is "two to three times" candle 1.
+- **Location:** round numbers (examples quote $2300/$2400/$2500 - stale for gold at ~4,200),
+  former swing highs turned support, Fibonacci 61.8% / 78.6%, multi-timeframe confluence.
+- **Entry:** at the engulfing candle's close (aggressive) or a pullback to its midpoint
+  (conservative). **Stop:** below the lowest wick of either candle plus a 15-25 pip buffer.
+  **Targets:** nearest overhead resistance (1.5-2x risk), then a measured move (3-5x risk).
+- **Timeframe/session:** H1 and H4; says reliability peaks at London open (08:00-10:00 GMT) and
+  New York open (13:00-15:00 GMT).
+- Testable pieces: the two entry styles, the size-ratio filter (1x vs 2-3x), and the session
+  filter can each be compared against the plain pattern. "Pip" size for gold must be fixed
+  (sources 6 and 7 do not define it); "support" and Fibonacci location need numeric rules.
+- Overlaps source 1 (engulfing rules), source 3 and source 4 - fix ONE definition.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
