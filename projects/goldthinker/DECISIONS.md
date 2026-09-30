@@ -39,11 +39,12 @@ confirmation. Nothing here authorises building or any live trading.
 | D-031 | 2026-09-30 | Draft 0.2.1: early-setup triggers (Kicker Early, Abandoned Baby Early) are tested on the BID/chart opening price and executed at ask (buy) / bid (sell); S/R and swing targets are computed once at entry from data confirmed at `entry_eligible_time` and frozen for the trade (`zones_prepattern` for location flags kept separate from `zones_at_entry` for targets). | PROPOSED (ChatGPT review) |
 | D-032 | 2026-09-30 | Every source-normalized variant that depends on `PIP_SRC_USD` (SRC-PS of Hammer, Shooting Star, Pin Bar, Dragonfly, Gravestone, Bullish/Bearish Engulfing, Inside Bar, Tweezer Top/Bottom) is `DISABLED_PENDING_PIP_CONFIRMATION` until `PIP_SRC_USD` is confirmed from the sources' worked examples (not from Vantage's pip convention); BASE strategies and pip-free variants run regardless. | PROPOSED (ChatGPT review) |
 | D-033 | 2026-09-30 | `MAX_HOLD = 50` bars of each pattern's own timeframe for all timeframes (W1/MN1 samples will be very slow). Reviewer-approved; owner has not yet stated it. | PROPOSED (ChatGPT review) |
+| D-034 | 2026-09-30 | Golden test vector pack GV-0.1 (1,340 vectors: 24 pattern families, global rules, overlaps, hub counters, execution) written against Draft 0.2.2 in `projects/goldthinker/tests/`. The spec was NOT edited; 29 ambiguities/inconsistencies (4 high) are logged in `tests/AMBIGUITIES.md` for rulings. No detector code until the pack is reviewed and the high-severity items are ruled on. | PROPOSED |
 
 ## Open
 
 - Owner's explicit confirmation of the PROPOSED items above.
-- `CANDLE_SPEC_V1.md` Draft 0.2.1 (second-pass fixes applied) goes to the reviewer; then golden test vectors, before any code.
+- `tests/` golden vectors GV-0.1 go to the reviewer; the owner/reviewer rule the 29 items in `tests/AMBIGUITIES.md` (start with A-01, A-13, A-14, A-25), then Draft 0.3 of the spec, before any code.
 - Owner to approve or reject every PROPOSED item (D-006 to D-029 and D-031 to D-033; D-030 is superseded). ChatGPT (third pass, 2026-09-30) supports all of them, D-025 in its reworded form and `MAX_HOLD = 50`; the owner has not yet said so.
 - Owner confirmation of `MAX_HOLD = 50` bars (D-033).
 - Confirm `PIP_SRC_USD` (D-032) from the sources' own examples to enable the disabled SRC-PS variants.
