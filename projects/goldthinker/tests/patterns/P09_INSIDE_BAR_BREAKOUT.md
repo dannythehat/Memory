@@ -1,6 +1,6 @@
 # P09 Inside Bar Breakout — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **80 vectors** (2 dormant, 78 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **80 vectors** (2 dormant, 78 firm)
 
 Strategies covered: `GT-INSIDE-BEAR-v1.0`, `GT-INSIDE-BULL-v1.0`
 

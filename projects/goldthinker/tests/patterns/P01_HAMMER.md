@@ -1,6 +1,6 @@
 # P01 Hammer — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **54 vectors** (7 dormant, 47 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **54 vectors** (7 dormant, 47 firm)
 
 Strategies covered: `GT-HAMMER-BULL-v1.0`
 

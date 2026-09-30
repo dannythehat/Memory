@@ -1,6 +1,6 @@
 # P07 Bearish Engulfing — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **46 vectors** (2 dormant, 44 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **46 vectors** (2 dormant, 44 firm)
 
 Strategies covered: `GT-ENGULF-BEAR-v1.0`
 

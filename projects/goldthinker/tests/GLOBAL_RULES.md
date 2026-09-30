@@ -523,3 +523,14 @@ Series/function vectors for the shared definitions (G0-G13). A wrong global rule
 | 5 | `{"swings":[["H",10,"4230.00"],["H",20,"4231.90"]],"closes":{"25":"4232.75"},"cutoff":30,"atr":"8"}` | `{"zones":[["4229.95","4231.95",true,"RESISTANCE"]]}` |
 | 6 | `{"swings":[["H",10,"4230.00"],["H",20,"4231.90"]],"closes":{"25":"4232.76"},"cutoff":30,"atr":"8"}` | `{"zones":[["4229.95","4231.95",false,"RESISTANCE"]]}` |
 
+#### `GV-G-ZN-13` · zonedeath
+> G4 zone role AMBIGUOUS (D-038 addendum): if the latest contributing candle is BOTH a swing high and a swing low and both pivots join the same zone, neither is 'latest', so the role is AMBIGUOUS and the zone is excluded from AT_SUPPORT/AT_RESISTANCE and from every structural target (reported live=false) until a LATER single-type confirmed pivot establishes a role. Case 1: bar 20 is both (4230.30 high, 4229.60 low) -> AMBIGUOUS. Case 2: a later swing low at bar 30 re-establishes the zone as SUPPORT (zone recentred on the 4 pivots). Case 3: the same, then a close at bar 35 of 4229.14 (more than 0.40 below the bottom 4229.55) kills it. Case 4: an ambiguous candle that is NOT the latest pivot does not matter (latest = high at bar 20 -> RESISTANCE). Case 5: no death scan applies to an AMBIGUOUS zone (a close far below changes nothing).
+
+| # | in | expected out |
+|---|---|---|
+| 1 | `{"swings":[["H",10,"4230.00"],["H",20,"4230.30"],["L",20,"4229.60"]],"closes":{},"cutoff":30,"atr":"4"}` | `{"zones":[["4229.50","4230.50",false,"AMBIGUOUS"]]}` |
+| 2 | `{"swings":[["H",10,"4230.00"],["H",20,"4230.30"],["L",20,"4229.60"],["L",30,"4230.10"]],"closes":{},"cutoff":40,"atr":"4"}` | `{"zones":[["4229.55","4230.55",true,"SUPPORT"]]}` |
+| 3 | `{"swings":[["H",10,"4230.00"],["H",20,"4230.30"],["L",20,"4229.60"],["L",30,"4230.10"]],"closes":{"35":"4229.14"},"cutoff":40,"atr":"4"}` | `{"zones":[["4229.55","4230.55",false,"SUPPORT"]]}` |
+| 4 | `{"swings":[["H",10,"4230.00"],["L",10,"4229.70"],["H",20,"4230.30"]],"closes":{},"cutoff":30,"atr":"4"}` | `{"zones":[["4229.50","4230.50",true,"RESISTANCE"]]}` |
+| 5 | `{"swings":[["H",10,"4230.00"],["H",20,"4230.30"],["L",20,"4229.60"]],"closes":{"25":"4220.00"},"cutoff":30,"atr":"4"}` | `{"zones":[["4229.50","4230.50",false,"AMBIGUOUS"]]}` |
+

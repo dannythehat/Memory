@@ -1,6 +1,6 @@
 # P06 Bullish Engulfing — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **53 vectors** (1 dormant, 52 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **53 vectors** (1 dormant, 52 firm)
 
 Strategies covered: `GT-ENGULF-BULL-v1.0`
 

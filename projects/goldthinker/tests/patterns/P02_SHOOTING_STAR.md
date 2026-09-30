@@ -1,6 +1,6 @@
 # P02 Shooting Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **44 vectors** (3 dormant, 41 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **44 vectors** (3 dormant, 41 firm)
 
 Strategies covered: `GT-SHOOTINGSTAR-BEAR-v1.0`
 

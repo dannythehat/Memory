@@ -1,6 +1,6 @@
 # P10 Tweezer Top — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (1 dormant, 38 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (1 dormant, 38 firm)
 
 Strategies covered: `GT-TWEEZERTOP-BEAR-v1.0`
 

@@ -1,6 +1,6 @@
 # End-to-end integration vectors
 
-Spec Draft 0.3 · vector pack GV-0.2. Each vector starts from a raw bar series (no injected ATR, trend or zones) and checks the whole chain: ATR -> swings -> trend -> zones -> pattern -> qualification -> signal -> entry, stop and target (with A-30 quantisation). `computed context` lists the intermediate values an implementation must reproduce exactly. The intermediate values were computed by a separate calculator that shares no code with the pattern engine.
+Spec Draft 0.3.1 · vector pack GV-0.2. Each vector starts from a raw bar series (no injected ATR, trend or zones) and checks the whole chain: ATR -> swings -> trend -> zones -> pattern -> qualification -> signal -> entry, stop and target (with A-30 quantisation). `computed context` lists the intermediate values an implementation must reproduce exactly. The intermediate values were computed by a separate calculator that shares no code with the pattern engine.
 
 #### `GV-E2E-01a` · `GT-HAMMER-BULL-v1.0/BASE` · M15
 > End-to-end: bars -> ATR -> detection. 15 flat history bars with true range 4.00 give ATR 4.00; the hammer (R 6.5 >= 0.5 x 4) is a valid SHAPE. No swings exist so the trend is UNDETERMINED and it does not form.

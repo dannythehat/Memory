@@ -41,7 +41,7 @@ Overlap vectors: 21 in `OVERLAPS.md` (Hammer/Dragonfly/Pin Bar, Engulfing/Outsid
 | Size classes (LARGE / SMALL / DOJI) | GV-G-CLS-01..03 |
 | Swings and confirmation lag | GV-G-SW-01..04 |
 | Trend (UP / DOWN / RANGE / UNDETERMINED, no look-ahead) | GV-G-TR-01..05 |
-| S/R clustering, zone width, AT_SUPPORT/RESISTANCE, round-50 | GV-G-ZN-01..11 |
+| S/R clustering, zone width, AT_SUPPORT/RESISTANCE, round-50, role/death/AMBIGUOUS | GV-G-ZN-01..13 |
 | Sessions incl. DST divergence, half-open boundaries | GV-G-SS-01..03 |
 | News windows | GV-G-NW-01..03 |
 | Gaps | GV-G-GP-01..02 |

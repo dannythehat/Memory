@@ -1,6 +1,6 @@
 # P05 Gravestone Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **33 vectors** (1 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **33 vectors** (1 dormant, 32 firm)
 
 Strategies covered: `GT-GRAVESTONE-BEAR-v1.0`
 

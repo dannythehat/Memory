@@ -1,6 +1,6 @@
 # P03 Pin Bar — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **99 vectors** (2 dormant, 97 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **99 vectors** (2 dormant, 97 firm)
 
 Strategies covered: `GT-PINBAR-BEAR-v1.0`, `GT-PINBAR-BULL-v1.0`
 

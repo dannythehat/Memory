@@ -1,6 +1,6 @@
 # Execution, timeframe and bar-boundary vectors
 
-Spec Draft 0.3 · vector pack GV-0.2. Uses the Hammer BASE strategy as a carrier so the ONLY thing changing between vectors is the mechanic under test.
+Spec Draft 0.3.1 · vector pack GV-0.2. Uses the Hammer BASE strategy as a carrier so the ONLY thing changing between vectors is the mechanic under test.
 
 #### `GV-EX-B01` · `GT-HAMMER-BULL-v1.0/BASE` · M15
 > MAX_HOLD (A-13). Entry tick 10:15:02 -> the 10:15 candle is bar 0 (not counted). The next 50 EXISTING M15 bars are 10:30 ... 21:45 (46 bars), then the 22:00-23:00 pause creates no bars, then 23:00, 23:15, 23:30, 23:45: bar 50 completes at 00:00. The tick at 23:59:59 does not exit; the first tick at 00:00:00 closes at the BID 4203.20: +2.80/6.60 = 14/33 R.

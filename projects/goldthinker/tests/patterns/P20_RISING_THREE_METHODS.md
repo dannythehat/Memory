@@ -1,6 +1,6 @@
 # P20 Rising Three Methods — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (39 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (39 firm)
 
 Strategies covered: `GT-RISING3-BULL-v1.0`
 

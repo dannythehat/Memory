@@ -1,6 +1,6 @@
 # P04 Dragonfly Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (7 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (7 dormant, 32 firm)
 
 Strategies covered: `GT-DRAGONFLY-BULL-v1.0`
 

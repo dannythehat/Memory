@@ -1,6 +1,6 @@
-# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.3
+# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.3.1
 
-Status: **DRAFT 0.3, 2026-09-30.** Research specification; nothing is coded from it yet. Author: Claude; reviewer:
+Status: **DRAFT 0.3.1, 2026-09-30.** Research specification; nothing is coded from it yet. Author: Claude; reviewer:
 ChatGPT. Draft 0.3 applies the reviewer rulings on the 29 findings of the golden-vector pack GV-0.1 plus one new
 finding (A-30, executable-price quantisation); the ruling table is in section 4. Under the working rule of
 2026-09-30 (`DECISIONS.md` D-035) Claude and ChatGPT settle candlestick, mathematical, execution and testing rules
@@ -141,14 +141,17 @@ different completed-bar cut-off, and both use the pattern's `atr_pre`.
 - Collect the confirmed swing prices of the lookback (G3); sort ascending; cluster greedily (a cluster starts at the
   lowest unassigned price `p0` and takes every price `<= p0 + 0.25*ATR`). A cluster is a **zone** if it has >= 2 pivots
   with at least one pair >= 3 bars apart. Centre = median (**for an even count, the arithmetic mean of the two middle
-  prices, ruling A-23**); zone = centre +- `0.125*ATR`. Highs and lows are pooled; role flips are not modelled in v1.
+  prices, ruling A-23**); zone = centre +- `0.125*ATR`. Highs and lows are pooled. **Automatic role reversal merely because price crossed a zone is not modelled; a zone's role can change only when a later confirmed contributing pivot establishes the opposite role.**
 - **Zone role and death (ruling A-01, revised by Claude in 0.3):** a zone's ROLE is the type of its most recent
   contributing pivot (a swing low -> SUPPORT, a swing high -> RESISTANCE); the zone may still be used for either
   `AT_*` flag or as a target (pivots are pooled). A SUPPORT zone is DEAD once a completed candle AFTER that latest
   pivot closes more than `0.10*ATR` BELOW its bottom; a RESISTANCE zone once a completed candle after it closes more
   than `0.10*ATR` ABOVE its top. Bars before the latest contributing pivot are never scanned, so a later pivot that
   re-joins the cluster revives the zone; the same `atr_pre` of that evaluation is used. Dead zones are ignored by
-  `AT_*` flags and by every target rule. (The reviewer's first ruling - dead after a close beyond EITHER edge - was
+  `AT_*` flags and by every target rule. **Same-candle pivots (D-038 addendum):** if the latest contributing candle is
+  both a swing high and a swing low and both pivots join the same zone, neither is "latest": `role = AMBIGUOUS`, and the zone
+  is excluded from `AT_*` flags and from every structural target (treated like a dead zone; no death scan applies) until a
+  later single-type confirmed pivot establishes its role. (The reviewer's first ruling - dead after a close beyond EITHER edge - was
   replaced because it kills every support zone the moment price bounces upward from it; see section 4.)
 - `AT_SUPPORT` (bullish): distance from the pattern's lowest low to the nearest LIVE zone (0 if inside)
   `<= 0.10*ATR`; `AT_RESISTANCE` (bearish): same with the highest high. Fibonacci and round numbers are context flags
@@ -830,7 +833,7 @@ source supports it.
 
 | ID | Ruling in Draft 0.3 | Where |
 |---|---|---|
-| A-01 zone death | Reviewer ruled: dead after a close > 0.10*ATR beyond EITHER edge. **Claude replaced this (ruling E):** role = type of the latest contributing pivot; SUPPORT dies on a close below its bottom, RESISTANCE on a close above its top, scan after that pivot only. Reason: 'either edge' kills every support zone the instant price bounces away from it (shown by the end-to-end vector GV-E2E-02). Flagged back to the reviewer | G4 |
+| A-01 zone death | Reviewer ruled: dead after a close > 0.10*ATR beyond EITHER edge. **Claude replaced this (ruling E):** role = type of the latest contributing pivot; SUPPORT dies on a close below its bottom, RESISTANCE on a close above its top, scan after that pivot only. Reason: 'either edge' kills every support zone the instant price bounces away from it (shown by the end-to-end vector GV-E2E-02). **Accepted by the reviewer (D-038, RESEARCH APPROVED).** Addendum: a same-candle high+low pivot pair in the latest position gives role AMBIGUOUS (excluded until a later single-type pivot) | G4 |
 | A-02 notation | Candles are `K1..K5`; `O1,H1,L1,C1` are numeric fields; `C2close` retired | G-N, all patterns |
 | A-03 P08 filters | News/rollover apply to K2 only. **Claude refinement:** the rollover test applies to intraday TFs (M1-H4) only, because every D1/W1/MN1 bar contains the pause by construction. New code `SKIPPED_ROLLOVER` | P08 |
 | A-04 straddling zone | Nearest obstacle; near edge at/behind entry -> `SKIPPED_TARGET_ALREADY_PASSED` | G10 |
@@ -871,7 +874,7 @@ source supports it.
 4. **Portfolio Simulation rules** (sizing, exposure cap); until defined the hub's top figure is "Total Experimental P&L".
 5. **Not enforced in v1:** DXY, volume, RSI/MACD divergence, Fibonacci-location requirements, weekly-trend checks,
    trailing stops, second targets where the split is not given. **Deferred to v1.1:** pullback entries, continuation
-   reading of engulfing, strict-gap Piercing/Dark Cloud, role-flipped zones, multi-bar inside-bar false break.
+   reading of engulfing, strict-gap Piercing/Dark Cloud, automatic role-reversal of zones, multi-bar inside-bar false break.
 6. **Multiple testing:** up to about 657 strategies; the untouched validation stage is mandatory.
 
 ## 5. Change log
@@ -884,3 +887,4 @@ source supports it.
   Kicker gap flag, pip confirmed from source examples).
 - 0.3 (2026-09-30): applies the reviewer rulings on golden-vector pack GV-0.1 (A-01..A-29) plus A-30 executable-price
   quantisation; new notation (K1..K5); new event-model codes; pairs of patterns that differ in their sources stay different.
+- 0.3.1 (2026-09-30): reviewer accepted Claude's zone-death rule (D-038); wording on role changes made precise (roles change only via a later confirmed pivot); same-candle high/low pivot pair -> role AMBIGUOUS (vector GV-G-ZN-13). Ambiguity phase closed.

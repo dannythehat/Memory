@@ -1,6 +1,6 @@
 # P13 Dark Cloud Cover — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **45 vectors** (45 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **45 vectors** (45 firm)
 
 Strategies covered: `GT-DARKCLOUD-BEAR-v1.0`
 

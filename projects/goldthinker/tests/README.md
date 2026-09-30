@@ -1,22 +1,22 @@
 # GoldThinker golden test vectors — pack GV-0.2
 
-For `CANDLE_SPEC_V1.md` **Draft 0.3** (2026-09-30). Status: **research-approved by Claude + ChatGPT for review; nothing has been built** (D-005). This is the test set an implementation must pass *before* any detector code is trusted (D-021, D-030). It replaces GV-0.1.
+For `CANDLE_SPEC_V1.md` **Draft 0.3.1** (2026-09-30). Status: **research-approved by Claude + ChatGPT; nothing has been built** (D-005). This is the test set an implementation must pass *before* any detector code is trusted (D-021, D-030). It replaces GV-0.1.
 
 ## What changed from GV-0.1
 
-- All 29 ambiguities were ruled (reviewer) and applied in Draft 0.3; **no BLOCKED and no PROVISIONAL vectors remain** (`RULINGS.md` maps every ruling to the vectors that test it; two rulings were refined by Claude and flagged there: A-01, A-03).
+- All 29 ambiguities were ruled (reviewer) and applied in Draft 0.3/0.3.1; **no BLOCKED and no PROVISIONAL vectors remain** (`RULINGS.md` maps every ruling to the vectors that test it; A-01 and A-03 were refined by Claude and accepted by the reviewer).
 - **A-30 executable-price quantisation** is asserted on every stop, target and trigger (`GV-G-QT-01`, the `*-Q01` vectors, `GV-P16-Q01`, `GV-E2E-02`).
 - New vector kinds: **tick-path RAW** (`mfe_before_mae_h`: `GV-P01-M01..M05`, `GV-P02-M01`, `GV-EX-B06`), **qualification failures** (`qualification_failures[]` with disposition `NOT_QUALIFIED`), **end-to-end** (6 vectors in `END_TO_END.md`: raw bars -> ATR -> swings -> trend -> zones -> pattern -> signal).
-- **Correction to GV-0.1:** its README and coverage table listed the ATR, size-class, swing and trend global vectors and `GV-G-ZN-10`, but they were **missing from the delivered files** (18 vectors). They are now included and run: the global pack has 50 vectors.
+- **Correction to GV-0.1:** its README and coverage table listed the ATR, size-class, swing and trend global vectors and `GV-G-ZN-10`, but they were **missing from the delivered files** (18 vectors). They are now included and run: the global pack has 51 vectors.
 - Tweezer Top now has its own `c1_high25` / `c2_low25` flag vectors (`GV-P10-F01`, `GV-P10-F02`); GV-0.1 only tested the bottom side.
 
-## What is in the pack (1419 vectors)
+## What is in the pack (1420 vectors)
 
 | File | What |
 |---|---|
 | `patterns/P01_…P22_….md` (24 files) | every Wave-1 pattern: detection probes, boundary vectors, wrong-trend, clean YES/NO, trade lifecycle (BASE), source variants, qualification failures, disabled/dormant variants, RAW incl. tick paths |
 | `OVERLAPS.md` | 21 vectors where several strategies legitimately fire on the same candles (clusters) |
-| `GLOBAL_RULES.md` | 50 vectors for ATR, size classes, swings, trend, zones (incl. role/death rule), sessions, news, gaps, sizing, calendar/closures, RSI, target snapshot, quantisation |
+| `GLOBAL_RULES.md` | 51 vectors for ATR, size classes, swings, trend, zones (incl. role/death rule), sessions, news, gaps, sizing, calendar/closures, RSI, target snapshot, quantisation |
 | `END_TO_END.md` | 6 integration vectors from raw bar series to signal |
 | `HUB_COUNTERS.md` | 7 vectors for formation/signal/trade counters and P&L |
 | `EXECUTION_AND_TIMEFRAMES.md` | bar boundaries M1..MN1, commission, MAX_HOLD, swap, entry-beyond-stop, bars-only fallback, RAW with A-27 sign convention |
@@ -40,7 +40,7 @@ Pattern-family vectors: 1341 (1314 firm, 27 dormant). Bearish counterparts were 
 
 ## How the vectors were checked
 
-Every expected value was written by hand or by a stated formula first and then compared with an independent scratch calculator written from the spec text (exact rational arithmetic, per-clause evaluation, calendar, tick paths, hub aggregation): all 1419 vectors agree (0 mismatches). Hand-derived spot checks (swap 65/33 and 161/80, MAX_HOLD 14/33 and 1/3, quantised stops/targets, ATR 7613/1400) matched the calculator. The end-to-end intermediate values (ATR, swing pivots, zones, RSI) were recomputed by separate code. **Limits:** the same author wrote the vectors and the calculators from one reading of the spec, so this proves internal consistency and arithmetic, not intent; a real implementation must be run against `golden_vectors.json`, and the reviewer should challenge RULINGS.md, especially A-01. The calculator is scratch code and is not stored in the repository (D-005).
+Every expected value was written by hand or by a stated formula first and then compared with an independent scratch calculator written from the spec text (exact rational arithmetic, per-clause evaluation, calendar, tick paths, hub aggregation): all 1420 vectors agree (0 mismatches). Hand-derived spot checks (swap 65/33 and 161/80, MAX_HOLD 14/33 and 1/3, quantised stops/targets, ATR 7613/1400) matched the calculator. The end-to-end intermediate values (ATR, swing pivots, zones, RSI) were recomputed by separate code. **Limits:** the same author wrote the vectors and the calculators from one reading of the spec, so this proves internal consistency and arithmetic, not intent; a real implementation must be run against `golden_vectors.json`, and the reviewer has accepted RULINGS.md (A-01 replacement included). The calculator is scratch code and is not stored in the repository (D-005).
 
 ## Not covered yet
 
