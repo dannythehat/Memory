@@ -155,6 +155,24 @@ pattern, timeframe (15 min to 1 month), reliability, candles ago, timestamp.
 - Not usable as a data source: terms forbid storing/reproducing its data. Our own detector on
   our own candles is the only route.
 
+### Source 6 — Pro-Scalper.com, "Evening Star" (2026-09-30)
+
+Site sells XAUUSD Expert Advisors for MetaTrader 5, so it has a commercial interest. Extracted by
+a small model, wording not verified. **The most complete rule set so far, but still no evidence.**
+
+- Bearish 3-candle reversal at the top of an uptrend, at resistance. C1 large bullish; C2 small
+  "star" that gaps above C1 or opens near its close with minimal range; C3 large red candle that
+  closes below the midpoint of C1's body.
+- **Entry:** market, at the open after C3 closes. **Stop:** just above C2's high (or above C1's
+  high for more room). **Targets:** first at C1's low (close 60% of the position), second at next
+  major support. **Risk:reward:** at least 1:2 on H1/H4, up to 1:4+ on daily.
+- Typical move claimed: H1 30-80 pips (frequent, noisy), H4 150-300 pips ("one of the cleanest
+  short setups"), Daily rare (5-10 a year).
+- **No win rate, sample size or backtest anywhere.** "Cleanest" is opinion.
+- Testable as written once thresholds are set: "large", "small", "gap" and "at resistance" each
+  need a numeric rule. Daily/H4 sample would be tiny on 42 days of data.
+- The mirror-image morning star page on the same site likely exists and would pair with this.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
