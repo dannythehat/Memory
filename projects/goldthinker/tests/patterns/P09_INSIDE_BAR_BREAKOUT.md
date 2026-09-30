@@ -1,6 +1,6 @@
 # P09 Inside Bar Breakout — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **80 vectors** (2 dormant, 70 firm, 8 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **80 vectors** (2 dormant, 78 firm)
 
 Strategies covered: `GT-INSIDE-BEAR-v1.0`, `GT-INSIDE-BULL-v1.0`
 
@@ -21,7 +21,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `NZ1m` | 4200.00/4202.00/4196.00/4197.00 ; 4197.00/4198.00/4193.00/4194.00 | UP | 4 | canonical: no event; variant: no event | — | Second bar is not inside the first (higher high). |
 | `S03m` | 4200.00/4202.00/4190.00/4192.00 ; 4196.00/4199.00/4193.00/4195.00 ; 4194.00/4197.00/4191.00/4194.00 ; 4194.00/4196.50/4190.50/4193.00 ; 4193.00/4196.00/4190.10/4192.00 | UP | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: EXPIRED_NO_CONFIRMATION | — | Bars 3, 4 and 5 all close inside the mother range: expires with EXPIRED_NO_CONFIRMATION. The base pattern was still FORMED (formation is logged whether or not anything trades). |
 | `S05m` | 4200.00/4202.00/4190.00/4192.00 ; 4196.00/4199.00/4193.00/4195.00 ; 4194.00/4197.00/4191.00/4194.00 ; 4194.00/4196.50/4190.50/4193.00 ; 4193.00/4196.00/4190.10/4192.00 ; 4192.00/4192.50/4187.00/4188.00 | UP | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: EXPIRED_NO_CONFIRMATION | — | The breakout close arrives on bar 6: too late (window is bars 3-5) -> EXPIRED_NO_CONFIRMATION even though bar 6 breaks out. |
-| `S07m` | 4200.00/4202.00/4190.00/4192.00 ; 4196.00/4199.00/4193.00/4195.00 ; 4194.00/4204.00/4193.00/4203.00 | UP | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED | — | Bearish breakout (close 4197 < L1) seen by the BULLISH strategy: no bullish signal. [PROVISIONAL: the spec does not say whether the bull strategy logs a disposition here or whether BASE_PATTERN_FORMED is credited to a side at all - see ambiguity A-09.] |
+| `S07m` | 4200.00/4202.00/4190.00/4192.00 ; 4196.00/4199.00/4193.00/4195.00 ; 4194.00/4204.00/4193.00/4203.00 | UP | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: NOT_TRIGGERED_OTHER_SIDE | — | Bearish breakout (close 4197 < L1) seen by the BULLISH strategy: no bullish signal. The neutral INSIDE_BAR formation is still counted once (A-09 ruling); the bull strategy ends with NOT_TRIGGERED_OTHER_SIDE. |
 
 #### Trade lifecycle (BASE: entry at the first executable tick, stop beyond the pattern extreme, fixed 2R)
 
@@ -33,7 +33,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4188.80/4189.00; 09-16 10:46:40 4202.00/4202.20; 09-16 10:48:20 4161.80/4162.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4202.20; R: 13.40; target(s): 4162.00; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4188.80/4189.00; 09-16 10:46:40 4161.80/4162.00; 09-16 10:48:20 4202.00/4202.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4202.20; R: 13.40; target(s): 4162.00; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4188.80/4189.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4202.20; R: 13.40; target(s): 4162.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4188.50/4189.00; 09-16 10:48:20 4160.60/4161.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.50; stop: 4202.20; R: 13.70; target(s): 4161.10; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4188.50/4189.00; 09-16 10:48:20 4160.60/4161.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4188.50; stop: 4202.20; R: 13.70; target(s): 4161.10; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4188.80/4189.00; 09-16 11:01:40 4161.80/4162.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4202.20; R: 13.40; target(s): 4162.00; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4188.80/4189.00; 09-16 11:01:40 4161.80/4162.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4200.20/4200.70; 09-16 10:46:40 4195.70/4196.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.20; R: 2.00; target(s): 4196.20; exit: TARGET net 2.00R |
@@ -63,7 +63,7 @@ Context: atr=4 · trend=UP
 | 9 | 09-16 12:00 | 4186.00 | 4198.00 | 4180.00 | 4185.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4189.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4189.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P09-S01m` · `GT-INSIDE-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P09-S01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -232,7 +232,7 @@ Ticks (bid/ask): 09-16 10:45:02 4188.80/4189.00
 
 ### Variant `SRC-CB`
 
-#### `GV-P09-V01m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · H4 · **PROVISIONAL**
+#### `GV-P09-V01m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · H4
 *Mirror of `GV-P09-V01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
 > SRC-CB Inside Bar breakout (bull) on H4: TREND UP, mother low 4198.00 within 0.10*ATR of a support zone (provisional level reading, A-15), TF H4 allowed. The last H4 bar (19:00) completes at the 22:00 closure start; the first tick after the pause is 23:00:02 (entry_across_break). Stop L1-0.20 = 4197.80; R 13.40; T_SR(2.0) = 4238.00 = exactly 2.0R.
 
@@ -295,9 +295,9 @@ Ticks (bid/ask): 09-16 23:00:02 4188.80/4189.00
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
 
-#### `GV-P09-V04m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · M15 · **PROVISIONAL**
+#### `GV-P09-V04m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · M15
 *Mirror of `GV-P09-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M15 is not in {H4,D1}: SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL A-12]
+> M15 is not in {H4,D1}: SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=DOWN · zones_pre=[4202.10-4202.30] · zones_entry=[4161.00-4162.00]
@@ -312,11 +312,12 @@ Ticks (bid/ask): 09-16 10:45:02 4188.80/4189.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P09-V05m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · H1 · **PROVISIONAL**
+#### `GV-P09-V05m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P09-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> H1 is not allowed for the CB Inside Bar (only H4, D1), unlike the CB Pin Bar and Engulfing. [PROVISIONAL A-12]
+> H1 is not allowed for the CB Inside Bar (only H4, D1), unlike the CB Pin Bar and Engulfing.
 
 Tags: tf-gate
 Context: atr=4 · trend=DOWN · zones_pre=[4202.10-4202.30] · zones_entry=[4161.00-4162.00]
@@ -331,7 +332,8 @@ Ticks (bid/ask): 09-16 13:00:02 4188.80/4189.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P09-V06m` · `GT-INSIDE-BEAR-v1.0/SRC-CB` · H4
 *Mirror of `GV-P09-V06` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -388,7 +390,7 @@ Ticks (bid/ask): 09-16 10:45:02 4188.80/4189.00
 | `NZ1` | 4200.00/4204.00/4198.00/4203.00 ; 4203.00/4207.00/4202.00/4206.00 | DOWN | 4 | canonical: no event; variant: no event | — | Second bar is not inside the first (higher high). |
 | `S03` | 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4209.00/4203.00/4206.00 ; 4206.00/4209.50/4203.50/4207.00 ; 4207.00/4209.90/4204.00/4208.00 | DOWN | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: EXPIRED_NO_CONFIRMATION | — | Bars 3, 4 and 5 all close inside the mother range: expires with EXPIRED_NO_CONFIRMATION. The base pattern was still FORMED (formation is logged whether or not anything trades). |
 | `S05` | 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4209.00/4203.00/4206.00 ; 4206.00/4209.50/4203.50/4207.00 ; 4207.00/4209.90/4204.00/4208.00 ; 4208.00/4213.00/4207.50/4212.00 | DOWN | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: EXPIRED_NO_CONFIRMATION | — | The breakout close arrives on bar 6: too late (window is bars 3-5) -> EXPIRED_NO_CONFIRMATION even though bar 6 breaks out. |
-| `S07` | 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4207.00/4196.00/4197.00 | DOWN | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED | — | Bearish breakout (close 4197 < L1) seen by the BULLISH strategy: no bullish signal. [PROVISIONAL: the spec does not say whether the bull strategy logs a disposition here or whether BASE_PATTERN_FORMED is credited to a side at all - see ambiguity A-09.] |
+| `S07` | 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4207.00/4196.00/4197.00 | DOWN | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: NOT_TRIGGERED_OTHER_SIDE | — | Bearish breakout (close 4197 < L1) seen by the BULLISH strategy: no bullish signal. The neutral INSIDE_BAR formation is still counted once (A-09 ruling); the bull strategy ends with NOT_TRIGGERED_OTHER_SIDE. |
 
 #### Trade lifecycle (BASE: entry at the first executable tick, stop beyond the pattern extreme, fixed 2R)
 
@@ -400,7 +402,7 @@ Ticks (bid/ask): 09-16 10:45:02 4188.80/4189.00
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4211.00/4211.20; 09-16 10:46:40 4197.80/4198.00; 09-16 10:48:20 4238.00/4238.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4197.80; R: 13.40; target(s): 4238.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4211.00/4211.20; 09-16 10:46:40 4238.00/4238.20; 09-16 10:48:20 4197.80/4198.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4197.80; R: 13.40; target(s): 4238.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4211.00/4211.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4197.80; R: 13.40; target(s): 4238.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4211.00/4211.50; 09-16 10:48:20 4238.90/4239.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.50; stop: 4197.80; R: 13.70; target(s): 4238.90; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4211.00/4211.50; 09-16 10:48:20 4238.90/4239.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4211.50; stop: 4197.80; R: 13.70; target(s): 4238.90; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4211.00/4211.20; 09-16 11:01:40 4238.00/4238.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4197.80; R: 13.40; target(s): 4238.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4211.00/4211.20; 09-16 11:01:40 4238.00/4238.20 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4199.30/4199.80; 09-16 10:46:40 4203.80/4204.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.80; R: 2.00; target(s): 4203.80; exit: TARGET net 2.00R |
@@ -429,7 +431,7 @@ Context: atr=4 · trend=DOWN
 | 9 | 09-16 12:00 | 4214.00 | 4220.00 | 4202.00 | 4215.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4211.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4211.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P09-S01` · `GT-INSIDE-BULL-v1.0/BASE` · M15
 > Bar 3 closes exactly ON the mother high (4210.00): not outside (close > H1 required) so it stays armed; bar 4 closes 4210.01 -> signal at bar 4 completion (11:00). Stop = L1-0.20 = 4197.80.
@@ -590,7 +592,7 @@ Ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
 
 ### Variant `SRC-CB`
 
-#### `GV-P09-V01` · `GT-INSIDE-BULL-v1.0/SRC-CB` · H4 · **PROVISIONAL**
+#### `GV-P09-V01` · `GT-INSIDE-BULL-v1.0/SRC-CB` · H4
 > SRC-CB Inside Bar breakout (bull) on H4: TREND UP, mother low 4198.00 within 0.10*ATR of a support zone (provisional level reading, A-15), TF H4 allowed. The last H4 bar (19:00) completes at the 22:00 closure start; the first tick after the pause is 23:00:02 (entry_across_break). Stop L1-0.20 = 4197.80; R 13.40; T_SR(2.0) = 4238.00 = exactly 2.0R.
 
 Tags: variant-clean-yes, tf-H4, closure
@@ -650,8 +652,8 @@ Ticks (bid/ask): 09-16 23:00:02 4211.00/4211.20
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
 
-#### `GV-P09-V04` · `GT-INSIDE-BULL-v1.0/SRC-CB` · M15 · **PROVISIONAL**
-> M15 is not in {H4,D1}: SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL A-12]
+#### `GV-P09-V04` · `GT-INSIDE-BULL-v1.0/SRC-CB` · M15
+> M15 is not in {H4,D1}: SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=UP · zones_pre=[4197.70-4197.90] · zones_entry=[4238.00-4239.00]
@@ -666,10 +668,11 @@ Ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P09-V05` · `GT-INSIDE-BULL-v1.0/SRC-CB` · H1 · **PROVISIONAL**
-> H1 is not allowed for the CB Inside Bar (only H4, D1), unlike the CB Pin Bar and Engulfing. [PROVISIONAL A-12]
+#### `GV-P09-V05` · `GT-INSIDE-BULL-v1.0/SRC-CB` · H1
+> H1 is not allowed for the CB Inside Bar (only H4, D1), unlike the CB Pin Bar and Engulfing.
 
 Tags: tf-gate
 Context: atr=4 · trend=UP · zones_pre=[4197.70-4197.90] · zones_entry=[4238.00-4239.00]
@@ -684,7 +687,8 @@ Ticks (bid/ask): 09-16 13:00:02 4211.00/4211.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P09-V06` · `GT-INSIDE-BULL-v1.0/SRC-CB` · H4
 > No zone above the entry -> SKIPPED_SRC_NO_TARGET.
@@ -730,7 +734,7 @@ Ticks (bid/ask): 09-16 13:00:02 4211.00/4211.20; 09-16 13:01:40 4232.00/4232.20
 - exit: TARGET net 416/271 (≈1.5351)R
 
 #### `GV-DORM-P09-02` · `GT-INSIDE-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> M15 not in {H1,H4,D1,W1,MN1}. [PROVISIONAL A-12]
+> M15 not in {H1,H4,D1,W1,MN1}.
 
 Tags: dormant, tf-gate
 Context: atr=4 · trend=RANGE · zones_entry=[4232.00-4233.00]
@@ -745,7 +749,8 @@ Ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P09-DIS` · `GT-INSIDE-BULL-v1.0/SRC-PS` · M15
 > DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P09-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.

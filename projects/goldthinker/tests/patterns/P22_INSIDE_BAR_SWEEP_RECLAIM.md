@@ -1,6 +1,6 @@
 # P22 Inside Bar Sweep Reclaim — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **80 vectors** (78 firm, 2 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **80 vectors** (80 firm)
 
 Strategies covered: `GT-IBSR-BEAR-v1.0`, `GT-IBSR-BULL-v1.0`
 
@@ -42,7 +42,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4193.80/4194.00; 09-16 10:46:40 4200.50/4200.70; 09-16 10:48:20 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4193.80; stop: 4200.70; R: 6.90; target(s): 4180.00; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4193.80/4194.00; 09-16 10:46:40 4179.80/4180.00; 09-16 10:48:20 4200.50/4200.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4193.80; stop: 4200.70; R: 6.90; target(s): 4180.00; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4193.80/4194.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4193.80; stop: 4200.70; R: 6.90; target(s): 4180.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4193.50/4194.00; 09-16 10:48:20 4178.60/4179.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4193.50; stop: 4200.70; R: 7.20; target(s): 4179.10; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4193.50/4194.00; 09-16 10:48:20 4178.60/4179.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4193.50; stop: 4200.70; R: 7.20; target(s): 4179.10; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4193.80/4194.00; 09-16 11:01:40 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4193.80; stop: 4200.70; R: 6.90; target(s): 4180.00; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4193.80/4194.00; 09-16 11:01:40 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4198.70/4199.20; 09-16 10:46:40 4194.20/4194.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4198.70; R: 2.00; target(s): 4194.70; exit: TARGET net 2.00R |
@@ -72,7 +72,7 @@ Context: atr=4 · trend=UP
 | 9 | 09-16 12:00 | 4191.00 | 4203.00 | 4185.00 | 4190.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4194.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4194.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P22-Y01m` · `GT-IBSR-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P22-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -159,6 +159,7 @@ Context: atr=4 · trend=DOWN · zones_entry=[4179.00-4180.00]
 Ticks (bid/ask): 09-16 13:00:02 4193.80/4194.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P22-V04m` · `GT-IBSR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P22-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -181,9 +182,9 @@ Ticks (bid/ask): 09-16 13:00:02 4193.80/4194.00
 - stop: 4200.70
 - R: 6.90
 
-#### `GV-P22-V05m` · `GT-IBSR-BEAR-v1.0/SRC-CB` · M30 · **PROVISIONAL**
+#### `GV-P22-V05m` · `GT-IBSR-BEAR-v1.0/SRC-CB` · M30
 *Mirror of `GV-P22-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M30 not allowed -> SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL A-12]
+> M30 not allowed -> SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=UP · zones_entry=[4179.00-4180.00]
@@ -197,7 +198,8 @@ Context: atr=4 · trend=UP · zones_entry=[4179.00-4180.00]
 Ticks (bid/ask): 09-16 11:30:02 4193.80/4194.00
 
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P22-V06m` · `GT-IBSR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P22-V06` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -256,7 +258,7 @@ Ticks (bid/ask): 09-16 13:00:02 4193.80/4194.00
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4206.00/4206.20; 09-16 10:46:40 4199.30/4199.50; 09-16 10:48:20 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4206.20; stop: 4199.30; R: 6.90; target(s): 4220.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4206.00/4206.20; 09-16 10:46:40 4220.00/4220.20; 09-16 10:48:20 4199.30/4199.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4206.20; stop: 4199.30; R: 6.90; target(s): 4220.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4206.00/4206.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4206.20; stop: 4199.30; R: 6.90; target(s): 4220.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4206.00/4206.50; 09-16 10:48:20 4220.90/4221.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4206.50; stop: 4199.30; R: 7.20; target(s): 4220.90; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4206.00/4206.50; 09-16 10:48:20 4220.90/4221.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4206.50; stop: 4199.30; R: 7.20; target(s): 4220.90; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4206.00/4206.20; 09-16 11:01:40 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4206.20; stop: 4199.30; R: 6.90; target(s): 4220.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4206.00/4206.20; 09-16 11:01:40 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4200.80/4201.30; 09-16 10:46:40 4205.30/4205.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4201.30; R: 2.00; target(s): 4205.30; exit: TARGET net 2.00R |
@@ -285,7 +287,7 @@ Context: atr=4 · trend=DOWN
 | 9 | 09-16 12:00 | 4209.00 | 4215.00 | 4197.00 | 4210.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4206.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4206.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P22-Y01` · `GT-IBSR-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -368,6 +370,7 @@ Context: atr=4 · trend=UP · zones_entry=[4220.00-4221.00]
 Ticks (bid/ask): 09-16 13:00:02 4206.00/4206.20
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P22-V04` · `GT-IBSR-BULL-v1.0/SRC-CB` · H1
 > Zone edge 4219.99 -> 1.9986R -> SKIPPED_SRC_RR.
@@ -389,8 +392,8 @@ Ticks (bid/ask): 09-16 13:00:02 4206.00/4206.20
 - stop: 4199.30
 - R: 6.90
 
-#### `GV-P22-V05` · `GT-IBSR-BULL-v1.0/SRC-CB` · M30 · **PROVISIONAL**
-> M30 not allowed -> SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL A-12]
+#### `GV-P22-V05` · `GT-IBSR-BULL-v1.0/SRC-CB` · M30
+> M30 not allowed -> SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=DOWN · zones_entry=[4220.00-4221.00]
@@ -404,7 +407,8 @@ Context: atr=4 · trend=DOWN · zones_entry=[4220.00-4221.00]
 Ticks (bid/ask): 09-16 11:30:02 4206.00/4206.20
 
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P22-V06` · `GT-IBSR-BULL-v1.0/SRC-CB` · H1
 > No zone above the entry -> SKIPPED_SRC_NO_TARGET.

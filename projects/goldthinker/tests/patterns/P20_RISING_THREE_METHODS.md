@@ -1,6 +1,6 @@
 # P20 Rising Three Methods — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **39 vectors** (38 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (39 firm)
 
 Strategies covered: `GT-RISING3-BULL-v1.0`
 
@@ -25,7 +25,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `F01` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4216.00/4204.50/4215.50 | UP | 4 | shape ✔ · formed ✔ | — | All middle closes (4207, 4205.5, 4204) lie within C1's body [4200, 4211]: flag true. |
 | `F02` | 4200.00/4212.00/4199.00/4211.00 ; 4211.50/4211.60/4208.00/4211.01 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4216.00/4204.50/4215.50 | UP | 4 | shape ✔ · formed ✔ | — | Middle close 4211.01 is above C1's close 4211.00: flag false, pattern still forms (canonical rule uses full high-low containment). |
 | `N01` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4205.50/4208.50/4204.50/4208.00 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4216.00/4204.50/4215.50 | UP | 4 | no shape | bar3 bear | A bullish middle candle (bar 3) breaks the alternation: fails colour. |
-| `N02` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4211.60/4204.50/4207.00 | UP | 4 | no shape | LARGE(C5), C5>C1 | C5 is not LARGE: fails LARGE(C5) (and C5>C1). |
+| `N02` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4211.60/4204.50/4207.00 | UP | 4 | no shape | LARGE(K5), C5>C1 | C5 is not LARGE: fails LARGE(C5) (and C5>C1). |
 | `NZ1` | 4200.00/4204.50/4199.50/4204.00 ; 4204.00/4208.50/4203.50/4208.00 ; 4208.00/4212.50/4207.50/4212.00 ; 4212.00/4216.50/4211.50/4216.00 ; 4216.00/4220.50/4215.50/4220.00 | UP | 4 | canonical: no event; variant: no event | — | Five bullish candles: the middle three must be bearish and contained. |
 | `T01` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4216.00/4204.50/4215.50 | DOWN | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Rising Three Methods shape after DOWN: not formed. |
 | `T02` | 4200.00/4212.00/4199.00/4211.00 ; 4210.00/4210.50/4206.00/4207.00 ; 4208.00/4208.50/4204.50/4205.50 ; 4206.00/4206.50/4203.00/4204.00 ; 4205.00/4216.00/4204.50/4215.50 | RANGE | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Rising Three Methods shape after RANGE: not formed. |
@@ -41,7 +41,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 11:15:02 4215.50/4215.70; 09-16 11:16:40 4198.80/4199.00; 09-16 11:18:20 4249.50/4249.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4215.70; stop: 4198.80; R: 16.90; target(s): 4249.50; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 11:15:02 4215.50/4215.70; 09-16 11:16:40 4249.50/4249.70; 09-16 11:18:20 4198.80/4199.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4215.70; stop: 4198.80; R: 16.90; target(s): 4249.50; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 11:15:02 4215.50/4215.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4215.70; stop: 4198.80; R: 16.90; target(s): 4249.50; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 11:15:02 4215.50/4216.00; 09-16 11:18:20 4250.40/4250.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4216.00; stop: 4198.80; R: 17.20; target(s): 4250.40; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 11:15:02 4215.50/4216.00; 09-16 11:18:20 4250.40/4250.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4216.00; stop: 4198.80; R: 17.20; target(s): 4250.40; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:30:00 4215.50/4215.70; 09-16 11:31:40 4249.50/4249.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4215.70; stop: 4198.80; R: 16.90; target(s): 4249.50; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:30:01 4215.50/4215.70; 09-16 11:31:40 4249.50/4249.70 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 11:15:02 4200.30/4200.80; 09-16 11:16:40 4204.80/4205.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.80; R: 2.00; target(s): 4204.80; exit: TARGET net 2.00R |
@@ -72,7 +72,7 @@ Context: atr=4 · trend=UP
 | 11 | 09-16 12:30 | 4218.50 | 4224.50 | 4206.50 | 4219.50 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4215.50 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=5 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=7 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=9 | h10: NULL | h20: NULL
+- RAW — ref=4215.50 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=5 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=7 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=9 | h10: NULL | h20: NULL
 
 #### `GV-P20-V00` · `GT-RISING3-BULL-v1.0/BASE` · M15
 > BASE on the tall-C1 carrier: stop = min(L1..L5) - 0.20 = 4198.80 (far).
@@ -122,7 +122,7 @@ Ticks (bid/ask): 09-16 11:15:02 4215.50/4215.70
 ### Variant `SRC-PS`
 
 #### `GV-P20-V01` · `GT-RISING3-BULL-v1.0/SRC-PS` · M15
-> SRC-PS Rising Three: stop = min(L2,L3,L4) - 0.20 = 4217.80; TP1 = P + 1.272*(H1-L1) with P = min(L2..L4) = 4218.00 -> 4218.00 + 1.272*31.00 = 4257.432; entry ask 4231.01; R 13.21; reward 26.422 vs 2R = 26.42 -> passes by 0.002 (just inside).
+> SRC-PS Rising Three: stop = min(L2,L3,L4) - 0.20 = 4217.80; TP1 = P + 1.272*(H1-L1) with P = min(L2..L4) = 4218.00 -> 4218.00 + 1.272*31.00 = 4257.432, quantised in the PROFIT direction (up) to 4257.44 (A-30); entry ask 4231.01; R 13.21; reward 26.43 vs 2R = 26.42 -> passes (just inside).
 
 Tags: variant, fib-target, boundary
 Context: atr=4 · trend=UP
@@ -142,11 +142,11 @@ Ticks (bid/ask): 09-16 11:15:02 4230.81/4231.01; 09-16 11:16:40 4257.44/4257.64
 - entry: 4231.01
 - stop: 4217.80
 - R: 13.21
-- target(s): 4257.432
-- exit: TARGET net 13211/6605 (≈2.0002)R
+- target(s): 4257.44
+- exit: TARGET net 2643/1321 (≈2.0008)R
 
 #### `GV-P20-V02` · `GT-RISING3-BULL-v1.0/SRC-PS` · M15
-> Entry ask 4231.02: R 13.22, 2R = 26.44 > 26.412 available -> SKIPPED_SRC_RR (just outside).
+> Entry ask 4231.02: R 13.22, 2R = 26.44 > 26.42 available (target 4257.44) -> SKIPPED_SRC_RR (just outside).
 
 Tags: fib-target, boundary, insufficient-rr
 Context: atr=4 · trend=UP
@@ -185,8 +185,8 @@ Ticks (bid/ask): 09-16 11:15:02 4215.50/4215.70
 - variant: VARIANT_QUALIFIED, SIGNAL
 - disposition: SKIPPED_SRC_RR
 
-#### `GV-P20-V04` · `GT-RISING3-BULL-v1.0/SRC-PS` · M15 · **PROVISIONAL**
-> Entry ask 4220.00 is ABOVE TP1 4219.536: target behind the entry -> SKIPPED_TARGET_ALREADY_PASSED (checked before the 2R test). [PROVISIONAL precedence, A-19]
+#### `GV-P20-V04` · `GT-RISING3-BULL-v1.0/SRC-PS` · M15
+> Entry ask 4220.00 is ABOVE TP1 4219.536: target behind the entry -> SKIPPED_TARGET_ALREADY_PASSED (checked before the 2R test).
 
 Tags: fib-target, target-already-passed
 Context: atr=4 · trend=UP
@@ -227,5 +227,5 @@ Ticks (bid/ask): 09-16 11:15:02 4230.81/4231.01
 - entry: 4231.01
 - stop: 4217.80
 - R: 13.21
-- target(s): 4257.432
+- target(s): 4257.44
 

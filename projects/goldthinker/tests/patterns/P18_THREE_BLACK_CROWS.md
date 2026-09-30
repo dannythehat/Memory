@@ -1,6 +1,6 @@
 # P18 Three Black Crows — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **48 vectors** (47 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **49 vectors** (49 firm)
 
 Strategies covered: `GT-3BLACKCROWS-BEAR-v1.0`
 
@@ -45,7 +45,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4188.80/4189.00; 09-16 10:46:40 4200.20/4200.40; 09-16 10:48:20 4165.40/4165.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4200.40; R: 11.60; target(s): 4165.60; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4188.80/4189.00; 09-16 10:46:40 4165.40/4165.60; 09-16 10:48:20 4200.20/4200.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4200.40; R: 11.60; target(s): 4165.60; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4188.80/4189.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4200.40; R: 11.60; target(s): 4165.60; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4188.50/4189.00; 09-16 10:48:20 4164.20/4164.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.50; stop: 4200.40; R: 11.90; target(s): 4164.70; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4188.50/4189.00; 09-16 10:48:20 4164.20/4164.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4188.50; stop: 4200.40; R: 11.90; target(s): 4164.70; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4188.80/4189.00; 09-16 11:01:40 4165.40/4165.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4188.80; stop: 4200.40; R: 11.60; target(s): 4165.60; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4188.80/4189.00; 09-16 11:01:40 4165.40/4165.60 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4198.40/4198.90; 09-16 10:46:40 4193.90/4194.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4198.40; R: 2.00; target(s): 4194.40; exit: TARGET net 2.00R |
@@ -75,7 +75,7 @@ Context: atr=4 · trend=UP
 | 9 | 09-16 12:00 | 4186.00 | 4198.00 | 4180.00 | 4185.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4189.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4189.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P18-Y01` · `GT-3BLACKCROWS-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P17-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -173,9 +173,9 @@ Ticks (bid/ask): 09-16 11:30:01 4188.60/4188.80
 - expiry time: 2026-09-16T11:30:00Z
 - trigger: 4188.80
 
-#### `GV-P18-V04` · `GT-3BLACKCROWS-BEAR-v1.0/SRC-PS` · M15 · **PROVISIONAL**
+#### `GV-P18-V04` · `GT-3BLACKCROWS-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P17-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> Trigger reached exactly at 11:30:00, the instant the third bar completes. [PROVISIONAL: the spec does not say whether the completion instant belongs to the window (A-18); the calculator treats it as inside.]
+> Trigger tick stamped exactly 11:30:00, the instant the third bar completes. Bars are half-open, so that tick belongs to the FOURTH bar (11:30-11:45): too late -> EXPIRED (ruling A-18: bar membership, not timestamp equality).
 
 Tags: stop-entry, expiry, boundary
 Context: atr=4 · trend=UP
@@ -189,11 +189,33 @@ Context: atr=4 · trend=UP
 Ticks (bid/ask): 09-16 11:30:00 4188.60/4188.80
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED
+- disposition: EXPIRED
+- arm time: 2026-09-16T10:45:00Z
+- expiry time: 2026-09-16T11:30:00Z
+- trigger: 4188.80
+
+#### `GV-P18-V04b` · `GT-3BLACKCROWS-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P17-V04b` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Trigger tick at 11:29:59, the last second of the third bar: it belongs to the window -> filled at the ask 4211.40 (bid 4211.20 + 0.20).
+
+Tags: stop-entry, expiry, boundary
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4200.20 | 4195.80 | 4196.00 |
+| 2 | 09-16 10:15 | 4198.00 | 4198.20 | 4191.80 | 4192.00 |
+| 3 | 09-16 10:30 | 4194.00 | 4194.20 | 4188.80 | 4189.00 |
+
+Ticks (bid/ask): 09-16 11:29:59 4188.60/4188.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - arm time: 2026-09-16T10:45:00Z
 - expiry time: 2026-09-16T11:30:00Z
 - trigger: 4188.80
-- signal time: 2026-09-16T11:30:00Z
+- signal time: 2026-09-16T11:29:59Z
 - entry: 4188.60
 - stop: 4194.40
 - R: 5.80

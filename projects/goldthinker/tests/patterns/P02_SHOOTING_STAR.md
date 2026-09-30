@@ -1,6 +1,6 @@
 # P02 Shooting Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **41 vectors** (3 dormant, 38 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **44 vectors** (3 dormant, 41 firm)
 
 Strategies covered: `GT-SHOOTINGSTAR-BEAR-v1.0`
 
@@ -30,6 +30,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `N02` | 4200.40/4206.00/4200.00/4201.40 | UP | 4 | shape ✔ · formed ✔ | — | Bearish-coloured body is fine (colour is not part of the shape). |
 | `N03` | 4200.40/4206.00/4200.00/4200.40 | UP | 4 | shape ✔ · formed ✔ | — | Zero body (open = close) with a long lower wick: passes (LW>=0). |
 | `N04` | 4200.00/4200.00/4200.00/4200.00 | UP | 4 | no shape | — | Zero range (O=H=L=C): R=0 bars never take part in any pattern (G0). |
+| `QF1` | 4200.00/4206.00/4199.50/4199.80 | DOWN | 4 | canonical: SHAPE_DETECTED; candidate: INVERTED_HAMMER; variant: no event; disposition: NOT_QUALIFIED; qualification_failures: PRIOR_STATE | — | The BASE variant of a shape in the wrong trend records the single failure PRIOR_STATE (candidate HANGING_MAN logged). |
 | `T01` | 4200.00/4206.00/4199.50/4199.80 | DOWN | 4 | canonical: SHAPE_DETECTED; candidate: INVERTED_HAMMER; variant: no event | — | Same shape after an UPTREND: SHAPE_DETECTED, not formed, candidate HANGING_MAN (G0b). |
 | `T02` | 4200.00/4206.00/4199.50/4199.80 | RANGE | 4 | canonical: SHAPE_DETECTED; candidate: None; variant: no event | — | Shape after RANGE: shape yes, pattern not formed, no candidate. |
 | `T03` | 4200.00/4206.00/4199.50/4199.80 | UNDETERMINED | 4 | canonical: SHAPE_DETECTED; candidate: None; variant: no event | — | Trend UNDETERMINED (fewer than two swings each side): shape yes, not formed. |
@@ -44,7 +45,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:15:02 4199.60/4199.80; 09-16 10:16:40 4206.00/4206.20; 09-16 10:18:20 4186.20/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:15:02 4199.60/4199.80; 09-16 10:16:40 4186.20/4186.40; 09-16 10:18:20 4206.00/4206.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:15:02 4199.60/4199.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.30/4199.80; 09-16 10:18:20 4185.00/4185.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.30; stop: 4206.20; R: 6.90; target(s): 4185.50; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.30/4199.80; 09-16 10:18:20 4185.00/4185.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4199.30; stop: 4206.20; R: 6.90; target(s): 4185.50; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:30:00 4199.60/4199.80; 09-16 10:31:40 4186.20/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:30:01 4199.60/4199.80; 09-16 10:31:40 4186.20/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:15:02 4204.20/4204.70; 09-16 10:16:40 4199.70/4200.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4204.20; R: 2.00; target(s): 4200.20; exit: TARGET net 2.00R |
@@ -53,6 +54,45 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `W01` | H1 bar completes at the Friday 22:00 UTC scheduled close (not Monday). First tick after the weekend, 5 s after reopening: open_elapsed = 5 s -> trade taken, tagged entry_across_break. | 09-20 23:00:05 4199.60/4199.80; 09-21 00:30:00 4186.20/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; signal time: 2026-09-18T22:00:00Z; entry time: 2026-09-20T23:00:05Z; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; entry_across_break: True; exit: TARGET net 2.00R |
 | `W02` | First tick exactly 15:00 of OPEN time after reopening: not greater than 15 min -> trade taken. | 09-20 23:15:00 4199.60/4199.80; 09-21 00:30:00 4186.20/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; signal time: 2026-09-18T22:00:00Z; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; entry_across_break: True; exit: TARGET net 2.00R |
 | `W03` | First tick 15:01 of open time after reopening -> SKIPPED_STALE_ENTRY. Wall-clock since Friday is ~49 h, but only open time counts. | 09-20 23:15:01 4199.60/4199.80 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY; signal time: 2026-09-18T22:00:00Z |
+
+#### `GV-P02-M01` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+> Short: favourable = ref minus the low (4.80 at 10:20), adverse = the high minus ref (1.20 at 10:16, first) -> FALSE.
+
+Tags: raw, mfe-before-mae
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+| 2 | 09-16 10:15 | 4199.80 | 4201.00 | 4195.00 | 4196.00 |
+
+Ticks (bid/ask): 09-16 10:15:00 4199.80/4200.00; 09-16 10:16:00 4201.00/4201.20; 09-16 10:20:00 4195.00/4195.20; 09-16 10:25:00 4196.00/4196.20
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- RAW — h1: mfe=4.80, mae=1.20, mfe_before_mae=False
+
+#### `GV-P02-Q01` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+*Mirror of `GV-P01-Q01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> A-30: ATR 4.1 -> G_BUFFER = max(0.20, 0.05 x 4.1 = 0.205) = 0.205, so the exact stop 4194.00 - 0.205 = 4193.795 lies between ticks. Long stops round AWAY from the entry (down): 4193.79. R = 4200.40 - 4193.79 = 6.61, 2R target 4213.62 (already on the grid). The virtual trade and the Vantage mirror use the same 4193.79.
+
+Tags: quantisation, A-30
+Context: atr=4.1 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80; 09-16 10:16:40 4186.18/4186.38
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4199.60
+- stop: 4206.21
+- stop_exact: 4206.205
+- R: 6.61
+- target(s): 4186.38
+- lots: 100/661 (≈0.1513)
+- exit: TARGET net 2.00R
 
 #### `GV-P02-R01` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P01-R01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -72,7 +112,7 @@ Context: atr=4 · trend=UP
 | 7 | 09-16 11:30 | 4196.80 | 4208.80 | 4190.80 | 4195.80 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4199.80 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=5 | h10: NULL | h20: NULL
+- RAW — ref=4199.80 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=5 | h10: NULL | h20: NULL
 
 #### `GV-P02-Y00` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P01-Y00` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*

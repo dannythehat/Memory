@@ -226,3 +226,103 @@ Expected counters:
 }
 ```
 
+#### `GV-HUB-06`
+> Inside Bar (ruling A-09): three occurrences of the same inside-bar geometry - (1) bullish breakout, (2) no breakout in three candles, (3) bearish breakout. The FORMATION is NEUTRAL and counted once per occurrence: shapes 3, base_formed 3 under `GT-INSIDE-NEUTRAL-v1.0|M15`, even though one expired. Each side strategy is qualified 3 times and signals once: the BULL strategy sees (2) EXPIRED_NO_CONFIRMATION and (3) NOT_TRIGGERED_OTHER_SIDE; the BEAR strategy sees (1) NOT_TRIGGERED_OTHER_SIDE and (2) EXPIRED_NO_CONFIRMATION.
+
+**Occurrence 1** (M15) — context: atr=4 · trend=DOWN
+bars: 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4212.00/4205.00/4211.00
+ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
+
+**Occurrence 2** (M15) — context: atr=4 · trend=DOWN
+bars: 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4206.00/4209.00/4203.00/4206.00 ; 4206.00/4209.50/4203.50/4207.00 ; 4207.00/4209.90/4204.00/4208.00
+
+**Occurrence 3** (M15) — context: atr=4 · trend=DOWN
+bars: 4200.00/4210.00/4198.00/4208.00 ; 4204.00/4207.00/4201.00/4205.00 ; 4203.00/4204.00/4195.00/4196.00
+ticks (bid/ask): 09-16 10:45:02 4196.00/4196.20
+
+Strategies: `GT-INSIDE-BULL-v1.0/BASE`, `GT-INSIDE-BEAR-v1.0/BASE`
+
+Expected counters:
+```json
+{
+ "canonical": {
+  "GT-INSIDE-NEUTRAL-v1.0|M15": {
+   "shapes": 3,
+   "base_formed": 3
+  }
+ },
+ "variants": {
+  "GT-INSIDE-BULL-v1.0|M15|BASE": {
+   "qualified": 3,
+   "signals": 1,
+   "trades": 1,
+   "open": 1,
+   "closed": 0,
+   "skips": {
+    "EXPIRED_NO_CONFIRMATION": 1,
+    "NOT_TRIGGERED_OTHER_SIDE": 1
+   }
+  },
+  "GT-INSIDE-BEAR-v1.0|M15|BASE": {
+   "qualified": 3,
+   "signals": 1,
+   "trades": 1,
+   "open": 1,
+   "closed": 0,
+   "skips": {
+    "EXPIRED_NO_CONFIRMATION": 1,
+    "NOT_TRIGGERED_OTHER_SIDE": 1
+   }
+  }
+ }
+}
+```
+
+#### `GV-HUB-07`
+> Outside Bar (ruling A-08): a bullish outside bar, a bearish outside bar and a doji-close outside bar. The geometry is a NEUTRAL shape counted once per occurrence (shapes 3 under `GT-OUTSIDE-NEUTRAL-v1.0|M15`); the directional formation is counted per side: BULL 1, BEAR 1 (the doji forms neither).
+
+**Occurrence 1** (M15) — context: atr=4 · trend=DOWN
+bars: 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4200.00/4209.00
+ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20
+
+**Occurrence 2** (M15) — context: atr=4 · trend=UP
+bars: 4205.00/4208.00/4202.00/4206.00 ; 4209.00/4210.00/4200.00/4204.00
+ticks (bid/ask): 09-16 10:30:02 4204.00/4204.20
+
+**Occurrence 3** (M15) — context: atr=4 · trend=DOWN
+bars: 4205.00/4208.00/4202.00/4206.00 ; 4206.00/4210.00/4200.00/4206.00
+
+Strategies: `GT-OUTSIDE-BULL-v1.0/BASE`, `GT-OUTSIDE-BEAR-v1.0/BASE`
+
+Expected counters:
+```json
+{
+ "canonical": {
+  "GT-OUTSIDE-NEUTRAL-v1.0|M15": {
+   "shapes": 3,
+   "base_formed": 0
+  },
+  "GT-OUTSIDE-BULL-v1.0|M15": {
+   "shapes": 0,
+   "base_formed": 1
+  },
+  "GT-OUTSIDE-BEAR-v1.0|M15": {
+   "shapes": 0,
+   "base_formed": 1
+  }
+ },
+ "variants": {
+  "GT-OUTSIDE-BULL-v1.0|M15|BASE": {
+   "qualified": 1,
+   "signals": 1,
+   "trades": 1
+  },
+  "GT-OUTSIDE-BEAR-v1.0|M15|BASE": {
+   "qualified": 1,
+   "signals": 1,
+   "trades": 1
+  }
+ }
+}
+```
+

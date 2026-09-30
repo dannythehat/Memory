@@ -1,6 +1,6 @@
 # P21 Falling Three Methods — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **38 vectors** (37 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **38 vectors** (38 firm)
 
 Strategies covered: `GT-FALLING3-BEAR-v1.0`
 
@@ -41,7 +41,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 11:15:02 4184.30/4184.50; 09-16 11:16:40 4201.00/4201.20; 09-16 11:18:20 4150.30/4150.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4184.30; stop: 4201.20; R: 16.90; target(s): 4150.50; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 11:15:02 4184.30/4184.50; 09-16 11:16:40 4150.30/4150.50; 09-16 11:18:20 4201.00/4201.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4184.30; stop: 4201.20; R: 16.90; target(s): 4150.50; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 11:15:02 4184.30/4184.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4184.30; stop: 4201.20; R: 16.90; target(s): 4150.50; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 11:15:02 4184.00/4184.50; 09-16 11:18:20 4149.10/4149.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4184.00; stop: 4201.20; R: 17.20; target(s): 4149.60; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 11:15:02 4184.00/4184.50; 09-16 11:18:20 4149.10/4149.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4184.00; stop: 4201.20; R: 17.20; target(s): 4149.60; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:30:00 4184.30/4184.50; 09-16 11:31:40 4150.30/4150.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4184.30; stop: 4201.20; R: 16.90; target(s): 4150.50; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:30:01 4184.30/4184.50; 09-16 11:31:40 4150.30/4150.50 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 11:15:02 4199.20/4199.70; 09-16 11:16:40 4194.70/4195.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.20; R: 2.00; target(s): 4195.20; exit: TARGET net 2.00R |
@@ -73,7 +73,7 @@ Context: atr=4 · trend=DOWN
 | 11 | 09-16 12:30 | 4181.50 | 4193.50 | 4175.50 | 4180.50 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4184.50 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=5 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=7 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=9 | h10: NULL | h20: NULL
+- RAW — ref=4184.50 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=5 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=7 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=9 | h10: NULL | h20: NULL
 
 #### `GV-P21-Y01` · `GT-FALLING3-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P20-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -104,7 +104,7 @@ Ticks (bid/ask): 09-16 11:15:02 4184.30/4184.50
 
 #### `GV-P21-V01` · `GT-FALLING3-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P20-V01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> SRC-PS Rising Three: stop = min(L2,L3,L4) - 0.20 = 4217.80; TP1 = P + 1.272*(H1-L1) with P = min(L2..L4) = 4218.00 -> 4218.00 + 1.272*31.00 = 4257.432; entry ask 4231.01; R 13.21; reward 26.422 vs 2R = 26.42 -> passes by 0.002 (just inside).
+> SRC-PS Rising Three: stop = min(L2,L3,L4) - 0.20 = 4217.80; TP1 = P + 1.272*(H1-L1) with P = min(L2..L4) = 4218.00 -> 4218.00 + 1.272*31.00 = 4257.432, quantised in the PROFIT direction (up) to 4257.44 (A-30); entry ask 4231.01; R 13.21; reward 26.43 vs 2R = 26.42 -> passes (just inside).
 
 Tags: variant, fib-target, boundary
 Context: atr=4 · trend=DOWN
@@ -124,12 +124,12 @@ Ticks (bid/ask): 09-16 11:15:02 4168.99/4169.19; 09-16 11:16:40 4142.36/4142.56
 - entry: 4168.99
 - stop: 4182.20
 - R: 13.21
-- target(s): 4142.568
-- exit: TARGET net 13211/6605 (≈2.0002)R
+- target(s): 4142.56
+- exit: TARGET net 2643/1321 (≈2.0008)R
 
 #### `GV-P21-V02` · `GT-FALLING3-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P20-V02` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> Entry ask 4231.02: R 13.22, 2R = 26.44 > 26.412 available -> SKIPPED_SRC_RR (just outside).
+> Entry ask 4231.02: R 13.22, 2R = 26.44 > 26.42 available (target 4257.44) -> SKIPPED_SRC_RR (just outside).
 
 Tags: fib-target, boundary, insufficient-rr
 Context: atr=4 · trend=DOWN
@@ -169,9 +169,9 @@ Ticks (bid/ask): 09-16 11:15:02 4184.30/4184.50
 - variant: VARIANT_QUALIFIED, SIGNAL
 - disposition: SKIPPED_SRC_RR
 
-#### `GV-P21-V04` · `GT-FALLING3-BEAR-v1.0/SRC-PS` · M15 · **PROVISIONAL**
+#### `GV-P21-V04` · `GT-FALLING3-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P20-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> Entry ask 4220.00 is ABOVE TP1 4219.536: target behind the entry -> SKIPPED_TARGET_ALREADY_PASSED (checked before the 2R test). [PROVISIONAL precedence, A-19]
+> Entry ask 4220.00 is ABOVE TP1 4219.536: target behind the entry -> SKIPPED_TARGET_ALREADY_PASSED (checked before the 2R test).
 
 Tags: fib-target, target-already-passed
 Context: atr=4 · trend=DOWN
@@ -209,4 +209,6 @@ Ticks (bid/ask): 09-16 11:15:02 4170.80/4171.00
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - flags: closes_in_body=False
 - variant: no event
+- disposition: NOT_QUALIFIED
+- qualification_failures: BODY_CLOSE_FLAG
 

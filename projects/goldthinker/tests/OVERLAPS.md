@@ -297,7 +297,7 @@ Context: atr=4 · trend=DOWN
 
 | strategy | expected |
 |---|---|
-| `GT-INSIDE-BULL-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: PENDING_CONFIRMATION_WINDOW |
+| `GT-INSIDE-BULL-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: PENDING_BREAKOUT |
 | `GT-IBSR-BULL-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED, SIGNAL |
 
 Clusters (formed detections sharing a bar/direction): {`GT-INSIDE-BULL-v1.0`} ; {`GT-IBSR-BULL-v1.0`}
@@ -316,7 +316,7 @@ Context: atr=4 · trend=UP
 
 | strategy | expected |
 |---|---|
-| `GT-INSIDE-BEAR-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: PENDING_CONFIRMATION_WINDOW |
+| `GT-INSIDE-BEAR-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: PENDING_BREAKOUT |
 | `GT-IBSR-BEAR-v1.0/BASE` | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED, SIGNAL |
 
 Clusters (formed detections sharing a bar/direction): {`GT-INSIDE-BEAR-v1.0`} ; {`GT-IBSR-BEAR-v1.0`}
@@ -362,8 +362,8 @@ Context: atr=4 · trend=UP
 
 Clusters (formed detections sharing a bar/direction): {`GT-INSIDE-BEAR-v1.0`} ; {`GT-IBSR-BEAR-v1.0`}
 
-#### `GV-OV-11` · M15 · **PROVISIONAL**
-> Early Kicker (fires at C2's opening tick, formation_end = C1) and the completed Kicker (C2 closes, formation_end = C2) both exist for the same two candles: separate detections, different formation bars, different clusters. [PROVISIONAL: the spec does not say which bar an early setup 'completes on' for clustering, A-21]
+#### `GV-OV-11` · M15
+> Early Kicker (fires at K2's opening tick; formation_end = K1) and the completed Kicker (K2 closes; formation_end = K2) exist for the same two candles. Ruling A-21: they have DIFFERENT formation clusters (formation_end_bar differs) but the SAME signal cluster (both signal on K2 in the same direction), which is exactly what the two ids are for.
 
 Context: atr=4 · trend=DOWN
 

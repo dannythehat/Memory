@@ -1,6 +1,6 @@
 # P14E Kicker Early — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **32 vectors** (30 firm, 2 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **33 vectors** (33 firm)
 
 Strategies covered: `GT-KICKEREARLY-BEAR-v1.0`, `GT-KICKEREARLY-BULL-v1.0`
 
@@ -178,8 +178,8 @@ Ticks (bid/ask): 09-16 11:00:00 4204.00/4204.20
 - variant: VARIANT_QUALIFIED, SIGNAL
 - disposition: SKIPPED_SRC_RR
 
-#### `GV-P14E-V12` · `GT-KICKEREARLY-BEAR-v1.0/SRC-PS-EARLY` · M15 · **PROVISIONAL**
-> M15 not allowed for the source variant. [PROVISIONAL A-12]
+#### `GV-P14E-V12` · `GT-KICKEREARLY-BEAR-v1.0/SRC-PS-EARLY` · M15
+> M15 not allowed for the source variant.
 
 Tags: variant, tf-gate
 Context: atr=4 · trend=UP · swings=L4193.65
@@ -192,7 +192,8 @@ Ticks (bid/ask): 09-16 10:15:00 4204.00/4204.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 ## `GT-KICKEREARLY-BULL-v1.0`
 
@@ -237,6 +238,7 @@ Ticks (bid/ask): 09-16 10:15:00 4209.99/4210.19; 09-16 10:16:40 4239.99/4240.19
 
 - canonical: SHAPE_DETECTED
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P14E-B03` · `GT-KICKEREARLY-BULL-v1.0/BASE-EARLY` · M15
 > Wide spread 1.00: bid 4209.60 below O1, ask 4210.60 above it: still no trigger.
@@ -300,7 +302,7 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 10:15:00 4210.00/4210.20; 09-16 10:16:40 4240.00/4240.20
 
 - canonical: no event
-- failing clause(s): LARGE(C1)
+- failing clause(s): LARGE(K1)
 
 #### `GV-P14E-N02` · `GT-KICKEREARLY-BULL-v1.0/BASE-EARLY` · M15
 > C1 bullish: the bullish early setup needs a bearish C1.
@@ -315,7 +317,24 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 10:15:00 4210.00/4210.20; 09-16 10:16:40 4240.00/4240.20
 
 - canonical: no event
-- failing clause(s): C1 bear
+- failing clause(s): K1 bear
+
+#### `GV-P14E-QF1` · `GT-KICKEREARLY-BULL-v1.0/BASE-EARLY` · M15
+> Early Kicker whose opening BID 4209.99 is below O1: the shape exists (K1) but the trigger is not met -> failure TRIGGER_NOT_MET.
+
+Tags: qualification-failures, early-trigger
+Context: atr=4 · trend=DOWN
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4210.00 | 4210.50 | 4203.50 | 4204.00 |
+
+Ticks (bid/ask): 09-16 10:15:00 4209.99/4210.19
+
+- canonical: SHAPE_DETECTED
+- variant: no event
+- disposition: NOT_QUALIFIED
+- qualification_failures: TRIGGER_NOT_MET
 
 #### `GV-P14E-R01` · `GT-KICKEREARLY-BULL-v1.0/BASE-EARLY` · M15
 > RAW for a TICK-based signal (Kicker Early): ref = the trigger tick's ASK 4210.20; the signal bar is the bar containing the tick (index 1) and counts as bar 1, so horizon_end(h) = s + h - 1: h1 uses close[1] (4212.00 -> +1.80), h3 uses close[3], h5 uses close[5] (the last bar, index 6, has an extreme range 4190-4230 and must NOT be in h5). A close-based reading (s + h) would give h1 = close[2].
@@ -336,7 +355,7 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 10:15:00 4210.00/4210.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4210.20 | h1: end_index=1, ret=1.80, mfe=2.80, mae=-2.20 | h3: end_index=3, ret=0.30, mfe=6.80, mae=-2.20 | h5: end_index=5, ret=-6.20, mfe=6.80, mae=-7.20 | h10: NULL | h20: NULL
+- RAW — ref=4210.20 | h1: end_index=1, ret=1.80, mfe=2.80, mae=2.20 | h3: end_index=3, ret=0.30, mfe=6.80, mae=2.20 | h5: end_index=5, ret=-6.20, mfe=6.80, mae=7.20 | h10: NULL | h20: NULL
 
 #### `GV-P14E-T01` · `GT-KICKEREARLY-BULL-v1.0/BASE-EARLY` · M15
 > Trigger condition true but trend RANGE: SHAPE only.
@@ -464,8 +483,8 @@ Ticks (bid/ask): 09-16 11:00:00 4210.00/4210.20
 - variant: VARIANT_QUALIFIED, SIGNAL
 - disposition: SKIPPED_SRC_RR
 
-#### `GV-P14E-V03` · `GT-KICKEREARLY-BULL-v1.0/SRC-PS-EARLY` · M15 · **PROVISIONAL**
-> M15 is not an allowed timeframe for the source variant: SKIPPED_TF_NOT_ALLOWED although the base early pattern formed. [PROVISIONAL A-12]
+#### `GV-P14E-V03` · `GT-KICKEREARLY-BULL-v1.0/SRC-PS-EARLY` · M15
+> M15 is not an allowed timeframe for the source variant: SKIPPED_TF_NOT_ALLOWED although the base early pattern formed.
 
 Tags: variant, tf-gate
 Context: atr=4 · trend=DOWN · swings=H4220.55
@@ -478,7 +497,8 @@ Ticks (bid/ask): 09-16 10:15:00 4210.00/4210.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P14E-V04` · `GT-KICKEREARLY-BULL-v1.0/SRC-PS-EARLY` · H1
 > No swing -> SKIPPED_SRC_NO_TARGET.

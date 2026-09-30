@@ -1,6 +1,6 @@
 # P04 Dragonfly Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **39 vectors** (7 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (7 dormant, 32 firm)
 
 Strategies covered: `GT-DRAGONFLY-BULL-v1.0`
 
@@ -39,7 +39,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:15:02 4199.90/4200.10; 09-16 10:16:40 4193.80/4194.00; 09-16 10:18:20 4212.70/4212.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.10; stop: 4193.80; R: 6.30; target(s): 4212.70; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:15:02 4199.90/4200.10; 09-16 10:16:40 4212.70/4212.90; 09-16 10:18:20 4193.80/4194.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.10; stop: 4193.80; R: 6.30; target(s): 4212.70; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:15:02 4199.90/4200.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.10; stop: 4193.80; R: 6.30; target(s): 4212.70; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.90/4200.40; 09-16 10:18:20 4213.60/4214.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.40; stop: 4193.80; R: 6.60; target(s): 4213.60; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.90/4200.40; 09-16 10:18:20 4213.60/4214.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4200.40; stop: 4193.80; R: 6.60; target(s): 4213.60; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:30:00 4199.90/4200.10; 09-16 10:31:40 4212.70/4212.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.10; stop: 4193.80; R: 6.30; target(s): 4212.70; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:30:01 4199.90/4200.10; 09-16 10:31:40 4212.70/4212.90 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:15:02 4195.30/4195.80; 09-16 10:16:40 4199.80/4200.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4195.80; R: 2.00; target(s): 4199.80; exit: TARGET net 2.00R |
@@ -66,7 +66,7 @@ Context: atr=4 · trend=DOWN
 | 7 | 09-16 11:30 | 4202.90 | 4208.90 | 4190.90 | 4203.90 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4199.90 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=5 | h10: NULL | h20: NULL
+- RAW — ref=4199.90 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=5 | h10: NULL | h20: NULL
 
 #### `GV-P04-Y01` · `GT-DRAGONFLY-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -148,7 +148,7 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - signal time: 2026-09-16T10:30:00Z
 
 #### `GV-DORM-P04-04` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> NFP at 10:00: signal 10:30 is exactly T+30: window end inclusive -> blocked. [PROVISIONAL: window boundaries inclusive assumed, A-07]
+> NFP at 10:00: signal 10:30 is exactly T+30: window end inclusive -> blocked.
 
 Tags: dormant, news
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 10:00:00
@@ -182,7 +182,7 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 
 #### `GV-DORM-P04-06` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> NFP at 11:30: signal 10:30 is T-60 exactly -> inside the window start (inclusive). [PROVISIONAL A-07]
+> NFP at 11:30: signal 10:30 is T-60 exactly -> inside the window start (inclusive).
 
 Tags: dormant, news
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 11:30:00

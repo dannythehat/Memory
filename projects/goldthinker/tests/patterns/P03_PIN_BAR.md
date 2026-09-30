@@ -1,6 +1,6 @@
 # P03 Pin Bar — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **98 vectors** (2 dormant, 94 firm, 2 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **99 vectors** (2 dormant, 97 firm)
 
 Strategies covered: `GT-PINBAR-BEAR-v1.0`, `GT-PINBAR-BULL-v1.0`
 
@@ -45,7 +45,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:15:02 4200.30/4200.50; 09-16 10:16:40 4206.00/4206.20; 09-16 10:18:20 4188.30/4188.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.30; stop: 4206.20; R: 5.90; target(s): 4188.50; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:15:02 4200.30/4200.50; 09-16 10:16:40 4188.30/4188.50; 09-16 10:18:20 4206.00/4206.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.30; stop: 4206.20; R: 5.90; target(s): 4188.50; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:15:02 4200.30/4200.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.30; stop: 4206.20; R: 5.90; target(s): 4188.50; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4200.00/4200.50; 09-16 10:18:20 4187.10/4187.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.00; stop: 4206.20; R: 6.20; target(s): 4187.60; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4200.00/4200.50; 09-16 10:18:20 4187.10/4187.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4200.00; stop: 4206.20; R: 6.20; target(s): 4187.60; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:30:00 4200.30/4200.50; 09-16 10:31:40 4188.30/4188.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.30; stop: 4206.20; R: 5.90; target(s): 4188.50; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:30:01 4200.30/4200.50; 09-16 10:31:40 4188.30/4188.50 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:15:02 4204.20/4204.70; 09-16 10:16:40 4199.70/4200.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4204.20; R: 2.00; target(s): 4200.20; exit: TARGET net 2.00R |
@@ -73,7 +73,7 @@ Context: atr=4 · trend=UP
 | 7 | 09-16 11:30 | 4197.50 | 4209.50 | 4191.50 | 4196.50 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4200.50 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=5 | h10: NULL | h20: NULL
+- RAW — ref=4200.50 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=5 | h10: NULL | h20: NULL
 
 #### `GV-P03-Y01m` · `GT-PINBAR-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P03-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -132,6 +132,7 @@ Context: atr=4 · trend=UP · zones_pre=[4206.10-4206.50] · zones_entry=[4174.0
 Ticks (bid/ask): 09-16 11:00:02 4200.30/4200.50
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V03m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P03-V03` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -147,6 +148,7 @@ Context: atr=4 · trend=RANGE · zones_pre=[4206.10-4206.50] · zones_entry=[417
 Ticks (bid/ask): 09-16 11:00:02 4200.30/4200.50
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V04m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P03-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -162,6 +164,7 @@ Context: atr=4 · trend=DOWN · zones_entry=[4174.00-4175.00]
 Ticks (bid/ask): 09-16 11:00:02 4200.30/4200.50
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V05m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P03-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -197,10 +200,11 @@ Context: atr=4 · trend=DOWN · zones_pre=[4206.41-4206.60] · zones_entry=[4174
 Ticks (bid/ask): 09-16 11:00:02 4200.30/4200.50
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
-#### `GV-P03-V07m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · M15 · **PROVISIONAL**
+#### `GV-P03-V07m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · M15
 *Mirror of `GV-P03-V07` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M15 is not in {H1,H4,D1}: SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL, A-12]
+> M15 is not in {H1,H4,D1}: SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=DOWN · zones_pre=[4206.10-4206.50] · zones_entry=[4174.00-4175.00]
@@ -212,7 +216,8 @@ Context: atr=4 · trend=DOWN · zones_pre=[4206.10-4206.50] · zones_entry=[4174
 Ticks (bid/ask): 09-16 10:15:02 4200.30/4200.50
 
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P03-V08m` · `GT-PINBAR-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P03-V08` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -329,7 +334,7 @@ Ticks (bid/ask): 09-16 10:15:02 4200.30/4200.50
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:15:02 4199.50/4199.70; 09-16 10:16:40 4193.80/4194.00; 09-16 10:18:20 4211.50/4211.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.70; stop: 4193.80; R: 5.90; target(s): 4211.50; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:15:02 4199.50/4199.70; 09-16 10:16:40 4211.50/4211.70; 09-16 10:18:20 4193.80/4194.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.70; stop: 4193.80; R: 5.90; target(s): 4211.50; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:15:02 4199.50/4199.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.70; stop: 4193.80; R: 5.90; target(s): 4211.50; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.50/4200.00; 09-16 10:18:20 4212.40/4212.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4200.00; stop: 4193.80; R: 6.20; target(s): 4212.40; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.50/4200.00; 09-16 10:18:20 4212.40/4212.90 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4200.00; stop: 4193.80; R: 6.20; target(s): 4212.40; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:30:00 4199.50/4199.70; 09-16 10:31:40 4211.50/4211.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.70; stop: 4193.80; R: 5.90; target(s): 4211.50; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:30:01 4199.50/4199.70; 09-16 10:31:40 4211.50/4211.70 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:15:02 4195.30/4195.80; 09-16 10:16:40 4199.80/4200.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4195.80; R: 2.00; target(s): 4199.80; exit: TARGET net 2.00R |
@@ -356,7 +361,7 @@ Context: atr=4 · trend=DOWN
 | 7 | 09-16 11:30 | 4202.50 | 4208.50 | 4190.50 | 4203.50 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4199.50 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=5 | h10: NULL | h20: NULL
+- RAW — ref=4199.50 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=5 | h10: NULL | h20: NULL
 
 #### `GV-P03-Y01` · `GT-PINBAR-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -379,6 +384,12 @@ Ticks (bid/ask): 09-16 10:15:02 4199.50/4199.70
 - target(s): 4211.50
 
 ### Variant `SRC-CB`
+
+#### Compact vectors (detection / boundary / context) — bars are O/H/L/C, one candle per `;`
+
+| ID | bars | trend | ATR | result | failing clause | note |
+|---|---|---|---|---|---|---|
+| `QF1` | 4198.50/4200.00/4194.00/4199.50 | RANGE | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: no event; disposition: NOT_QUALIFIED; qualification_failures: TF_NOT_ALLOWED, WITH_TREND, AT_LEVEL | — | A-12: every failed static gate is kept. M15 is not an allowed TF, the trend is not UP and there is no support level: all three failures are recorded (in gate order), no VARIANT_QUALIFIED, disposition NOT_QUALIFIED. The BASE pin bar still forms. |
 
 #### `GV-P03-V01` · `GT-PINBAR-BULL-v1.0/SRC-CB` · H1
 > SRC-CB Pin Bar (bull): trend UP (with the trend) AND at support (low 4194.00 is 0.10 above the zone top 4193.90) on H1: qualifies. Entry ask 4199.70; stop L-0.20 = 4193.80; R 5.90; T_SR(2.0) = zone edge 4225.00 = 4.29R -> trade.
@@ -412,6 +423,7 @@ Context: atr=4 · trend=DOWN · zones_pre=[4193.50-4193.90] · zones_entry=[4225
 Ticks (bid/ask): 09-16 11:00:02 4199.50/4199.70
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V03` · `GT-PINBAR-BULL-v1.0/SRC-CB` · H1
 > Trend RANGE: not qualified.
@@ -426,6 +438,7 @@ Context: atr=4 · trend=RANGE · zones_pre=[4193.50-4193.90] · zones_entry=[422
 Ticks (bid/ask): 09-16 11:00:02 4199.50/4199.70
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V04` · `GT-PINBAR-BULL-v1.0/SRC-CB` · H1
 > Trend UP but no level: not qualified.
@@ -440,6 +453,7 @@ Context: atr=4 · trend=UP · zones_entry=[4225.00-4226.00]
 Ticks (bid/ask): 09-16 11:00:02 4199.50/4199.70
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P03-V05` · `GT-PINBAR-BULL-v1.0/SRC-CB` · H1
 > Zone top 4193.60: distance 0.40 = 0.10*ATR exactly: AT_SUPPORT holds -> qualifies.
@@ -473,9 +487,10 @@ Context: atr=4 · trend=UP · zones_pre=[4193.40-4193.59] · zones_entry=[4225.0
 Ticks (bid/ask): 09-16 11:00:02 4199.50/4199.70
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
-#### `GV-P03-V07` · `GT-PINBAR-BULL-v1.0/SRC-CB` · M15 · **PROVISIONAL**
-> M15 is not in {H1,H4,D1}: SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL, A-12]
+#### `GV-P03-V07` · `GT-PINBAR-BULL-v1.0/SRC-CB` · M15
+> M15 is not in {H1,H4,D1}: SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=UP · zones_pre=[4193.50-4193.90] · zones_entry=[4225.00-4226.00]
@@ -487,7 +502,8 @@ Context: atr=4 · trend=UP · zones_pre=[4193.50-4193.90] · zones_entry=[4225.0
 Ticks (bid/ask): 09-16 10:15:02 4199.50/4199.70
 
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P03-V08` · `GT-PINBAR-BULL-v1.0/SRC-CB` · H1
 > Zone edge 4211.50: 11.80/5.90 = 2.00R exactly -> accepted.

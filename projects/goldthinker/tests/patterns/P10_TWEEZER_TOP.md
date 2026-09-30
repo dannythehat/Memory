@@ -1,6 +1,6 @@
 # P10 Tweezer Top — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **37 vectors** (1 dormant, 36 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **39 vectors** (1 dormant, 38 firm)
 
 Strategies covered: `GT-TWEEZERTOP-BEAR-v1.0`
 
@@ -26,6 +26,8 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `B04` | 4195.00/4201.00/4194.00/4200.00 ; 4200.50/4201.20/4194.50/4195.00 | UP | 4 | shape ✔ · formed ✔ | — | L2 BELOW L1 by exactly 0.20 (4198.80): passes (absolute difference). |
 | `B05` | 4195.00/4201.00/4194.00/4200.00 ; 4200.50/4201.21/4194.50/4195.00 | UP | 4 | no shape | (1 clause) | L2 below L1 by 0.21: fails. |
 | `B06` | 4195.00/4201.00/4194.00/4200.00 ; 4200.50/4201.00/4194.50/4195.00 | UP | 4 | shape ✔ · formed ✔ | — | Equal lows (difference 0): passes. |
+| `F01` | 4195.00/4201.00/4194.00/4199.25 ; 4200.50/4200.90/4194.50/4195.00 | UP | 4 | shape ✔ · formed ✔ | — | C1 closes exactly at H1-0.25*R1 (4200.75): flag c1_high25 true (<=). |
+| `F02` | 4195.00/4201.00/4194.00/4199.24 ; 4200.50/4200.90/4194.50/4195.00 | UP | 4 | shape ✔ · formed ✔ | — | C1 closes 0.01 below the line: flag false; pattern still forms. |
 | `N01` | 4200.00/4201.00/4194.00/4195.00 ; 4200.50/4200.90/4194.50/4195.00 | UP | 4 | no shape | (1 clause) | C1 bullish: fails colour. |
 | `N02` | 4195.00/4201.00/4194.00/4200.00 ; 4195.00/4200.90/4194.50/4200.50 | UP | 4 | no shape | (1 clause) | C2 bearish: fails colour. |
 | `NZ1` | 4200.00/4200.50/4195.50/4196.00 ; 4196.00/4196.50/4191.50/4192.00 | UP | 4 | canonical: no event; variant: no event | — | Two bullish candles: C1 must be bearish. |
@@ -43,7 +45,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4194.80/4195.00; 09-16 10:31:40 4201.00/4201.20; 09-16 10:33:20 4181.80/4182.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.80; stop: 4201.20; R: 6.40; target(s): 4182.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4194.80/4195.00; 09-16 10:31:40 4181.80/4182.00; 09-16 10:33:20 4201.00/4201.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.80; stop: 4201.20; R: 6.40; target(s): 4182.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4194.80/4195.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.80; stop: 4201.20; R: 6.40; target(s): 4182.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4194.50/4195.00; 09-16 10:33:20 4180.60/4181.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.50; stop: 4201.20; R: 6.70; target(s): 4181.10; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4194.50/4195.00; 09-16 10:33:20 4180.60/4181.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4194.50; stop: 4201.20; R: 6.70; target(s): 4181.10; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4194.80/4195.00; 09-16 10:46:40 4181.80/4182.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.80; stop: 4201.20; R: 6.40; target(s): 4182.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4194.80/4195.00; 09-16 10:46:40 4181.80/4182.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4199.20/4199.70; 09-16 10:31:40 4194.70/4195.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.20; R: 2.00; target(s): 4195.20; exit: TARGET net 2.00R |
@@ -72,7 +74,7 @@ Context: atr=4 · trend=UP
 | 8 | 09-16 11:45 | 4192.00 | 4204.00 | 4186.00 | 4191.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4195.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4195.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P10-Y01` · `GT-TWEEZERTOP-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P11-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*

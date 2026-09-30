@@ -1,6 +1,6 @@
 # P15 Morning Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **44 vectors** (44 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **44 vectors** (44 firm)
 
 Strategies covered: `GT-MORNINGSTAR-BULL-v1.0`
 
@@ -15,9 +15,9 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | ID | bars | trend | ATR | result | failing clause | note |
 |---|---|---|---|---|---|---|
 | `B01` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.20/4202.00/4204.00 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | SMALL(C2): B exactly 1.00 (0.25*ATR), R 2.20: passes. |
-| `B02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.21/4202.00/4204.01 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(C2) | SMALL(C2): B = 1.01: fails SMALL only. |
+| `B02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.21/4202.00/4204.01 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(K2) | SMALL(C2): B = 1.01: fails SMALL only. |
 | `B03` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.40/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | SMALL(C2): R exactly 2.40 (0.60*ATR), B 0.40: passes. |
-| `B04` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.41/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(C2) | SMALL(C2): R = 2.41: fails SMALL only. |
+| `B04` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4204.41/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(K2) | SMALL(C2): R = 2.41: fails SMALL only. |
 | `B05` | 4210.00/4210.50/4203.00/4203.50 ; 4203.90/4204.00/4203.00/4203.95 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | O2 exactly C1 + 0.10*ATR = 4203.90: passes. |
 | `B06` | 4210.00/4210.50/4203.00/4203.50 ; 4203.91/4204.00/4203.00/4203.95 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | O2<=C1+0.10ATR | O2 = 4203.91: only the star-opening clause fails. |
 | `B07` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4203.80/4207.00/4203.50/4206.75 | DOWN | 4 | no shape | C3>mid1 | C3 exactly at the C1 midpoint 4206.75: fails C3>mid1 (strict) only. |
@@ -25,9 +25,9 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `B09` | 4210.00/4210.40/4207.20/4207.60 ; 4207.50/4208.60/4207.00/4208.46 ; 4208.00/4213.00/4207.80/4212.50 | DOWN | 4 | shape ✔ · formed ✔ | — | B2 exactly 0.40*B1 (B1=2.40 -> B2=0.96; C1 LARGE on both B and R boundaries): passes. |
 | `B10` | 4210.00/4210.40/4207.20/4207.60 ; 4207.50/4208.61/4207.00/4208.47 ; 4208.00/4213.00/4207.80/4212.50 | DOWN | 4 | no shape | B2<=0.40B1 | B2 = 0.97 vs 0.4*2.40 = 0.96: only B2<=0.40B1 fails (SMALL still passes). |
 | `F01` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | Star body top 4203.40 < C1 close 4203.50: star_gap true (flag only). |
-| `N01` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4203.50/4204.60/4203.40/4204.50 | DOWN | 4 | no shape | LARGE(C3), C3>mid1 | C3 not LARGE (small bull): fails LARGE(C3) and the midpoint test. |
-| `N02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4209.20/4209.50/4204.00/4204.50 | DOWN | 4 | no shape | C3 bull, C3>mid1 | C3 bearish: fails colour. |
-| `N03` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4208.00/4202.00/4207.00 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(C2), B2<=0.40B1 | C2 is a LARGE candle, not a star: fails SMALL and B2<=0.40B1. |
+| `N01` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4203.50/4204.60/4203.40/4204.50 | DOWN | 4 | no shape | LARGE(K3), C3>mid1 | C3 not LARGE (small bull): fails LARGE(C3) and the midpoint test. |
+| `N02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4209.20/4209.50/4204.00/4204.50 | DOWN | 4 | no shape | K3 bull, C3>mid1 | C3 bearish: fails colour. |
+| `N03` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4208.00/4202.00/4207.00 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | SMALL(K2), B2<=0.40B1 | C2 is a LARGE candle, not a star: fails SMALL and B2<=0.40B1. |
 | `NZ1` | 4200.00/4204.50/4199.50/4204.00 ; 4204.00/4208.50/4203.50/4208.00 ; 4208.00/4212.50/4207.50/4212.00 | DOWN | 4 | canonical: no event; variant: no event | — | Three bullish candles: no star, no bearish C1. |
 | `T01` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | UP | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Morning Star shape after UP: not formed. |
 | `T02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | RANGE | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Morning Star shape after RANGE: not formed. |
@@ -43,7 +43,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4209.20/4209.40; 09-16 10:46:40 4201.80/4202.00; 09-16 10:48:20 4224.60/4224.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.80; R: 7.60; target(s): 4224.60; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4209.20/4209.40; 09-16 10:46:40 4224.60/4224.80; 09-16 10:48:20 4201.80/4202.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.80; R: 7.60; target(s): 4224.60; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4209.20/4209.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.80; R: 7.60; target(s): 4224.60; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4209.20/4209.70; 09-16 10:48:20 4225.50/4226.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.70; stop: 4201.80; R: 7.90; target(s): 4225.50; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4209.20/4209.70; 09-16 10:48:20 4225.50/4226.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4209.70; stop: 4201.80; R: 7.90; target(s): 4225.50; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4209.20/4209.40; 09-16 11:01:40 4224.60/4224.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.80; R: 7.60; target(s): 4224.60; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4209.20/4209.40; 09-16 11:01:40 4224.60/4224.80 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4203.30/4203.80; 09-16 10:46:40 4207.80/4208.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4203.80; R: 2.00; target(s): 4207.80; exit: TARGET net 2.00R |
@@ -72,7 +72,7 @@ Context: atr=4 · trend=DOWN
 | 9 | 09-16 12:00 | 4212.20 | 4218.20 | 4200.20 | 4213.20 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4209.20 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4209.20 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P15-V00` · `GT-MORNINGSTAR-BULL-v1.0/BASE` · M15
 > BASE on a Morning Star whose C3 low (4201.50) is below both earlier lows: BASE stop = min(L1,L2,L3)-0.20 = 4201.30.

@@ -80,7 +80,10 @@ which "balance" (see `DECISIONS.md`, Open).
 
 ## Next step
 
-`CANDLE_SPEC_V1.md` is at DRAFT 0.2.2 (Wave 1: 22 patterns plus 2 early-setup companions; ChatGPT's three review rounds
-applied). Golden test vectors GV-0.1 (1,340 vectors) are in `tests/` (start with `tests/README.md`); they exposed 29
-ambiguities/inconsistencies in `tests/AMBIGUITIES.md` that need rulings before the spec can go to Draft 0.3. No code until
-then. After that: the Vantage demo account and a feed reliability test come before any other build step.
+`CANDLE_SPEC_V1.md` is at DRAFT 0.3 (Wave 1: 22 patterns plus 2 early-setup companions; the reviewer's rulings A-01..A-30
+applied, with Claude's A-01 override awaiting ChatGPT's challenge, D-038). Golden test vector pack GV-0.2 (1,419 vectors,
+including end-to-end and tick-path vectors) is in `tests/` (start with `tests/README.md`; rulings in `tests/RULINGS.md`).
+Working rule (D-035): Claude and ChatGPT settle trading-research and engineering rules between themselves; the owner decides
+product/business choices and anything involving real money. No code yet. Next: resolve D-038 with ChatGPT, then the
+remaining research items (`PIP_SRC_USD`, validation rule, Portfolio Simulation rules); after that, the Vantage demo account
+and a feed reliability test come before any other build step.

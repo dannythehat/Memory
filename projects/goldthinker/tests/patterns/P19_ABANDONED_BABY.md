@@ -1,6 +1,6 @@
 # P19 Abandoned Baby — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **74 vectors** (74 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **74 vectors** (74 firm)
 
 Strategies covered: `GT-ABABY-BEAR-v1.0`, `GT-ABABY-BULL-v1.0`
 
@@ -40,7 +40,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4198.20/4198.40; 09-16 10:48:20 4174.80/4175.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.40; R: 7.80; target(s): 4175.00; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4174.80/4175.00; 09-16 10:48:20 4198.20/4198.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.40; R: 7.80; target(s): 4175.00; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4190.60/4190.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.40; R: 7.80; target(s): 4175.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4190.30/4190.80; 09-16 10:48:20 4173.60/4174.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.30; stop: 4198.40; R: 8.10; target(s): 4174.10; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4190.30/4190.80; 09-16 10:48:20 4173.60/4174.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4190.30; stop: 4198.40; R: 8.10; target(s): 4174.10; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4190.60/4190.80; 09-16 11:01:40 4174.80/4175.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.40; R: 7.80; target(s): 4175.00; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4190.60/4190.80; 09-16 11:01:40 4174.80/4175.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4196.40/4196.90; 09-16 10:46:40 4191.90/4192.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4196.40; R: 2.00; target(s): 4192.40; exit: TARGET net 2.00R |
@@ -70,7 +70,7 @@ Context: atr=4 · trend=UP
 | 9 | 09-16 12:00 | 4187.80 | 4199.80 | 4181.80 | 4186.80 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4190.80 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4190.80 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P19-Y01m` · `GT-ABABY-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P19-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -221,9 +221,9 @@ Ticks (bid/ask): 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4198.20/4198.40
 | `B03` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.80/4202.85 ; 4204.00/4209.50/4203.40/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | L3 exactly H2 + gap_thr (H2 4203.20 -> L3 4203.40): passes. |
 | `B04` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.80/4202.85 ; 4204.00/4209.50/4203.39/4209.20 | DOWN | 4 | no shape | L3>=H2+gap | L3 = 4203.39: fails only L3>=H2+gap. |
 | `B05` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.20/4202.90 ; 4204.00/4209.50/4203.50/4209.20 | DOWN | 4 | shape ✔ · formed ✔ | — | DOJI(C2) exactly B = 0.05R (R 2.00, B 0.10): passes. |
-| `B06` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.20/4202.91 ; 4204.00/4209.50/4203.50/4209.20 | DOWN | 4 | no shape | DOJI(C2) | DOJI(C2) with B = 0.11 (R 2.00): fails only DOJI. |
+| `B06` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.20/4202.91 ; 4204.00/4209.50/4203.50/4209.20 | DOWN | 4 | no shape | DOJI(K2) | DOJI(C2) with B = 0.11 (R 2.00): fails only DOJI. |
 | `N01` | 4210.00/4210.50/4203.50/4204.00 ; 4204.50/4205.00/4203.80/4204.55 ; 4204.00/4209.50/4203.50/4209.20 | DOWN | 4 | no shape | H2<=L1-gap, L3>=H2+gap | C2 overlaps C1 (no gap): fails the first gap clause; L3 clause also fails. |
-| `N02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | DOJI(C2), H2<=L1-gap | Ordinary Morning Star (small star that overlaps): abandoned baby requires TRUE gaps on both sides. |
+| `N02` | 4210.00/4210.50/4203.00/4203.50 ; 4203.00/4203.80/4202.00/4203.40 ; 4204.50/4209.50/4204.00/4209.20 | DOWN | 4 | no shape | DOJI(K2), H2<=L1-gap | Ordinary Morning Star (small star that overlaps): abandoned baby requires TRUE gaps on both sides. |
 | `NZ1` | 4210.00/4210.50/4205.50/4206.00 ; 4206.00/4210.50/4205.50/4210.00 ; 4210.00/4214.50/4209.50/4214.00 | DOWN | 4 | canonical: no event; variant: no event | — | Bear, bull, bull with no doji and no gaps. |
 | `T01` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.80/4202.85 ; 4204.00/4209.50/4203.50/4209.20 | UP | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Abandoned Baby shape after UP: not formed. |
 | `T02` | 4210.00/4210.50/4203.50/4204.00 ; 4202.80/4203.20/4201.80/4202.85 ; 4204.00/4209.50/4203.50/4209.20 | RANGE | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Abandoned Baby shape after RANGE: not formed. |
@@ -239,7 +239,7 @@ Ticks (bid/ask): 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4198.20/4198.40
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4209.20/4209.40; 09-16 10:46:40 4201.60/4201.80; 09-16 10:48:20 4225.00/4225.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.60; R: 7.80; target(s): 4225.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4209.20/4209.40; 09-16 10:46:40 4225.00/4225.20; 09-16 10:48:20 4201.60/4201.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.60; R: 7.80; target(s): 4225.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4209.20/4209.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.60; R: 7.80; target(s): 4225.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4209.20/4209.70; 09-16 10:48:20 4225.90/4226.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.70; stop: 4201.60; R: 8.10; target(s): 4225.90; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4209.20/4209.70; 09-16 10:48:20 4225.90/4226.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4209.70; stop: 4201.60; R: 8.10; target(s): 4225.90; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4209.20/4209.40; 09-16 11:01:40 4225.00/4225.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.40; stop: 4201.60; R: 7.80; target(s): 4225.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4209.20/4209.40; 09-16 11:01:40 4225.00/4225.20 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4203.10/4203.60; 09-16 10:46:40 4207.60/4208.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4203.60; R: 2.00; target(s): 4207.60; exit: TARGET net 2.00R |
@@ -268,7 +268,7 @@ Context: atr=4 · trend=DOWN
 | 9 | 09-16 12:00 | 4212.20 | 4218.20 | 4200.20 | 4213.20 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4209.20 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4209.20 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P19-Y01` · `GT-ABABY-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).

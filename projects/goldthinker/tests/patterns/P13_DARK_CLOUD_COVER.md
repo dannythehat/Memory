@@ -1,6 +1,6 @@
 # P13 Dark Cloud Cover — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **45 vectors** (45 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **45 vectors** (45 firm)
 
 Strategies covered: `GT-DARKCLOUD-BEAR-v1.0`
 
@@ -44,7 +44,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4191.80/4192.00; 09-16 10:31:40 4197.50/4197.70; 09-16 10:33:20 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4191.80; stop: 4197.70; R: 5.90; target(s): 4180.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4191.80/4192.00; 09-16 10:31:40 4179.80/4180.00; 09-16 10:33:20 4197.50/4197.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4191.80; stop: 4197.70; R: 5.90; target(s): 4180.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4191.80/4192.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4191.80; stop: 4197.70; R: 5.90; target(s): 4180.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4191.50/4192.00; 09-16 10:33:20 4178.60/4179.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4191.50; stop: 4197.70; R: 6.20; target(s): 4179.10; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4191.50/4192.00; 09-16 10:33:20 4178.60/4179.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4191.50; stop: 4197.70; R: 6.20; target(s): 4179.10; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4191.80/4192.00; 09-16 10:46:40 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4191.80; stop: 4197.70; R: 5.90; target(s): 4180.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4191.80/4192.00; 09-16 10:46:40 4179.80/4180.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4195.70/4196.20; 09-16 10:31:40 4191.20/4191.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4195.70; R: 2.00; target(s): 4191.70; exit: TARGET net 2.00R |
@@ -73,7 +73,7 @@ Context: atr=4 · trend=UP
 | 8 | 09-16 11:45 | 4189.00 | 4201.00 | 4183.00 | 4188.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4192.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4192.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P13-Y01` · `GT-DARKCLOUD-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P12-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -135,6 +135,7 @@ Context: atr=4 · trend=UP · zones_pre=[4196.91-4197.20] · zones_entry=[4168.0
 Ticks (bid/ask): 09-16 10:30:02 4191.80/4192.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P13-V03` · `GT-DARKCLOUD-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P12-V03` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -172,6 +173,7 @@ Context: atr=4 · trend=UP · zones_entry=[4168.00-4169.00]
 Ticks (bid/ask): 09-16 10:30:02 4191.80/4192.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P13-V05` · `GT-DARKCLOUD-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P12-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -188,6 +190,7 @@ Context: atr=4 · trend=UP · zones_pre=[4196.90-4197.20 DEAD] · zones_entry=[4
 Ticks (bid/ask): 09-16 10:30:02 4191.80/4192.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P13-V08` · `GT-DARKCLOUD-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P12-V08` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*

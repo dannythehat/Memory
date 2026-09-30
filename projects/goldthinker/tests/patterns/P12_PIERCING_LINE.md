@@ -1,6 +1,6 @@
 # P12 Piercing Line — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **51 vectors** (49 firm, 2 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **51 vectors** (51 firm)
 
 Strategies covered: `GT-PIERCING-BULL-v1.0`
 
@@ -23,12 +23,12 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `F01` | 4210.00/4210.50/4203.50/4204.00 ; 4203.30/4208.50/4202.50/4208.00 | DOWN | 4 | shape ✔ · formed ✔ | — | gap_thr = max(0.10, 0.05*4)=0.20; L1=4203.50, so gap needs O2 <= 4203.30: exactly 4203.30 -> gap_flag true. |
 | `F02` | 4210.00/4210.50/4203.50/4204.00 ; 4203.31/4208.50/4202.50/4208.00 | DOWN | 4 | shape ✔ · formed ✔ | — | O2 = 4203.31: gap_flag false; the pattern still forms (a gap is not required). |
 | `LG01` | 4210.00/4210.60/4207.00/4207.60 ; 4207.00/4209.20/4206.50/4209.00 | DOWN | 4 | shape ✔ · formed ✔ | — | LARGE(C1) exactly on B = 2.40 (R=3.6): passes. |
-| `LG02` | 4210.00/4210.60/4207.00/4207.61 ; 4207.00/4209.20/4206.50/4209.00 | DOWN | 4 | no shape | LARGE(C1) | LARGE(C1) with B = 2.39: fails LARGE only. |
+| `LG02` | 4210.00/4210.60/4207.00/4207.61 ; 4207.00/4209.20/4206.50/4209.00 | DOWN | 4 | no shape | LARGE(K1) | LARGE(C1) with B = 2.39: fails LARGE only. |
 | `LG03` | 4210.00/4210.20/4207.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | shape ✔ · formed ✔ | — | LARGE(C1) exactly on R = 3.20 (B=3.0): passes. |
-| `LG04` | 4210.00/4210.19/4207.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | no shape | LARGE(C1) | LARGE(C1) with R = 3.19: fails LARGE only. |
+| `LG04` | 4210.00/4210.19/4207.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | no shape | LARGE(K1) | LARGE(C1) with R = 3.19: fails LARGE only. |
 | `LG05` | 4210.00/4211.00/4206.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | shape ✔ · formed ✔ | — | LARGE(C1) exactly on B/R = 0.60 (B=3, R=5): passes. |
-| `LG06` | 4210.00/4211.01/4206.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | no shape | LARGE(C1) | LARGE(C1) with B/R just below 0.60 (B=3, R=5.01): fails LARGE only. |
-| `N01` | 4204.00/4211.00/4203.50/4210.00 ; 4203.00/4208.50/4202.50/4208.00 | DOWN | 4 | no shape | C1 bear, C2<O1 | C1 bullish (a bullish first candle can never be pierced): fails colour (and mid/O1 relations). |
+| `LG06` | 4210.00/4211.01/4206.00/4207.00 ; 4206.50/4209.50/4206.00/4209.00 | DOWN | 4 | no shape | LARGE(K1) | LARGE(C1) with B/R just below 0.60 (B=3, R=5.01): fails LARGE only. |
+| `N01` | 4204.00/4211.00/4203.50/4210.00 ; 4203.00/4208.50/4202.50/4208.00 | DOWN | 4 | no shape | K1 bear, C2<O1 | C1 bullish (a bullish first candle can never be pierced): fails colour (and mid/O1 relations). |
 | `NZ1` | 4200.00/4204.50/4199.50/4204.00 ; 4204.00/4208.50/4203.50/4208.00 | DOWN | 4 | canonical: no event; variant: no event | — | Two bullish candles: nothing to pierce. |
 | `T01` | 4210.00/4210.50/4203.50/4204.00 ; 4203.00/4208.50/4202.50/4208.00 | UP | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Piercing shape after UP: not formed. |
 | `T02` | 4210.00/4210.50/4203.50/4204.00 ; 4203.00/4208.50/4202.50/4208.00 | RANGE | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Piercing shape after RANGE: not formed. |
@@ -44,7 +44,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4208.00/4208.20; 09-16 10:31:40 4202.30/4202.50; 09-16 10:33:20 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4208.20; stop: 4202.30; R: 5.90; target(s): 4220.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4208.00/4208.20; 09-16 10:31:40 4220.00/4220.20; 09-16 10:33:20 4202.30/4202.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4208.20; stop: 4202.30; R: 5.90; target(s): 4220.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4208.00/4208.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4208.20; stop: 4202.30; R: 5.90; target(s): 4220.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4208.00/4208.50; 09-16 10:33:20 4220.90/4221.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4208.50; stop: 4202.30; R: 6.20; target(s): 4220.90; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4208.00/4208.50; 09-16 10:33:20 4220.90/4221.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4208.50; stop: 4202.30; R: 6.20; target(s): 4220.90; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4208.00/4208.20; 09-16 10:46:40 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4208.20; stop: 4202.30; R: 5.90; target(s): 4220.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4208.00/4208.20; 09-16 10:46:40 4220.00/4220.20 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4203.80/4204.30; 09-16 10:31:40 4208.30/4208.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4204.30; R: 2.00; target(s): 4208.30; exit: TARGET net 2.00R |
@@ -72,7 +72,7 @@ Context: atr=4 · trend=DOWN
 | 8 | 09-16 11:45 | 4211.00 | 4217.00 | 4199.00 | 4212.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4208.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4208.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P12-Y01` · `GT-PIERCING-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -131,8 +131,8 @@ Ticks (bid/ask): 09-16 06:45:02 4208.00/4208.20
 - disposition: SKIPPED_SESSION_FILTER
 - signal time: 2026-09-16T06:45:00Z
 
-#### `GV-P12-S03` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15 · **PROVISIONAL**
-> Signal 07:00 UTC = 08:00 BST: London opens (start inclusive) -> not ASIA_ONLY -> trade. [PROVISIONAL: session start inclusive assumed, A-06]
+#### `GV-P12-S03` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15
+> Signal 07:00 UTC = 08:00 BST: London opens (start inclusive) -> not ASIA_ONLY -> trade.
 
 Tags: session, asia-only
 Context: atr=4 · trend=DOWN · zones_pre=[4202.80-4203.10] · zones_entry=[4231.00-4232.00]
@@ -169,8 +169,8 @@ Ticks (bid/ask): 10-27 07:45:02 4208.00/4208.20
 - disposition: SKIPPED_SESSION_FILTER
 - signal time: 2026-10-27T07:45:00Z
 
-#### `GV-P12-S05` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15 · **PROVISIONAL**
-> 08:00 UTC = 08:00 GMT: London opens -> trade. (Tokyo 17:00 ends the same instant.) [PROVISIONAL, A-06]
+#### `GV-P12-S05` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15
+> 08:00 UTC = 08:00 GMT: London opens -> trade. (Tokyo 17:00 ends the same instant.)
 
 Tags: session, asia-only
 Context: atr=4 · trend=DOWN · zones_pre=[4202.80-4203.10] · zones_entry=[4231.00-4232.00]
@@ -245,6 +245,7 @@ Context: atr=4 · trend=DOWN · zones_pre=[4202.80-4203.09] · zones_entry=[4231
 Ticks (bid/ask): 09-16 10:30:02 4208.00/4208.20
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P12-V03` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15
 > Lowest low INSIDE a zone: distance 0 -> AT_SUPPORT.
@@ -280,6 +281,7 @@ Context: atr=4 · trend=DOWN · zones_entry=[4231.00-4232.00]
 Ticks (bid/ask): 09-16 10:30:02 4208.00/4208.20
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P12-V05` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15
 > The only nearby zone is DEAD: not AT_SUPPORT (dead zones are not levels).
@@ -295,6 +297,7 @@ Context: atr=4 · trend=DOWN · zones_pre=[4202.80-4203.10 DEAD] · zones_entry=
 Ticks (bid/ask): 09-16 10:30:02 4208.00/4208.20
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P12-V06` · `GT-PIERCING-BULL-v1.0/SRC-PS` · M15
 > Reward exactly 2.0R: zone edge 4217.60, entry 4208.20, R 4.80 -> 9.40/4.80 = 1.958 -> below 2.0 -> SKIPPED_SRC_RR. (minimum 2:1 before entry).

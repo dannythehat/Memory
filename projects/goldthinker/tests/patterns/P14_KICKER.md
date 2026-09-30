@@ -1,6 +1,6 @@
 # P14 Kicker — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **96 vectors** (86 firm, 10 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **97 vectors** (97 firm)
 
 Strategies covered: `GT-KICKER-BEAR-v1.0`, `GT-KICKER-BULL-v1.0`
 
@@ -38,7 +38,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4182.00/4182.20; 09-16 10:31:40 4196.50/4196.70; 09-16 10:33:20 4152.40/4152.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4182.00; stop: 4196.70; R: 14.70; target(s): 4152.60; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4182.00/4182.20; 09-16 10:31:40 4152.40/4152.60; 09-16 10:33:20 4196.50/4196.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4182.00; stop: 4196.70; R: 14.70; target(s): 4152.60; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4182.00/4182.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4182.00; stop: 4196.70; R: 14.70; target(s): 4152.60; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4181.70/4182.20; 09-16 10:33:20 4151.20/4151.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4181.70; stop: 4196.70; R: 15.00; target(s): 4151.70; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4181.70/4182.20; 09-16 10:33:20 4151.20/4151.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4181.70; stop: 4196.70; R: 15.00; target(s): 4151.70; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4182.00/4182.20; 09-16 10:46:40 4152.40/4152.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4182.00; stop: 4196.70; R: 14.70; target(s): 4152.60; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4182.00/4182.20; 09-16 10:46:40 4152.40/4152.60 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4194.70/4195.20; 09-16 10:31:40 4190.20/4190.70 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4194.70; R: 2.00; target(s): 4190.70; exit: TARGET net 2.00R |
@@ -67,7 +67,7 @@ Context: atr=4 · trend=UP
 | 8 | 09-16 11:45 | 4179.20 | 4191.20 | 4173.20 | 4178.20 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4182.20 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4182.20 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P14-V00m` · `GT-KICKER-BEAR-v1.0/BASE` · H1
 *Mirror of `GV-P14-V00` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -180,9 +180,9 @@ Ticks (bid/ask): 09-16 19:00:02 4178.80/4179.00; 09-16 19:01:42 4149.80/4150.00
 - target(s): 4150.00
 - exit: TARGET net 288/179 (≈1.6089)R
 
-#### `GV-P14-V01-M15m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M15 · **PROVISIONAL**
+#### `GV-P14-V01-M15m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M15
 *Mirror of `GV-P14-V01-M15` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M15 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+> M15 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M15
 Context: atr=4 · trend=UP · swings=L4150.00
@@ -196,11 +196,12 @@ Ticks (bid/ask): 09-16 10:30:02 4178.80/4179.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M1m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M1 · **PROVISIONAL**
+#### `GV-P14-V01-M1m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M1
 *Mirror of `GV-P14-V01-M1` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M1 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+> M1 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M1
 Context: atr=4 · trend=UP · swings=L4150.00
@@ -214,11 +215,12 @@ Ticks (bid/ask): 09-16 10:02:02 4178.80/4179.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M30m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M30 · **PROVISIONAL**
+#### `GV-P14-V01-M30m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M30
 *Mirror of `GV-P14-V01-M30` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M30 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+> M30 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M30
 Context: atr=4 · trend=UP · swings=L4150.00
@@ -232,11 +234,12 @@ Ticks (bid/ask): 09-16 11:00:02 4178.80/4179.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M5m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M5 · **PROVISIONAL**
+#### `GV-P14-V01-M5m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · M5
 *Mirror of `GV-P14-V01-M5` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M5 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+> M5 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M5
 Context: atr=4 · trend=UP · swings=L4150.00
@@ -250,7 +253,8 @@ Ticks (bid/ask): 09-16 10:10:02 4178.80/4179.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P14-V01-MN1m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · MN1
 *Mirror of `GV-P14-V01-MN1` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -357,9 +361,9 @@ Ticks (bid/ask): 09-16 12:00:02 4178.80/4179.00
 - stop: 4196.70
 - R: 17.90
 
-#### `GV-P14-V05m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · H1 · **PROVISIONAL**
+#### `GV-P14-V05m` · `GT-KICKER-BEAR-v1.0/SRC-PS-COMPLETED` · H1
 *Mirror of `GV-P14-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> Only a swing HIGH below the entry and a swing LOW above it: for a BUY only swing highs above the entry count -> NO_TARGET. [PROVISIONAL: 'swing pivot' wording, A-16]
+> Only a swing HIGH below the entry and a swing LOW above it: for a BUY only swing highs above the entry count -> NO_TARGET.
 
 Tags: T_SWING, no-target
 Context: atr=4 · trend=UP · swings=L4200.00, H4140.00
@@ -469,11 +473,11 @@ Ticks (bid/ask): 09-16 12:00:02 4182.00/4182.20
 | `B02` | 4210.00/4210.50/4203.50/4204.00 ; 4209.99/4217.50/4209.80/4217.40 | DOWN | 4 | no shape | O2>=O1 | O2 = O1 - 0.01: only O2>=O1 fails. |
 | `B03` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4218.00/4210.50/4217.25 | DOWN | 4 | shape ✔ · formed ✔ | — | Close exactly at H2 - 0.10*R2 (R2=7.50: 4217.25): passes. |
 | `B04` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4218.00/4210.50/4217.24 | DOWN | 4 | no shape | C2>=H2-0.10R2 | Close 0.01 lower: only the close-near-high clause fails. |
-| `B05` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4213.10/4210.90/4213.00 | DOWN | 4 | no shape | LARGE(C2) | C2 is not LARGE (B=2.0, R=2.2): fails LARGE(C2) only. |
-| `B06` | 4206.00/4206.30/4203.80/4204.00 ; 4207.00/4214.00/4206.50/4213.80 | DOWN | 4 | no shape | LARGE(C1) | C1 is not LARGE (small bearish candle, B=2.0, R=2.5): fails LARGE(C1) only. |
+| `B05` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4213.10/4210.90/4213.00 | DOWN | 4 | no shape | LARGE(K2) | C2 is not LARGE (B=2.0, R=2.2): fails LARGE(C2) only. |
+| `B06` | 4206.00/4206.30/4203.80/4204.00 ; 4207.00/4214.00/4206.50/4213.80 | DOWN | 4 | no shape | LARGE(K1) | C1 is not LARGE (small bearish candle, B=2.0, R=2.5): fails LARGE(C1) only. |
 | `F01` | 4210.00/4210.50/4203.50/4204.00 ; 4210.20/4218.00/4210.00/4217.90 | DOWN | 4 | shape ✔ · formed ✔ | — | gap_thr 0.20: O2 = O1 + 0.20 exactly -> bull_gap_flag true. |
 | `F02` | 4210.00/4210.50/4203.50/4204.00 ; 4210.19/4218.00/4210.00/4217.90 | DOWN | 4 | shape ✔ · formed ✔ | — | O2 = O1 + 0.19: flag false; pattern still forms. |
-| `N01` | 4210.00/4210.50/4203.50/4204.00 ; 4217.00/4218.00/4210.50/4211.00 | DOWN | 4 | no shape | C2 bull, C2>=H2-0.10R2 | C2 bearish (opens 4217, closes 4211): fails colour and the close-near-high test. |
+| `N01` | 4210.00/4210.50/4203.50/4204.00 ; 4217.00/4218.00/4210.50/4211.00 | DOWN | 4 | no shape | K2 bull, C2>=H2-0.10R2 | C2 bearish (opens 4217, closes 4211): fails colour and the close-near-high test. |
 | `NZ1` | 4200.00/4204.50/4199.50/4204.00 ; 4204.00/4208.50/4203.50/4208.00 | DOWN | 4 | canonical: no event; variant: no event | — | Two bullish candles: no bearish LARGE C1. |
 | `T01` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4218.00/4210.50/4217.80 | UP | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Kicker shape after UP: not formed (bullish kicker needs DOWN). |
 | `T02` | 4210.00/4210.50/4203.50/4204.00 ; 4211.00/4218.00/4210.50/4217.80 | RANGE | 4 | canonical: SHAPE_DETECTED; variant: no event | — | Kicker shape after RANGE: not formed (bullish kicker needs DOWN). |
@@ -489,7 +493,7 @@ Ticks (bid/ask): 09-16 12:00:02 4182.00/4182.20
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4217.80/4218.00; 09-16 10:31:40 4203.30/4203.50; 09-16 10:33:20 4247.40/4247.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4218.00; stop: 4203.30; R: 14.70; target(s): 4247.40; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4217.80/4218.00; 09-16 10:31:40 4247.40/4247.60; 09-16 10:33:20 4203.30/4203.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4218.00; stop: 4203.30; R: 14.70; target(s): 4247.40; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4217.80/4218.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4218.00; stop: 4203.30; R: 14.70; target(s): 4247.40; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4217.80/4218.30; 09-16 10:33:20 4248.30/4248.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4218.30; stop: 4203.30; R: 15.00; target(s): 4248.30; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4217.80/4218.30; 09-16 10:33:20 4248.30/4248.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4218.30; stop: 4203.30; R: 15.00; target(s): 4248.30; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4217.80/4218.00; 09-16 10:46:40 4247.40/4247.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4218.00; stop: 4203.30; R: 14.70; target(s): 4247.40; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4217.80/4218.00; 09-16 10:46:40 4247.40/4247.60 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4204.80/4205.30; 09-16 10:31:40 4209.30/4209.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4205.30; R: 2.00; target(s): 4209.30; exit: TARGET net 2.00R |
@@ -517,7 +521,7 @@ Context: atr=4 · trend=DOWN
 | 8 | 09-16 11:45 | 4220.80 | 4226.80 | 4208.80 | 4221.80 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4217.80 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4217.80 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P14-V00` · `GT-KICKER-BULL-v1.0/BASE` · H1
 > BASE on the same bars: stop = min(L1,L2) - 0.20; L2 (4203.40) is below L1 (4203.50), so the stop is 4203.20. Compare V01-H1: the source variant stops beyond C1's low only (4203.30).
@@ -561,6 +565,12 @@ Ticks (bid/ask): 09-16 10:30:02 4217.80/4218.00
 - target(s): 4247.40
 
 ### Variant `SRC-PS-COMPLETED`
+
+#### Compact vectors (detection / boundary / context) — bars are O/H/L/C, one candle per `;`
+
+| ID | bars | trend | ATR | result | failing clause | note |
+|---|---|---|---|---|---|---|
+| `QF1` | 4210.00/4210.50/4203.50/4204.00 ; 4210.00/4221.20/4203.40/4221.00 | UP | 4 | canonical: SHAPE_DETECTED; variant: no event; disposition: NOT_QUALIFIED; qualification_failures: TF_NOT_ALLOWED, PRIOR_STATE | — | Source Kicker on M15 (not allowed) after an UPTREND (prior state fails): both failures kept. |
 
 #### `GV-P14-V01-D1` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · D1
 > D1 is an allowed timeframe for the source Kicker. Stop = C1's low - 0.20 = 4203.30 (not C2's, unlike the baseline); entry ask 4221.20; R 17.90; T_SWING(1.5) = swing high 4250.00 (1.61R) -> trade. Signal at the scheduled closure start, entry after the closure (entry_across_break).
@@ -625,8 +635,8 @@ Ticks (bid/ask): 09-16 19:00:02 4221.00/4221.20; 09-16 19:01:42 4250.00/4250.20
 - target(s): 4250.00
 - exit: TARGET net 288/179 (≈1.6089)R
 
-#### `GV-P14-V01-M1` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M1 · **PROVISIONAL**
-> M1 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+#### `GV-P14-V01-M1` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M1
+> M1 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M1
 Context: atr=4 · trend=DOWN · swings=H4250.00
@@ -640,10 +650,11 @@ Ticks (bid/ask): 09-16 10:02:02 4221.00/4221.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M15` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M15 · **PROVISIONAL**
-> M15 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+#### `GV-P14-V01-M15` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M15
+> M15 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M15
 Context: atr=4 · trend=DOWN · swings=H4250.00
@@ -657,10 +668,11 @@ Ticks (bid/ask): 09-16 10:30:02 4221.00/4221.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M30` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M30 · **PROVISIONAL**
-> M30 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+#### `GV-P14-V01-M30` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M30
+> M30 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M30
 Context: atr=4 · trend=DOWN · swings=H4250.00
@@ -674,10 +686,11 @@ Ticks (bid/ask): 09-16 11:00:02 4221.00/4221.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
-#### `GV-P14-V01-M5` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M5 · **PROVISIONAL**
-> M5 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade. [PROVISIONAL: where this skip is logged relative to VARIANT_QUALIFIED is not specified, A-12]
+#### `GV-P14-V01-M5` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · M5
+> M5 is NOT in {H1,H4,D1,W1,MN1}: the BASE pattern still forms but the source variant records SKIPPED_TF_NOT_ALLOWED and no trade.
 
 Tags: variant, tf-gate, tf-M5
 Context: atr=4 · trend=DOWN · swings=H4250.00
@@ -691,7 +704,8 @@ Ticks (bid/ask): 09-16 10:10:02 4221.00/4221.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P14-V01-MN1` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · MN1
 > MN1 is an allowed timeframe for the source Kicker. Stop = C1's low - 0.20 = 4203.30 (not C2's, unlike the baseline); entry ask 4221.20; R 17.90; T_SWING(1.5) = swing high 4250.00 (1.61R) -> trade. Signal at the scheduled closure start, entry after the closure (entry_across_break).
@@ -793,8 +807,8 @@ Ticks (bid/ask): 09-16 12:00:02 4221.00/4221.20
 - stop: 4203.30
 - R: 17.90
 
-#### `GV-P14-V05` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · H1 · **PROVISIONAL**
-> Only a swing HIGH below the entry and a swing LOW above it: for a BUY only swing highs above the entry count -> NO_TARGET. [PROVISIONAL: 'swing pivot' wording, A-16]
+#### `GV-P14-V05` · `GT-KICKER-BULL-v1.0/SRC-PS-COMPLETED` · H1
+> Only a swing HIGH below the entry and a swing LOW above it: for a BUY only swing highs above the entry count -> NO_TARGET.
 
 Tags: T_SWING, no-target
 Context: atr=4 · trend=DOWN · swings=H4200.00, L4260.00

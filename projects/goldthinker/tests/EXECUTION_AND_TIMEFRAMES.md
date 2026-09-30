@@ -1,40 +1,149 @@
 # Execution, timeframe and bar-boundary vectors
 
-Spec Draft 0.2.2 · vector pack GV-0.1. Uses the Hammer BASE strategy as a carrier so the ONLY thing changing between vectors is the mechanic under test.
+Spec Draft 0.3 · vector pack GV-0.2. Uses the Hammer BASE strategy as a carrier so the ONLY thing changing between vectors is the mechanic under test.
 
-#### `GV-EX-B01` · `GT-HAMMER-BULL-v1.0/BASE` · **BLOCKED_AMBIGUITY**
-> MAX_HOLD = 50 bars: 'close at market after 50 bars of the pattern's own TF'. The spec does not say whether the entry bar counts as bar 1, nor what happens when the 50 bars straddle a scheduled closure. Entry at 10:15:02 on M15 (the 10:15 bar is the entry bar); the daily pause 22:00-23:00 UTC removes four bars.
+#### `GV-EX-B01` · `GT-HAMMER-BULL-v1.0/BASE` · M15
+> MAX_HOLD (A-13). Entry tick 10:15:02 -> the 10:15 candle is bar 0 (not counted). The next 50 EXISTING M15 bars are 10:30 ... 21:45 (46 bars), then the 22:00-23:00 pause creates no bars, then 23:00, 23:15, 23:30, 23:45: bar 50 completes at 00:00. The tick at 23:59:59 does not exit; the first tick at 00:00:00 closes at the BID 4203.20: +2.80/6.60 = 14/33 R.
 
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
-
-Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40
-
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A (entry bar = bar 1): the time stop fires at the completion of the 50th bar = 2026-09-16T23:45:00Z (bars 10:15...21:45 = 46 bars, then 23:00, 23:15, 23:30, 23:45).
-- Reading B (50 bars AFTER the entry bar): fires at 2026-09-17T00:00:00Z.
-- Reading C (wall-clock 50 x 15 min = 12.5 h): fires at 2026-09-16T22:45:02Z - inside the closure, so not executable; must then be the first tick after reopening.
-
-#### `GV-EX-B02` · `GT-HAMMER-BULL-v1.0/BASE` · **BLOCKED_AMBIGUITY**
-> Swap: G9 says results are 'minus swap and commission converted to R (from the account spec)' but the spec gives no swap rule: which nights count (rollover at 22:00 UTC?), the triple-swap weekday, whether swap is per lot per night in account currency, and how it converts to R. A trade held from Tue 10:15 to Thu 10:15 crosses two rollovers (and Wed's is normally tripled).
-
-Context: atr=4 · trend=DOWN
+Tags: max-hold, time-stop
+Context: atr=4 · trend=DOWN · account=swap_long=0.00, swap_short=0.00
 
 | # | open (UTC) | O | H | L | C |
 |---|---|---|---|---|---|
 | 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
 
-Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40
+Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40; 09-16 23:59:59 4202.00/4202.20; 09-17 00:00:00 4203.20/4203.40
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Cannot be evaluated until the account fixture defines swap_long/swap_short, the rollover time and the triple-swap day.
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- time_stop_at: 2026-09-17T00:00:00Z
+- exit: TIME net 14/33 (≈0.4242)R (gross 14/33 (≈0.4242)R)
 
-#### `GV-EX-B03` · `GT-HAMMER-BULL-v1.0/BASE` · **BLOCKED_AMBIGUITY**
-> Weekend gap THROUGH the stop at entry: Friday H1 hammer, stop 4193.80, but the first tick after the weekend is bid 4189.50 / ask 4189.70 (entry across a break). The spec says 'any gap through the stop fills at the first price' but a BUY at ask 4189.70 is already BELOW the stop: R = |entry - stop| = 4.10 is positive by formula but the trade is nonsensical (stop above entry).
+#### `GV-EX-B01b` · `GT-HAMMER-BULL-v1.0/BASE` · M15
+> Same rule when bar 50 completes exactly at a scheduled closure: entry bar starts 09:15 (signal candle 09:00), so bar 50 is the 21:45 candle completing at 22:00 = the pause start. The exit is the first tick after reopening (23:00:03, bid 4202.60): +2.20/6.60 = 1/3 R, tagged exit_across_break.
 
+Tags: max-hold, time-stop, closure
+Context: atr=4 · trend=DOWN · account=swap_long=0.00, swap_short=0.00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 09:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-16 09:15:02 4200.20/4200.40; 09-16 12:00:00 4201.00/4201.20; 09-16 23:00:03 4202.60/4202.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- time_stop_at: 2026-09-16T22:00:00Z
+- exit: TIME net 1/3 (≈0.3333)R
+
+#### `GV-EX-B01bm` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+*Mirror of `GV-EX-B01b` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Same rule when bar 50 completes exactly at a scheduled closure: entry bar starts 09:15 (signal candle 09:00), so bar 50 is the 21:45 candle completing at 22:00 = the pause start. The exit is the first tick after reopening (23:00:03, bid 4202.60): +2.20/6.60 = 1/3 R, tagged exit_across_break.
+
+Tags: max-hold, time-stop, closure
+Context: atr=4 · trend=UP · account=swap_long=0.00, swap_short=0.00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 09:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-16 09:15:02 4199.60/4199.80; 09-16 12:00:00 4198.80/4199.00; 09-16 23:00:03 4197.20/4197.40
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- time_stop_at: 2026-09-16T22:00:00Z
+- exit: TIME net 1/3 (≈0.3333)R
+
+#### `GV-EX-B01m` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+*Mirror of `GV-EX-B01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> MAX_HOLD (A-13). Entry tick 10:15:02 -> the 10:15 candle is bar 0 (not counted). The next 50 EXISTING M15 bars are 10:30 ... 21:45 (46 bars), then the 22:00-23:00 pause creates no bars, then 23:00, 23:15, 23:30, 23:45: bar 50 completes at 00:00. The tick at 23:59:59 does not exit; the first tick at 00:00:00 closes at the BID 4203.20: +2.80/6.60 = 14/33 R.
+
+Tags: max-hold, time-stop
+Context: atr=4 · trend=UP · account=swap_long=0.00, swap_short=0.00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80; 09-16 23:59:59 4197.80/4198.00; 09-17 00:00:00 4196.60/4196.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- time_stop_at: 2026-09-17T00:00:00Z
+- exit: TIME net 14/33 (≈0.4242)R (gross 14/33 (≈0.4242)R)
+
+#### `GV-EX-B02` · `GT-HAMMER-BULL-v1.0/BASE` · H1
+> Swap (A-14, test fixture swap_long = -5.00 per lot per night, rollover 22:00 UTC, triple on Wednesday). H1 long entered Tue 10:00:02, exit Thu 10:00 (the 50-bar time stop would fall on Thu 15:00), crosses the Tue 22:00 rollover (x1) and the Wed 22:00 rollover (x3): weight 4. lots 5/33 -> swap $-5 x 4 x 5/33 = -100/33 -> -1/33 R. Net = 2 - 1/33 = 65/33.
+
+Tags: swap
+Context: atr=4 · trend=DOWN · account=swap_long=-5.00, swap_short=2.00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-15 09:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-15 10:00:02 4200.20/4200.40; 09-17 10:00:00 4213.60/4213.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- exit: TARGET net 65/33 (≈1.9697)R (gross 2.00R) (swap -1/33 (≈-0.0303)R)
+
+#### `GV-EX-B02b` · `GT-HAMMER-BULL-v1.0/BASE` · H1
+> Same trade with NO swap specification in the account: two rollovers were crossed, so the trade is recorded but its net result is PENDING_COST_SPEC (excluded from survival statistics until backfilled).
+
+Tags: swap, pending-cost-spec
+Context: atr=4 · trend=DOWN · account=swap_long=None, swap_short=None
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-15 09:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-15 10:00:02 4200.20/4200.40; 09-17 10:00:00 4213.60/4213.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- exit: TARGET (gross 2.00R)
+
+#### `GV-EX-B02c` · `GT-HAMMER-BULL-v1.0/BASE` · M15
+> A trade that crosses NO rollover needs no swap specification, so it is not pending even when the account has none.
+
+Tags: swap, no-rollover
+Context: atr=4 · trend=DOWN · account=swap_long=None, swap_short=None
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40; 09-16 10:30:00 4213.60/4213.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- exit: TARGET net 2.00R
+
+#### `GV-EX-B02d` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · H1
+> Short with swap_short = +2.00 (a credit): the same two rollovers (weight 4). lots = 100/640 = 5/32; swap = +2 x 4 x 5/32 = +5/4 USD = +1/80 R; net = 2 + 1/80 = 161/80.
+
+Tags: swap, credit
+Context: atr=4 · trend=UP · account=swap_long=-5.00, swap_short=2.00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-15 09:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-15 10:00:02 4199.80/4200.00; 09-17 10:00:00 4186.80/4187.00
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4199.80
+- stop: 4206.20
+- R: 6.40
+- target(s): 4187.00
+- exit: TARGET net 161/80 (≈2.0125)R (gross 2.00R) (swap 1/80 (≈0.0125)R)
+
+#### `GV-EX-B03` · `GT-HAMMER-BULL-v1.0/BASE` · H1
+> Weekend gap through the stop: the Friday H1 hammer has stop 4193.80 but the first tick after reopening is 4189.50/4189.70. A BUY at the ask 4189.70 is already below the stop -> SKIPPED_ENTRY_AT_OR_BEYOND_STOP (ruling A-25). No R is formed.
+
+Tags: entry-beyond-stop, weekend-gap
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -43,30 +152,193 @@ Context: atr=4 · trend=DOWN
 
 Ticks (bid/ask): 09-20 23:00:05 4189.50/4189.70
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: skip with a new reason code (e.g. SKIPPED_ENTRY_BEYOND_STOP); nothing is traded.
-- Reading B: enter at 4189.70 and stop out at that same price/next tick: a loss of (4189.70-4200.40... ) - the loss is real but R is undefined.
-- Reading C (literal): R = |4189.70 - 4193.80| = 4.10 and target = 4189.70 + 8.20 = 4197.90 - a long with the stop above the entry price.
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ENTRY_AT_OR_BEYOND_STOP
+- entry: 4189.70
+- stop: 4193.80
 
-#### `GV-EX-B04` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · **BLOCKED_AMBIGUITY**
-> Bars-only resolution for a SHORT: stops and targets for shorts trigger on the ASK, but an OHLC bar has only bid prices. Short: entry bid 4199.60, stop 4206.20, R 6.60. A later bar has high 4206.10 (bid) - 0.10 below the stop - with a recorded spread of 0.20.
+#### `GV-EX-B03b` · `GT-HAMMER-BULL-v1.0/BASE` · H1
+> Ask exactly equal to the stop (4193.80): at-or-beyond -> skipped.
 
+Tags: entry-beyond-stop, weekend-gap
+Context: atr=4 · trend=DOWN
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-18 21:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-20 23:00:05 4193.60/4193.80
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ENTRY_AT_OR_BEYOND_STOP
+- entry: 4193.80
+- stop: 4193.80
+
+#### `GV-EX-B03bm` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · H1
+*Mirror of `GV-EX-B03b` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Ask exactly equal to the stop (4193.80): at-or-beyond -> skipped.
+
+Tags: entry-beyond-stop, weekend-gap
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-18 21:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-20 23:00:05 4206.20/4206.40
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ENTRY_AT_OR_BEYOND_STOP
+- entry: 4206.20
+- stop: 4206.20
+
+#### `GV-EX-B03c` · `GT-HAMMER-BULL-v1.0/BASE` · H1
+> Ask one tick above the stop: a valid entry with R = 0.01. The BASELINE guard then rejects it: SKIPPED_R_TOO_SMALL (R < max(4 x spread, 0.10 x ATR)).
+
+Tags: entry-beyond-stop, weekend-gap
+Context: atr=4 · trend=DOWN
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-18 21:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+
+Ticks (bid/ask): 09-20 23:00:05 4193.61/4193.81
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_R_TOO_SMALL
+- R: 0.01
+
+#### `GV-EX-B03cm` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · H1
+*Mirror of `GV-EX-B03c` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Ask one tick above the stop: a valid entry with R = 0.01. The BASELINE guard then rejects it: SKIPPED_R_TOO_SMALL (R < max(4 x spread, 0.10 x ATR)).
+
+Tags: entry-beyond-stop, weekend-gap
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-18 21:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-20 23:00:05 4206.19/4206.39
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_R_TOO_SMALL
+- R: 0.01
+
+#### `GV-EX-B03m` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · H1
+*Mirror of `GV-EX-B03` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Weekend gap through the stop: the Friday H1 hammer has stop 4193.80 but the first tick after reopening is 4189.50/4189.70. A BUY at the ask 4189.70 is already below the stop -> SKIPPED_ENTRY_AT_OR_BEYOND_STOP (ruling A-25). No R is formed.
+
+Tags: entry-beyond-stop, weekend-gap
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-18 21:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Ticks (bid/ask): 09-20 23:00:05 4210.30/4210.50
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ENTRY_AT_OR_BEYOND_STOP
+- entry: 4210.30
+- stop: 4206.20
+
+#### `GV-EX-B04` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+> Bars-only fallback for a SHORT (A-26): the BID high is 4206.10 (below the 4206.20 stop) but the stored ASK high is 4206.30, which is what a short stop trades on -> stopped at 4206.20, -1.00R. The ask bar is stored, never synthesised from bid + a spread.
+
+Tags: bars-only, ask-bars
 Context: atr=4 · trend=UP
 
 | # | open (UTC) | O | H | L | C |
 |---|---|---|---|---|---|
 | 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
 
+Bars after entry (no ticks): 4199.60/4206.10/4195.00/4199.60
+
 Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80
+*No ticks after entry: resolve from the OHLC bar only.*
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: bid-only bars: high 4206.10 < stop 4206.20 -> stop NOT hit.
-- Reading B: ask = bar high + the bar's spread 0.20 = 4206.30 >= stop -> stop hit (the calculator used this).
-- Reading C: use a fixed assumed spread (which value?).
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4199.60
+- stop: 4206.20
+- R: 6.60
+- target(s): 4186.40
+- exit: STOP net -1.00R [BARS]
 
-#### `GV-EX-B05` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · **BLOCKED_AMBIGUITY**
-> Does SKIPPED_R_TOO_SMALL apply to SOURCE variants? The rule is written inside the Layer B (baseline) target bullet only, but source variants have their own stops. Spread 3.10 (wide): entry ask 4212.10, SRC-PS stop 4199.80 -> R 12.30, which is below 4 x spread = 12.40. The source target (T_SR zone edge 4262.00) is 4.06R away, so no other rule interferes.
+#### `GV-EX-B04b` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+> A short whose only bar data is BID OHLC cannot be resolved from bars: NEEDS_ASK_BARS (backfill from ticks).
 
+Tags: bars-only, ask-bars
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Bars after entry (no ticks): 4199.60/4206.10/4195.00/4199.60
+
+Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80
+*No ticks after entry: resolve from the OHLC bar only.*
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- exit: NEEDS_ASK_BARS [NEEDS_ASK_BARS]
+
+#### `GV-EX-B04c` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+> The ASK bar proves both the stop (ask high 4206.30 >= 4206.20) and the target (ask low 4186.20 <= 4186.40) were reachable: STOP FIRST, target-first sensitivity +2.00R.
+
+Tags: bars-only, ask-bars, missing-tick-stop-first
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+
+Bars after entry (no ticks): 4199.60/4206.10/4186.00/4199.60
+
+Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80
+*No ticks after entry: resolve from the OHLC bar only.*
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4199.60
+- stop: 4206.20
+- R: 6.60
+- target(s): 4186.40
+- exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R]
+
+#### `GV-EX-B05` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> Ruling A-11: the R_TOO_SMALL guard is BASELINE ONLY. The source-normalized Outside Bar fills at 4199.81, one tick above its stop (R 0.01, far below 4 x spread): it is still traded (the enormous size, 100 lots, exposes how tight the source plan is; universal validity checks still apply).
+
+Tags: r-too-small, baseline-only
+Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4199.61/4199.81
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4199.81
+- stop: 4199.80
+- R: 0.01
+- target(s): 4224.00
+- lots: 100
+
+#### `GV-EX-B05b` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> Spread 3.10: R 12.30 < 4 x spread 12.40, but the source variant is not screened by the baseline guard -> trade taken (its own costs will show the damage).
+
+Tags: r-too-small, baseline-only
 Context: atr=4 · trend=DOWN · zones_entry=[4262.00-4263.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -76,13 +348,60 @@ Context: atr=4 · trend=DOWN · zones_entry=[4262.00-4263.00]
 
 Ticks (bid/ask): 09-16 10:30:02 4209.00/4212.10
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A (baseline-only rule): the SRC-PS variant takes the trade.
-- Reading B (the rule applies to every variant): SKIPPED_R_TOO_SMALL, no trade.
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4212.10
+- stop: 4199.80
+- R: 12.30
+- target(s): 4262.00
 
-#### `GV-EX-B06` · `GT-HAMMER-BULL-v1.0/BASE` · **BLOCKED_AMBIGUITY**
-> RAW MAE sign convention: G8 defines MFE_h as 'best d*(extreme - ref)' and MAE_h as 'worst adverse'. It does not say if MAE is reported negative (min of d*(extreme-ref)), as a positive magnitude, or clamped at 0 when price never trades against the reference. Bars after the hammer never trade below the reference open 4200.20 (lows >= 4199.90 -> adverse excursion -0.30).
+#### `GV-EX-B05bm` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-EX-B05b` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Spread 3.10: R 12.30 < 4 x spread 12.40, but the source variant is not screened by the baseline guard -> trade taken (its own costs will show the damage).
 
+Tags: r-too-small, baseline-only
+Context: atr=4 · trend=UP · zones_entry=[4137.00-4138.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4187.90/4191.00
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4187.90
+- stop: 4200.20
+- R: 12.30
+- target(s): 4138.00
+
+#### `GV-EX-B05m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-EX-B05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Ruling A-11: the R_TOO_SMALL guard is BASELINE ONLY. The source-normalized Outside Bar fills at 4199.81, one tick above its stop (R 0.01, far below 4 x spread): it is still traded (the enormous size, 100 lots, exposes how tight the source plan is; universal validity checks still apply).
+
+Tags: r-too-small, baseline-only
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4200.19/4200.39
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4200.19
+- stop: 4200.20
+- R: 0.01
+- target(s): 4176.00
+- lots: 100
+
+#### `GV-EX-B06` · `GT-HAMMER-BULL-v1.0/BASE` · M15
+> RAW MAE convention (A-27): MFE and MAE are NON-NEGATIVE magnitudes. Bars after the signal have lows 0.30 below the reference open 4200.20 -> MAE = 0.30 (not -0.30).
+
+Tags: raw, mae-sign
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -95,10 +414,67 @@ Context: atr=4 · trend=DOWN
 | 6 | 09-16 11:15 | 4200.20 | 4203.00 | 4199.90 | 4202.00 |
 | 7 | 09-16 11:30 | 4200.20 | 4203.00 | 4199.90 | 4202.00 |
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: MAE_1 = -0.30 (negative, min of d*(low - ref)).
-- Reading B: MAE_1 = 0.30 (magnitude).
-- Reading C: clamped at 0 when the low is above ref (not the case here, low is 0.30 below).
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- RAW — ref=4200.20 | h1: ret=1.80, mfe=2.80, mae=0.30 | h3: ret=1.80, mfe=2.80, mae=0.30 | h5: ret=1.80, mfe=2.80, mae=0.30 | h10: NULL | h20: NULL
+
+#### `GV-EX-B06b` · `GT-HAMMER-BULL-v1.0/BASE` · M15
+> Price never trades below the reference: MAE = 0.00 (clamped, never negative).
+
+Tags: raw, mae-sign
+Context: atr=4 · trend=DOWN
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
+| 2 | 09-16 10:15 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+| 3 | 09-16 10:30 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+| 4 | 09-16 10:45 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+| 5 | 09-16 11:00 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+| 6 | 09-16 11:15 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+| 7 | 09-16 11:30 | 4200.20 | 4203.00 | 4200.20 | 4202.00 |
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- RAW — h1: ret=1.80, mfe=2.80, mae=0.00 | h5: mae=0.00
+
+#### `GV-EX-B06bm` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+*Mirror of `GV-EX-B06b` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Price never trades below the reference: MAE = 0.00 (clamped, never negative).
+
+Tags: raw, mae-sign
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+| 2 | 09-16 10:15 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+| 3 | 09-16 10:30 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+| 4 | 09-16 10:45 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+| 5 | 09-16 11:00 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+| 6 | 09-16 11:15 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+| 7 | 09-16 11:30 | 4199.80 | 4199.80 | 4197.00 | 4198.00 |
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- RAW — h1: ret=1.80, mfe=2.80, mae=0.00 | h5: mae=0.00
+
+#### `GV-EX-B06m` · `GT-SHOOTINGSTAR-BEAR-v1.0/BASE` · M15
+*Mirror of `GV-EX-B06` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> RAW MAE convention (A-27): MFE and MAE are NON-NEGATIVE magnitudes. Bars after the signal have lows 0.30 below the reference open 4200.20 -> MAE = 0.30 (not -0.30).
+
+Tags: raw, mae-sign
+Context: atr=4 · trend=UP
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
+| 2 | 09-16 10:15 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+| 3 | 09-16 10:30 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+| 4 | 09-16 10:45 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+| 5 | 09-16 11:00 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+| 6 | 09-16 11:15 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+| 7 | 09-16 11:30 | 4199.80 | 4200.10 | 4197.00 | 4198.00 |
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- RAW — ref=4199.80 | h1: ret=1.80, mfe=2.80, mae=0.30 | h3: ret=1.80, mfe=2.80, mae=0.30 | h5: ret=1.80, mfe=2.80, mae=0.30 | h10: NULL | h20: NULL
 
 #### `GV-EX-CM-01` · `GT-HAMMER-BULL-v1.0/BASE` · M15
 > Commission $7.00 per lot round trip (test account): lots 5/33, commission 7/660 R = 0.0106R. Target hit: +2.00R gross, 1313/660 = +1.9894R net.
@@ -135,14 +511,6 @@ Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40; 09-16 10:16:40 4193.80/4194.00
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - exit: STOP net -667/660 (≈-1.0106)R (gross -1.00R)
-
-#### `GV-G-ZN-11` · `atzone` · **BLOCKED_AMBIGUITY**
-> Dead zones: G4 says a zone is 'dead once a completed bar closes more than 0.10*ATR beyond its far edge' but never says WHICH edge is 'far' (a zone has no side until it is used as support or resistance, and role flips are not modelled). Take zone [4229.80, 4230.80] and a bar that closes at 4231.30 (0.50 above the zone top).
-
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: 'far edge' = the edge farthest from where price came from, i.e. a close above the zone kills it as RESISTANCE and a close below kills it as SUPPORT - the same zone can be dead for one role and alive for the other.
-- Reading B: any close more than 0.10*ATR beyond EITHER edge kills the zone for all purposes.
-- Reading C: far edge = the top for a resistance zone and the bottom for a support zone, where the role is fixed by which side of the zone price was on when it formed.
 
 #### `GV-TF-D1-01` · `GT-HAMMER-BULL-v1.0/BASE` · D1
 > D1 bar (Sunday 23:00 open) completes Monday 22:00; entry after the pause. Baseline: BUY ask 4200.40, stop 4193.80, 2R 4213.60.

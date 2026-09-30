@@ -1,6 +1,6 @@
 # P17 Three White Soldiers — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **48 vectors** (47 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **49 vectors** (49 firm)
 
 Strategies covered: `GT-3WHITESOLDIERS-BULL-v1.0`
 
@@ -45,7 +45,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4211.00/4211.20; 09-16 10:46:40 4199.60/4199.80; 09-16 10:48:20 4234.40/4234.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4199.60; R: 11.60; target(s): 4234.40; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4211.00/4211.20; 09-16 10:46:40 4234.40/4234.60; 09-16 10:48:20 4199.60/4199.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4199.60; R: 11.60; target(s): 4234.40; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4211.00/4211.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4199.60; R: 11.60; target(s): 4234.40; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4211.00/4211.50; 09-16 10:48:20 4235.30/4235.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.50; stop: 4199.60; R: 11.90; target(s): 4235.30; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4211.00/4211.50; 09-16 10:48:20 4235.30/4235.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4211.50; stop: 4199.60; R: 11.90; target(s): 4235.30; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4211.00/4211.20; 09-16 11:01:40 4234.40/4234.60 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4211.20; stop: 4199.60; R: 11.60; target(s): 4234.40; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4211.00/4211.20; 09-16 11:01:40 4234.40/4234.60 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4201.10/4201.60; 09-16 10:46:40 4205.60/4206.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4201.60; R: 2.00; target(s): 4205.60; exit: TARGET net 2.00R |
@@ -74,7 +74,7 @@ Context: atr=4 · trend=DOWN
 | 9 | 09-16 12:00 | 4214.00 | 4220.00 | 4202.00 | 4215.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4211.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4211.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P17-Y01` · `GT-3WHITESOLDIERS-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -168,8 +168,8 @@ Ticks (bid/ask): 09-16 11:30:01 4211.20/4211.40
 - expiry time: 2026-09-16T11:30:00Z
 - trigger: 4211.20
 
-#### `GV-P17-V04` · `GT-3WHITESOLDIERS-BULL-v1.0/SRC-PS` · M15 · **PROVISIONAL**
-> Trigger reached exactly at 11:30:00, the instant the third bar completes. [PROVISIONAL: the spec does not say whether the completion instant belongs to the window (A-18); the calculator treats it as inside.]
+#### `GV-P17-V04` · `GT-3WHITESOLDIERS-BULL-v1.0/SRC-PS` · M15
+> Trigger tick stamped exactly 11:30:00, the instant the third bar completes. Bars are half-open, so that tick belongs to the FOURTH bar (11:30-11:45): too late -> EXPIRED (ruling A-18: bar membership, not timestamp equality).
 
 Tags: stop-entry, expiry, boundary
 Context: atr=4 · trend=DOWN
@@ -183,11 +183,32 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 11:30:00 4211.20/4211.40
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED
+- disposition: EXPIRED
+- arm time: 2026-09-16T10:45:00Z
+- expiry time: 2026-09-16T11:30:00Z
+- trigger: 4211.20
+
+#### `GV-P17-V04b` · `GT-3WHITESOLDIERS-BULL-v1.0/SRC-PS` · M15
+> Trigger tick at 11:29:59, the last second of the third bar: it belongs to the window -> filled at the ask 4211.40 (bid 4211.20 + 0.20).
+
+Tags: stop-entry, expiry, boundary
+Context: atr=4 · trend=DOWN
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4200.00 | 4204.20 | 4199.80 | 4204.00 |
+| 2 | 09-16 10:15 | 4202.00 | 4208.20 | 4201.80 | 4208.00 |
+| 3 | 09-16 10:30 | 4206.00 | 4211.20 | 4205.80 | 4211.00 |
+
+Ticks (bid/ask): 09-16 11:29:59 4211.20/4211.40
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - arm time: 2026-09-16T10:45:00Z
 - expiry time: 2026-09-16T11:30:00Z
 - trigger: 4211.20
-- signal time: 2026-09-16T11:30:00Z
+- signal time: 2026-09-16T11:29:59Z
 - entry: 4211.40
 - stop: 4205.60
 - R: 5.80

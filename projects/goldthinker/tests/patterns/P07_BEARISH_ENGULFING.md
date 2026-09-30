@@ -1,6 +1,6 @@
 # P07 Bearish Engulfing — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **46 vectors** (2 dormant, 43 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **46 vectors** (2 dormant, 44 firm)
 
 Strategies covered: `GT-ENGULF-BEAR-v1.0`
 
@@ -44,7 +44,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4187.80/4188.00; 09-16 10:31:40 4197.00/4197.20; 09-16 10:33:20 4168.80/4169.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4187.80; stop: 4197.20; R: 9.40; target(s): 4169.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4187.80/4188.00; 09-16 10:31:40 4168.80/4169.00; 09-16 10:33:20 4197.00/4197.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4187.80; stop: 4197.20; R: 9.40; target(s): 4169.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4187.80/4188.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4187.80; stop: 4197.20; R: 9.40; target(s): 4169.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4187.50/4188.00; 09-16 10:33:20 4167.60/4168.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4187.50; stop: 4197.20; R: 9.70; target(s): 4168.10; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4187.50/4188.00; 09-16 10:33:20 4167.60/4168.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4187.50; stop: 4197.20; R: 9.70; target(s): 4168.10; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4187.80/4188.00; 09-16 10:46:40 4168.80/4169.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4187.80; stop: 4197.20; R: 9.40; target(s): 4169.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4187.80/4188.00; 09-16 10:46:40 4168.80/4169.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4195.20/4195.70; 09-16 10:31:40 4190.70/4191.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4195.20; R: 2.00; target(s): 4191.20; exit: TARGET net 2.00R |
@@ -73,7 +73,7 @@ Context: atr=4 · trend=UP
 | 8 | 09-16 11:45 | 4185.00 | 4197.00 | 4179.00 | 4184.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4188.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4188.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P07-Y00` · `GT-ENGULF-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P06-Y00` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -157,6 +157,7 @@ Context: atr=4 · trend=RANGE · zones_pre=[4197.40-4197.50] · zones_entry=[416
 Ticks (bid/ask): 09-16 12:00:02 4187.80/4188.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P07-V03` · `GT-ENGULF-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P06-V03` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -173,6 +174,7 @@ Context: atr=4 · trend=UP · zones_entry=[4168.00-4169.00]
 Ticks (bid/ask): 09-16 12:00:02 4187.80/4188.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
 
 #### `GV-P07-V04` · `GT-ENGULF-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P06-V04` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -194,9 +196,9 @@ Ticks (bid/ask): 09-16 12:00:02 4187.80/4188.00
 - stop: 4197.20
 - R: 9.40
 
-#### `GV-P07-V05` · `GT-ENGULF-BEAR-v1.0/SRC-CB` · M5 · **PROVISIONAL**
+#### `GV-P07-V05` · `GT-ENGULF-BEAR-v1.0/SRC-CB` · M5
 *Mirror of `GV-P06-V05` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> M5 not allowed -> SKIPPED_TF_NOT_ALLOWED. [PROVISIONAL A-12]
+> M5 not allowed -> SKIPPED_TF_NOT_ALLOWED.
 
 Tags: tf-gate
 Context: atr=4 · trend=UP · zones_pre=[4197.40-4197.50] · zones_entry=[4168.00-4169.00]
@@ -209,7 +211,8 @@ Context: atr=4 · trend=UP · zones_pre=[4197.40-4197.50] · zones_entry=[4168.0
 Ticks (bid/ask): 09-16 10:10:02 4187.80/4188.00
 
 - variant: no event
-- disposition: SKIPPED_TF_NOT_ALLOWED
+- disposition: NOT_QUALIFIED
+- qualification_failures: TF_NOT_ALLOWED
 
 #### `GV-P07-V06` · `GT-ENGULF-BEAR-v1.0/SRC-CB` · H1
 *Mirror of `GV-P06-V06` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*

@@ -1,6 +1,6 @@
 # P16 Evening Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **42 vectors** (41 firm, 1 provisional)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **43 vectors** (43 firm)
 
 Strategies covered: `GT-EVENINGSTAR-BEAR-v1.0`
 
@@ -43,7 +43,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4198.00/4198.20; 09-16 10:48:20 4175.20/4175.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.20; R: 7.60; target(s): 4175.40; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:45:02 4190.60/4190.80; 09-16 10:46:40 4175.20/4175.40; 09-16 10:48:20 4198.00/4198.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.20; R: 7.60; target(s): 4175.40; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:45:02 4190.60/4190.80 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.20; R: 7.60; target(s): 4175.40; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4190.30/4190.80; 09-16 10:48:20 4174.00/4174.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.30; stop: 4198.20; R: 7.90; target(s): 4174.50; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:45:02 4190.30/4190.80; 09-16 10:48:20 4174.00/4174.50 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4190.30; stop: 4198.20; R: 7.90; target(s): 4174.50; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 11:00:00 4190.60/4190.80; 09-16 11:01:40 4175.20/4175.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.60; stop: 4198.20; R: 7.60; target(s): 4175.40; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 11:00:01 4190.60/4190.80; 09-16 11:01:40 4175.20/4175.40 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:45:02 4196.20/4196.70; 09-16 10:46:40 4191.70/4192.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4196.20; R: 2.00; target(s): 4192.20; exit: TARGET net 2.00R |
@@ -73,7 +73,7 @@ Context: atr=4 · trend=UP
 | 9 | 09-16 12:00 | 4187.80 | 4199.80 | 4181.80 | 4186.80 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4190.80 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=7 | h10: NULL | h20: NULL
+- RAW — ref=4190.80 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=3 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=5 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=7 | h10: NULL | h20: NULL
 
 #### `GV-P16-Y01` · `GT-EVENINGSTAR-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P15-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -99,6 +99,28 @@ Ticks (bid/ask): 09-16 10:45:02 4190.60/4190.80
 - target(s): 4175.40
 
 ### Variant `SRC-PS`
+
+#### `GV-P16-Q01` · `GT-EVENINGSTAR-BEAR-v1.0/SRC-PS` · M15
+> A-30 on a partial target: TP2 is the near edge (top) of the zone below TP1, 4184.004 off-grid; for a SHORT a structural target rounds toward the entry (up) -> 4184.01. Stop max(H1,H2)+0.20 = 4198.20.
+
+Tags: quantisation, structural-target, partials, A-30
+Context: atr=4 · trend=UP · zones_entry=[4183.00-4184.004]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4190.00 | 4197.00 | 4189.50 | 4196.50 |
+| 2 | 09-16 10:15 | 4197.00 | 4198.00 | 4196.20 | 4196.60 |
+| 3 | 09-16 10:30 | 4195.50 | 4196.00 | 4190.50 | 4190.80 |
+
+Ticks (bid/ask): 09-16 10:45:02 4190.80/4191.00; 09-16 10:46:40 4189.30/4189.50; 09-16 10:47:30 4183.81/4184.01
+
+- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4190.80
+- stop: 4198.20
+- R: 7.40
+- target(s): 4189.50, 4184.01
+- exit: TARGET net 437/925 (≈0.4724)R
 
 #### `GV-P16-V01` · `GT-EVENINGSTAR-BEAR-v1.0/SRC-PS` · M15
 > SRC-PS Evening Star: SELL at the bid 4190.80; stop = H2 + 0.20 = 4198.20; R 7.40; TP1 = L1 (4189.50) closes 60%; TP2 = near edge (top) of the nearest live zone below TP1 (4184.00) closes 40%: +0.5811R.
@@ -222,10 +244,10 @@ Ticks (bid/ask): 09-16 10:45:02 4190.80/4191.00; 09-16 10:46:40 4189.30/4189.50
 - target(s): 4189.50, None
 - exit: PARTIAL_OPEN
 
-#### `GV-P16-V07` · `GT-EVENINGSTAR-BEAR-v1.0/SRC-PS` · M15 · **PROVISIONAL**
-> Case where the two stop readings differ (H2 4196.90 is BELOW H1 4197.00). The spec's SRC-PS stop for the Evening Star is H2+0.20 = 4197.10; the mirror of the Morning Star rule (min(L1,L2)) would be max(H1,H2)+0.20 = 4197.20. The calculator follows the spec text literally.
+#### `GV-P16-V07` · `GT-EVENINGSTAR-BEAR-v1.0/SRC-PS` · M15
+> Case where H2 (4196.90) is BELOW H1 (4197.00). Ruling A-17 makes the stop policy symmetric with the Morning Star: max(H1,H2)+0.20 = 4197.20 (not H2+0.20 = 4197.10).
 
-Tags: asymmetry
+Tags: asymmetry, stop-policy
 Context: atr=4 · trend=UP · zones_entry=[4183.00-4184.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -238,5 +260,5 @@ Ticks (bid/ask): 09-16 10:45:02 4190.80/4191.00
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
-- stop: 4197.10
+- stop: 4197.20
 

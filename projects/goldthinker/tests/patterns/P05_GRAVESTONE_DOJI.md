@@ -1,6 +1,6 @@
 # P05 Gravestone Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **33 vectors** (1 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **33 vectors** (1 dormant, 32 firm)
 
 Strategies covered: `GT-GRAVESTONE-BEAR-v1.0`
 
@@ -39,7 +39,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:15:02 4199.90/4200.10; 09-16 10:16:40 4206.00/4206.20; 09-16 10:18:20 4187.10/4187.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.90; stop: 4206.20; R: 6.30; target(s): 4187.30; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:15:02 4199.90/4200.10; 09-16 10:16:40 4187.10/4187.30; 09-16 10:18:20 4206.00/4206.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.90; stop: 4206.20; R: 6.30; target(s): 4187.30; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:15:02 4199.90/4200.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.90; stop: 4206.20; R: 6.30; target(s): 4187.30; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.60/4200.10; 09-16 10:18:20 4185.90/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:15:02 4199.60/4200.10; 09-16 10:18:20 4185.90/4186.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4199.60; stop: 4206.20; R: 6.60; target(s): 4186.40; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:30:00 4199.90/4200.10; 09-16 10:31:40 4187.10/4187.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4199.90; stop: 4206.20; R: 6.30; target(s): 4187.30; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:30:01 4199.90/4200.10; 09-16 10:31:40 4187.10/4187.30 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:15:02 4204.20/4204.70; 09-16 10:16:40 4199.70/4200.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4204.20; R: 2.00; target(s): 4200.20; exit: TARGET net 2.00R |
@@ -67,7 +67,7 @@ Context: atr=4 · trend=UP
 | 7 | 09-16 11:30 | 4197.10 | 4209.10 | 4191.10 | 4196.10 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4200.10 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=5 | h10: NULL | h20: NULL
+- RAW — ref=4200.10 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=1 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=3 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=5 | h10: NULL | h20: NULL
 
 #### `GV-P05-Y01` · `GT-GRAVESTONE-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P04-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*

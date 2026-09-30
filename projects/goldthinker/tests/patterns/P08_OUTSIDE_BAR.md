@@ -1,6 +1,6 @@
 # P08 Outside Bar — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **91 vectors** (3 blocked_ambiguity, 88 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **105 vectors** (105 firm)
 
 Strategies covered: `GT-OUTSIDE-BEAR-v1.0`, `GT-OUTSIDE-BULL-v1.0`
 
@@ -18,8 +18,8 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `B02m` | 4195.00/4198.00/4192.00/4194.00 ; 4196.00/4200.00/4191.99/4193.00 | UP | 4 | shape ✔ · formed ✔ | — | H2 = H1 + 0.01: passes. |
 | `B03m` | 4195.00/4198.00/4192.00/4194.00 ; 4196.00/4198.00/4190.00/4191.00 | UP | 4 | no shape | (1 clause) | L2 = L1 exactly (4202.00): fails L2<L1 only. |
 | `B04m` | 4195.00/4198.00/4192.00/4194.00 ; 4196.00/4198.01/4190.00/4191.00 | UP | 4 | shape ✔ · formed ✔ | — | L2 = L1 - 0.01: passes. |
-| `B05m` | 4195.00/4198.00/4192.00/4194.00 ; 4194.00/4200.00/4190.00/4194.00 | UP | 4 | no shape | (1 clause) | C2 = O2 (doji close): shape geometry holds but direction is undefined -> no bullish (and no bearish) signal. |
-| `B06m` | 4195.00/4198.00/4192.00/4194.00 ; 4191.00/4200.00/4190.00/4196.00 | UP | 4 | no shape | (1 clause) | Bearish outside bar seen by the BULL strategy: geometry passes, direction clause fails. |
+| `B05m` | 4195.00/4198.00/4192.00/4194.00 ; 4194.00/4200.00/4190.00/4194.00 | UP | 4 | shape ✔ · not formed | — | C2 = O2 (doji close): the neutral geometry is logged as SHAPE_DETECTED (A-08) but K2 has no direction, so no bullish pattern is formed. |
+| `B06m` | 4195.00/4198.00/4192.00/4194.00 ; 4191.00/4200.00/4190.00/4196.00 | UP | 4 | shape ✔ · not formed | — | Bearish outside bar seen by the BULL strategy: geometry passes, direction clause fails. |
 | `F01m` | 4195.00/4198.00/4192.00/4194.00 ; 4197.00/4199.00/4191.00/4192.00 | UP | 4 | shape ✔ · formed ✔ | — | R2 = 8.00 >= 6.00: flag big true. |
 | `F02m` | 4195.00/4197.00/4193.00/4194.00 ; 4196.00/4198.00/4192.00/4193.00 | UP | 4 | shape ✔ · formed ✔ | — | R2 = 6.00 exactly = 1.5*ATR: flag true (>=). |
 | `F03m` | 4195.00/4197.00/4193.00/4194.00 ; 4196.00/4197.99/4192.01/4193.00 | UP | 4 | shape ✔ · formed ✔ | — | R2 = 5.98 < 6.00: flag false; pattern still forms. |
@@ -40,7 +40,7 @@ Read `README.md` first (conventions: ATR is injected as 4.00 unless stated, test
 | `L04m` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4200.00/4200.20; 09-16 10:33:20 4171.80/4172.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.80; stop: 4200.20; R: 9.40; target(s): 4172.00; exit: STOP net -1.00R |
 | `L05m` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4171.80/4172.00; 09-16 10:33:20 4200.00/4200.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.80; stop: 4200.20; R: 9.40; target(s): 4172.00; exit: TARGET net 2.00R |
 | `L06m` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4190.80/4191.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.80; stop: 4200.20; R: 9.40; target(s): 4172.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4190.50/4191.00; 09-16 10:33:20 4170.60/4171.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.50; stop: 4200.20; R: 9.70; target(s): 4171.10; exit: TARGET net 2.00R |
+| `L07m` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4190.50/4191.00; 09-16 10:33:20 4170.60/4171.10 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4190.50; stop: 4200.20; R: 9.70; target(s): 4171.10; exit: TARGET net 2.00R |
 | `L08m` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4190.80/4191.00; 09-16 10:46:40 4171.80/4172.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4190.80; stop: 4200.20; R: 9.40; target(s): 4172.00; exit: TARGET net 2.00R |
 | `L09m` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4190.80/4191.00; 09-16 10:46:40 4171.80/4172.00 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10m` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4198.20/4198.70; 09-16 10:31:40 4193.70/4194.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4198.20; R: 2.00; target(s): 4194.20; exit: TARGET net 2.00R |
@@ -69,7 +69,7 @@ Context: atr=4 · trend=UP
 | 8 | 09-16 11:45 | 4188.00 | 4200.00 | 4182.00 | 4187.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4191.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4191.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P08-Y01m` · `GT-OUTSIDE-BEAR-v1.0/BASE` · M15
 *Mirror of `GV-P08-Y01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -94,6 +94,68 @@ Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00
 - target(s): 4172.00
 
 ### Variant `SRC-PS`
+
+#### `GV-P08-Q01m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-Q01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> A-30: the zone's near edge 4224.004 is off the tick grid. STRUCTURAL targets round toward the entry (a long target down): 4224.00, so the target never lies beyond the obstacle. A tick at 4224.00 reaches it: +1.5745R.
+
+Tags: quantisation, structural-target, A-30
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4175.996]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4175.80/4176.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4190.80
+- stop: 4200.20
+- R: 9.40
+- target(s): 4176.00
+- exit: TARGET net 74/47 (≈1.5745)R
+
+#### `GV-P08-Q02m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-Q02` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> A-30 flips a boundary: fill 4209.21, stop 4199.80, R 9.41, minimum reward 1.5R = 14.115. Exact edge 4223.325 gives exactly 14.115 (would pass) but the structural target quantises DOWN to 4223.32 -> reward 14.11 < 14.115 -> SKIPPED_SRC_RR. The minimum-R test uses the quantised level.
+
+Tags: quantisation, insufficient-rr, A-30
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.675]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4190.79/4190.99
+
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_SRC_RR
+- entry: 4190.79
+- stop: 4200.20
+- R: 9.41
+
+#### `GV-P08-Q03m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-Q03` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Edge 4223.335 quantises to 4223.33 -> reward 14.12 >= 14.115 -> the trade is taken.
+
+Tags: quantisation, A-30
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.665]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4190.79/4190.99; 09-16 10:31:40 4176.47/4176.67
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4190.79
+- stop: 4200.20
+- R: 9.41
+- target(s): 4176.67
+- exit: TARGET net 1412/941 (≈1.5005)R
 
 #### `GV-P08-V01m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P08-V01` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -260,21 +322,43 @@ Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4169.80/4170.00
 - target(s): 4170.00
 - exit: TARGET net 104/47 (≈2.2128)R
 
+#### `GV-P08-V09m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-V09` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> A live zone STRADDLES the entry (4208.00-4212.00, entry 4209.20). Ruling A-04: it is the nearest obstacle; its near edge 4208.00 is behind the entry, so SKIPPED_TARGET_ALREADY_PASSED - the farther zone at 4230.00 is never used.
+
+Tags: T_SR, straddling-zone, target-already-passed
+Context: atr=4 · trend=UP · zones_entry=[4188.00-4192.00], [4169.00-4170.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_TARGET_ALREADY_PASSED
+- entry: 4190.80
+- stop: 4200.20
+- R: 9.40
+
 #### `GV-P08-V10m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P08-V10` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
-> R2 = 5.98 < 1.5*ATR = 6.00: BASE Outside Bar exists, but SRC-PS does not qualify (variant identity needs R2>=1.5*ATR): no variant events.
+> R2 = 5.98 < 1.5*ATR = 6.00: the BASE Outside Bar exists (neutral shape, bullish formation) but SRC-PS fails its size filter: no variant events, NOT_QUALIFIED with failure SIZE_FILTER.
 
 Tags: variant-not-qualified
 Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00]
 
 | # | open (UTC) | O | H | L | C |
 |---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 1 | 09-16 10:00 | 4195.00 | 4197.00 | 4193.00 | 4194.00 |
 | 2 | 09-16 10:15 | 4196.00 | 4197.99 | 4192.01 | 4193.00 |
 
 Ticks (bid/ask): 09-16 10:30:02 4192.80/4193.00
 
 - variant: no event
+- disposition: NOT_QUALIFIED
+- qualification_failures: SIZE_FILTER
 
 #### `GV-P08-V11m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
 *Mirror of `GV-P08-V11` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
@@ -335,6 +419,89 @@ Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4175.80/4176.00
 - target(s): 4176.00
 - exit: TARGET net 74/47 (≈1.5745)R
 
+#### `GV-P08-V14m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-V14` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> A high-impact USD event at 10:05 lies inside K1's candle (10:00-10:15) but not K2's (10:15-10:30). Ruling A-03: only K2 is checked -> the trade is taken.
+
+Tags: news, k2-only
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00] · news=CPI high USD 10:05:00
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 10:15 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4175.80/4176.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4190.80
+- stop: 4200.20
+- R: 9.40
+- target(s): 4176.00
+- exit: TARGET net 74/47 (≈1.5745)R
+
+#### `GV-P08-V15m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · H4
+*Mirror of `GV-P08-V15` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> Ruling A-03: on intraday TFs a K2 whose nominal period overlaps the scheduled daily pause is skipped. H4 K2 opens 19:00 and nominally runs to 23:00, overlapping the 22:00-23:00 pause (signal at the 22:00 closure start) -> SKIPPED_ROLLOVER.
+
+Tags: rollover, tf-H4
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 15:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 19:00 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 23:00:05 4190.80/4191.00; 09-16 23:05:05 4175.80/4176.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ROLLOVER
+- signal time: 2026-09-16T22:00:00Z
+
+#### `GV-P08-V16m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · M15
+*Mirror of `GV-P08-V16` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> M15 K2 21:45-22:00 ends exactly where the pause starts: it does not overlap the pause -> not skipped; the first tick after the pause (23:00:05) enters (entry_across_break).
+
+Tags: rollover, boundary
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 21:30 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-16 21:45 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-16 23:00:05 4190.80/4191.00; 09-16 23:05:05 4175.80/4176.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- signal time: 2026-09-16T22:00:00Z
+- entry: 4190.80
+- stop: 4200.20
+- R: 9.40
+- target(s): 4176.00
+- entry_across_break: True
+
+#### `GV-P08-V17m` · `GT-OUTSIDE-BEAR-v1.0/SRC-PS` · D1
+*Mirror of `GV-P08-V17` (prices reflected around 8400; buy/sell, highs/lows and trend swapped).*
+> D1 (and W1/MN1) bars always contain the pause, so the rollover filter is not applied to them (Claude refinement of ruling A-03): the D1 outside bar trades.
+
+Tags: rollover, tf-D1
+Context: atr=4 · trend=UP · zones_entry=[4175.00-4176.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-13 23:00 | 4195.00 | 4198.00 | 4192.00 | 4194.00 |
+| 2 | 09-14 23:00 | 4196.00 | 4200.00 | 4190.00 | 4191.00 |
+
+Ticks (bid/ask): 09-15 23:00:05 4190.80/4191.00; 09-15 23:05:05 4175.80/4176.00
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- signal time: 2026-09-15T22:00:00Z
+- entry: 4190.80
+- stop: 4200.20
+- R: 9.40
+- target(s): 4176.00
+- entry_across_break: True
+
 ## `GT-OUTSIDE-BULL-v1.0`
 
 ### Variant `BASE`
@@ -347,13 +514,14 @@ Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4175.80/4176.00
 | `B02` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4208.01/4200.00/4207.00 | DOWN | 4 | shape ✔ · formed ✔ | — | H2 = H1 + 0.01: passes. |
 | `B03` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4202.00/4209.00 | DOWN | 4 | no shape | L2<L1 | L2 = L1 exactly (4202.00): fails L2<L1 only. |
 | `B04` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4201.99/4209.00 | DOWN | 4 | shape ✔ · formed ✔ | — | L2 = L1 - 0.01: passes. |
-| `B05` | 4205.00/4208.00/4202.00/4206.00 ; 4206.00/4210.00/4200.00/4206.00 | DOWN | 4 | no shape | direction=BULL | C2 = O2 (doji close): shape geometry holds but direction is undefined -> no bullish (and no bearish) signal. |
-| `B06` | 4205.00/4208.00/4202.00/4206.00 ; 4209.00/4210.00/4200.00/4204.00 | DOWN | 4 | no shape | direction=BULL | Bearish outside bar seen by the BULL strategy: geometry passes, direction clause fails. |
+| `B05` | 4205.00/4208.00/4202.00/4206.00 ; 4206.00/4210.00/4200.00/4206.00 | DOWN | 4 | shape ✔ · not formed | — | C2 = O2 (doji close): the neutral geometry is logged as SHAPE_DETECTED (A-08) but K2 has no direction, so no bullish pattern is formed. |
+| `B06` | 4205.00/4208.00/4202.00/4206.00 ; 4209.00/4210.00/4200.00/4204.00 | DOWN | 4 | shape ✔ · not formed | — | Bearish outside bar seen by the BULL strategy: geometry passes, direction clause fails. |
 | `F01` | 4205.00/4208.00/4202.00/4206.00 ; 4203.00/4209.00/4201.00/4208.00 | DOWN | 4 | shape ✔ · formed ✔ | — | R2 = 8.00 >= 6.00: flag big true. |
 | `F02` | 4205.00/4207.00/4203.00/4206.00 ; 4204.00/4208.00/4202.00/4207.00 | DOWN | 4 | shape ✔ · formed ✔ | — | R2 = 6.00 exactly = 1.5*ATR: flag true (>=). |
 | `F03` | 4205.00/4207.00/4203.00/4206.00 ; 4204.00/4207.99/4202.01/4207.00 | DOWN | 4 | shape ✔ · formed ✔ | — | R2 = 5.98 < 6.00: flag false; pattern still forms. |
 | `N01` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4207.00/4203.00/4206.00 | DOWN | 4 | no shape | H2>H1, L2<L1 | Inside bar (not outside): both range clauses fail. |
 | `NZ1` | 4200.00/4204.00/4198.00/4203.00 ; 4202.00/4203.00/4199.00/4200.00 | DOWN | 4 | canonical: no event; variant: no event | — | Second bar sits inside the first: not an outside bar. |
+| `QF1` | 4205.00/4208.00/4202.00/4206.00 ; 4206.00/4210.00/4200.00/4206.00 | DOWN | 4 | canonical: SHAPE_DETECTED; variant: no event; disposition: NOT_QUALIFIED; qualification_failures: DIRECTION | — | A-08: a K2 doji still logs the neutral OUTSIDE_BAR_SHAPE but forms no directional pattern; the bullish BASE variant records the failure DIRECTION. |
 | `T01` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4200.00/4209.00 | UP | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED, SIGNAL | — | Outside Bar has no prior-state requirement: formed with trend UP. |
 | `T02` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4200.00/4209.00 | RANGE | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED, SIGNAL | — | Outside Bar has no prior-state requirement: formed with trend RANGE. |
 | `T03` | 4205.00/4208.00/4202.00/4206.00 ; 4204.00/4210.00/4200.00/4209.00 | UNDETERMINED | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED, SIGNAL | — | Outside Bar has no prior-state requirement: formed with trend UNDETERMINED. |
@@ -369,7 +537,7 @@ Ticks (bid/ask): 09-16 10:30:02 4190.80/4191.00; 09-16 10:31:40 4175.80/4176.00
 | `L04` | Ticks reach the stop first then the target: only the first counts (stop). | 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4199.80/4200.00; 09-16 10:33:20 4228.00/4228.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.20; stop: 4199.80; R: 9.40; target(s): 4228.00; exit: STOP net -1.00R |
 | `L05` | Ticks reach the target first then the stop: only the first counts (target). | 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4228.00/4228.20; 09-16 10:33:20 4199.80/4200.00 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.20; stop: 4199.80; R: 9.40; target(s): 4228.00; exit: TARGET net 2.00R |
 | `L06` | No ticks after entry, only one OHLC bar whose range contains both stop and target: scored STOP FIRST (G9) and the target-first figure +2.00R is reported. | 09-16 10:30:02 4209.00/4209.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.20; stop: 4199.80; R: 9.40; target(s): 4228.00; exit: STOP net -1.00R [CONSERVATIVE_STOP_FIRST] [target-first sensitivity 2.00R] |
-| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4209.00/4209.50; 09-16 10:33:20 4228.90/4229.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.50; stop: 4199.80; R: 9.70; target(s): 4228.90; exit: TARGET net 2.00R |
+| `L07` | Spread 0.50: BUY fills at the ask (bid+0.50), so entry, R and target all move; result still +2.00R. | 09-16 10:30:02 4209.00/4209.50; 09-16 10:33:20 4228.90/4229.40 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; spread_at_entry: 0.50; entry: 4209.50; stop: 4199.80; R: 9.70; target(s): 4228.90; exit: TARGET net 2.00R |
 | `L08` | First tick exactly 15:00 after signal_time: open_elapsed = 15 min is NOT greater than 15 min, so the trade is taken. | 09-16 10:45:00 4209.00/4209.20; 09-16 10:46:40 4228.00/4228.20 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4209.20; stop: 4199.80; R: 9.40; target(s): 4228.00; exit: TARGET net 2.00R |
 | `L09` | First tick 15:01 after signal_time: open_elapsed > 15 min -> SKIPPED_STALE_ENTRY (no trade). | 09-16 10:45:01 4209.00/4209.20; 09-16 10:46:40 4228.00/4228.20 | variant: VARIANT_QUALIFIED, SIGNAL; disposition: SKIPPED_STALE_ENTRY |
 | `L10` | R = 4 x spread exactly (2.00): threshold is 'R < max(4*spread, 0.10*ATR)', so equal is accepted. | 09-16 10:30:02 4201.30/4201.80; 09-16 10:31:40 4205.80/4206.30 | variant: VARIANT_QUALIFIED, SIGNAL, TRADE; entry: 4201.80; R: 2.00; target(s): 4205.80; exit: TARGET net 2.00R |
@@ -397,7 +565,7 @@ Context: atr=4 · trend=DOWN
 | 8 | 09-16 11:45 | 4212.00 | 4218.00 | 4200.00 | 4213.00 |
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4209.00 | h1: ret=1.00, mfe=3.00, mae=-2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=-3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=-4.00, end_index=6 | h10: NULL | h20: NULL
+- RAW — ref=4209.00 | h1: ret=1.00, mfe=3.00, mae=2.00, end_index=2 | h3: ret=-1.00, mfe=4.00, mae=3.00, end_index=4 | h5: ret=3.00, mfe=5.00, mae=4.00, end_index=6 | h10: NULL | h20: NULL
 
 #### `GV-P08-Y01` · `GT-OUTSIDE-BULL-v1.0/BASE` · M15
 > Clean YES: canonical shape and base pattern formed; BASE variant qualifies, signals at bar completion and trades at the first tick (BUY at ask, 2R).
@@ -421,6 +589,65 @@ Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20
 - target(s): 4228.00
 
 ### Variant `SRC-PS`
+
+#### `GV-P08-Q01` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> A-30: the zone's near edge 4224.004 is off the tick grid. STRUCTURAL targets round toward the entry (a long target down): 4224.00, so the target never lies beyond the obstacle. A tick at 4224.00 reaches it: +1.5745R.
+
+Tags: quantisation, structural-target, A-30
+Context: atr=4 · trend=DOWN · zones_entry=[4224.004-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4224.00/4224.20
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4209.20
+- stop: 4199.80
+- R: 9.40
+- target(s): 4224.00
+- exit: TARGET net 74/47 (≈1.5745)R
+
+#### `GV-P08-Q02` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> A-30 flips a boundary: fill 4209.21, stop 4199.80, R 9.41, minimum reward 1.5R = 14.115. Exact edge 4223.325 gives exactly 14.115 (would pass) but the structural target quantises DOWN to 4223.32 -> reward 14.11 < 14.115 -> SKIPPED_SRC_RR. The minimum-R test uses the quantised level.
+
+Tags: quantisation, insufficient-rr, A-30
+Context: atr=4 · trend=DOWN · zones_entry=[4223.325-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4209.01/4209.21
+
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_SRC_RR
+- entry: 4209.21
+- stop: 4199.80
+- R: 9.41
+
+#### `GV-P08-Q03` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> Edge 4223.335 quantises to 4223.33 -> reward 14.12 >= 14.115 -> the trade is taken.
+
+Tags: quantisation, A-30
+Context: atr=4 · trend=DOWN · zones_entry=[4223.335-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-16 10:30:02 4209.01/4209.21; 09-16 10:31:40 4223.33/4223.53
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4209.21
+- stop: 4199.80
+- R: 9.41
+- target(s): 4223.33
+- exit: TARGET net 1412/941 (≈1.5005)R
 
 #### `GV-P08-V01` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
 > SRC-PS Outside Bar: R2 = 10 >= 1.5*ATR (6.0) so it qualifies; entry at the ask 4209.20; stop L2-0.20 = 4199.80 (R 9.40); target T_SR(1.5) = near edge of the nearest live zone above the entry (4224.00): 14.80 = 1.57R >= 1.5R -> trade. Target hit: +1.5745R (not 2R).
@@ -579,9 +806,10 @@ Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4230.00/4230.20
 - target(s): 4230.00
 - exit: TARGET net 104/47 (≈2.2128)R
 
-#### `GV-P08-V09` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · **BLOCKED_AMBIGUITY**
-> A live zone STRADDLES the entry (4208.00-4212.00, entry 4209.20): its near edge (4208.00) is behind the entry. G10 says 'nearest live zone beyond the entry' and 'never steps over a nearer obstacle', but does not say whether a zone containing the entry is 'beyond'.
+#### `GV-P08-V09` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> A live zone STRADDLES the entry (4208.00-4212.00, entry 4209.20). Ruling A-04: it is the nearest obstacle; its near edge 4208.00 is behind the entry, so SKIPPED_TARGET_ALREADY_PASSED - the farther zone at 4230.00 is never used.
 
+Tags: T_SR, straddling-zone, target-already-passed
 Context: atr=4 · trend=DOWN · zones_entry=[4208.00-4212.00], [4230.00-4231.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -591,24 +819,28 @@ Context: atr=4 · trend=DOWN · zones_entry=[4208.00-4212.00], [4230.00-4231.00]
 
 Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: the straddling zone is ignored; the target is 4230.00 (2.21R) -> trade.
-- Reading B: the straddling zone is the nearest obstacle and its near edge is behind the entry -> SKIPPED_TARGET_ALREADY_PASSED.
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_TARGET_ALREADY_PASSED
+- entry: 4209.20
+- stop: 4199.80
+- R: 9.40
 
 #### `GV-P08-V10` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
-> R2 = 5.98 < 1.5*ATR = 6.00: BASE Outside Bar exists, but SRC-PS does not qualify (variant identity needs R2>=1.5*ATR): no variant events.
+> R2 = 5.98 < 1.5*ATR = 6.00: the BASE Outside Bar exists (neutral shape, bullish formation) but SRC-PS fails its size filter: no variant events, NOT_QUALIFIED with failure SIZE_FILTER.
 
 Tags: variant-not-qualified
 Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00]
 
 | # | open (UTC) | O | H | L | C |
 |---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 1 | 09-16 10:00 | 4205.00 | 4207.00 | 4203.00 | 4206.00 |
 | 2 | 09-16 10:15 | 4204.00 | 4207.99 | 4202.01 | 4207.00 |
 
 Ticks (bid/ask): 09-16 10:30:02 4207.00/4207.20
 
 - variant: no event
+- disposition: NOT_QUALIFIED
+- qualification_failures: SIZE_FILTER
 
 #### `GV-P08-V11` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
 > A high-impact USD event at 10:20 lies inside C2's bar (10:15-10:30): SRC-PS skips it -> SKIPPED_NEWS (signal happened, no trade).
@@ -666,9 +898,10 @@ Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4224.00/4224.20
 - target(s): 4224.00
 - exit: TARGET net 74/47 (≈1.5745)R
 
-#### `GV-P08-V14` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · **BLOCKED_AMBIGUITY**
-> A high-impact USD event at 10:05 lies inside C1's bar (10:00-10:15), not C2's. The spec says SRC-PS 'skips bars containing a high-impact USD event' without saying whether that means C2 only, C1 or C2, or the whole formation.
+#### `GV-P08-V14` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> A high-impact USD event at 10:05 lies inside K1's candle (10:00-10:15) but not K2's (10:15-10:30). Ruling A-03: only K2 is checked -> the trade is taken.
 
+Tags: news, k2-only
 Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00] · news=CPI high USD 10:05:00
 
 | # | open (UTC) | O | H | L | C |
@@ -676,24 +909,71 @@ Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00] · news=CPI high U
 | 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
 | 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
 
-Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20
+Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20; 09-16 10:31:40 4224.00/4224.20
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Reading A: only the signal bar C2 is checked -> trade taken.
-- Reading B: any geometry bar (C1 or C2) -> SKIPPED_NEWS.
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- entry: 4209.20
+- stop: 4199.80
+- R: 9.40
+- target(s): 4224.00
+- exit: TARGET net 74/47 (≈1.5745)R
 
-#### `GV-P08-V15` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · **BLOCKED_AMBIGUITY**
-> SRC-PS also 'skips bars overlapping the daily rollover pause' but the daily rollover pause is not defined anywhere in the globals (times, timezone, duration).
+#### `GV-P08-V15` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · H4
+> Ruling A-03: on intraday TFs a K2 whose nominal period overlaps the scheduled daily pause is skipped. H4 K2 opens 19:00 and nominally runs to 23:00, overlapping the 22:00-23:00 pause (signal at the 22:00 closure start) -> SKIPPED_ROLLOVER.
 
+Tags: rollover, tf-H4
 Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00]
 
 | # | open (UTC) | O | H | L | C |
 |---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
-| 2 | 09-16 10:15 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+| 1 | 09-16 15:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 19:00 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
 
-Ticks (bid/ask): 09-16 10:30:02 4209.00/4209.20
+Ticks (bid/ask): 09-16 23:00:05 4209.00/4209.20; 09-16 23:05:05 4224.00/4224.20
 
-Candidate rulings (no expected value is asserted until the spec settles one):
-- Cannot be evaluated until the rollover window is defined (start, end, timezone, whether it follows broker time).
+- variant: VARIANT_QUALIFIED, SIGNAL
+- disposition: SKIPPED_ROLLOVER
+- signal time: 2026-09-16T22:00:00Z
+
+#### `GV-P08-V16` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · M15
+> M15 K2 21:45-22:00 ends exactly where the pause starts: it does not overlap the pause -> not skipped; the first tick after the pause (23:00:05) enters (entry_across_break).
+
+Tags: rollover, boundary
+Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-16 21:30 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-16 21:45 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-16 23:00:05 4209.00/4209.20; 09-16 23:05:05 4224.00/4224.20
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- signal time: 2026-09-16T22:00:00Z
+- entry: 4209.20
+- stop: 4199.80
+- R: 9.40
+- target(s): 4224.00
+- entry_across_break: True
+
+#### `GV-P08-V17` · `GT-OUTSIDE-BULL-v1.0/SRC-PS` · D1
+> D1 (and W1/MN1) bars always contain the pause, so the rollover filter is not applied to them (Claude refinement of ruling A-03): the D1 outside bar trades.
+
+Tags: rollover, tf-D1
+Context: atr=4 · trend=DOWN · zones_entry=[4224.00-4225.00]
+
+| # | open (UTC) | O | H | L | C |
+|---|---|---|---|---|---|
+| 1 | 09-13 23:00 | 4205.00 | 4208.00 | 4202.00 | 4206.00 |
+| 2 | 09-14 23:00 | 4204.00 | 4210.00 | 4200.00 | 4209.00 |
+
+Ticks (bid/ask): 09-15 23:00:05 4209.00/4209.20; 09-15 23:05:05 4224.00/4224.20
+
+- variant: VARIANT_QUALIFIED, SIGNAL, TRADE
+- signal time: 2026-09-15T22:00:00Z
+- entry: 4209.20
+- stop: 4199.80
+- R: 9.40
+- target(s): 4224.00
+- entry_across_break: True
 

@@ -1,6 +1,6 @@
 # P19E Abandoned Baby Early — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.2.2 · vector pack GV-0.1 · **27 vectors** (27 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3 · vector pack GV-0.2 · **27 vectors** (27 firm)
 
 Strategies covered: `GT-ABABYEARLY-BEAR-v1.0`, `GT-ABABYEARLY-BULL-v1.0`
 
@@ -295,7 +295,7 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 10:30:00 4203.40/4203.60; 09-16 10:31:40 4233.40/4233.60
 
 - canonical: no event
-- failing clause(s): DOJI(C2)
+- failing clause(s): DOJI(K2)
 
 #### `GV-P19E-R01` · `GT-ABABYEARLY-BULL-v1.0/BASE-EARLY` · M15
 > RAW for the Abandoned Baby Early trigger: ref = ask 4203.60; the signal bar is index 2 (the bar containing the trigger tick), horizon_end(h) = 2 + h - 1 -> h1 end index 2, h3 end index 4, h5 end index 6; the bar at index 7 (extreme) is excluded from every horizon shown.
@@ -317,7 +317,7 @@ Context: atr=4 · trend=DOWN
 Ticks (bid/ask): 09-16 10:30:00 4203.40/4203.60
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- RAW — ref=4203.60 | h1: end_index=2, ret=1.40, mfe=2.40, mae=-0.60 | h3: end_index=4, ret=-2.60, mfe=5.40, mae=-3.60 | h5: end_index=6, ret=-1.60, mfe=5.40, mae=-5.60 | h10: NULL | h20: NULL
+- RAW — ref=4203.60 | h1: end_index=2, ret=1.40, mfe=2.40, mae=0.60 | h3: end_index=4, ret=-2.60, mfe=5.40, mae=3.60 | h5: end_index=6, ret=-1.60, mfe=5.40, mae=5.60 | h10: NULL | h20: NULL
 
 #### `GV-P19E-T01` · `GT-ABABYEARLY-BULL-v1.0/BASE-EARLY` · M15
 > Trend RANGE: shape only.
