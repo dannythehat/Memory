@@ -87,3 +87,5 @@ Working rule (D-035): Claude and ChatGPT settle trading-research and engineering
 **Update (2026-09-30 night):** live Vantage feed running; own tick-built candles reproduce native MT5 exactly on M1-D1; timeframes M1-D1 enabled for detection (W1/MN1 pending their first exact bar); first production code (`src/goldthinker/core/`) reproduces all 51 global golden vectors; pattern detectors are next. No demo/live execution until live detector output is audited (D-047/D-048).
 
 **Update (late night):** production pattern detectors, variants, execution, RAW, clusters and hub counters reproduce all golden vectors (D-050); feed gate and per-strategy research clocks separated (D-049). Next: live detector loop, portfolio/validation functions, then audit of live detections; no demo execution yet.
+
+**Update (2026-09-30, night, later):** Windows portability and test isolation fixed (D-051, D-052). Live detector loop built (`goldthinker.live`, D-053): evaluates enabled timeframes over own completed candles with the golden-tested production code and stores events; four proposals await ChatGPT; audit on real data still to do; no demo execution.
