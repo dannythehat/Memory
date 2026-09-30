@@ -87,6 +87,52 @@ open, so it needs an adapted definition (e.g. open below prior close by X) or sh
 article: a fair test needs the mirrored bearish versions too. Overlaps with source 1 (engulfing,
 hammer, harami), so those definitions should be fixed once, not per source.
 
+### Source 4 — "Trading in Gold" notes by Shankar A.G. (Scribd doc, owner-supplied .docx, 2026-09-30)
+
+Read in full (25k characters of text; the docx also embeds ~18+ chart images that were not
+inspected). A personal discretionary playbook for gold: reads XAUUSD (OANDA) for levels and
+places orders in MCX GoldMini futures (India). **Author is a hobbyist; document contains no
+statistics, no backtest and no P&L evidence.** It is the first source that describes a whole
+method, not just pattern shapes.
+
+**Framework it describes**
+- Three timeframe pairs: 4H levels/trend + 1H entries (major swings); 1H + 15m (minor);
+  15m + 5m (very minor). "Always trade in the direction of the trend" of the higher timeframe,
+  judged by higher-highs/higher-lows vs lower-highs/lower-lows.
+- Support/resistance by eye: swing-high tips (wicks matter more than closes), two or more
+  medium/large swings at one level, psychological levels in multiples of 50 (e.g. 3100, 3150),
+  and a level is invalid if price cuts it 2-3 times.
+- Breakout: medium/big candle with most of its body beyond the line, little wick, and a volume
+  surge.
+
+**Patterns (about 19) and their confirmation stacks**
+Bullish: engulfing, harami (+cross), morning star (+doji), piercing line, hammer, inverted
+hammer, three white soldiers, dragonfly doji. Bearish: engulfing, harami, evening star (+doji),
+hanging man, dark cloud cover, shooting star, three black crows, gravestone doji. Neutral:
+inside bar, marubozu, doji. Each has a required prior trend (down for bullish reversals, up for
+bearish) and a stack of extras: RSI below 30 or above 70 (or divergence), MACD colour, higher
+volume, Bollinger band proximity, a moving-average touch (20 EMA on 15m, 5 or 9 EMA on 5m, 50
+EMA on 1H), and a follow-up candle closing beyond the pattern.
+
+**Only explicit entries:** bullish engulfing = enter at its close; morning star = buy on a break
+above the 3rd candle's high; evening star = short below the 3rd candle's low; inside bar = break
+of the high/low. Other patterns: wait for a confirming next candle. **Stops:** only morning star
+(below the star candle). **Targets and position sizing: none.**
+
+**Testing implications (Claude's read, not agreed)**
+- Much of it is unrulable as written: hand-drawn trendlines/levels, "medium to large" candles,
+  "quiet bigger", volume (spot XAUUSD has tick volume only; the doc is written for stocks and
+  futures). Every one of those needs an arbitrary number, and each choice is a chance to fit
+  the past. Fewer rules = safer test.
+- The most testable coherent reading: **higher-timeframe trend filter + lower-timeframe reversal
+  pattern back in the trend's direction + RSI extreme + confirming candle close.** That is my
+  interpretation of "trade with the higher-timeframe trend" combined with counter-move patterns;
+  the doc does not say it this way and the owner should confirm.
+- 19 patterns x several confirmations x 3 timeframe pairs is hundreds of variants; the
+  multiple-testing correction will be harsh, so pre-register a short list.
+- Overlaps sources 1 and 3 (engulfing, harami, hammer, stars, inside bar): fix one definition
+  each.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
