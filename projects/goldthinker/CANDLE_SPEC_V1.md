@@ -1,8 +1,9 @@
-# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.2 FOR REVIEW
+# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.2.1 FOR REVIEW
 
-Status: **DRAFT 0.2, 2026-09-30. NOT approved. Nothing is to be coded from this until the owner and the
+Status: **DRAFT 0.2.1, 2026-09-30. NOT approved. Nothing is to be coded from this until the owner and the
 independent reviewer (ChatGPT) have approved it and golden test vectors exist.** Author: Claude.
-Draft 0.2 answers ChatGPT's review of Draft 0.1 (section 4 maps each finding to its fix).
+Draft 0.2 answered ChatGPT's review of Draft 0.1. Draft 0.2.1 is a small revision answering ChatGPT's
+second-pass review (six fixes, section 4). Nothing else changed.
 
 Wave 1 = the 22 patterns marked FULL in `MASTER_CANDLE_LIST.md`, plus two "early setup" companions
 (Kicker, Abandoned Baby) added in 0.2: 24 pattern families, 32 direction-specific versions.
@@ -23,7 +24,12 @@ a constant name so a change is a version bump, never a silent edit.
 - **Source-pip conversion:** the sources quote gold "pips". Their numbers only make sense at
   `PIP_SRC_USD = 0.10` **[ASSUMPTION, unconfirmed]**. It is used ONLY inside source-normalized variants
   (`SRC-*`) to convert a source's distance to dollars (`pips x PIP_SRC_USD`). **No canonical (BASE)
-  pattern identity may depend on it.**
+  pattern identity may depend on it.** (Vantage may define one gold pip as $0.01, so the assumption can be wrong.)
+  **Disabled until confirmed (0.2.1):** every variant whose rules use `PIP_SRC_USD` carries the status
+  `DISABLED_PENDING_PIP_CONFIRMATION`: it is not evaluated, opens no trades and has no ledger, and the hub shows it
+  as disabled. The variants are `SRC-PS` of P01, P02, P03, P04, P05, P06, P07, P09, P10, P11. BASE strategies and
+  every other variant run regardless. Enabling one needs the pip definition confirmed from the broker/owner and is
+  logged as a decision.
 - Time is UTC internally. Timeframes (TF): M1, M5, M15, M30, H1, H4, D1, W1, MN1, built from the tick
   stream (bid prices, like an MT5 chart) on the Vantage broker calendar [TO CONFIRM from the demo account:
   server timezone/DST, day boundary, week start, month boundary]. No empty bars for closed intervals.
@@ -33,37 +39,57 @@ a constant name so a change is a version bump, never a silent edit.
   Duration arithmetic (`open + TF length`) is never used (months, DST and broker days break it).
 - `open_elapsed(a,b)` = time from a to b **excluding scheduled market closures** (feed outages while the
   market is open DO count).
-- Indices for one detection (fixed in 0.2):
+- Indices and times for one detection (fixed in 0.2, extended in 0.2.1):
   - `i0` = first bar of the geometric formation; `formation_end_bar` (`f`) = last bar of the geometry;
-  - `signal_bar` (`s`) = the bar whose completion makes the trade signal knowable (equals `f` for simple
-    patterns; the breakout/confirmation bar for state-machine patterns);
-  - `known_at_time` = `complete_time(s)`; `entry_eligible_time` = `known_at_time` unless a variant adds a
-    confirmation bar, in which case it is that bar's completion.
+  - **`signal_time`** (per variant) = the exact UTC timestamp at which that variant's signal became knowable:
+    close-confirmed patterns -> `complete_time` of the bar whose completion confirms it; opening-tick setups
+    (P14E, P19E) -> the time of that first tick; `STOP_ENTRY` variants -> the time of the tick that reaches the
+    trigger;
+  - `signal_bar` (`s`) = the bar identified by `signal_time`: for close-confirmed signals the bar that completes
+    at `signal_time` (equals `f` for simple patterns; the breakout/confirmation bar for state-machine patterns);
+    for tick-based signals the bar containing the tick;
+  - `entry_eligible_time` = `signal_time` for every entry. `STOP_ENTRY` is the one case with an earlier step:
+    the order is armed at `arm_time` = `complete_time(f)` and fills at the trigger tick, which is `signal_time`.
+  - RAW (Layer A) always uses the BASE variant's `signal_time`/`signal_bar`, so it is variant-independent.
 - Candle maths for bar k: `R=H-L`, `B=|C-O|`, `UW=H-max(O,C)`, `LW=min(O,C)-L`. Bull: `C>O`. Bear: `C<O`.
   A bar with `R=0` never takes part in any pattern.
 - **Data integrity:** a pattern is evaluated only if all its bars and its ATR/swing/zone look-back bars exist
   with no unexplained gap (scheduled closures are allowed and tagged `across_break`); else
   `NOT_EVALUATED_DATA_GAP`.
 
-### G0b Event model (new in 0.2 — this feeds the hub)
+### G0b Event model (0.2, rewritten in 0.2.1 to be variant-aware - this feeds the hub)
 
 Every candle passes through separate, individually logged events:
 
-1. `SHAPE_DETECTED` - the pure geometry matched (no prior-state requirement). Example: a hammer-shaped
-   candle after an UPTREND is logged as shape `HAMMER_SHAPE`, `pattern_qualified=false`,
-   `candidate=HANGING_MAN`. Shapes for patterns with no prior-state requirement equal the pattern.
-2. `PATTERN_FORMED` - shape AND the required prior state hold ("the pattern exists"). **This is the hub's
-   "Formed" count.** It is logged whether or not anything is ever traded.
-3. `SIGNAL` - the variant's qualification/confirmation happened (e.g. an inside bar broke out within 3 bars;
-   a hammer was confirmed by the next bar). Simple patterns: signal = formation.
-4. `TRADE` - the variant actually entered (or its early trigger fired).
-5. Non-trade dispositions, always with a reason code: `EXPIRED_NO_CONFIRMATION`, `INVALIDATED_BEFORE_ENTRY`,
+1. `SHAPE_DETECTED` - the canonical geometry matched (no prior-state requirement). Example: a hammer-shaped
+   candle after an UPTREND is logged as `HAMMER_SHAPE`, `pattern_qualified=false`, `candidate=HANGING_MAN`.
+   Patterns with no prior-state requirement have shape = pattern.
+2. `BASE_PATTERN_FORMED` - canonical shape AND the canonical prior state hold ("the pattern exists"). **This is
+   the hub's "Formed" count.** Logged whether or not anything is ever traded, and **once per detection, never
+   once per variant.**
+3. `VARIANT_QUALIFIED` - a variant's own static conditions hold at formation: its context and location rules
+   (e.g. SRC-PS Hammer accepts `DOWN OR AT_SUPPORT`, SRC-CB needs the trend or a level), its allowed TFs, and any
+   identity delta (e.g. the wider SRC-PS Tweezer tolerance). A variant may qualify **without**
+   `BASE_PATTERN_FORMED` (recorded `base_formed=false`); the BASE variant qualifies exactly when the base pattern
+   forms. A variant with an identity delta evaluates its own geometry at the same bar.
+4. `SIGNAL` - the variant's confirmation/trigger happened and `signal_time` is set (a hammer confirmed by the
+   next bar, an inside bar broken out within 3 bars, a `STOP_ENTRY` trigger reached). Simple patterns: signal =
+   the completion of the formation. Session and news filters are evaluated with the session/news at
+   `signal_time`, so their skips are recorded at this stage.
+5. `TRADE` - the variant actually entered (or its early trigger fired).
+6. Non-trade dispositions, always with a reason code: `EXPIRED_NO_CONFIRMATION`, `INVALIDATED_BEFORE_ENTRY`,
    `SKIPPED_STALE_ENTRY`, `SKIPPED_R_TOO_SMALL`, `SKIPPED_SRC_RR`, `SKIPPED_SRC_NO_TARGET`,
    `SKIPPED_TARGET_ALREADY_PASSED`, `SKIPPED_SESSION_FILTER`, `SKIPPED_NEWS`, `SKIPPED_TF_NOT_ALLOWED`,
-   `NOT_EVALUATED_DATA_GAP`, `NOT_EVALUATED_WARMUP`.
+   `NOT_EVALUATED_DATA_GAP`, `NOT_EVALUATED_WARMUP`, `DISABLED_PENDING_PIP_CONFIRMATION`.
 
-Hub counters per (pattern-side x TF x variant): shapes, formed, signals, trades, each skip reason, open
-trades, closed trades, P&L. Formation counts are never derived from trades.
+**Hub counters (0.2.1) - two levels so nothing is double counted:**
+
+- **Canonical counters**, stored ONCE per `pattern x side x timeframe x version`: `shapes`, `base_formed`.
+- **Variant counters**, stored per `pattern x side x timeframe x variant x version`: `qualified`, `signals`,
+  `trades`, each skip/expiry reason, open and closed trades, P&L.
+- A variant card shows `base_formed` by looking it up in the canonical counters; `base_formed` is never summed
+  across variants. Early-setup patterns (P14E, P19E) are their own pattern identities with their own canonical
+  counters. Counts are never derived from trades.
 
 ### G1 ATR
 
@@ -90,6 +116,10 @@ The candidate pattern never influences its own ATR.
 
 ### G4 Support / resistance zones
 
+**Two separate zone sets (0.2.1):** `zones_prepattern` (computed at `i0-1`, used only for the `AT_SUPPORT` /
+`AT_RESISTANCE` flags and filters) and `zones_at_entry` (computed once at entry, used only for targets; see G10).
+The next paragraph defines the computation for both; they differ only in the completed-bar cut-off.
+
 At `i0-1`, over the last 200 completed bars, collect confirmed swing prices; sort ascending; cluster
 greedily (a cluster starts at the lowest unassigned price `p0` and takes every price `<=p0+0.25*ATR`).
 A cluster is a **zone** if it has >=2 pivots with at least one pair >=3 bars apart. Centre = median;
@@ -107,7 +137,7 @@ and round numbers are context flags only (`ROUND_50`: extreme within `0.10*ATR` 
 
 - ASIA = 09:00-17:00 `Asia/Tokyo`; LONDON = 08:00-17:00 `Europe/London`; NY = 08:00-17:00
   `America/New_York` (DST automatic). `ASIA_ONLY` = in ASIA and in neither LONDON nor NY. The session of a
-  signal is the session at its `known_at_time` (for confirmed variants, the confirmation bar's completion).
+  signal is the session at its `signal_time`.
   **[SPEC]**
 - `economic_events(time_utc, currency, impact, name)`. `F_NEWS_HIGH`: blocked T-30 to T+15 min around any
   high-impact USD event. `F_NEWS_MAJOR`: NFP, CPI, FOMC decision, FOMC press conference, blocked T-60 to
@@ -121,13 +151,14 @@ and round numbers are context flags only (`ROUND_50`: extreme within `0.10*ATR` 
 
 **Layer A - RAW (candle prices only, no trading assumptions).** Direction `d=+1` bullish, `-1` bearish (for
 Inside Bar and Outside Bar, `d` comes from the pattern's own direction rule). Reference price `ref` = open
-of the bar AFTER `signal_bar`. For `h in {1,3,5,10,20}` bars after the signal: `ret_h = d*(close[s+h]-ref)`
+of the bar AFTER `signal_bar` (for a tick-based BASE signal, P14E/P19E: `ref` = the trigger tick's executable
+price and horizon `h` counts `close[s+h-1]`, i.e. the signal bar is bar 1). For `h in {1,3,5,10,20}` bars after the signal: `ret_h = d*(close[s+h]-ref)`
 (USD and ATR units); `MFE_h` = best `d*(extreme-ref)` (bar high for d=+1, low for d=-1); `MAE_h` = worst
 adverse; `dir_ok_h = ret_h>0`; with ticks also `mfe_before_mae_h`. A data gap in the window gives `NULL`.
 RAW is variant-independent (uses the baseline signal bar) and is computed for every SIGNAL.
 
 **Layer B - BASELINE (identical mechanics for every pattern).**
-- **Entry:** first executable tick with `time >= entry_eligible_time`. BUY at ask, SELL at bid. If
+- **Entry:** first executable tick with `time >= entry_eligible_time` (= `signal_time`). BUY at ask, SELL at bid. If
   `open_elapsed(entry_eligible_time, first_tick) > 15 minutes` -> `SKIPPED_STALE_ENTRY`. Scheduled
   closures do not count, so a weekly candle completing at the Friday close can enter at Monday's first tick
   (tagged `entry_across_break`, and any gap through the stop fills at the first price). **[SPEC]**
@@ -137,10 +168,10 @@ RAW is variant-independent (uses the baseline signal bar) and is computed for ev
 - **Target:** fixed `2R`, `R=|entry_fill-stop|`. No partials. No RSI/MACD/DXY/news/session/level filter.
   `SKIPPED_R_TOO_SMALL` if `R < max(4*spread_at_entry, 0.10*ATR)`. **[SPEC]**
 - **Time stop:** `MAX_HOLD = 50` bars of the pattern's own TF, then close at market (`exit_reason=TIME`).
-  **[SPEC]** Correction to 0.1: this keeps horizons comparable in bars; it does NOT keep high-TF trades short
+  **[SPEC]** Approved by the reviewer for v1 (2026-09-30); owner confirmation pending. Correction to 0.1: this keeps horizons comparable in bars; it does NOT keep high-TF trades short
   (50 monthly bars is over four years). W1/MN1 experiments will mature very slowly and will show
-  `INSUFFICIENT_DATA` for a long time; that is accepted. (Alternatives: per-TF limits or no time stop for
-  high TFs - reviewer/owner to decide, section 4.)
+  `INSUFFICIENT_DATA` for a long time; that is accepted. (Alternatives - per-TF limits or no time stop for
+  high TFs - are not used in v1.)
 - **Sizing (fixed in 0.2):** `1R = 1% of REF_EQUITY`, `REF_EQUITY=$10,000` **[SPEC]**.
   `loss_per_lot = (R / tick_size) * tick_value`; `lots = risk_usd / loss_per_lot` using the broker's actual
   tick size and tick value (USD) from the account spec. The independent virtual ledger keeps the unrounded
@@ -170,16 +201,23 @@ and every departure is written in the variant's `source_deviation_notes` (field 
   says otherwise (max extension `G_CONFIRM_MAX=3` bars **[SPEC]**); success -> entry at the first
   executable tick after that bar completes; failure -> `EXPIRED_NO_CONFIRMATION`. "Opens with momentum"
   wording is replaced by a close-based test **[INTERP]**.
-- `STOP_ENTRY(trigger)`: armed at `entry_eligible_time`; long fills when ask `>= trigger`, short when bid
+- `STOP_ENTRY(trigger)`: armed at `arm_time` (`complete_time(f)`); the fill tick is `signal_time` = `entry_eligible_time`; long fills when ask `>= trigger`, short when bid
   `<= trigger`, within the next 3 completed bars; cancelled if price first reaches the stop level
   (`INVALIDATED_BEFORE_ENTRY`); else `EXPIRED`. **[SPEC]**
-- `OPEN_TRIGGER`: fires on the first executable tick of bar `s+1` if a stated opening condition holds.
-  **Used only by the EARLY_SETUP patterns (P14E, P19E). Every trigger counts as a trade, whether or not the
+- `OPEN_TRIGGER`: fires on the first executable tick of the bar after the geometry if a stated opening condition
+  holds. **The condition is tested on the BID (chart) opening price `bid_open` - the same price a candle chart
+  would show - never on the ask; the order then executes BUY at ask / SELL at bid (0.2.1: removes an
+  ask-based bias in the bullish trigger).** **Used only by the EARLY_SETUP patterns (P14E, P19E). Every trigger counts as a trade, whether or not the
   completed pattern later forms.**
 - **`T_SR(minR)` (fixed in 0.2):** target = near edge of the NEAREST live zone beyond the entry in the trade
   direction. Compute available `R` to it. If `< minR` -> `SKIPPED_SRC_RR`. No zone -> `SKIPPED_SRC_NO_TARGET`.
   The rule never steps over a nearer obstacle to reach a bigger target.
 - **`T_SWING(minR)`:** same with the nearest confirmed swing pivot beyond the entry.
+- **Entry snapshot (0.2.1):** targets that use zones or swings (`T_SR`, `T_SWING`, and TP2 anchors) are computed
+  ONCE, immediately before the entry, using only zones/swings that were confirmed by `entry_eligible_time`
+  (`zones_at_entry` = the G4 procedure over the last 200 bars completed by that time; swings confirmed by then).
+  The result is stored on the trade (`target_snapshot`) and frozen: later bars never move a target. A trade
+  with no valid target under the variant's rule is skipped with its reason code and never re-evaluated.
 - **Target validity (new in 0.2):** every target must be strictly beyond the ACTUAL entry price in the trade
   direction. If not -> `SKIPPED_TARGET_ALREADY_PASSED` (the whole occurrence for that variant is skipped; no
   retrospective profit is invented).
@@ -192,7 +230,8 @@ and every departure is written in the variant's `source_deviation_notes` (field 
 - Overlapping identities are allowed and all logged; detections completing on the same bar, same TF and
   same direction share a `cluster_id`. Results are never pooled across TFs, variants or versions.
 - Size: about 32 sides x 9 TFs = 288 baseline strategies plus about 41 source-variant sides x up to 9 TFs =
-  at most about 369 more: **up to about 657 strategies.** Survivors must clear the untouched validation
+  at most about 369 more: **up to about 657 strategies.** Variants disabled by `DISABLED_PENDING_PIP_CONFIRMATION`
+  (G0) are inside this maximum until enabled. Survivors must clear the untouched validation
   stage before any real money.
 
 ### G12 Context recorded for every detection (never required unless a variant says so)
@@ -205,7 +244,7 @@ ratios of the pattern bars, `cluster_id`.
 
 ## 2. Test-vector requirement
 
-After Draft 0.2 is approved, the reviewer supplies or approves **golden test vectors**: small OHLC/tick
+After Draft 0.2.1 is reviewed, **golden test vectors** are written (drafted by Claude, checked by the reviewer): small OHLC/tick
 sequences with the expected yes/no and expected entry/stop/target, so an implementation can be checked.
 Worked examples below are illustrative only.
 
@@ -237,7 +276,7 @@ plus the stated prior state (G0b).
 23. **Sources:** master row 1; PS `/hammer-candlestick` (source 9); TV, SA, SH, CB.
 24. **Open:** "upper third" vs "upper 40%" in the source (this spec: 35%); `MIN_RANGE_SINGLE` and ratios [SPEC].
 25. PROPOSED v1.0 = fields 5+6+7.
-26. **Source deviation notes:** "initial bullish momentum" replaced by a close test; "15-20 pips" converted at an
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Source deviation notes:** "initial bullish momentum" replaced by a close test; "15-20 pips" converted at an
     assumed $0.10/pip; "downtrend or known support" implemented with the G3/G4 definitions.
 
 ### P02 SHOOTING STAR (bearish) — `GT-SHOOTINGSTAR-BEAR-v1.0`
@@ -256,7 +295,7 @@ plus the stated prior state (G0b).
 22. Red body preferred by source, not required.
 23. Master row 4; PS `/shooting-star` (source 10); TV, SH, CB.  24. Open: second target; size reduction.
 25. PROPOSED v1.0.
-26. **Deviation notes:** open-based confirmation replaced by a close test; "reduced size" replaced by skip;
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** open-based confirmation replaced by a close test; "reduced size" replaced by skip;
     rally-origin target dropped; pips converted at $0.10.
 
 ### P03 PIN BAR (bullish, bearish) — `GT-PINBAR-BULL-v1.0`, `GT-PINBAR-BEAR-v1.0`
@@ -279,7 +318,7 @@ plus the stated prior state (G0b).
 23. Master row 5; PS `/pin-bar` (source 12); CB (source 15).
 24. Open: CB says 5-minute pin bars "lose money"; this spec still runs them (owner chose all TFs).
 25. PROPOSED v1.0.
-26. **Deviation notes:** PS conservative 50%-retrace entry deferred; "body inside prior candle" dropped from
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** PS conservative 50%-retrace entry deferred; "body inside prior candle" dropped from
     identity; CB "8/21 MA, Fibonacci" location not used (S/R zones only); second targets dropped.
 
 ### P04 DRAGONFLY DOJI (bullish) — `GT-DRAGONFLY-BULL-v1.0`
@@ -295,7 +334,7 @@ plus the stated prior state (G0b).
 18-20. G12; as 17; none.  21. Subset of Bull Pin Bar; overlaps Hammer.
 22. Exact `O=C=H` not required (too strict).  23. Master row 8; PS `/dragonfly-doji`; SH, CB.
 24. Open: 5% tolerances [SPEC].  25. PROPOSED v1.0.
-26. **Deviation notes:** pips at $0.10; "buy limit at the level" alternative dropped; H4/D1 emphasis recorded only.
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** pips at $0.10; "buy limit at the level" alternative dropped; H4/D1 emphasis recorded only.
 
 ### P05 GRAVESTONE DOJI (bearish) — `GT-GRAVESTONE-BEAR-v1.0`
 
@@ -308,7 +347,7 @@ plus the stated prior state (G0b).
 17. **Filters:** `AT_RESISTANCE`. No session/TF rule in the source.  18-20. G12; none; none.
 21. Subset of Bear Pin Bar; overlaps Shooting Star.  22. Differs from Shooting Star only by near-zero body.
 23. Master row 9; PS `/gravestone-doji`; SH, CB.  24. Open: tolerances [SPEC].  25. PROPOSED v1.0.
-26. **Deviation notes:** pips at $0.10; sell-limit alternative dropped.
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** pips at $0.10; sell-limit alternative dropped.
 
 ### P06 BULLISH ENGULFING — `GT-ENGULF-BULL-v1.0`
 
@@ -331,7 +370,7 @@ plus the stated prior state (G0b).
 23. Master row 13; PS `/bullish-engulfing` (source 7); SH (source 4); CB (source 15); TV, SA.
 24. **Open:** SH's own text asks for both "enter at the close" and "third candle confirms".
 25. PROPOSED v1.0.
-26. **Deviation notes:** PS "or at support" alternative implemented as `AT_SUPPORT`; PS second target dropped;
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** PS "or at support" alternative implemented as `AT_SUPPORT`; PS second target dropped;
     SH third-candle confirmation not used (entry-at-close reading); CB moving-average/Fibonacci locations not
     used; continuation reading deferred.
 
@@ -346,7 +385,7 @@ plus the stated prior state (G0b).
 17. **Filters:** SRC-PS prior state `UP OR AT_RESISTANCE`; skip `ASIA_ONLY`. SRC-CB mirrors P06.
 18-20. G12; as 17; none.  21. Outside Bar when wicks are engulfed too.  22. As P06.
 23. Master row 14; PS `/bearish-engulfing` (source 8); CB.  24. Open: DXY unavailable.  25. PROPOSED v1.0.
-26. **Deviation notes:** DXY correlation and RSI-divergence filters not enforced (no feed; recorded as
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** DXY correlation and RSI-divergence filters not enforced (no feed; recorded as
     unavailable); Fibonacci-extension location recorded only; pips at $0.10.
 
 ### P08 OUTSIDE BAR (bullish, bearish) — `GT-OUTSIDE-BULL-v1.0`, `GT-OUTSIDE-BEAR-v1.0`
@@ -368,11 +407,11 @@ plus the stated prior state (G0b).
 ### P09 INSIDE BAR BREAKOUT (bullish, bearish) — `GT-INSIDE-BULL-v1.0`, `GT-INSIDE-BEAR-v1.0`
 
 1. IDs as given (BASE, SRC-PS, SRC-CB)  2. Inside Bar (breakout)  3. both  4. 2 + breakout bar
-5. **Shape / formation:** mother C1, inside C2 with `H2<H1` AND `L2>L1` (strict). This is `PATTERN_FORMED`
+5. **Shape / formation:** mother C1, inside C2 with `H2<H1` AND `L2>L1` (strict). This is `BASE_PATTERN_FORMED`
    (the "inside bar exists"). Compression `R2/R1` recorded.
    **Signal bar `Cb`:** first bar among the next three (`b=3,4,5`) whose CLOSE is outside the mother range:
    `Cb>H1` bullish, `Cb<L1` bearish. None within 3 bars -> `EXPIRED_NO_CONFIRMATION`.
-6. **Prior state:** none.  7. `formation_end_bar`=C2; `signal_bar`=`Cb`; known at completion of `Cb`.
+6. **Prior state:** none.  7. `formation_end_bar`=C2; `signal_bar`=`Cb`; `signal_time` = completion of `Cb`.
 8-11. **Baseline:** entry NEXT_TICK after `Cb`; stop = opposite side of the mother `L1-G_BUFFER` /
     `H1+G_BUFFER` (`pattern_low/high` = mother range); 2R.
 12. **SRC-PS entry:** NEXT_TICK after `Cb` (source says both "buy stop above" and "wait for a close outside";
@@ -386,7 +425,7 @@ plus the stated prior state (G0b).
 22. A bar that pokes outside the mother range but closes inside is not a breakout; it stays armed until
     expiry (and may be a Sweep & Reclaim, P22).
 23. Master row 16; PS `/inside-bar`; CB; TV, SH.  24. Open: order-based vs close-based entry.  25. PROPOSED v1.0.
-26. **Deviation notes:** buy-stop entry replaced by close-based entry; source pips at $0.10; news window uses
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** buy-stop entry replaced by close-based entry; source pips at $0.10; news window uses
     `F_NEWS_MAJOR`.
 
 ### P10 TWEEZER TOP (bearish) — `GT-TWEEZERTOP-BEAR-v1.0`
@@ -406,7 +445,7 @@ plus the stated prior state (G0b).
 18-20. G12; as 17; none.  21. Bearish Engulfing / Dark Cloud can share a bar.
 22. The canonical tolerance grows with ATR.  23. Master row 19; PS `/tweezer-top`; CB, SH.
 24. Open: 3-bar trigger expiry [SPEC].  25. PROPOSED v1.0.
-26. **Deviation notes:** the source's wider pip tolerance applies only inside SRC-PS; entry reading is a trigger
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** the source's wider pip tolerance applies only inside SRC-PS; entry reading is a trigger
     break; "small pullback" entry deferred.
 
 ### P11 TWEEZER BOTTOM (bullish) — `GT-TWEEZERBOTTOM-BULL-v1.0`
@@ -421,7 +460,7 @@ plus the stated prior state (G0b).
 17. **Filters:** `AT_SUPPORT`. Volume divergence (source) not usable - recorded only. SRC-PS identity delta as P10.
 18-20. G12; none; none.  21. Bullish Engulfing can share a bar.  22. As P10.
 23. Master row 20; PS `/tweezer-bottom`.  24. As P10.  25. PROPOSED v1.0.
-26. **Deviation notes:** as P10; volume confirmation dropped.
+26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** as P10; volume confirmation dropped.
 
 ### P12 PIERCING LINE (bullish) — `GT-PIERCING-BULL-v1.0`
 
@@ -481,10 +520,12 @@ plus the stated prior state (G0b).
 New in 0.2. A different pattern with its own counts: it is what the source's entry actually is.
 
 1. IDs as given (BASE-EARLY, SRC-PS-EARLY)  2. Kicker early setup  3. both  4. 1 + opening tick
-5. **Formation (`SHAPE`) = trigger condition:** bullish: C1 bear `LARGE` AND `TREND(i0-1)=DOWN` AND the first
-   executable tick of the next bar has `ask>=O1`; bearish mirrored (`bid<=O1`). Nothing about C2's later
-   body or close is required or checked.
-6. **Prior state:** as P14.  7. Formation = signal = that first tick.
+5. **`SHAPE_DETECTED` = C1 geometry:** C1 bear `LARGE` (bullish) / C1 bull `LARGE` (bearish), logged when C1
+   completes. **`BASE_PATTERN_FORMED` = the trigger (0.2.1):** the prior state holds (`TREND(i0-1)=DOWN` bullish,
+   `UP` bearish) AND the BID opening price of the next bar satisfies: bullish `bid_open >= O1`; bearish
+   `bid_open <= O1`. Then the order executes BUY at the ask / SELL at the bid of that first tick (G10
+   `OPEN_TRIGGER`). Nothing about C2's later body or close is required or checked.
+6. **Prior state:** as P14.  7. Formation = signal = that first tick (`signal_time` = its timestamp).
 8. **Every trigger is a trade.** Trades are counted whether or not P14 later completes. The completed-pattern
    outcome is stored as a label on the trade (`completed_kicker_yes/no`) and is **never** used to include or
    exclude trades.
@@ -588,10 +629,12 @@ New in 0.2. A different pattern with its own counts: it is what the source's ent
 New in 0.2, same reasoning as P14E.
 
 1. IDs as given (BASE-EARLY, SRC-PS-EARLY)  2. Abandoned Baby early setup  3. both  4. 2 + opening tick
-5. **Formation = trigger:** bullish: C1 bear `LARGE`, C2 `DOJI` with `H2<=L1-gap_thr`, `TREND(i0-1)=DOWN`, and
-   the first executable tick of C3 has `ask>=H2+gap_thr`; bearish mirrored (`bid<=L2-gap_thr`, with
-   `L2>=H1+gap_thr`). C3's size, close and colour are not checked.
-6. **Prior state:** as P19.  7. Formation = signal = that first tick.
+5. **`SHAPE_DETECTED`** = C1 and C2 geometry: bullish C1 bear `LARGE`, C2 `DOJI` with `H2<=L1-gap_thr`;
+   bearish C1 bull `LARGE`, C2 `DOJI` with `L2>=H1+gap_thr`. **`BASE_PATTERN_FORMED` = the trigger (0.2.1):** the
+   prior state holds (`TREND(i0-1)=DOWN` bullish / `UP` bearish) AND the BID opening price of C3 satisfies:
+   bullish `bid_open >= H2+gap_thr`; bearish `bid_open <= L2-gap_thr`. Then BUY at the ask / SELL at the bid of that
+   first tick. C3's size, close and colour are not checked.
+6. **Prior state:** as P19.  7. Formation = signal = that first tick (`signal_time` = its timestamp).
 8. **Every trigger is a trade**, counted whether or not P19 later completes; `completed_abandoned_baby`
    is stored as a label and never used to include/exclude.
 9-11. **Baseline (BASE-EARLY):** entry at the trigger tick; stop `L2-G_BUFFER` / `H2+G_BUFFER`; 2R.
@@ -692,10 +735,21 @@ source supports it.
 | Self: garbled text in P12/P06/P19 fields | Fixed | Cleaned |
 | Hub decisions missing from the log | Already logged | D-022 to D-024 were added after ChatGPT's copy was made |
 
+### Draft 0.2 -> 0.2.1 changes (ChatGPT second-pass review)
+
+| # | Finding | Fix |
+|---|---|---|
+| 1 | Event model ignored that variants can qualify from the shape by their own context rules | G0b: SHAPE_DETECTED -> BASE_PATTERN_FORMED -> VARIANT_QUALIFIED -> SIGNAL -> TRADE |
+| 2 | No exact signal timestamp | G0: `signal_time`; `signal_bar`, `entry_eligible_time`, `arm_time` derive from it |
+| 3 | Early Kicker/Baby trigger tested the ask (bullish) - biased | G10, P14E, P19E: tests on BID chart open (`bid_open`), executes at ask/bid |
+| 4 | Formed count could be multiplied by variants | G0b: canonical counters once per pattern x side x TF x version; variant counters separate |
+| 5 | Targets could drift with later zones/swings | G10 entry snapshot frozen at `entry_eligible_time`; G4 `zones_prepattern` vs `zones_at_entry` |
+| 6 | Pip assumption unconfirmed | G0: variants using `PIP_SRC_USD` are `DISABLED_PENDING_PIP_CONFIRMATION`; BASE runs regardless |
+| - | `MAX_HOLD` | Kept at 50 bars; reviewer-approved, owner confirmation pending |
+
 ### Still open for the reviewer / owner
 
-1. **`MAX_HOLD`:** keep 50 bars for all TFs (accepting very slow W1/MN1 samples), use per-TF limits, or drop the
-   time stop for high TFs. Claude's suggestion: keep 50 bars; it keeps horizons comparable in bars.
+1. **`MAX_HOLD` = 50 bars:** approved by the reviewer; owner to confirm (W1/MN1 samples will be very slow).
 2. **Rising/Falling asymmetry:** does the Rising page really lack the close rule the Falling page states?
    (Read from the fetched text; worth a manual look at the page.)
 3. **Constants invented by this spec [SPEC]** and **readings [INTERP]** - see the tags; every one needs approval.
@@ -703,11 +757,16 @@ source supports it.
    checks, trailing stops, second targets where the split is not given.
 5. **Deferred to v1.1:** conservative pullback entries; continuation reading of engulfing; strict-gap variants
    of Piercing/Dark Cloud; role-flipped support/resistance; multi-bar inside-bar false break.
-6. **`PIP_SRC_USD=0.10`** to be confirmed (affects source variants only).
-7. **Multiple testing:** up to about 657 strategies; the untouched validation stage is mandatory.
+6. **`PIP_SRC_USD=0.10`** to be confirmed; until then the affected SRC-PS variants stay disabled (G0).
+7. **Multiple testing:** up to about 657 strategies; the untouched validation stage is mandatory. The exact
+   validation pass/fail rule (day-block bootstrap, multiple-testing control) is to be written before validation
+   starts.
+8. **Portfolio Simulation rules** (sizing, exposure cap) are undefined; until they are, the hub's top figure is
+   "Total Experimental P&L", not a balance (see `DECISIONS.md`).
 
 ## 5. Change log
 
 - 0.1 (2026-09-30): first full draft.
 - 0.2 (2026-09-30): applies the review above; adds P14E and P19E; renames P22; adds the event model, field 26 and
   the nearest-only target rule.
+- 0.2.1 (2026-09-30): applies the six second-pass fixes (section 4); `MAX_HOLD=50` recorded as reviewer-approved.

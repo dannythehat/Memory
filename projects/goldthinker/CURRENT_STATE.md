@@ -80,7 +80,7 @@ which "balance" (see `DECISIONS.md`, Open).
 
 ## Next step
 
-`CANDLE_SPEC_V1.md` (Wave 1, 22 patterns, DRAFT 0.1) is written and goes to the owner and the independent
-reviewer (ChatGPT) for line-by-line review. `DECISIONS.md` logs what is decided (OWNER) and what is only
+`CANDLE_SPEC_V1.md` is at DRAFT 0.2.1 (Wave 1: 22 patterns plus 2 early-setup companions; ChatGPT's two review rounds
+applied). Next: golden test vectors, then a short review. `DECISIONS.md` logs what is decided (OWNER) and what is only
 proposed. No code until the spec is approved and golden test vectors exist. Then: the Vantage demo account
 and a feed reliability test come before any other build step.
