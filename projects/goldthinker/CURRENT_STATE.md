@@ -1,65 +1,75 @@
 # GoldThinker — Current State
 
-Created: **2026-09-30**. Status: **RESEARCH ONLY — nothing built, nothing tested, no code.**
+Created: **2026-09-30**. Status: **FOUNDATIONS / RESEARCH ONLY — nothing built, no code, no repo, no runtime.**
 
-GoldThinker is the owner's working name for a possible candle-pattern reader / trading-edge
-project for gold (XAUUSD). It is a separate system from AIDY and Super Signals. It has no
-repository, no runtime and no production authority. Do not import it into either project's
-state.
+GoldThinker is the owner's project for a gold (XAUUSD) candlestick trader. It is a **separate
+system** from AIDY and Super Signals: own data feed, own database, own code. The owner said
+explicitly (2026-09-30) "Fuck Aidy... this is new" — do not build on AIDY's data or loop.
+It has no production or broker authority. Do not import it into either project's state.
 
-## Why it exists
+## The vision (owner's words, agreed 2026-09-30)
 
-Owner wants "something with real edge" and noticed that many candle-reader apps are popular
-and paid for (~$50/month). Question raised: why can't we build one?
+1. GoldThinker monitors gold **24/7, Monday to Friday (until the Friday close)** on a server with
+   a database, using a live market feed (Vantage candles, or other tools).
+2. He is taught **every candle type (~50)**, each with an exact definition and a best-practice
+   trade plan. Images of candle types can be supplied as examples.
+3. When the market shows a candle type, he **places the paper trade(s) that candle's plan calls
+   for**. Every candle type fires whenever it appears, including rare ones (some occur monthly).
+4. Results are **recorded per candle type** and reviewed after **1 month, then 2, then 3**.
+5. Only the **profitable, tried-and-tested candle types are kept**. **Only then does he go live.**
+   Nothing goes live before that.
 
-## Where we stand (honest baseline)
+## Decisions made by the owner (2026-09-30)
 
-- **No edge is demonstrated.** Claude's position, agreed as the framing: popularity and
-  willingness to pay show a product sells, not that it makes money. Two separate questions:
-  (1) can we build a sellable app; (2) can it trade profitably. (2) must be proven by backtest.
-- Prior evidence from AIDY (see `projects/aidy/CURRENT_STATE.md`, 2026-09-23, not re-verified
-  this session): 15-minute gold direction over 42 days was ~47% up / 48% down / 6% flat, and
-  AIDY's price-structure/momentum experts scored at or below coin-flip. That tested AIDY's own
-  experts on one instrument, one horizon, mostly one (bearish) regime. It does not prove that
-  no candle approach works.
-- The only measured edge in the wider business is **provider selection** (30-day real P&L
+- **Paper trades are recorded in both places:** GoldThinker's own database AND a Vantage demo
+  account.
+- **Rule conflicts between sources:** owner says this "won't happen" — he settles one rule set per
+  candle. (Note: the collected sources already differ in details, e.g. hammer body "upper third" vs
+  "upper 40%". Claude will flag each difference to him when a candle is defined so he chooses.)
+- **Timeframes: all.**
+- **Trade size: 1% risk per paper trade, fixed, for easy calculation.**
+- **Rules-based, same candle = same trade.** Owner is unsure whether AI may be needed "to read or
+  look for candle types". Claude's recommendation (not yet confirmed by owner): rules-only for the
+  trading step so every trade is repeatable and explainable; AI used at build time to read
+  images/articles and check the definitions. Revisit if some candle types cannot be expressed in
+  numbers.
+
+## Not yet decided
+
+- Live data source: owner points to Vantage's live gold chart. Claude had proposed a separate
+  Vantage demo account connected through MetaAPI (not the trading account, so it cannot affect live
+  trading) — owner has not agreed to that; he said not to jump ahead. Secrets must never be pasted
+  into chat.
+- Hosting/server, database, how the owner views it (web page or Telegram), the full candle list,
+  and each candle's exact trade plan (entry, stop, target, direction).
+- Whether the owner's three friends who read gold will share rules or trade history.
+- The owner is consulting ChatGPT on the design and will bring its input back.
+
+## Prior evidence (context, not a verdict)
+
+- Not re-verified this session: AIDY's own price-structure experts scored at or below coin-flip on
+  42 days of gold (see `projects/aidy/CURRENT_STATE.md`, 2026-09-23). That tested AIDY's experts
+  only; the owner's plan is to find out from forward paper results.
+- Within the wider business, provider selection is the measured edge so far (30-day real P&L
   checked 2026-09-29: TIG's Asia Trades +$575, FXTradingVision +$453).
 
 ## Research collected so far (12 sources, all 2026-09-30)
 
-Full extracts, exact rules and per-source cautions are in `RESEARCH_SOURCES.md`. One-line summary:
-articles and vendor pages (TradingView, FTMO, Seeking Alpha, a hobbyist gold playbook, Investing.com's
-scanner, Pro-Scalper's pattern pages) give pattern shapes, entries, stops and targets but **no win
-rates, sample sizes or backtests from any of them**. The most repeated claim is "avoid the Asian
-session"; every page defers the trade to a confirmation candle (look-ahead risk if not defined
-carefully); "location" (support, round numbers, Fibonacci) is what they say matters most and is the
-least defined. Owner is still gathering research, and mentioned three friends who read gold and could
-supply real rules or trade history (not yet obtained). Owner will supply chart data to pull in
-(format not yet agreed).
-
-## Proposed test design (NOT approved, NOT run)
-
-- Rules fixed in writing before any run; no tuning to fit.
-- Exits reported as three fixed variants (1R, 2R, fixed N bars); no picking the best afterwards.
-- Timeframes 5/15/60 min built from M1; daily/H4 not testable on current data (~12 D1, ~50 H4 bars).
-- Entry next bar open; spread and slippage included.
-- Compare against random same-direction entries over the same period (gold drifted down, which
-  flatters bearish patterns).
-- Held-out data untouched until the end; multiple-testing correction across all tests.
-- Report trigger counts; small samples are inconclusive.
-- **Data is the limiting factor:** ~41k M1 bars / 42 days in AIDY's D1 (`aidy-ops-test`,
-  read-only source). Several years of XAUUSD history from a free or Twelve Data source would be
-  needed for a meaningful answer; not yet attempted.
+Full extracts are in `RESEARCH_SOURCES.md`. Vendor and article pages give pattern shapes, entries,
+stops and targets; none gives results data, which is why the plan is to generate the results by
+paper trading. Recurring themes: every page defers the trade to a confirmation candle (must be
+defined using only information available at entry); "location" (support, round numbers,
+Fibonacci) is what they say matters and is the least defined; almost every page says to avoid or
+shrink the Asian session (a filter to record and compare, not assume).
 
 ## Boundaries
 
-- Research/backtest only. No broker, member or Super Signals execution authority.
-- Read-only use of AIDY data; do not write to AIDY's D1 or touch its live loop (an edit to
-  that loop already caused a 5h39m outage on 2026-09-23).
-- Do not claim edge, "profitable" or "validated" for anything here without the evidence
-  language in root `AGENTS.md`.
+- Paper trading only until the owner decides otherwise after the 1/2/3-month reviews.
+- No connection to the Super Signals live trading account or its MetaAPI connection.
+- No claim of edge, "profitable" or "validated" without evidence per root `AGENTS.md`.
+- Do not build or set up infrastructure until the owner says the foundations are agreed.
 
 ## Next step
 
-Wait for the owner's further research. Then: confirm exact pattern definitions with the owner,
-decide the data source, and only then run the pre-registered backtest.
+Owner to keep supplying research and answer the open items above. Claude confirms understanding of
+each step with the owner before doing it. No building yet.
