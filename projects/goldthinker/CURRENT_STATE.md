@@ -64,6 +64,29 @@ Both strategies here are direction-of-move opposites (breakout follows the break
 fades the touch), so a backtest must treat them as separate hypotheses. "Squeeze" needs a
 fixed numeric definition (e.g. bandwidth percentile) before it can be tested.
 
+### Source 3 — Seeking Alpha blog, "Bullish Reversal Candlestick Patterns" (Michael Battat, 2026-09-30)
+
+Extracted (small-model summary, not verbatim). Four bullish reversal patterns, all described
+for **stocks on daily candles**, not gold or intraday:
+
+| Pattern | Article definition |
+|---|---|
+| Bullish engulfing | Small down candle "engulfed" by a large up candle; best in a downtrend |
+| Hammer | Small body, shadow at least 2x the body, at the end of a downtrend; same shape in an uptrend is a hanging man (bearish). Wants a close near the high, and higher volume |
+| Bullish harami | Large red candle followed by a smaller candle inside its range; downtrend; says bullish version is "much more reliable" than bearish |
+| Piercing | Second candle opens below the first (gap down) and closes above the first's midpoint |
+
+Suggested confirmation: pattern at support (moving averages, Fibonacci, round numbers), plus
+momentum (stochastics, RSI), oversold readings or divergence. **No entry, stop or target rules, no
+statistics, no backtest.** The author says patterns only "augment a trader's outlook". Volume
+confirmation is not usable for spot XAUUSD (tick volume only).
+
+Testing notes: piercing requires a gap, and gold M1-M60 candles rarely gap outside the weekend
+open, so it needs an adapted definition (e.g. open below prior close by X) or should be dropped.
+"Downtrend" and "at support" are undefined and would each need a numeric rule. Bullish-only
+article: a fair test needs the mirrored bearish versions too. Overlaps with source 1 (engulfing,
+hammer, harami), so those definitions should be fixed once, not per source.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
