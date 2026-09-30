@@ -1,0 +1,24 @@
+# Local setup (the machine that runs the MT5 terminal; Windows)
+
+The official `MetaTrader5` Python package only works on Windows next to a running MT5 terminal. Claude's cloud sessions cannot
+reach the terminal, so anything that talks to MT5 runs on the owner's machine; everything else (tests, schema, logic) runs anywhere.
+
+1. `git pull` the branch `claude/trading-bot-prompt-review-hrxbkw` of `dannythehat/GoldThinker` into the local repo.
+2. `python -m venv .venv`, activate it, `pip install -r requirements.txt` (this includes `tzdata`: Windows Python has no IANA time zone database, and the session rules need Asia/Tokyo, Europe/London and America/New_York; without it the unit tests fail with `ZoneInfoNotFoundError`).
+3. `.env` (Git-ignored, never committed, never pasted into chat) uses the names in `.env.example`: `MT5_LOGIN`, `MT5_PASSWORD`, `MT5_SERVER`, optionally `MT5_TERMINAL_PATH`, `MT5_SYMBOL`.
+4. **Query the live specification:** `python tools/mt5_probe.py --days 30` (needs the market open: it waits up to 90 s for fresh XAUUSD and EURUSD ticks to measure the broker clock offset). It writes `config/broker_spec.json` and `config/BROKER_SPEC.md`; neither contains the login, the password or the holder's name. Commit and push both (the MT5 terminal must be open and logged in, and the market should be open so the server-clock offset can be measured).
+5. **Ingest ticks:** `python -m goldthinker.feed.run_ingest` (Ctrl+C stops it cleanly; a feed error ends the session, is recorded and reconnects after 5 s). `python -m goldthinker.feed.report` prints a data-quality summary.
+6. **Candles and acceptance (D-046), in this order:**
+   - `python -m goldthinker.feed.backfill --hours 48` (optional, once): pulls tick HISTORY older than the recorder's first tick (tagged `HISTORY`), so more bars can be reconciled straight away. It refuses if the database holds more than one broker offset.
+   - `python -m goldthinker.candles.build`: builds our own BID and ASK candles M1..MN1 from the ticks.
+   - `python tools/reconcile_candles.py`: compares our completed BID candles with the native MT5 candles bar by bar and checks every native bar label against our boundaries; writes `reports/candle_reconciliation.json` and `reports/CANDLE_RECONCILIATION.md`.
+   - `python -m goldthinker.feed.health --update-gate`: the feed-health acceptance report `reports/FEED_HEALTH.md` (+ `feed_health.json`) and, with `--update-gate`, the persisted per-timeframe gate (D-047). Run `python -m goldthinker.candles.build` again just before it so recently completed bars are included. It prints, per enabled timeframe, how many own complete bars exist, how many completed after the enable time, and how many each strategy unit needs; a research clock starts only when a unit's warm-up bars exist behind a bar that completed after the enable time ("clocks started: 0" means that has not happened yet, not an error). Run it after `reconcile_candles.py`; it also classifies quiet periods against native M1 (`BROKER_NO_BAR` / `FEED_LOSS`).
+   Commit and push `reports/*.md` (they contain no credentials).
+7. **News calendar (D-054):** `python -m goldthinker.news.fetch` downloads this and next week's free Forex Factory calendar, checks its clock against official release times and stores it (the live runner also refreshes it every 6 hours). Each download is kept as an immutable point-in-time vintage; News-filtered strategies start only where a vintage fetched before the signal covers their window.
+8. **Detection (D-053):** `python -m goldthinker.live.run --once` (or without `--once` to repeat every 30 s) builds the candles, refreshes the research clocks and runs the detector on the enabled timeframes, storing events in `strategy_events`. It reads the tick database only (keep the recorder running in another window) and never sends an order.
+9. **Inspect what was detected:** `python -m goldthinker.live.report` writes `reports/LIVE_DETECTIONS.md` (+ `live_detections.json`): the formed patterns with the candles that formed them (broker time and UTC), each variant's event chain and reason code, and the virtual trades. Read-only.
+10. **Real-data differential audit (D-058):** `python -m goldthinker.audit.real_differential` compares production with the independent reference calculator on every position the live loop evaluates (writes `reports/REAL_DIFFERENTIAL_AUDIT.md` and `real_differential_audit.json`; read-only; takes minutes, prints progress; `--tf M1 --last 200` for a quick pass). Any mismatch is a FAIL.
+11. **Steady-state benchmark (D-058):** `python -m goldthinker.audit.benchmark` (recorder running) times an idle cycle and cycles right after M1 completions against the 30 s budget and writes `reports/STEADY_STATE_BENCHMARK.md`.
+12. Tests that need no MT5: `python -m unittest discover -s tests_unit -v`.
+
+Local data (`data/`, `*.db`) is Git-ignored.
