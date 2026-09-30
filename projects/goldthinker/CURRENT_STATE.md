@@ -193,6 +193,29 @@ verified. **No win rate, sample size or backtest.**
   (sources 6 and 7 do not define it); "support" and Fibonacci location need numeric rules.
 - Overlaps source 1 (engulfing rules), source 3 and source 4 - fix ONE definition.
 
+### Source 8 — Pro-Scalper.com, "Bearish Engulfing" (2026-09-30)
+
+Same commercial site as sources 6-7. Extracted by a small model, wording not verified.
+**No win rate, sample size or backtest.**
+
+- **Definition:** candle 2 opens above candle 1's close, closes below candle 1's open, red body
+  fully contains the prior green body. After an uptrend or at significant resistance.
+- **Location:** round numbers (examples $2000/$2100/$2200 - stale for gold at ~4,200), prior
+  all-time highs, Fibonacci extensions 127.2% and 161.8%.
+- **Entry:** engulfing candle's close (aggressive) or pullback to its midpoint. **Stop:** above the
+  high of the whole two-candle pattern plus a 15-25 pip buffer. **Targets:** nearest support at
+  at least 1.5:1; full target is the engulfing candle's height projected down, "3:1 or greater".
+- **Timeframes claimed:** H4 "most reliable" (200-500 pips), H1 "most popular" (50-150 pips), M15
+  only with strict filtering.
+- **Filters that are NOT in the bullish page:** avoid the Asian session (London/NY only); check
+  the dollar (DXY) - "patterns fail when dollar weakens"; RSI divergence or a failed breakout for
+  counter-trend trades.
+- **Worth noting for later:** "avoid the Asian session" sits against our own data, where TIG's
+  Asia Trades (Asia-session provider) is the top 30-day performer. Different things (a provider's
+  signals vs. a candle pattern) so it proves nothing, but a session filter is testable directly.
+- Bullish (source 7) and bearish (source 8) pages are not exact mirrors: the bearish one adds the
+  session and DXY filters and uses a different stop rule and target. Test each as written first.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
