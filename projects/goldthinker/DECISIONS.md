@@ -30,10 +30,18 @@ confirmation. Nothing here authorises building or any live trading.
 | D-022 | 2026-09-30 | **Hub requirement (owner's words):** one place he can check at any time showing ALL candlesticks: every trade logged, which candles traded and when, P&L in dollars and percentages, how many times each formed, latest stats per candle, balance continuously updated and broken down per candlestick, daily profit and loss, which candles made or lost what. Every candle has a page with an image of the exact candle and how it works, plus its information. | OWNER |
 | D-023 | 2026-09-30 | The hub is a core part of GoldThinker, not an optional report. Home = grid of candlestick cards; each candle has its own page (illustration, how it works, exact definition, trade rules, stats, timeframe comparison, equity curve, recent detections/trades, individual trade chart). Global top section: research balance, today/week/month P&L, open positions, total trades, winners, losers, best/worst candle. Candles with too little data show "NOT ENOUGH DATA", never a headline win rate. | PROPOSED (ChatGPT + Claude) |
 | D-024 | 2026-09-30 | Balances shown separately, never merged: (1) Strategy Balance = fixed $10,000 reference per candle x timeframe x variant (1R = $100, non-compounding); (2) Portfolio Simulation Balance under explicit portfolio rules (rules still to be defined); (3) the Vantage demo account's real balance as the execution mirror. Home cards show one selected timeframe and variant at a time; any all-timeframe total is labelled a sum of separate ledgers, not a strategy result. Baseline and source-plan results are never blended. | PROPOSED (Claude, adding to ChatGPT) |
+| D-025 | 2026-09-30 | Event model: every candle is logged as SHAPE_DETECTED, PATTERN_FORMED (shape + prior state), SIGNAL and TRADE, with a reason code for every non-trade. The hub shows Formed, Signals and Trades separately; formation counts never come from trades. | PROPOSED (ChatGPT review) |
+| D-026 | 2026-09-30 | Kicker and Abandoned Baby are each split into the completed pattern (entry after completion) and an EARLY_SETUP pattern (the source's opening-tick entry). Every early trigger counts as a trade; the completed outcome is only a label, never a filter. | PROPOSED (ChatGPT review) |
+| D-027 | 2026-09-30 | Layer C is renamed SOURCE-NORMALIZED and every variant carries `source_deviation_notes`. Canonical (BASE) identities must not depend on the unconfirmed source-pip assumption. | PROPOSED (ChatGPT review) |
+| D-028 | 2026-09-30 | Bar completion follows the broker calendar (next bar start or scheduled closure), never `open + duration`. Stale-entry rule counts market-open time only. Sizing uses the broker's tick size, tick value and lot step. | PROPOSED (ChatGPT review) |
+| D-029 | 2026-09-30 | Structural targets use the NEAREST support/resistance or swing and are skipped if that gives under the minimum R; targets must be strictly beyond the actual entry (else skip). | PROPOSED (ChatGPT review) |
+| D-030 | 2026-09-30 | Candle Specification moved to Draft 0.2 (32 pattern sides, up to about 657 strategies). Golden test vectors wait until 0.2 is approved. | PROPOSED |
 
 ## Open
 
 - Owner's explicit confirmation of the PROPOSED items above.
-- `CANDLE_SPEC_V1.md` review (owner + ChatGPT) and golden test vectors before any code.
+- `CANDLE_SPEC_V1.md` Draft 0.2 second-pass review (owner + ChatGPT), then golden test vectors, before any code.
+- Owner to approve or reject every PROPOSED item (D-006 to D-021 and D-023 to D-030).
+- `MAX_HOLD` policy (keep 50 bars for all timeframes, per-timeframe limits, or none for high timeframes).
 - Portfolio Simulation rules (position sizing and any exposure cap) - to be defined and approved.
 - Vantage demo account created; its symbol/contract/swap/timezone details recorded.
