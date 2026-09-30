@@ -28,10 +28,12 @@ confirmation. Nothing here authorises building or any live trading.
 | D-020 | 2026-09-30 | Feed: separate Vantage demo account, tick stream (bid/ask/spread) with our own bars; feed reliability tested first (MetaAPI timed out repeatedly on the Super Signals side this week). | PROPOSED |
 | D-021 | 2026-09-30 | Authoritative record is versioned documents in this repo (`CANDLE_SPEC_V1.md`, `DECISIONS.md`, `CURRENT_STATE.md`), not any chat's memory. | PROPOSED |
 | D-022 | 2026-09-30 | **Hub requirement (owner's words):** one place he can check at any time showing ALL candlesticks: every trade logged, which candles traded and when, P&L in dollars and percentages, how many times each formed, latest stats per candle, balance continuously updated and broken down per candlestick, daily profit and loss, which candles made or lost what. Every candle has a page with an image of the exact candle and how it works, plus its information. | OWNER |
+| D-023 | 2026-09-30 | The hub is a core part of GoldThinker, not an optional report. Home = grid of candlestick cards; each candle has its own page (illustration, how it works, exact definition, trade rules, stats, timeframe comparison, equity curve, recent detections/trades, individual trade chart). Global top section: research balance, today/week/month P&L, open positions, total trades, winners, losers, best/worst candle. Candles with too little data show "NOT ENOUGH DATA", never a headline win rate. | PROPOSED (ChatGPT + Claude) |
+| D-024 | 2026-09-30 | Balances shown separately, never merged: (1) Strategy Balance = fixed $10,000 reference per candle x timeframe x variant (1R = $100, non-compounding); (2) Portfolio Simulation Balance under explicit portfolio rules (rules still to be defined); (3) the Vantage demo account's real balance as the execution mirror. Home cards show one selected timeframe and variant at a time; any all-timeframe total is labelled a sum of separate ledgers, not a strategy result. Baseline and source-plan results are never blended. | PROPOSED (Claude, adding to ChatGPT) |
 
 ## Open
 
 - Owner's explicit confirmation of the PROPOSED items above.
 - `CANDLE_SPEC_V1.md` review (owner + ChatGPT) and golden test vectors before any code.
-- What "balance" means on the hub (per-candle virtual balance vs combined portfolio vs the Vantage demo account) - owner to choose.
+- Portfolio Simulation rules (position sizing and any exposure cap) - to be defined and approved.
 - Vantage demo account created; its symbol/contract/swap/timezone details recorded.
