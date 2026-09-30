@@ -27,9 +27,11 @@ confirmation. Nothing here authorises building or any live trading.
 | D-019 | 2026-09-30 | Survival gates (net R after costs): M1 review min 20 obs, kill only if expectancy <= -0.20R, PF < 0.80 or DD > 15R; M2 min 40 obs, continue if expectancy > 0, PF >= 1.05, DD <= 12R; M3 min 75 obs, candidate if expectancy >= +0.10R, PF >= 1.20, DD <= 10R, positive in 2 of 3 months, plus a day-block bootstrap CI lower bound above zero. Rare candles: <30 trades UNKNOWN, 30-74 PRELIMINARY. Numbers are ChatGPT's proposal. | PROPOSED |
 | D-020 | 2026-09-30 | Feed: separate Vantage demo account, tick stream (bid/ask/spread) with our own bars; feed reliability tested first (MetaAPI timed out repeatedly on the Super Signals side this week). | PROPOSED |
 | D-021 | 2026-09-30 | Authoritative record is versioned documents in this repo (`CANDLE_SPEC_V1.md`, `DECISIONS.md`, `CURRENT_STATE.md`), not any chat's memory. | PROPOSED |
+| D-022 | 2026-09-30 | **Hub requirement (owner's words):** one place he can check at any time showing ALL candlesticks: every trade logged, which candles traded and when, P&L in dollars and percentages, how many times each formed, latest stats per candle, balance continuously updated and broken down per candlestick, daily profit and loss, which candles made or lost what. Every candle has a page with an image of the exact candle and how it works, plus its information. | OWNER |
 
 ## Open
 
 - Owner's explicit confirmation of the PROPOSED items above.
 - `CANDLE_SPEC_V1.md` review (owner + ChatGPT) and golden test vectors before any code.
+- What "balance" means on the hub (per-candle virtual balance vs combined portfolio vs the Vantage demo account) - owner to choose.
 - Vantage demo account created; its symbol/contract/swap/timezone details recorded.

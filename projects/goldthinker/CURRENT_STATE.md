@@ -62,6 +62,15 @@ defined using only information available at entry); "location" (support, round n
 Fibonacci) is what they say matters and is the least defined; almost every page says to avoid or
 shrink the Asian session (a filter to record and compare, not assume).
 
+## Hub (owner requirement, 2026-09-30)
+
+A hub/site the owner can open at any time: every candlestick we use, every trade logged when it happens,
+which candles traded and when, P&L in dollars and percentages, how many times each formed, latest stats
+per candle, balance continuously updated and broken down per candlestick, daily profit and loss, and
+which candles made or lost what. Each candle has its own page with an image of the exact candle, how it
+works, and its information. Built on the same database as the paper engine; not built yet. Open question:
+which "balance" (see `DECISIONS.md`, Open).
+
 ## Boundaries
 
 - Paper trading only until the owner decides otherwise after the 1/2/3-month reviews.
