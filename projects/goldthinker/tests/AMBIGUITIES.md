@@ -17,7 +17,7 @@ Counts: **4 high**, **13 medium**, **12 low**. HIGH = a wrong guess changes trad
 | A-09 | MEDIUM | P09 / hub counters | GV-P09-S07 (provisional), GV-OV-09 |
 | A-10 | LOW | P10 vs P11 flags | GV-P11-F01, GV-P11-F02 (no P10 mirror) |
 | A-11 | MEDIUM | G8 Layer B / C | GV-EX-B05 (blocked) |
-| A-12 | MEDIUM | G0b event model | all vectors marked PROVISIONAL with a TF gate (9 for A-12) |
+| A-12 | MEDIUM | G0b event model | every timeframe-gate vector marked PROVISIONAL, e.g. GV-P14-V01-M1..M30, GV-P14E-V03, GV-P03-V07, GV-P06-V05, GV-P09-V04/V05, GV-P22-V05 |
 | A-13 | HIGH | G8 MAX_HOLD | GV-EX-B01 (blocked) |
 | A-14 | HIGH | G9 swap | GV-EX-B02 (blocked) |
 | A-15 | MEDIUM | P09 SRC-CB field 17 | GV-P09-V01 (provisional) |
@@ -176,7 +176,7 @@ Readings:
 - A: as vectors (assumed).
 - B: every non-qualification gets a coded disposition.
 
-Vectors: all vectors marked PROVISIONAL with a TF gate (9 for A-12)
+Vectors: every timeframe-gate vector marked PROVISIONAL, e.g. GV-P14-V01-M1..M30, GV-P14E-V03, GV-P03-V07, GV-P06-V05, GV-P09-V04/V05, GV-P22-V05
 
 Recommendation: State the rule; B gives the hub more diagnostics.
 
