@@ -1,6 +1,6 @@
-# GoldThinker — Discovery and validation rules (v0.2)
+# GoldThinker — Discovery and validation rules (v0.3)
 
-Status: **v0.2, 2026-09-30, RESEARCH APPROVED — Claude + ChatGPT (D-041)**, with ChatGPT's eight amendments applied. Research
+Status: **v0.3, 2026-09-30, RESEARCH APPROVED — Claude + ChatGPT (D-041)**, with ChatGPT's eight amendments (v0.2) and four refinements (v0.3) applied. Research
 rule; nothing is coded. It replaces the "still open" item 3 of `CANDLE_SPEC_V1.md`. It builds on D-011 (no pooling), D-012
 (STOP FIRST), D-018/D-019 (discovery -> freeze -> validation; survival gates). **No outcome of these rules authorises real
 money; only the owner can (D-035).**
@@ -21,10 +21,13 @@ money; only the owner can (D-035).**
   assignment is used for the bootstrap, the "remove the best day" check (V4) and the per-month tests.
 - **Day series:** every calendar day (server time) of the window is in the series; days with no signals contribute
   zero R and zero trades but stay in the resampling pool.
-- **Trades still open at a review:** discovery reviews (section 2) use trades closed by the review date only. A validation
-  verdict (section 4) is computed after every trade whose signal time lies in the window has closed, waiting at most 10
-  trading days after the window ends; any trade still open then is closed at the market (bid for longs, ask for shorts),
-  tagged `CLOSED_AT_REVIEW` and counted. (Long-timeframe strategies whose MAX_HOLD runs longer will simply carry that tag.)
+- **Trades that are still open at a review date (v0.3):** a trade is never closed early to meet a review date, because that would
+  change the strategy being tested. **The signal window is frozen** (months 1-3 for the interim look, months 1-6 for the final
+  look, by signal day). Every trade whose signal belongs to the window runs to its natural stop, target or MAX_HOLD, and the
+  verdict **waits until all of them have resolved** (shown as `AWAITING_RESOLUTION`). **A strategy can never earn a PASS from
+  censored or open trades.** If the interim look cannot be computed within **20 broker trading days** after its window ends
+  (a long-timeframe strategy), the interim verdict is **skipped** for that strategy; its final look is unaffected. Discovery reviews
+  (section 2) are descriptive selection and use the trades closed by the review date.
 
 ## 2. Stage 1 - Discovery (forward paper trading)
 
@@ -74,21 +77,24 @@ spec / golden-vector-pack / detector versions, the gate values, and `K`.
 
 Two looks at the same untouched, post-freeze data (amendment 3):
 
-| Look | Data used | Holm family-wise alpha | BY false-discovery q |
+| Look | Data used | Holm family-wise alpha (PASS-STRONG) | Benjamini-Yekutieli q (PASS-WEAK) |
 |---|---|---|---|
-| **Interim, month 3** | months 1-3 | **0.01** (20% of 0.05) | **0.02** (20% of 0.10) |
-| **Final, month 6** | **months 1-6** (all post-freeze data, not just months 4-6) | **0.04** (80% of 0.05) | **0.08** (80% of 0.10) |
+| **Interim, month 3** | signals of months 1-3 | **0.01** (20% of 0.05) | none: only the descriptive label `WEAK_SIGNAL` |
+| **Final, month 6** | signals of **months 1-6** (all post-freeze data, not just months 4-6) | **0.04** (80% of 0.05) | **0.10** (single look) |
 
-A strategy that passes the interim look keeps that verdict (an early pass). A strategy that neither passes nor fails at the
-interim look goes to the final look. A `FAIL` is allowed at the interim look (stopping for futility cannot inflate the
-false-positive rate). The family stays all `m` cohort strategies at both looks. Alpha is spent once; the two-look total
-never exceeds 0.05 (Holm) or 0.10 (BY).
+A strategy that earns PASS-STRONG at the interim look keeps that verdict (an early pass). A strategy that neither passes nor fails
+at the interim look goes to the final look. A `FAIL` is allowed at the interim look (stopping for futility cannot inflate the
+false-positive rate). **The family stays all `m` cohort strategies at both looks:** a strategy that cannot be tested at a look
+(too few trades, unresolved trades, skipped interim) enters the multiplicity calculation with **p = 1**, so `m` never shrinks.
+The two-look Holm total never exceeds 0.05. **Formal PASS-WEAK (BY) is issued only at the final look**, because spending q
+across repeated BY looks has no clean error-control argument; at the interim look a strategy that satisfies V1-V5 and would
+pass BY at q = 0.10 is only labelled `WEAK_SIGNAL` (descriptive, not a verdict).
 
 **Per-strategy checks** (all of V1-V5 must hold for any PASS):
 
 | # | Check | Value |
 |---|---|---|
-| V1 | Sample | at least **100** closed trades (of the data used at that look) |
+| V1 | Sample | at least **100** resolved trades (of the data used at that look) |
 | V2 | Practical size | expectancy >= **+0.10R**, PF >= **1.20** |
 | V3 | Drawdown | max drawdown <= **10R** over the data used |
 | V4 | Not one lucky day | expectancy stays >= **+0.05R** after deleting the single best signal day |
@@ -104,22 +110,24 @@ never exceeds 0.05 (Holm) or 0.10 (BY).
   lot sizing -> stop / target hits -> partials -> MAX_HOLD -> final P&L.
 - Commission is multiplied by **1.5**.
 - Swap: a **negative** swap charge is multiplied by **2** (twice as costly); a **positive** swap credit is set to **zero**.
-- A trade that the stressed replay would skip (for example entry beyond the stop) is excluded from the stressed set and
-  counted; if more than 5% of the trades are excluded, V5 fails. (This 5% cap is Claude's addition; ChatGPT may challenge it.)
+- **A signal that the stressed replay cannot execute** (for example the entry is beyond the stop, or R becomes too small)
+  **stays in the denominator and contributes 0R** to the stressed expectancy, and `stress_unexecutable_count` is incremented. If
+  more than **5%** of the trades become unexecutable, V5 fails regardless of expectancy. (The 5% cap is Claude's; the
+  zero-R denominator treatment is ChatGPT's.)
 
 **Verdicts**
 
 - **PASS-STRONG:** V1-V5 hold and the bootstrap p-value survives **Holm** at that look's alpha (valid under any dependence
   between strategies, which matters because they fire on the same candles).
-- **PASS-WEAK (amendment 5):** V1-V5 hold and the p-value survives **Benjamini-Yekutieli** at that look's q but not Holm.
+- **PASS-WEAK (amendment 5, final look only):** V1-V5 hold and the p-value survives **Benjamini-Yekutieli** at q = 0.10 but not Holm.
   BY, unlike ordinary BH, keeps its guarantee under arbitrary dependence. PASS-WEAK is a research label only and **can never
   become a live candidate**.
 - **FAIL:** at >= 100 trades, expectancy <= 0 or PF < 1.0 or V3 violated; or, at the final look, the 80% one-sided
   upper bound of expectancy is below +0.05R.
-- **INCONCLUSIVE:** anything else at the interim look. At the final look it becomes `NOT_PROVEN` (treated as FAIL for
+- **INCONCLUSIVE:** anything else at the interim look (or `INTERIM_SKIPPED`). At the final look it becomes `NOT_PROVEN` (treated as FAIL for
   decisions; it can re-enter only through a new rule version and a new discovery).
 - Holm: order the `m` p-values ascending; reject `p_(i)` while `p_(j) <= alpha / (m - j + 1)` for all `j <= i`.
-  BY: with `c(m) = sum_{i=1..m} 1/i`, reject the `k` smallest p-values where `k` is the largest `i` with `p_(i) <= i q / (m c(m))`.
+  BY: with `c(m) = sum_{i=1..m} 1/i`, reject the `k` smallest p-values where `k` is the largest `i` with `p_(i) <= i q / (m c(m))`. Untestable strategies carry p = 1 in both procedures.
 
 Failed and not-proven strategies keep being observed (section 2, rule 3); their formal verdict simply stays failed or not proven.
 Only **PASS-STRONG** strategies may be put to the owner as live candidates, and even then the recommendation requires the
@@ -169,10 +177,10 @@ a false one. V1 (100 trades) is a floor, not evidence; V6 carries the proof burd
 Every review publishes, for each strategy: n, expectancy with the bootstrap interval, PF, drawdown, stage and verdict, and for
 the whole exercise `K`, `m`, `cohort_id`, the number killed, the number unknown and the expected number of false candidates.
 Strategies with too little data show "NOT ENOUGH DATA" (D-023). Verdict labels: `UNKNOWN`, `PRELIMINARY`,
-`KILLED_CURRENT_DISCOVERY_COHORT`, `CANDIDATE`, `PASS-STRONG`, `PASS-WEAK`, `INCONCLUSIVE`, `NOT_PROVEN`, `FAIL`,
-`INSUFFICIENT_DATA`.
+`KILLED_CURRENT_DISCOVERY_COHORT`, `CANDIDATE`, `AWAITING_RESOLUTION`, `INTERIM_SKIPPED`, `WEAK_SIGNAL` (descriptive), `PASS-STRONG`,
+`PASS-WEAK`, `INCONCLUSIVE`, `NOT_PROVEN`, `FAIL`, `INSUFFICIENT_DATA`.
 
 ## 8. Not decided here
 
 - Anything about live trading, real-account risk, or copying to a live account: owner only.
-- The Portfolio Simulation lives in `PORTFOLIO_RULES.md` and is separate from these per-strategy tests.
+- The Portfolio Simulation lives in `PORTFOLIO_RULES.md` and is separate from these per-strategy tests. When a cohort reaches its final verdict, the PASS-STRONG set is frozen into a `portfolio_manifest` (strategy list, validation lower confidence bound, stressed expectancy) that PS-CANDIDATE starts from, after that time only.

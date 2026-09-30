@@ -24,7 +24,8 @@ For `CANDLE_SPEC_V1.md` **Draft 0.3.2** (2026-09-30). Status: **research-approve
 | `END_TO_END.md` | 6 integration vectors from raw bar series to signal |
 | `HUB_COUNTERS.md` | 7 vectors for formation/signal/trade counters and P&L |
 | `EXECUTION_AND_TIMEFRAMES.md` | bar boundaries M1..MN1, commission, MAX_HOLD, swap, entry-beyond-stop, bars-only fallback, RAW with A-27 sign convention |
-| `portfolio/` | 18 Portfolio Simulation vectors (`GVP-0.1`, for `PORTFOLIO_RULES.md`): sizing, caps, clusters, conflicts, drawdown ladder and halt, daily loss, partials, EUR conversion |
+| `portfolio/` | 24 Portfolio Simulation vectors (`GVP-0.2`, for `PORTFOLIO_RULES.md`): sizing, caps, clusters, conflicts, ladder and halt (broker trading days), daily loss, partials with strategy-R vs portfolio-R divergence, EUR conversion, current-price heat and notional, same-timestamp updates, candidate start after its manifest |
+| `validation/` | 10 deterministic validation-rule vectors (`GVV-0.1`, for `VALIDATION_RULES.md`): Holm, Benjamini-Yekutieli, circular blocks, signal-day assignment, stress denominators, p-value formula |
 | `golden_vectors.json` | **all vectors, machine-readable** (absolute UTC times, exact expected outputs). What an implementation should load |
 | `COVERAGE.md` | matrix of requested test types against every pattern |
 | `RULINGS.md` | the 30 rulings, which vectors test each, and the observations |

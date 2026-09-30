@@ -1,7 +1,7 @@
 {
  "meta": {
-  "pack": "GVP-0.1",
-  "rules": "PORTFOLIO_RULES.md v0.1",
+  "pack": "GVP-0.2",
+  "rules": "PORTFOLIO_RULES.md v0.2",
   "defaults": {
    "start_eur": "10000",
    "risk_base": "0.01",
@@ -21,12 +21,13 @@
    "eurusd": "1.25 (fixture, not a forecast; chosen so EUR amounts are exact)",
    "server_time": "UTC+1, no DST"
   },
-  "count": 18
+  "count": 24
  },
  "vectors": [
   {
    "id": "GV-PS-01",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Base sizing. Equity 10,000; EURUSD 1.25; risk 1% = EUR 100 = USD 125; stop 1000 ticks -> 0.125 lot, rounded DOWN to 0.12. Realised risk 0.12 x 1000 / 1.25 = EUR 96.00. Caps are not binding. Exit at +2R (2000 ticks): USD 240 = EUR 192.00.",
    "tags": [
     "sizing"
@@ -40,7 +41,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -52,8 +52,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     }
    ],
    "expected": {
@@ -64,7 +64,10 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -72,6 +75,7 @@
   {
    "id": "GV-PS-01b",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Commission: EUR 3.50 per lot per side. Same trade as GV-PS-01: 0.12 lot -> EUR 0.42 at entry and 0.42 at exit; P&L 192.00 - 0.84 = 191.16.",
    "tags": [
     "sizing",
@@ -88,7 +92,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -100,8 +103,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     }
    ],
    "expected": {
@@ -112,7 +115,10 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "191.16"
+      "pnl_eur": "191.16",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -120,6 +126,7 @@
   {
    "id": "GV-PS-02a",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Wide stop: 8000 ticks -> 125/8000 = 0.0156 -> 0.01 lot (the minimum lot; taken because lots = lots_risk). Realised risk EUR 64.00; stopped out: -EUR 64.00.",
    "tags": [
     "sizing",
@@ -134,7 +141,6 @@
      "strat": "GT-KICKER-BULL-v1.0/BASE",
      "tf": "D1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T00:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -146,8 +152,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "D1|BUY|2026-10-05T00:00:00Z"
     }
    ],
    "expected": {
@@ -158,7 +164,10 @@
       "lots": "0.01",
       "ladder": "1",
       "risk_eur": "64.00",
-      "pnl_eur": "-64.00"
+      "pnl_eur": "-64.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -166,6 +175,7 @@
   {
    "id": "GV-PS-02b",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Very wide stop: 30000 ticks -> 125/30000 = 0.0042 -> 0.00 lot, below the minimum -> SKIPPED_PORTFOLIO_MIN_LOT.",
    "tags": [
     "sizing",
@@ -180,7 +190,6 @@
      "strat": "GT-KICKER-BULL-v1.0/BASE",
      "tf": "MN1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-01T00:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -192,8 +201,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "MN1|BUY|2026-10-01T00:00:00Z"
     }
    ],
    "expected": {
@@ -208,7 +217,8 @@
   {
    "id": "GV-PS-03",
    "kind": "portfolio",
-   "why": "Same-idea rule. Cluster c1 (H1 BUY): three signals; the one with the smallest verdict rank (rank 2, SRC-PS) is considered, the other two are DUPLICATE_CLUSTER. Cluster c2 (later): equal ranks, so a BASE signal beats a variant, and between BASE signals the smaller strategy id wins.",
+   "mode": "EXPLORE",
+   "why": "Same-idea rule in PS-EXPLORE (mechanical, no evidence used): signals with the same TF, direction and signal bar form one cluster; within it a BASE signal beats a source variant, then the smaller strategy id wins; the others are DUPLICATE_CLUSTER. Cluster 1 (H1 BUY): the Hammer BASE beats the Pin Bar BASE (id) and the Hammer SRC-PS (variant), whatever their verdict ranks. Cluster 2 (M15 BUY, later): the Hammer BASE beats the Pin Bar BASE and the SRC-PS.",
    "tags": [
     "cluster"
    ],
@@ -221,7 +231,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -233,15 +242,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "b",
      "strat": "GT-PINBAR-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -253,15 +261,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "c",
      "strat": "GT-HAMMER-BULL-v1.0/SRC-PS",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -273,15 +280,14 @@
        "frac": "1"
       }
      ],
-     "rank": 2,
-     "variant": "SRC-PS"
+     "variant": "SRC-PS",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "d",
      "strat": "GT-HAMMER-BULL-v1.0/SRC-PS",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T10:45:00Z",
      "fill_time": "2026-10-05T11:00:00Z",
      "entry": "4200.00",
@@ -293,15 +299,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "SRC-PS"
+     "variant": "SRC-PS",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:45:00Z"
     },
     {
      "id": "e",
      "strat": "GT-PINBAR-BULL-v1.0/BASE",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T10:45:00Z",
      "fill_time": "2026-10-05T11:00:00Z",
      "entry": "4200.00",
@@ -313,15 +318,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:45:00Z"
     },
     {
      "id": "f",
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T10:45:00Z",
      "fill_time": "2026-10-05T11:00:00Z",
      "entry": "4200.00",
@@ -333,17 +337,17 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:45:00Z"
     }
    ],
    "expected": {
     "balance_eur": "10384.00",
     "trades": {
-     "a": {
+     "b": {
       "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
      },
-     "b": {
+     "c": {
       "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
      },
      "e": {
@@ -352,19 +356,25 @@
      "d": {
       "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
      },
-     "c": {
+     "a": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "f": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -372,6 +382,7 @@
   {
    "id": "GV-PS-04",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Conflict rule. Same TF (M15) and signal bar, opposite directions: every member of both clusters is CONFLICT. A SELL on H1 (different TF, its own bar) is an independent idea and is taken (0.12 lot, stop 1000 ticks, target hit: +EUR 192.00).",
    "tags": [
     "conflict"
@@ -385,7 +396,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:45:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -397,15 +407,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T09:45:00Z"
     },
     {
      "id": "b",
      "strat": "GT-SHOOTINGSTAR-BEAR-v1.0/BASE",
      "tf": "M15",
      "side": "SELL",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T09:45:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -417,15 +426,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|SELL|2026-10-05T09:45:00Z"
     },
     {
      "id": "c",
      "strat": "GT-EVENINGSTAR-BEAR-v1.0/BASE",
      "tf": "H1",
      "side": "SELL",
-     "cluster": "c3",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -437,8 +445,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|SELL|2026-10-05T09:00:00Z"
     }
    ],
    "expected": {
@@ -455,7 +463,10 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -463,6 +474,7 @@
   {
    "id": "GV-PS-05",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Direction cap (DIR_MAX overridden to 2.5% so scaling can occur, NOTIONAL_MAX to 100x so it does not interfere). Three BUYs, each 0.12 lot (EUR 96 risk). Equity is slightly below 10,000 because the open longs are marked at the BID (4200.00) while they filled at the ASK (4200.20). Third: headroom 2.5% x equity - 192 leaves 0.07 lot: at least half of the intended 0.12, so ACCEPTED_SCALED_DIRECTION. Fourth: headroom leaves 0.00 -> below the minimum -> SKIPPED_PORTFOLIO_DIRECTION_CAP.",
    "tags": [
     "direction-cap",
@@ -486,7 +498,6 @@
      "strat": "GT-S1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T08:00:00Z",
      "fill_time": "2026-10-05T09:00:00Z",
      "entry": "4200.20",
@@ -498,15 +509,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
     },
     {
      "id": "2",
      "strat": "GT-S2-BULL-v1.0/BASE",
      "tf": "M30",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T08:30:00Z",
      "fill_time": "2026-10-05T09:30:00Z",
      "entry": "4200.20",
@@ -518,15 +528,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M30|BUY|2026-10-05T08:30:00Z"
     },
     {
      "id": "3",
      "strat": "GT-S3-BULL-v1.0/BASE",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-05T09:15:00Z",
      "fill_time": "2026-10-05T09:45:00Z",
      "entry": "4200.20",
@@ -538,15 +547,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T09:15:00Z"
     },
     {
      "id": "4",
      "strat": "GT-S4-BULL-v1.0/BASE",
      "tf": "M5",
      "side": "BUY",
-     "cluster": "c4",
      "signal_bar": "2026-10-05T09:50:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.20",
@@ -558,8 +566,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M5|BUY|2026-10-05T09:50:00Z"
     }
    ],
    "expected": {
@@ -570,21 +578,30 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "3": {
       "decision": "ACCEPTED_SCALED_DIRECTION",
       "lots": "0.07",
       "ladder": "1",
       "risk_eur": "56.00",
-      "pnl_eur": "112.00"
+      "pnl_eur": "112.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "4": {
       "decision": "SKIPPED_PORTFOLIO_DIRECTION_CAP"
@@ -595,6 +612,7 @@
   {
    "id": "GV-PS-06",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Gross heat counts both directions but the direction cap counts each side alone (HEAT_MAX overridden to 2.5%, NOTIONAL_MAX to 100x). Open BUY 0.12 (EUR 96) and SELL 0.12 (EUR 96) on different timeframes; a third BUY sees direction headroom 300 - 96 (plenty) but heat headroom 250 - 192: 0.07 lot -> ACCEPTED_SCALED_HEAT.",
    "tags": [
     "heat-cap",
@@ -619,7 +637,6 @@
      "strat": "GT-S1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T08:00:00Z",
      "fill_time": "2026-10-05T09:00:00Z",
      "entry": "4200.20",
@@ -631,15 +648,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
     },
     {
      "id": "2",
      "strat": "GT-S2-BEAR-v1.0/BASE",
      "tf": "H4",
      "side": "SELL",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T04:00:00Z",
      "fill_time": "2026-10-05T09:30:00Z",
      "entry": "4200.00",
@@ -651,15 +667,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H4|SELL|2026-10-05T04:00:00Z"
     },
     {
      "id": "3",
      "strat": "GT-S3-BULL-v1.0/BASE",
      "tf": "M15",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-05T09:15:00Z",
      "fill_time": "2026-10-05T09:45:00Z",
      "entry": "4200.20",
@@ -671,8 +686,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T09:15:00Z"
     }
    ],
    "expected": {
@@ -683,21 +698,30 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "3": {
       "decision": "ACCEPTED_SCALED_HEAT",
       "lots": "0.07",
       "ladder": "1",
       "risk_eur": "56.00",
-      "pnl_eur": "112.00"
+      "pnl_eur": "112.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -705,6 +729,7 @@
   {
    "id": "GV-PS-07a",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Notional cap. Stop 200 ticks: lots_risk = 125/200 = 0.625 -> 0.62; notional per lot = 100 oz x 4200 / 1.25 = EUR 336,000; 15 x 10,000 / 336,000 = 0.4464 -> 0.44 lot, which is at least half of 0.62 -> ACCEPTED_SCALED_NOTIONAL, realised risk 0.44 x 200 / 1.25 = EUR 70.40.",
    "tags": [
     "notional-cap",
@@ -719,7 +744,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "M5",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:55:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -731,8 +755,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M5|BUY|2026-10-05T09:55:00Z"
     }
    ],
    "expected": {
@@ -743,7 +767,10 @@
       "lots": "0.44",
       "ladder": "1",
       "risk_eur": "70.40",
-      "pnl_eur": "140.80"
+      "pnl_eur": "140.80",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -751,6 +778,7 @@
   {
    "id": "GV-PS-07b",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Notional cap, too tight: stop 100 ticks -> lots_risk 1.25; the cap allows 0.44, less than half of 1.25 -> SKIPPED_PORTFOLIO_NOTIONAL_CAP.",
    "tags": [
     "notional-cap"
@@ -764,7 +792,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "M1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:59:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -776,8 +803,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M1|BUY|2026-10-05T09:59:00Z"
     }
    ],
    "expected": {
@@ -792,6 +819,7 @@
   {
    "id": "GV-PS-08",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Drawdown ladder. Eighteen consecutive stop-outs, three a day (the daily loss limit is never reached). Each entry is sized on current equity; once DD from the high-water mark (10,000) reaches 5% the risk is halved, at 10% quartered. The record shows the ladder multiplier and lots of every entry.",
    "tags": [
     "ladder"
@@ -805,7 +833,6 @@
      "strat": "GT-L1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T08:00:00Z",
      "fill_time": "2026-10-05T09:00:00Z",
      "entry": "4200.00",
@@ -817,15 +844,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
     },
     {
      "id": "2",
      "strat": "GT-L2-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -837,15 +863,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "3",
      "strat": "GT-L3-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-05T10:00:00Z",
      "fill_time": "2026-10-05T11:00:00Z",
      "entry": "4200.00",
@@ -857,15 +882,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T10:00:00Z"
     },
     {
      "id": "4",
      "strat": "GT-L4-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c4",
      "signal_bar": "2026-10-06T08:00:00Z",
      "fill_time": "2026-10-06T09:00:00Z",
      "entry": "4200.00",
@@ -877,15 +901,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T08:00:00Z"
     },
     {
      "id": "5",
      "strat": "GT-L5-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c5",
      "signal_bar": "2026-10-06T09:00:00Z",
      "fill_time": "2026-10-06T10:00:00Z",
      "entry": "4200.00",
@@ -897,15 +920,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T09:00:00Z"
     },
     {
      "id": "6",
      "strat": "GT-L6-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c6",
      "signal_bar": "2026-10-06T10:00:00Z",
      "fill_time": "2026-10-06T11:00:00Z",
      "entry": "4200.00",
@@ -917,15 +939,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T10:00:00Z"
     },
     {
      "id": "7",
      "strat": "GT-L7-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c7",
      "signal_bar": "2026-10-07T08:00:00Z",
      "fill_time": "2026-10-07T09:00:00Z",
      "entry": "4200.00",
@@ -937,15 +958,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T08:00:00Z"
     },
     {
      "id": "8",
      "strat": "GT-L8-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c8",
      "signal_bar": "2026-10-07T09:00:00Z",
      "fill_time": "2026-10-07T10:00:00Z",
      "entry": "4200.00",
@@ -957,15 +977,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T09:00:00Z"
     },
     {
      "id": "9",
      "strat": "GT-L9-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c9",
      "signal_bar": "2026-10-07T10:00:00Z",
      "fill_time": "2026-10-07T11:00:00Z",
      "entry": "4200.00",
@@ -977,15 +996,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T10:00:00Z"
     },
     {
      "id": "10",
      "strat": "GT-L10-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c10",
      "signal_bar": "2026-10-08T08:00:00Z",
      "fill_time": "2026-10-08T09:00:00Z",
      "entry": "4200.00",
@@ -997,15 +1015,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T08:00:00Z"
     },
     {
      "id": "11",
      "strat": "GT-L11-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c11",
      "signal_bar": "2026-10-08T09:00:00Z",
      "fill_time": "2026-10-08T10:00:00Z",
      "entry": "4200.00",
@@ -1017,15 +1034,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T09:00:00Z"
     },
     {
      "id": "12",
      "strat": "GT-L12-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c12",
      "signal_bar": "2026-10-08T10:00:00Z",
      "fill_time": "2026-10-08T11:00:00Z",
      "entry": "4200.00",
@@ -1037,15 +1053,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T10:00:00Z"
     },
     {
      "id": "13",
      "strat": "GT-L13-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c13",
      "signal_bar": "2026-10-09T08:00:00Z",
      "fill_time": "2026-10-09T09:00:00Z",
      "entry": "4200.00",
@@ -1057,15 +1072,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-09T08:00:00Z"
     },
     {
      "id": "14",
      "strat": "GT-L14-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c14",
      "signal_bar": "2026-10-09T09:00:00Z",
      "fill_time": "2026-10-09T10:00:00Z",
      "entry": "4200.00",
@@ -1077,15 +1091,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-09T09:00:00Z"
     },
     {
      "id": "15",
      "strat": "GT-L15-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c15",
      "signal_bar": "2026-10-09T10:00:00Z",
      "fill_time": "2026-10-09T11:00:00Z",
      "entry": "4200.00",
@@ -1097,15 +1110,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-09T10:00:00Z"
     },
     {
      "id": "16",
      "strat": "GT-L16-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c16",
      "signal_bar": "2026-10-12T08:00:00Z",
      "fill_time": "2026-10-12T09:00:00Z",
      "entry": "4200.00",
@@ -1117,15 +1129,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-12T08:00:00Z"
     },
     {
      "id": "17",
      "strat": "GT-L17-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c17",
      "signal_bar": "2026-10-12T09:00:00Z",
      "fill_time": "2026-10-12T10:00:00Z",
      "entry": "4200.00",
@@ -1137,15 +1148,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-12T09:00:00Z"
     },
     {
      "id": "18",
      "strat": "GT-L18-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c18",
      "signal_bar": "2026-10-12T10:00:00Z",
      "fill_time": "2026-10-12T11:00:00Z",
      "entry": "4200.00",
@@ -1157,8 +1167,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-12T10:00:00Z"
     }
    ],
    "expected": {
@@ -1169,126 +1179,180 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "3": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "4": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "5": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "6": {
       "decision": "ACCEPTED",
       "lots": "0.11",
       "ladder": "1",
       "risk_eur": "88.00",
-      "pnl_eur": "-88.00"
+      "pnl_eur": "-88.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "7": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "8": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "9": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "10": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "11": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "12": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "13": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "14": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "15": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "16": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "17": {
       "decision": "ACCEPTED",
       "lots": "0.05",
       "ladder": "0.5",
       "risk_eur": "40.00",
-      "pnl_eur": "-40.00"
+      "pnl_eur": "-40.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "18": {
       "decision": "ACCEPTED",
       "lots": "0.02",
       "ladder": "0.25",
       "risk_eur": "16.00",
-      "pnl_eur": "-16.00"
+      "pnl_eur": "-16.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -1296,6 +1360,7 @@
   {
    "id": "GV-PS-09",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Drawdown halt (RISK_BASE overridden to 6% and the other caps opened up so the ladder and the 15% halt are reached in a few trades). One losing trade a day: DD 6.0%, 8.8%, 11.5%, 12.8%, 14.1%, then 15.4% after the Monday 12 October stop-out, which starts the halt: no entries for the rest of that day and the next 10 trading days (Tue 13 Oct ... Mon 26 Oct); trading resumes Tue 27 Oct at the x0.25 ladder step (DD is still >= 10%, so the halt is not re-armed). Signals on 13 Oct, 23 Oct and 26 Oct are SKIPPED_PORTFOLIO_DRAWDOWN_HALT.",
    "tags": [
     "halt",
@@ -1315,7 +1380,6 @@
      "strat": "GT-L1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -1327,15 +1391,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "2",
      "strat": "GT-L2-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-06T09:00:00Z",
      "fill_time": "2026-10-06T10:00:00Z",
      "entry": "4200.00",
@@ -1347,15 +1410,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T09:00:00Z"
     },
     {
      "id": "3",
      "strat": "GT-L3-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-07T09:00:00Z",
      "fill_time": "2026-10-07T10:00:00Z",
      "entry": "4200.00",
@@ -1367,15 +1429,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T09:00:00Z"
     },
     {
      "id": "4",
      "strat": "GT-L4-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c4",
      "signal_bar": "2026-10-08T09:00:00Z",
      "fill_time": "2026-10-08T10:00:00Z",
      "entry": "4200.00",
@@ -1387,15 +1448,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T09:00:00Z"
     },
     {
      "id": "5",
      "strat": "GT-L5-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c5",
      "signal_bar": "2026-10-09T09:00:00Z",
      "fill_time": "2026-10-09T10:00:00Z",
      "entry": "4200.00",
@@ -1407,15 +1467,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-09T09:00:00Z"
     },
     {
      "id": "6",
      "strat": "GT-L6-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c6",
      "signal_bar": "2026-10-12T09:00:00Z",
      "fill_time": "2026-10-12T10:00:00Z",
      "entry": "4200.00",
@@ -1427,15 +1486,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-12T09:00:00Z"
     },
     {
      "id": "7",
      "strat": "GT-L7-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c7",
      "signal_bar": "2026-10-13T09:00:00Z",
      "fill_time": "2026-10-13T10:00:00Z",
      "entry": "4200.00",
@@ -1447,15 +1505,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-13T09:00:00Z"
     },
     {
      "id": "8",
      "strat": "GT-L8-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c8",
      "signal_bar": "2026-10-23T09:00:00Z",
      "fill_time": "2026-10-23T10:00:00Z",
      "entry": "4200.00",
@@ -1467,15 +1524,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-23T09:00:00Z"
     },
     {
      "id": "9",
      "strat": "GT-L9-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c9",
      "signal_bar": "2026-10-26T09:00:00Z",
      "fill_time": "2026-10-26T10:00:00Z",
      "entry": "4200.00",
@@ -1487,15 +1543,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-26T09:00:00Z"
     },
     {
      "id": "10",
      "strat": "GT-L10-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c10",
      "signal_bar": "2026-10-27T09:00:00Z",
      "fill_time": "2026-10-27T10:00:00Z",
      "entry": "4200.00",
@@ -1507,8 +1562,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-27T09:00:00Z"
     }
    ],
    "expected": {
@@ -1519,42 +1574,60 @@
       "lots": "0.75",
       "ladder": "1",
       "risk_eur": "600.00",
-      "pnl_eur": "-600.00"
+      "pnl_eur": "-600.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "2": {
       "decision": "ACCEPTED",
       "lots": "0.35",
       "ladder": "0.5",
       "risk_eur": "280.00",
-      "pnl_eur": "-280.00"
+      "pnl_eur": "-280.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "3": {
       "decision": "ACCEPTED",
       "lots": "0.34",
       "ladder": "0.5",
       "risk_eur": "272.00",
-      "pnl_eur": "-272.00"
+      "pnl_eur": "-272.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "4": {
       "decision": "ACCEPTED",
       "lots": "0.16",
       "ladder": "0.25",
       "risk_eur": "128.00",
-      "pnl_eur": "-128.00"
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "5": {
       "decision": "ACCEPTED",
       "lots": "0.16",
       "ladder": "0.25",
       "risk_eur": "128.00",
-      "pnl_eur": "-128.00"
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "6": {
       "decision": "ACCEPTED",
       "lots": "0.16",
       "ladder": "0.25",
       "risk_eur": "128.00",
-      "pnl_eur": "-128.00"
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "7": {
       "decision": "SKIPPED_PORTFOLIO_DRAWDOWN_HALT"
@@ -1570,7 +1643,10 @@
       "lots": "0.15",
       "ladder": "0.25",
       "risk_eur": "120.00",
-      "pnl_eur": "-120.00"
+      "pnl_eur": "-120.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -1578,6 +1654,7 @@
   {
    "id": "GV-PS-10",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Daily loss limit 3% of the day's opening equity. Tue 6 Oct: four stop-outs take the day down 3.84% (after three, 2.88% < 3%, so the fourth is still allowed); the fifth signal that day is SKIPPED_PORTFOLIO_DAILY_LOSS. On Wed 7 Oct the day-opening equity resets and the sixth is taken.",
    "tags": [
     "daily-loss"
@@ -1591,7 +1668,6 @@
      "strat": "GT-L1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-06T07:00:00Z",
      "fill_time": "2026-10-06T08:00:00Z",
      "entry": "4200.00",
@@ -1603,15 +1679,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T07:00:00Z"
     },
     {
      "id": "2",
      "strat": "GT-L2-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-06T08:00:00Z",
      "fill_time": "2026-10-06T09:00:00Z",
      "entry": "4200.00",
@@ -1623,15 +1698,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T08:00:00Z"
     },
     {
      "id": "3",
      "strat": "GT-L3-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-06T09:00:00Z",
      "fill_time": "2026-10-06T10:00:00Z",
      "entry": "4200.00",
@@ -1643,15 +1717,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T09:00:00Z"
     },
     {
      "id": "4",
      "strat": "GT-L4-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c4",
      "signal_bar": "2026-10-06T10:00:00Z",
      "fill_time": "2026-10-06T11:00:00Z",
      "entry": "4200.00",
@@ -1663,15 +1736,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T10:00:00Z"
     },
     {
      "id": "5",
      "strat": "GT-L5-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c5",
      "signal_bar": "2026-10-06T11:00:00Z",
      "fill_time": "2026-10-06T12:00:00Z",
      "entry": "4200.00",
@@ -1683,15 +1755,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T11:00:00Z"
     },
     {
      "id": "6",
      "strat": "GT-L6-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c6",
      "signal_bar": "2026-10-07T07:00:00Z",
      "fill_time": "2026-10-07T08:00:00Z",
      "entry": "4200.00",
@@ -1703,8 +1774,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T07:00:00Z"
     }
    ],
    "expected": {
@@ -1715,28 +1786,40 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "3": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "4": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "5": {
       "decision": "SKIPPED_PORTFOLIO_DAILY_LOSS"
@@ -1746,7 +1829,10 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -1754,7 +1840,8 @@
   {
    "id": "GV-PS-11",
    "kind": "portfolio",
-   "why": "Partial exits: 0.12 lot, 60% partial at +1R (4210.00), rest at 4230.00. Partial lots = floor(0.12 x 0.6 = 0.072 to the lot step) = 0.07 -> USD 70 = EUR 56.00; remaining 0.05 lot at +3R: USD 150 = EUR 120.00. Total EUR 176.00. Second trade: 0.01 lot: 60% of it rounds down to 0.00, so the partial is not executed and the final exit closes the whole 0.01 lot (+8000 ticks = USD 80 = EUR 64.00).",
+   "mode": "EXPLORE",
+   "why": "Partial exits: 0.12 lot, 60% partial at +1R (4210.00), rest at 4230.00. Partial lots = floor(0.12 x 0.6 = 0.072 to the lot step) = 0.07 -> USD 70 = EUR 56.00; remaining 0.05 lot at +3R: USD 150 = EUR 120.00. Total EUR 176.00. Strategy R (plan 60% at +1R, 40% at +3R) = 1.8; portfolio R = USD 220 / USD 120 = 11/6 = 1.8333; divergence +1/30. Second trade: 0.01 lot: 60% of it rounds down to 0.00, so the partial is not executed and the final exit closes the whole 0.01 lot (+8000 ticks = USD 80 = EUR 64.00). Its strategy R (60% at +0.5R, 40% at +1R) = 0.7, portfolio R = 1.0, divergence +0.3.",
    "tags": [
     "partials"
    ],
@@ -1767,7 +1854,6 @@
      "strat": "GT-EVENINGSTAR-BEAR-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -1784,15 +1870,14 @@
        "frac": "0.4"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "t2",
      "strat": "GT-KICKER-BULL-v1.0/BASE",
      "tf": "D1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T00:00:00Z",
      "fill_time": "2026-10-05T12:00:00Z",
      "entry": "4200.00",
@@ -1809,8 +1894,8 @@
        "frac": "0.4"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "D1|BUY|2026-10-05T00:00:00Z"
     }
    ],
    "expected": {
@@ -1821,14 +1906,20 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "176.00"
+      "pnl_eur": "176.00",
+      "strategy_R": "1.8",
+      "portfolio_R": "11/6",
+      "rounding_divergence_R": "1/30"
      },
      "t2": {
       "decision": "ACCEPTED",
       "lots": "0.01",
       "ladder": "1",
       "risk_eur": "64.00",
-      "pnl_eur": "64.00"
+      "pnl_eur": "64.00",
+      "strategy_R": "0.7",
+      "portfolio_R": "1",
+      "rounding_divergence_R": "0.3"
      }
     }
    }
@@ -1836,6 +1927,7 @@
   {
    "id": "GV-PS-12",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "EUR conversion. EURUSD 1.25 at the first entry (0.12 lot), 1.60 at its exit: +2R = USD 240 / 1.60 = EUR 150.00 (sizing used the entry-time rate, P&L the exit-time rate). Second trade sized at 1.60 with equity 10,150: 0.01 x 10,150 x 1.60 / 1000 = 0.1624 -> 0.16 lot; stopped out: USD 160 / 1.60 = -EUR 100.00 -> balance 10,050.00.",
    "tags": [
     "fx"
@@ -1854,7 +1946,6 @@
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -1866,15 +1957,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "t2",
      "strat": "GT-HAMMER-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T11:00:00Z",
      "fill_time": "2026-10-05T12:00:00Z",
      "entry": "4200.00",
@@ -1886,8 +1976,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T11:00:00Z"
     }
    ],
    "expected": {
@@ -1898,14 +1988,20 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "150.00"
+      "pnl_eur": "150.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "t2": {
       "decision": "ACCEPTED",
       "lots": "0.16",
       "ladder": "1",
       "risk_eur": "100.00",
-      "pnl_eur": "-100.00"
+      "pnl_eur": "-100.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -1913,7 +2009,8 @@
   {
    "id": "GV-PS-13",
    "kind": "portfolio",
-   "why": "Queue order at the same instant (HEAT_MAX overridden to 1.25% so only one 0.12-lot trade fits). Entries at the same instant: higher timeframe first, then rank. H4 BUY (rank 3) is processed before the H1 BUY (rank 1): H4 taken (0.12), H1 gets 0.03 lot < half of 0.12 -> SKIPPED_PORTFOLIO_HEAT_CAP. Later, at another instant, two H1 signals with different ranks: the rank-1 signal is processed first and taken; the rank-3 one is skipped.",
+   "mode": "EXPLORE",
+   "why": "Queue order in PS-EXPLORE is mechanical: at the same instant clusters are processed in cluster-id order (text `TF|SIDE|signal bar`), never by timeframe quality or verdict rank (HEAT_MAX overridden to 1.25% so only one 0.12-lot trade fits). Instant 1: H1 BUY (cluster id starting `H1|`) sorts before H4 BUY (`H4|`), so H1 is taken (0.12) and H4 gets 0.03 lot < half of 0.12 -> SKIPPED_PORTFOLIO_HEAT_CAP, although the H4 signal carries the better verdict rank. Instant 2: two H1 BUYs; the earlier signal bar (10:00, rank 3) sorts first and is taken; the later one (11:00, rank 1) is skipped.",
    "tags": [
     "ordering"
    ],
@@ -1928,7 +2025,6 @@
      "strat": "GT-A-BULL-v1.0/BASE",
      "tf": "H4",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T04:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -1940,15 +2036,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H4|BUY|2026-10-05T04:00:00Z"
     },
     {
      "id": "b",
      "strat": "GT-B-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -1960,15 +2055,14 @@
        "frac": "1"
       }
      ],
-     "rank": 1,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "c",
      "strat": "GT-C-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c3",
      "signal_bar": "2026-10-05T10:00:00Z",
      "fill_time": "2026-10-05T12:00:00Z",
      "entry": "4200.00",
@@ -1980,16 +2074,15 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T10:00:00Z"
     },
     {
      "id": "d",
      "strat": "GT-D-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c4",
-     "signal_bar": "2026-10-05T10:00:00Z",
+     "signal_bar": "2026-10-05T11:00:00Z",
      "fill_time": "2026-10-05T12:00:00Z",
      "entry": "4200.00",
      "stop": "4190.00",
@@ -2000,31 +2093,37 @@
        "frac": "1"
       }
      ],
-     "rank": 1,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T11:00:00Z"
     }
    ],
    "expected": {
     "balance_eur": "10384.00",
     "trades": {
-     "a": {
+     "b": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
-     "b": {
+     "a": {
       "decision": "SKIPPED_PORTFOLIO_HEAT_CAP"
      },
-     "d": {
+     "c": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
-     "c": {
+     "d": {
       "decision": "SKIPPED_PORTFOLIO_HEAT_CAP"
      }
     }
@@ -2033,6 +2132,7 @@
   {
    "id": "GV-PS-14",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "Floating equity is used for sizing. RISK_BASE 3%, HEAT/DIR 10%, notional cap 100x (overridden). First BUY: 0.37 lot (stop 1000 ticks; 375/1000 = 0.375). Marked at BID 4192.00 while open (-800 ticks x 0.37 = -USD 296 = -EUR 236.80), equity 9,763.20. The second BUY is sized on that equity: 0.03 x 9,763.20 x 1.25 / 1000 = 0.366 -> 0.36 lot (not 0.37).",
    "tags": [
     "floating-equity"
@@ -2062,7 +2162,6 @@
      "strat": "GT-A-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -2074,15 +2173,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "t2",
      "strat": "GT-B-BULL-v1.0/BASE",
      "tf": "M30",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T10:30:00Z",
      "fill_time": "2026-10-05T11:00:00Z",
      "entry": "4200.00",
@@ -2094,8 +2192,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "M30|BUY|2026-10-05T10:30:00Z"
     }
    ],
    "expected": {
@@ -2106,14 +2204,20 @@
       "lots": "0.37",
       "ladder": "1",
       "risk_eur": "296.00",
-      "pnl_eur": "592.00"
+      "pnl_eur": "592.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "t2": {
       "decision": "ACCEPTED",
       "lots": "0.36",
       "ladder": "1",
       "risk_eur": "288.00",
-      "pnl_eur": "576.00"
+      "pnl_eur": "576.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      }
     }
    }
@@ -2121,6 +2225,7 @@
   {
    "id": "GV-PS-15",
    "kind": "portfolio",
+   "mode": "EXPLORE",
    "why": "High-water mark rises with profit. Monday: two +2R winners (EUR +192 each) take equity to 10,384, so the end-of-day high-water mark is 10,384. Seven stop-outs follow (Tue 3, Wed 3, Thu 1). Drawdown is measured from 10,384, not from the starting 10,000: the first six entries are full size (equity 10,384 down to 9,904 is 4.6%), and the sixth stop-out takes equity to 9,808, a 5.55% drawdown from 10,384 (it would only be 1.9% from 10,000), so the seventh entry is sized at x0.5 (0.06 lot).",
    "tags": [
     "high-water-mark",
@@ -2135,7 +2240,6 @@
      "strat": "GT-A-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c1",
      "signal_bar": "2026-10-05T08:00:00Z",
      "fill_time": "2026-10-05T09:00:00Z",
      "entry": "4200.00",
@@ -2147,15 +2251,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
     },
     {
      "id": "w2",
      "strat": "GT-B-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "c2",
      "signal_bar": "2026-10-05T09:00:00Z",
      "fill_time": "2026-10-05T10:00:00Z",
      "entry": "4200.00",
@@ -2167,15 +2270,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
     },
     {
      "id": "l1",
      "strat": "GT-Ll1-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl1",
      "signal_bar": "2026-10-06T08:00:00Z",
      "fill_time": "2026-10-06T09:00:00Z",
      "entry": "4200.00",
@@ -2187,15 +2289,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T08:00:00Z"
     },
     {
      "id": "l2",
      "strat": "GT-Ll2-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl2",
      "signal_bar": "2026-10-06T09:00:00Z",
      "fill_time": "2026-10-06T10:00:00Z",
      "entry": "4200.00",
@@ -2207,15 +2308,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T09:00:00Z"
     },
     {
      "id": "l3",
      "strat": "GT-Ll3-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl3",
      "signal_bar": "2026-10-06T10:00:00Z",
      "fill_time": "2026-10-06T11:00:00Z",
      "entry": "4200.00",
@@ -2227,15 +2327,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T10:00:00Z"
     },
     {
      "id": "l4",
      "strat": "GT-Ll4-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl4",
      "signal_bar": "2026-10-07T08:00:00Z",
      "fill_time": "2026-10-07T09:00:00Z",
      "entry": "4200.00",
@@ -2247,15 +2346,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T08:00:00Z"
     },
     {
      "id": "l5",
      "strat": "GT-Ll5-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl5",
      "signal_bar": "2026-10-07T09:00:00Z",
      "fill_time": "2026-10-07T10:00:00Z",
      "entry": "4200.00",
@@ -2267,15 +2365,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T09:00:00Z"
     },
     {
      "id": "l6",
      "strat": "GT-Ll6-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl6",
      "signal_bar": "2026-10-07T10:00:00Z",
      "fill_time": "2026-10-07T11:00:00Z",
      "entry": "4200.00",
@@ -2287,15 +2384,14 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T10:00:00Z"
     },
     {
      "id": "l7",
      "strat": "GT-Ll7-BULL-v1.0/BASE",
      "tf": "H1",
      "side": "BUY",
-     "cluster": "cl7",
      "signal_bar": "2026-10-08T08:00:00Z",
      "fill_time": "2026-10-08T09:00:00Z",
      "entry": "4200.00",
@@ -2307,8 +2403,8 @@
        "frac": "1"
       }
      ],
-     "rank": 3,
-     "variant": "BASE"
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T08:00:00Z"
     }
    ],
    "expected": {
@@ -2319,66 +2415,983 @@
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "w2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "192.00"
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
      },
      "l1": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l2": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l3": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l4": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l5": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l6": {
       "decision": "ACCEPTED",
       "lots": "0.12",
       "ladder": "1",
       "risk_eur": "96.00",
-      "pnl_eur": "-96.00"
+      "pnl_eur": "-96.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      },
      "l7": {
       "decision": "ACCEPTED",
       "lots": "0.06",
       "ladder": "0.5",
       "risk_eur": "48.00",
-      "pnl_eur": "-48.00"
+      "pnl_eur": "-48.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
      }
     }
    }
+  },
+  {
+   "id": "GV-PS-09b",
+   "kind": "portfolio",
+   "mode": "EXPLORE",
+   "why": "Halt counts BROKER trading days: as GV-PS-09, but Monday 19 October is a full market holiday (`closed_days`), so it does not use up a halt day. The halt started by the 12 October stop-out therefore runs through Tue 27 Oct (13,14,15,16,20,21,22,23,26,27) and the signals on 13, 23 and 27 October are SKIPPED_PORTFOLIO_DRAWDOWN_HALT; the signal on Wed 28 Oct is taken at the x0.25 step.",
+   "tags": [
+    "halt",
+    "calendar"
+   ],
+   "config_overrides": {
+    "risk_base": "0.06",
+    "heat_max": "1",
+    "dir_max": "1",
+    "notional_max": "1000",
+    "closed_days": [
+     "2026-10-19"
+    ]
+   },
+   "ticks": [],
+   "eurusd_changes": [],
+   "trades": [
+    {
+     "id": "1",
+     "strat": "GT-L1-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-05T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "2",
+     "strat": "GT-L2-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-06T09:00:00Z",
+     "fill_time": "2026-10-06T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-06T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-06T09:00:00Z"
+    },
+    {
+     "id": "3",
+     "strat": "GT-L3-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-07T09:00:00Z",
+     "fill_time": "2026-10-07T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-07T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-07T09:00:00Z"
+    },
+    {
+     "id": "4",
+     "strat": "GT-L4-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-08T09:00:00Z",
+     "fill_time": "2026-10-08T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-08T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-08T09:00:00Z"
+    },
+    {
+     "id": "5",
+     "strat": "GT-L5-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-09T09:00:00Z",
+     "fill_time": "2026-10-09T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-09T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-09T09:00:00Z"
+    },
+    {
+     "id": "6",
+     "strat": "GT-L6-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-12T09:00:00Z",
+     "fill_time": "2026-10-12T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-12T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-12T09:00:00Z"
+    },
+    {
+     "id": "7",
+     "strat": "GT-L7-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-13T09:00:00Z",
+     "fill_time": "2026-10-13T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-13T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-13T09:00:00Z"
+    },
+    {
+     "id": "8",
+     "strat": "GT-L8-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-23T09:00:00Z",
+     "fill_time": "2026-10-23T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-23T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-23T09:00:00Z"
+    },
+    {
+     "id": "9",
+     "strat": "GT-L9-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-27T09:00:00Z",
+     "fill_time": "2026-10-27T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-27T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-27T09:00:00Z"
+    },
+    {
+     "id": "10",
+     "strat": "GT-L10-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-28T09:00:00Z",
+     "fill_time": "2026-10-28T10:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-28T10:30:00Z",
+       "price": "4190.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-28T09:00:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "8344.00",
+    "trades": {
+     "1": {
+      "decision": "ACCEPTED",
+      "lots": "0.75",
+      "ladder": "1",
+      "risk_eur": "600.00",
+      "pnl_eur": "-600.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "2": {
+      "decision": "ACCEPTED",
+      "lots": "0.35",
+      "ladder": "0.5",
+      "risk_eur": "280.00",
+      "pnl_eur": "-280.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "3": {
+      "decision": "ACCEPTED",
+      "lots": "0.34",
+      "ladder": "0.5",
+      "risk_eur": "272.00",
+      "pnl_eur": "-272.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "4": {
+      "decision": "ACCEPTED",
+      "lots": "0.16",
+      "ladder": "0.25",
+      "risk_eur": "128.00",
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "5": {
+      "decision": "ACCEPTED",
+      "lots": "0.16",
+      "ladder": "0.25",
+      "risk_eur": "128.00",
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "6": {
+      "decision": "ACCEPTED",
+      "lots": "0.16",
+      "ladder": "0.25",
+      "risk_eur": "128.00",
+      "pnl_eur": "-128.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     },
+     "7": {
+      "decision": "SKIPPED_PORTFOLIO_DRAWDOWN_HALT"
+     },
+     "8": {
+      "decision": "SKIPPED_PORTFOLIO_DRAWDOWN_HALT"
+     },
+     "9": {
+      "decision": "SKIPPED_PORTFOLIO_DRAWDOWN_HALT"
+     },
+     "10": {
+      "decision": "ACCEPTED",
+      "lots": "0.15",
+      "ladder": "0.25",
+      "risk_eur": "120.00",
+      "pnl_eur": "-120.00",
+      "strategy_R": "-1",
+      "portfolio_R": "-1",
+      "rounding_divergence_R": "0"
+     }
+    }
+   }
+  },
+  {
+   "id": "GV-PS-16",
+   "kind": "portfolio",
+   "mode": "EXPLORE",
+   "why": "Same-timestamp state update (HEAT_MAX 2%, commission EUR 3.50 per lot per side, NOTIONAL_MAX 100x). Three BUYs fill at the same tick, processed in cluster-id order H1, M15, M30. After each accepted entry its commission is charged and its spread loss (it filled at the ASK 4200.20, the BID is 4200.00) is in equity, and the open risk is re-measured at the current BID. First: 0.12 lot (risk EUR 96; commission 0.42). Second: equity 9,997.66, open risk 0.12 x 980 ticks / 1.25 = EUR 94.08, heat headroom 105.87 -> 0.13 lot allowed, the intended 0.12 is taken. Third: equity 9,995.32, open risk 188.16, headroom 11.75 -> 0.01 lot < half of 0.12 -> SKIPPED_PORTFOLIO_HEAT_CAP. Without the recompute the third would see an empty book.",
+   "tags": [
+    "same-timestamp"
+   ],
+   "config_overrides": {
+    "heat_max": "0.02",
+    "notional_max": "100",
+    "commission_per_lot_side_eur": "3.50"
+   },
+   "ticks": [
+    {
+     "t": "2026-10-05T10:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    }
+   ],
+   "eurusd_changes": [],
+   "trades": [
+    {
+     "id": "a",
+     "strat": "GT-A-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "b",
+     "strat": "GT-B-BULL-v1.0/BASE",
+     "tf": "M30",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:30:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "M30|BUY|2026-10-05T09:30:00Z"
+    },
+    {
+     "id": "c",
+     "strat": "GT-C-BULL-v1.0/BASE",
+     "tf": "M15",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:45:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T09:45:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "10382.32",
+    "trades": {
+     "a": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "191.16",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     },
+     "c": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "191.16",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     },
+     "b": {
+      "decision": "SKIPPED_PORTFOLIO_HEAT_CAP"
+     }
+    }
+   }
+  },
+  {
+   "id": "GV-PS-17",
+   "kind": "portfolio",
+   "mode": "EXPLORE",
+   "why": "Open risk is measured from the CURRENT price to the stop, not from entry. BUY 0.12 lot filled at 4200.20 (stop 4190.20) at 09:00; by 10:30 the bid is 4230.00. Its current downside is (4230.00 - 4190.20) = 3,980 ticks x 0.12 / 1.25 = EUR 382.08 (its original risk was 96), equity is 10,286.08. A second BUY at 10:30: direction cap 3% x 10,286.08 = 308.58 < 382.08 -> 0 lots -> SKIPPED_PORTFOLIO_DIRECTION_CAP. A SELL at 10:31: direction headroom is free, but total heat headroom is only 4% x 10,286.08 - 382.08 = 29.36 -> 0.03 lot < half of 0.12 -> SKIPPED_PORTFOLIO_HEAT_CAP.",
+   "tags": [
+    "current-price-heat"
+   ],
+   "config_overrides": {},
+   "ticks": [
+    {
+     "t": "2026-10-05T09:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    },
+    {
+     "t": "2026-10-05T10:30:00Z",
+     "bid": "4230.00",
+     "ask": "4230.20"
+    },
+    {
+     "t": "2026-10-05T10:31:00Z",
+     "bid": "4230.00",
+     "ask": "4230.20"
+    }
+   ],
+   "eurusd_changes": [],
+   "trades": [
+    {
+     "id": "a",
+     "strat": "GT-A-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T08:00:00Z",
+     "fill_time": "2026-10-05T09:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4240.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
+    },
+    {
+     "id": "b",
+     "strat": "GT-B-BULL-v1.0/BASE",
+     "tf": "M15",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T10:15:00Z",
+     "fill_time": "2026-10-05T10:30:00Z",
+     "entry": "4230.20",
+     "stop": "4220.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4250.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:15:00Z"
+    },
+    {
+     "id": "c",
+     "strat": "GT-C-BEAR-v1.0/BASE",
+     "tf": "M30",
+     "side": "SELL",
+     "signal_bar": "2026-10-05T10:00:00Z",
+     "fill_time": "2026-10-05T10:31:00Z",
+     "entry": "4230.00",
+     "stop": "4240.00",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4210.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "M30|SELL|2026-10-05T10:00:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "10384.00",
+    "trades": {
+     "a": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "384.00",
+      "strategy_R": "4",
+      "portfolio_R": "4",
+      "rounding_divergence_R": "0"
+     },
+     "b": {
+      "decision": "SKIPPED_PORTFOLIO_DIRECTION_CAP"
+     },
+     "c": {
+      "decision": "SKIPPED_PORTFOLIO_HEAT_CAP"
+     }
+    }
+   }
+  },
+  {
+   "id": "GV-PS-18",
+   "kind": "portfolio",
+   "mode": "EXPLORE",
+   "why": "Open notional uses the CURRENT price and CURRENT EURUSD (NOTIONAL_MAX overridden to 6x; zero-spread marks). BUY 0.12 lot at 4200.00 at 09:00 (EURUSD 1.25, notional EUR 40,320). EURUSD falls to 1.00 at 10:00: the same position is now EUR 50,400. A second BUY at 10:30: lots_risk 0.10; notional headroom 60,000 - 50,400 = 9,600; one lot is EUR 420,000 -> 0.02 lot < half of 0.10 -> SKIPPED_PORTFOLIO_NOTIONAL_CAP. (With a stale entry-time notional the headroom would be 19,680, allowing 0.05 lot, which would be accepted.)",
+   "tags": [
+    "current-notional",
+    "fx"
+   ],
+   "config_overrides": {
+    "notional_max": "6"
+   },
+   "ticks": [
+    {
+     "t": "2026-10-05T09:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.00"
+    },
+    {
+     "t": "2026-10-05T10:30:00Z",
+     "bid": "4200.00",
+     "ask": "4200.00"
+    }
+   ],
+   "eurusd_changes": [
+    {
+     "t": "2026-10-05T10:00:00Z",
+     "eurusd": "1.00"
+    }
+   ],
+   "trades": [
+    {
+     "id": "a",
+     "strat": "GT-A-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T08:00:00Z",
+     "fill_time": "2026-10-05T09:00:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4220.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
+    },
+    {
+     "id": "b",
+     "strat": "GT-B-BULL-v1.0/BASE",
+     "tf": "M15",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T10:15:00Z",
+     "fill_time": "2026-10-05T10:30:00Z",
+     "entry": "4200.00",
+     "stop": "4190.00",
+     "exits": [
+      {
+       "time": "2026-10-05T12:00:00Z",
+       "price": "4220.00",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:15:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "10240.00",
+    "trades": {
+     "a": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "240.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     },
+     "b": {
+      "decision": "SKIPPED_PORTFOLIO_NOTIONAL_CAP"
+     }
+    }
+   }
+  },
+  {
+   "id": "GV-PS-19",
+   "kind": "portfolio",
+   "mode": "CANDIDATE",
+   "why": "PS-CANDIDATE starts only after its manifest. The portfolio manifest is frozen at 10:00; the candidate portfolio starts at the first executable tick strictly AFTER it (10:30). t1 (09:30, before) and t2 (10:00, exactly at the manifest time) are IGNORED_BEFORE_PORTFOLIO_START: they earn nothing and consume nothing, though they were winners in their own ledgers. t3 (10:30) is the first trade the candidate portfolio can take: 0.12 lot, +EUR 192.00; the balance is 10,192.00, not 10,576.",
+   "tags": [
+    "candidate",
+    "manifest"
+   ],
+   "config_overrides": {},
+   "ticks": [
+    {
+     "t": "2026-10-05T09:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    },
+    {
+     "t": "2026-10-05T10:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    },
+    {
+     "t": "2026-10-05T10:30:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    }
+   ],
+   "eurusd_changes": [],
+   "trades": [
+    {
+     "id": "t1",
+     "strat": "GT-A-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T08:00:00Z",
+     "fill_time": "2026-10-05T09:30:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T09:45:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.10",
+     "manifest_stressed_e": "0.05",
+     "signal_cluster_id": "H1|BUY|2026-10-05T08:00:00Z"
+    },
+    {
+     "id": "t2",
+     "strat": "GT-B-BULL-v1.0/BASE",
+     "tf": "M30",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T10:15:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.10",
+     "manifest_stressed_e": "0.05",
+     "signal_cluster_id": "M30|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "t3",
+     "strat": "GT-C-BULL-v1.0/BASE",
+     "tf": "M15",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T10:15:00Z",
+     "fill_time": "2026-10-05T10:30:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T11:00:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.10",
+     "manifest_stressed_e": "0.05",
+     "signal_cluster_id": "M15|BUY|2026-10-05T10:15:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "10192.00",
+    "trades": {
+     "t1": {
+      "decision": "IGNORED_BEFORE_PORTFOLIO_START"
+     },
+     "t2": {
+      "decision": "IGNORED_BEFORE_PORTFOLIO_START"
+     },
+     "t3": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     }
+    }
+   },
+   "manifest_time": "2026-10-05T10:00:00Z"
+  },
+  {
+   "id": "GV-PS-20",
+   "kind": "portfolio",
+   "mode": "CANDIDATE",
+   "why": "PS-CANDIDATE ranks members of one cluster by values FROZEN in the manifest: highest validation lower bound, then highest stressed expectancy, then strategy id (BASE/variant does not matter here). Cluster 1 (H1 BUY): a has the lowest bound; b and c tie on bound 0.12, c has the higher stressed expectancy (0.05 > 0.02) -> c is taken (a variant beats a BASE here), a and b are DUPLICATE_CLUSTER. Cluster 2 (M30 BUY): d and e tie on both values, the smaller id (GT-D...) wins -> e (a variant) is taken.",
+   "tags": [
+    "candidate",
+    "ranking"
+   ],
+   "config_overrides": {},
+   "ticks": [
+    {
+     "t": "2026-10-05T08:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    },
+    {
+     "t": "2026-10-05T09:30:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    },
+    {
+     "t": "2026-10-05T12:00:00Z",
+     "bid": "4200.00",
+     "ask": "4200.20"
+    }
+   ],
+   "eurusd_changes": [],
+   "trades": [
+    {
+     "id": "a",
+     "strat": "GT-A-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T10:30:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.05",
+     "manifest_stressed_e": "0.10",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "b",
+     "strat": "GT-B-BULL-v1.0/BASE",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T10:30:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.12",
+     "manifest_stressed_e": "0.02",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "c",
+     "strat": "GT-C-BULL-v1.0/SRC-PS",
+     "tf": "H1",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T09:00:00Z",
+     "fill_time": "2026-10-05T10:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T10:30:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "SRC-PS",
+     "manifest_lcb": "0.12",
+     "manifest_stressed_e": "0.05",
+     "signal_cluster_id": "H1|BUY|2026-10-05T09:00:00Z"
+    },
+    {
+     "id": "d",
+     "strat": "GT-E-BULL-v1.0/BASE",
+     "tf": "M30",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T11:30:00Z",
+     "fill_time": "2026-10-05T12:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:30:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "BASE",
+     "manifest_lcb": "0.08",
+     "manifest_stressed_e": "0.03",
+     "signal_cluster_id": "M30|BUY|2026-10-05T11:30:00Z"
+    },
+    {
+     "id": "e",
+     "strat": "GT-D-BULL-v1.0/SRC-PS",
+     "tf": "M30",
+     "side": "BUY",
+     "signal_bar": "2026-10-05T11:30:00Z",
+     "fill_time": "2026-10-05T12:00:00Z",
+     "entry": "4200.20",
+     "stop": "4190.20",
+     "exits": [
+      {
+       "time": "2026-10-05T12:30:00Z",
+       "price": "4220.20",
+       "frac": "1"
+      }
+     ],
+     "variant": "SRC-PS",
+     "manifest_lcb": "0.08",
+     "manifest_stressed_e": "0.03",
+     "signal_cluster_id": "M30|BUY|2026-10-05T11:30:00Z"
+    }
+   ],
+   "expected": {
+    "balance_eur": "10384.00",
+    "trades": {
+     "b": {
+      "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
+     },
+     "a": {
+      "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
+     },
+     "d": {
+      "decision": "SKIPPED_PORTFOLIO_DUPLICATE_CLUSTER"
+     },
+     "c": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     },
+     "e": {
+      "decision": "ACCEPTED",
+      "lots": "0.12",
+      "ladder": "1",
+      "risk_eur": "96.00",
+      "pnl_eur": "192.00",
+      "strategy_R": "2",
+      "portfolio_R": "2",
+      "rounding_divergence_R": "0"
+     }
+    }
+   },
+   "manifest_time": "2026-10-05T08:00:00Z"
   }
  ]
 }

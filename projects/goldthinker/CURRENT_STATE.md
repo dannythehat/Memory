@@ -1,6 +1,6 @@
 # GoldThinker — Current State
 
-Created: **2026-09-30**. Status: **FOUNDATIONS / RESEARCH ONLY — nothing built, no code, no repo, no runtime.**
+Created: **2026-09-30**. Status: **FOUNDATIONS AGREED (D-005, 2026-09-30) — detector build ready to start; nothing built yet; no code repo exists.**
 
 GoldThinker is the owner's project for a gold (XAUUSD) candlestick trader. It is a **separate
 system** from AIDY and Super Signals: own data feed, own database, own code. The owner said
@@ -80,10 +80,6 @@ which "balance" (see `DECISIONS.md`, Open).
 
 ## Next step
 
-`CANDLE_SPEC_V1.md` is at DRAFT 0.3.2 (Wave 1: 22 patterns plus 2 early-setup companions); the ambiguity phase is closed
-(D-038 accepted by ChatGPT, D-039). Golden test vector pack GV-0.2 (1,408 vectors, incl. end-to-end and tick-path vectors)
-is in `tests/` (start with `tests/README.md`; rulings in `tests/RULINGS.md`). Working rule (D-035): Claude and ChatGPT settle
-trading-research and engineering rules; the owner decides product/business choices and anything involving real money.
-Order of work (D-039): (1) done: `PIP_SRC_USD = 0.10` confirmed (D-040), SRC-PS variants enabled, (2) done: `VALIDATION_RULES.md` v0.2 (D-041, approved),
-(3) drafted: `PORTFOLIO_RULES.md` v0.1 + 18 vectors in `tests/portfolio/` (D-042, for ChatGPT to challenge), (4) build the detector against `golden_vectors.json` (needs the owner's go-ahead, D-005).
-After that: the Vantage demo account and a feed reliability test.
+The research foundations are agreed (D-005, on ChatGPT's forwarded message; revocable by the owner): `CANDLE_SPEC_V1.md` DRAFT 0.3.2, `VALIDATION_RULES.md` v0.3, `PORTFOLIO_RULES.md` v0.2, and the test packs in `tests/` (start with `tests/README.md`): pattern pack GV-0.2 (1,408 vectors), portfolio pack GVP-0.2 (24), validation pack GVV-0.1 (10); all reproduce with zero mismatches against the scratch calculators.
+Working rule (D-035): Claude and ChatGPT settle trading-research and engineering rules; the owner decides product/business choices and anything involving real money.
+**Blocked on the owner:** create a private repository for the detector (suggested `dannythehat/goldthinker`) and add it to the session (D-043). Then build pure functions first and accept each piece only when it reproduces the golden vectors exactly. After the detector: the MT5 account query (hedging/netting, contract size, tick value, margin, costs, EURUSD feed), a feed reliability test, then the Vantage mirror.
