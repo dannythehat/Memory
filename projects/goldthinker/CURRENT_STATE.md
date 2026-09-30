@@ -216,6 +216,27 @@ Same commercial site as sources 6-7. Extracted by a small model, wording not ver
 - Bullish (source 7) and bearish (source 8) pages are not exact mirrors: the bearish one adds the
   session and DXY filters and uses a different stop rule and target. Test each as written first.
 
+### Source 9 — Pro-Scalper.com, "Hammer Candlestick" (2026-09-30)
+
+Same commercial site as sources 6-8. Extracted by a small model, wording not verified.
+**No win rate, sample size or backtest.** The most numeric pattern definition so far.
+
+- **Shape:** lower wick at least 2x the body (strongest at 3-4x); body in the upper third of the
+  range but also stated as "upper 40%" (the page's two thresholds differ - pick one before
+  testing); upper wick under 20% of the total range.
+- **Context:** needs a prior downtrend or a known support; no reversal status without one.
+- **Entry:** never on the hammer itself. Wait for the next candle and enter on its open "showing
+  initial bullish momentum" (aggressive) or on a pullback into the upper half of the hammer body
+  (conservative). **Look-ahead trap:** "initial momentum" cannot be known at the open, so a
+  backtest must define it with data available at entry (e.g. next bar closes above the hammer's
+  high, entering the bar after) or it will overstate results.
+- **Stop:** below the hammer's low plus a 15-20 pip buffer (spread/stop-hunt). **Target:** 2:1
+  minimum.
+- **Timeframes:** M5 only with tight H1/H4 support confluence (10-25 pip target, 5-8 pip stop);
+  H1 the "sweet spot" (50-120 pip target, 20-35 pip stop); D1 200-800 pips over days to weeks.
+- Overlaps sources 1, 3, 4 (hammer / hanging man). Fix ONE definition; the numeric one here is
+  the best candidate.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
