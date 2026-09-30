@@ -28,6 +28,14 @@ Standing rules:
    zero-cost things alone unless there is a reason — touching the live loop caused the
    5h39m outage on 2026-09-23.
 
+## LIVE EDGE AUDIT 2026-09-30 — NO AIDY EDGE FOUND. Full detail: `handovers/2026-09-30-live-edge-audit-day-30.md`
+
+- **AIDY is off in production** (`AIDY research lane disabled in live Super Signals process`); no AIDY rows since 09-22/23, so nothing has been learning since.
+- Reasoning lean does not pick winners: agree 55.6% / caution 55.2% / disagree 43.8% vs 54.9% base (2,005 trades; agree vs caution p=0.88). Latest prompt (v14) agree 33.3% on n=33 — no learning curve.
+- Decision layer re-scored on 97 live decisions: 44 helped / 53 hurt, −$384 (p=0.42); replay 82/51 (+$616). Live-vs-replay gap p=0.016 — the replay edge is in-sample.
+- Real and durable: provider scoring only. TRADE GLOBAL −$10/trade in both halves, TIG's Asia +$3/trade in both; most others regress to the mean (split-half Spearman 0.36, p=0.20).
+- Observed, not investigated: GOLDHUNTER is now `sources.status='shadow'` (was `testing`/graduated 09-18).
+
 ## CLEANUP 2026-09-23 (after the direction was agreed)
 
 **Removed — three workflows that could silently stop AIDY data capture (PR #255).**
