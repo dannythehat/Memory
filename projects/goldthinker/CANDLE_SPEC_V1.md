@@ -178,7 +178,7 @@ different completed-bar cut-off, and both use the pattern's `atr_pre`.
   conference 14:30 ET) and refused if none fits. `impact=High` feeds `F_NEWS_HIGH`; the MAJOR kinds come from a fixed title table
   (`news/feed.py`; Core CPI is grouped with CPI; "FOMC Member ... Speaks" is not an FOMC decision). A filter is applied only where
   the stored calendar COVERS its window; without coverage the variant is `NOT_EVALUATED_NEWS_COVERAGE` (no evaluation, no research
-  clock), never "no news".
+  clock), never "no news". **Point in time:** the calendar used for a signal is the latest accepted download fetched at or before the signal (every download is kept immutable); an untimed high-impact USD event (HIGH filter) or untimed NFP/CPI/FOMC item (MAJOR filter) on the window's day also gives `NOT_EVALUATED_NEWS_COVERAGE`.
 
 ### G7 Indicators (filters and context only)
 
