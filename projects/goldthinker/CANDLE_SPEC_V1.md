@@ -173,10 +173,16 @@ different completed-bar cut-off, and both use the pattern's `atr_pre`.
 - `economic_events(time_utc, currency, impact, name)`. `F_NEWS_HIGH`: blocked T-30 to T+15 min around any high-impact
   USD event. `F_NEWS_MAJOR`: NFP, CPI, FOMC decision, FOMC press conference, blocked T-60 to T+30 min. **Endpoints are
   inclusive (ruling A-07).** **[SPEC]** Blocked signals are still detected and logged.
+  **Source and coverage (D-054):** the calendar is the free Forex Factory / FairEconomy weekly XML feed (title, currency, date, time,
+  impact High/Medium/Low). Its clock is decided from official release times (NFP/CPI 08:30 ET, FOMC decision 14:00 ET, press
+  conference 14:30 ET) and refused if none fits. `impact=High` feeds `F_NEWS_HIGH`; the MAJOR kinds come from a fixed title table
+  (`news/feed.py`; Core CPI is grouped with CPI; "FOMC Member ... Speaks" is not an FOMC decision). A filter is applied only where
+  the stored calendar COVERS its window; without coverage the variant is `NOT_EVALUATED_NEWS_COVERAGE` (no evaluation, no research
+  clock), never "no news".
 
 ### G7 Indicators (filters and context only)
 
-`RSI14` = Wilder RSI on closes at the completion of the last pattern candle; needs 100 bars of warm-up.
+`RSI14` = Wilder RSI on closes at the completion of the last pattern candle; needs 100 bars of warm-up. **Fixed sequence (D-054):** the RSI is computed from exactly the 100 completed closes immediately before the pattern's first bar plus the pattern's own closes through its last candle (never from older history), so its value cannot change when older data is later added.
 
 ### G8 Measurement layers
 

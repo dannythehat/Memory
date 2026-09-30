@@ -152,7 +152,7 @@ Ticks (bid/ask): 09-18 14:00:02 4210.00/4210.20
 - target(s): 4245.12
 
 #### `GV-E2E-03` · `GT-ENGULF-BULL-v1.0/SRC-SH` · M15
-> End-to-end RSI wiring: 108 history bars of a steady descent (ATR 5.4071, trend DOWN) then a bullish engulfing with engulfed wicks. Wilder RSI14 at K2's close is 28.0123 (< 30) computed from 108+ closes, so the SH variant qualifies; entry/stop/target are the BASELINE plan (2R).
+> End-to-end RSI wiring: 108 history bars of a steady descent (ATR 5.4071, trend DOWN) then a bullish engulfing with engulfed wicks. Wilder RSI14 at K2's close is 28.0143 (< 30) computed from the fixed sequence of the 100 closes before the pattern plus the pattern's 2 closes (D-054), so the SH variant qualifies; entry/stop/target are the BASELINE plan (2R).
 
 Tags: e2e, rsi, source-variant
 
@@ -275,7 +275,7 @@ Tags: e2e, rsi, source-variant
 
 Ticks (bid/ask): 09-17 14:30:02 4157.70/4157.90
 
-- computed context: atr=757/140 (≈5.4071); trend=DOWN; rsi_4dp=28.0123
+- computed context: atr=757/140 (≈5.4071); trend=DOWN; rsi_4dp=28.0143
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - entry: 4157.90
 - stop: 4142.52

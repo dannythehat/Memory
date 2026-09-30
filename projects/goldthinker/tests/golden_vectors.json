@@ -86307,7 +86307,8 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 15
    },
    "expected": {
     "canonical": {
@@ -86449,7 +86450,8 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 15
    },
    "expected": {
     "canonical": {
@@ -86583,7 +86585,8 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 14
    },
    "expected": {
     "variant": {
@@ -86971,7 +86974,8 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 48
    },
    "expected": {
     "canonical": {
@@ -87018,7 +87022,7 @@
     "rsi",
     "source-variant"
    ],
-   "why": "End-to-end RSI wiring: 108 history bars of a steady descent (ATR 5.4071, trend DOWN) then a bullish engulfing with engulfed wicks. Wilder RSI14 at K2's close is 28.0123 (< 30) computed from 108+ closes, so the SH variant qualifies; entry/stop/target are the BASELINE plan (2R).",
+   "why": "End-to-end RSI wiring: 108 history bars of a steady descent (ATR 5.4071, trend DOWN) then a bullish engulfing with engulfed wicks. Wilder RSI14 at K2's close is 28.0143 (< 30) computed from the fixed sequence of the 100 closes before the pattern plus the pattern's 2 closes (D-054), so the SH variant qualifies; entry/stop/target are the BASELINE plan (2R).",
    "input": {
     "bars": [
      {
@@ -87803,14 +87807,15 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 108
    },
    "expected": {
     "canonical": {
      "context": {
       "atr": "757/140",
       "trend": "DOWN",
-      "rsi_4dp": "28.0123"
+      "rsi_4dp": "28.0143"
      }
     },
     "variant": {
@@ -88555,7 +88560,8 @@
     "account": {},
     "spread": null,
     "ohlc_only_after_entry": false,
-    "bars_after_entry": null
+    "bars_after_entry": null,
+    "pattern_start_index": 99
    },
    "expected": {
     "variant": {
@@ -89063,6 +89069,13 @@
     }
    },
    "expected_clusters": [
+    [
+     "GT-HAMMER-BULL-v1.0/BASE",
+     "GT-DRAGONFLY-BULL-v1.0/BASE",
+     "GT-PINBAR-BULL-v1.0/BASE"
+    ]
+   ],
+   "expected_signal_clusters": [
     [
      "GT-HAMMER-BULL-v1.0/BASE",
      "GT-DRAGONFLY-BULL-v1.0/BASE",
@@ -89603,6 +89616,11 @@
     [
      "GT-IBSR-BULL-v1.0/BASE"
     ]
+   ],
+   "expected_signal_clusters": [
+    [
+     "GT-IBSR-BULL-v1.0/BASE"
+    ]
    ]
   },
   {
@@ -89702,6 +89720,11 @@
     [
      "GT-IBSR-BULL-v1.0/BASE"
     ]
+   ],
+   "expected_signal_clusters": [
+    [
+     "GT-IBSR-BULL-v1.0/BASE"
+    ]
    ]
   },
   {
@@ -89773,6 +89796,12 @@
     [
      "GT-KICKER-BULL-v1.0/BASE"
     ]
+   ],
+   "expected_signal_clusters": [
+    [
+     "GT-KICKEREARLY-BULL-v1.0/BASE-EARLY",
+     "GT-KICKER-BULL-v1.0/BASE"
+    ]
    ]
   },
   {
@@ -89834,6 +89863,13 @@
     }
    },
    "expected_clusters": [
+    [
+     "GT-SHOOTINGSTAR-BEAR-v1.0/BASE",
+     "GT-GRAVESTONE-BEAR-v1.0/BASE",
+     "GT-PINBAR-BEAR-v1.0/BASE"
+    ]
+   ],
+   "expected_signal_clusters": [
     [
      "GT-SHOOTINGSTAR-BEAR-v1.0/BASE",
      "GT-GRAVESTONE-BEAR-v1.0/BASE",
@@ -90370,6 +90406,11 @@
     [
      "GT-IBSR-BEAR-v1.0/BASE"
     ]
+   ],
+   "expected_signal_clusters": [
+    [
+     "GT-IBSR-BEAR-v1.0/BASE"
+    ]
    ]
   },
   {
@@ -90466,6 +90507,11 @@
     [
      "GT-INSIDE-BEAR-v1.0/BASE"
     ],
+    [
+     "GT-IBSR-BEAR-v1.0/BASE"
+    ]
+   ],
+   "expected_signal_clusters": [
     [
      "GT-IBSR-BEAR-v1.0/BASE"
     ]
