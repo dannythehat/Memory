@@ -55,7 +55,7 @@ It has no production or broker authority. Do not import it into either project's
 
 ## Research collected so far (15 sources, all 2026-09-30)
 
-Full extracts are in `RESEARCH_SOURCES.md`; the merged candle list (41 types, 53 versions, with status of each plan and the shared definitions still to settle) is in `MASTER_CANDLE_LIST.md`. Vendor and article pages give pattern shapes, entries,
+Rules are consolidated in `CANDLE_SPEC_V1.md`; full extracts are in `RESEARCH_SOURCES.md`; the merged candle list (41 types, 53 versions, with status of each plan and the shared definitions still to settle) is in `MASTER_CANDLE_LIST.md`. Vendor and article pages give pattern shapes, entries,
 stops and targets; none gives results data, which is why the plan is to generate the results by
 paper trading. Recurring themes: every page defers the trade to a confirmation candle (must be
 defined using only information available at entry); "location" (support, round numbers,
@@ -71,5 +71,7 @@ shrink the Asian session (a filter to record and compare, not assume).
 
 ## Next step
 
-Owner to keep supplying research and answer the open items above. Claude confirms understanding of
-each step with the owner before doing it. No building yet.
+`CANDLE_SPEC_V1.md` (Wave 1, 22 patterns, DRAFT 0.1) is written and goes to the owner and the independent
+reviewer (ChatGPT) for line-by-line review. `DECISIONS.md` logs what is decided (OWNER) and what is only
+proposed. No code until the spec is approved and golden test vectors exist. Then: the Vantage demo account
+and a feed reliability test come before any other build step.
