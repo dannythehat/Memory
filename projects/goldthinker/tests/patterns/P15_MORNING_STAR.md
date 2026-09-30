@@ -1,6 +1,6 @@
 # P15 Morning Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **44 vectors** (44 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **44 vectors** (44 firm)
 
 Strategies covered: `GT-MORNINGSTAR-BULL-v1.0`
 

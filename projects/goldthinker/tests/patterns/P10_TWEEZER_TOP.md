@@ -1,6 +1,6 @@
 # P10 Tweezer Top — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (1 dormant, 38 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **38 vectors** (38 firm)
 
 Strategies covered: `GT-TWEEZERTOP-BEAR-v1.0`
 
@@ -100,10 +100,10 @@ Ticks (bid/ask): 09-16 10:30:02 4194.80/4195.00
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P10-01` · `GT-TWEEZERTOP-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Identity delta: highs differ by 0.25. Canonical tolerance max(0.03, 0.05*4) = 0.20 -> NO canonical shape; SRC-PS tolerance max(3 pips x $0.10 = 0.30, 0.20) = 0.30 -> the source variant qualifies with base_formed=false. STOP_ENTRY sell trigger L2 = 4198.50 (bid <= trigger); stop max(H1,H2) + 3 pips x $0.10 = 4206.30; R 7.80; T_SR(1.5) 4186.50 = 1.54R.
+#### `GV-DORM-P10-01` · `GT-TWEEZERTOP-BEAR-v1.0/SRC-PS` · M15
+> Identity delta: highs differ by 0.25. Canonical tolerance max(0.03, 0.05*4) = 0.20 -> NO canonical shape; SRC-PS tolerance max(3 pips x $0.10 = 0.30, 0.20) = 0.30 -> the source variant qualifies with base_formed=false. STOP_ENTRY sell trigger L2 = 4198.50 (bid <= trigger); stop max(H1,H2) + 3 pips x $0.10 = 4206.30; R 7.80; T_SR(1.5) 4186.50 = 1.54R.
 
-Tags: dormant, source-only-qualification, stop-entry
+Tags: source-only-qualification, stop-entry, pip-variant
 Context: atr=4 · trend=UP · zones_pre=[4206.20-4206.60] · zones_entry=[4185.00-4186.50]
 
 | # | open (UTC) | O | H | L | C |
@@ -122,21 +122,4 @@ Ticks (bid/ask): 09-16 10:40:00 4198.50/4198.70; 09-16 10:50:00 4186.30/4186.50
 - R: 7.80
 - target(s): 4186.50
 - exit: TARGET net 20/13 (≈1.5385)R
-
-#### `GV-P10-DIS` · `GT-TWEEZERTOP-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P10-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4195.00 | 4201.00 | 4194.00 | 4200.00 |
-| 2 | 09-16 10:15 | 4200.50 | 4200.90 | 4194.50 | 4195.00 |
-
-Ticks (bid/ask): 09-16 10:30:02 4194.80/4195.00
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

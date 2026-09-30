@@ -1,20 +1,20 @@
 # Coverage matrix
 
-Counts of vectors per pattern and requested test type (dormant vectors are counted in their pattern). `—` = not applicable to that pattern by construction (see legend). Both directions are counted together for patterns that have two sides.
+Counts of vectors per pattern and requested test type (pip-variant vectors are included). `—` = not applicable to that pattern by construction (see legend). Both directions are counted together for patterns that have two sides.
 
-| pattern | Clean YES | Clean NO | Boundary (exact / just in / just out) | Right shape, wrong trend / no prior state | Source variant qualifies, BASE does not (dormant) | Confirmation succeeds / fails / expires | Stop-entry triggers / expires | Target already passed | Insufficient R:R | No structural target | Weekend / rollover entry | Spread-sensitive fill | SL/TP ordering from ticks | Missing ticks -> STOP FIRST | Early setup: bid detects, ask/bid executes | RAW horizon_end | Disabled pip variant -> no trade | vectors |
+| pattern | Clean YES | Clean NO | Boundary (exact / just in / just out) | Right shape, wrong trend / no prior state | Source variant qualifies, BASE does not | Confirmation succeeds / fails / expires | Stop-entry triggers / expires | Target already passed | Insufficient R:R | No structural target | Weekend / rollover entry | Spread-sensitive fill | SL/TP ordering from ticks | Missing ticks -> STOP FIRST | Early setup: bid detects, ask/bid executes | RAW horizon_end | Pip-dependent SRC-PS variant (enabled, D-040) | vectors |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| P01 Hammer | 2 | 1 | 17 | 3 | 1 | 6 | — | — | — | — | 1 | 1 | 4 | 1 | — | 8 | 1 | 54 |
-| P02 Shooting Star | 2 | 1 | 15 | 3 | 1 | 1 | — | — | — | — | 1 | 1 | 4 | 1 | — | 2 | 1 | 44 |
-| P03 Pin Bar | 2 | 2 | 38 | 8 | — | — | — | — | 2 | 2 | 2 | 2 | 8 | 2 | — | 2 | 2 | 99 |
-| P04 Dragonfly Doji | 1 | 1 | 11 | 3 | — | 2 | — | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 39 |
-| P05 Gravestone Doji | 1 | 1 | 11 | 3 | — | 1 | — | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 33 |
-| P06 Bullish Engulfing | 2 | 1 | 18 | 3 | 1 | — | — | — | 1 | 1 | 1 | 1 | 4 | 1 | — | 1 | 1 | 53 |
-| P07 Bearish Engulfing | 2 | 1 | 15 | 3 | 1 | — | — | — | 1 | 1 | 1 | 1 | 4 | 1 | — | 1 | 1 | 46 |
+| P01 Hammer | 2 | 1 | 17 | 3 | 1 | 6 | — | — | — | — | 1 | 1 | 4 | 1 | — | 8 | 7 | 53 |
+| P02 Shooting Star | 2 | 1 | 15 | 3 | 1 | 1 | — | — | — | — | 1 | 1 | 4 | 1 | — | 2 | 3 | 43 |
+| P03 Pin Bar | 2 | 2 | 38 | 8 | — | — | — | — | 2 | 2 | 2 | 2 | 8 | 2 | — | 2 | 2 | 97 |
+| P04 Dragonfly Doji | 1 | 1 | 11 | 3 | — | 2 | — | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 7 | 38 |
+| P05 Gravestone Doji | 1 | 1 | 11 | 3 | — | 1 | — | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 32 |
+| P06 Bullish Engulfing | 2 | 1 | 18 | 3 | 1 | — | — | — | 1 | 1 | 1 | 1 | 4 | 1 | — | 1 | 1 | 52 |
+| P07 Bearish Engulfing | 2 | 1 | 15 | 3 | 1 | — | — | — | 1 | 1 | 1 | 1 | 4 | 1 | — | 1 | 2 | 45 |
 | P08 Outside Bar | 2 | 4 | 24 | 8 | — | — | — | 2 | 6 | 4 | 2 | 2 | 10 | 2 | — | 2 | — | 105 |
-| P09 Inside Bar Breakout | 2 | 4 | 10 | 6 | — | 14 | — | — | 2 | 2 | 4 | 2 | 8 | 2 | — | 2 | 2 | 80 |
-| P10 Tweezer Top | 1 | 1 | 16 | 3 | 1 | — | 1 | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 39 |
-| P11 Tweezer Bottom | 1 | 1 | 16 | 3 | 1 | — | 1 | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 39 |
+| P09 Inside Bar Breakout | 2 | 4 | 10 | 6 | — | 14 | — | — | 2 | 2 | 4 | 2 | 8 | 2 | — | 2 | 2 | 78 |
+| P10 Tweezer Top | 1 | 1 | 16 | 3 | 1 | — | 1 | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 38 |
+| P11 Tweezer Bottom | 1 | 1 | 16 | 3 | 1 | — | 1 | — | — | — | 1 | 1 | 4 | 1 | — | 1 | 1 | 38 |
 | P12 Piercing Line | 1 | 1 | 17 | 3 | — | — | — | — | 1 | 1 | 1 | 1 | 5 | 1 | — | 1 | — | 51 |
 | P13 Dark Cloud Cover | 1 | 1 | 17 | 3 | — | — | — | — | 1 | 1 | 1 | 1 | 5 | 1 | — | 1 | — | 45 |
 | P14 Kicker | 2 | 2 | 24 | 6 | — | — | — | — | 2 | 4 | 2 | 2 | 10 | 2 | — | 2 | — | 97 |
@@ -29,7 +29,7 @@ Counts of vectors per pattern and requested test type (dormant vectors are count
 | P21 Falling Three Methods | 1 | 1 | 13 | 3 | — | — | — | 1 | 2 | — | 1 | 1 | 4 | 1 | — | 1 | — | 38 |
 | P22 Inside Bar Sweep Reclaim | 4 | 2 | 14 | 8 | — | — | — | — | 2 | 2 | 2 | 2 | 8 | 2 | — | 2 | — | 80 |
 
-Legend for `—`: *source-only qualification* exists only where a pip-dependent SRC-PS variant relaxes the prior state or tolerance (Hammer, Shooting Star, Engulfings, Tweezers); *confirmation* only where a rule has a confirmation bar (Hammer, Shooting Star, Dragonfly, Gravestone SRC-PS variants, and the Inside Bar breakout window); *stop-entry* only for Tweezers (dormant) and the three-candle continuation patterns; *target already passed* only where a target can lie behind the entry (partial-target stars, measured-move soldiers/crows, Fibonacci Rising/Falling); *insufficient R:R* and *no structural target* only where a source variant uses T_SR / T_SWING / a minimum reward; *early bid/ask* only for the two early setups; *disabled pip variant* only for the ten pip-dependent variants.
+Legend for `—`: *source-only qualification* exists only where a pip-dependent SRC-PS variant relaxes the prior state or tolerance (Hammer, Shooting Star, Engulfings, Tweezers); *confirmation* only where a rule has a confirmation bar (Hammer, Shooting Star, Dragonfly, Gravestone SRC-PS variants, and the Inside Bar breakout window); *stop-entry* only for Tweezers (SRC-PS) and the three-candle continuation patterns; *target already passed* only where a target can lie behind the entry (partial-target stars, measured-move soldiers/crows, Fibonacci Rising/Falling); *insufficient R:R* and *no structural target* only where a source variant uses T_SR / T_SWING / a minimum reward; *early bid/ask* only for the two early setups; *pip-dependent SRC-PS variant* only for the ten pip-dependent variants.
 
 Overlap vectors: 21 in `OVERLAPS.md` (Hammer/Dragonfly/Pin Bar, Engulfing/Outside Bar/Tweezer Bottom, Piercing vs Engulfing (disjoint at both boundaries), Morning Star vs Abandoned Baby (subset), Inside Bar vs Sweep & Reclaim, Kicker vs Kicker Early; each also as its bearish mirror except the early-setup pair). Hub counters: 7 vectors in `HUB_COUNTERS.md`. Timeframe / bar-boundary and execution vectors: `EXECUTION_AND_TIMEFRAMES.md`.
 

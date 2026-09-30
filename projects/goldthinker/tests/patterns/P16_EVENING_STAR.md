@@ -1,6 +1,6 @@
 # P16 Evening Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **43 vectors** (43 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **43 vectors** (43 firm)
 
 Strategies covered: `GT-EVENINGSTAR-BEAR-v1.0`
 

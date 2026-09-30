@@ -39,7 +39,7 @@ Every ambiguity found by the GV-0.1 vectors was ruled (reviewer rulings A-01..A-
 
 ## Observations (not ambiguities)
 
-- **O-1** No ACTIVE variant can qualify without its BASE pattern: every variant with a relaxed prior state or wider tolerance is a pip-dependent SRC-PS variant, disabled by D-032. The `base_formed=false` path appears only in DORMANT vectors (GV-DORM-*).
+- **O-1** No ACTIVE variant can qualify without its BASE pattern except the pip-dependent SRC-PS variants, whose relaxed prior state or wider tolerance can qualify while BASE does not; those cases are the `source-only-qualification` vectors (GV-DORM-*).
 - **O-2** The early setups test the BID in both directions, so the bear side is not the price mirror of the bull side (a mirror of a bid test is an ask test). Their bear vectors are hand-written.
 - **O-3** The Dragonfly/Gravestone clause `LW >= 0.80*R` is implied by `DOJI` and `UW <= 0.05*R` and can never fail alone (GV-P04-N04).
 - **O-4** For Abandoned Baby (completed and early) the SRC-PS stop equals the BASE stop by construction.

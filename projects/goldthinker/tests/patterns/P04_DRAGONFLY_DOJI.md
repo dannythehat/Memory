@@ -1,6 +1,6 @@
 # P04 Dragonfly Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (7 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **38 vectors** (38 firm)
 
 Strategies covered: `GT-DRAGONFLY-BULL-v1.0`
 
@@ -90,10 +90,10 @@ Ticks (bid/ask): 09-16 10:15:02 4199.90/4200.10
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P04-01` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Source Dragonfly: C2 bullish closing above max(O1,C1) = 4199.90; at support; stop L1 - 10 pips x $0.10 = 4193.00; entry ask 4201.20; R 8.20; T_SR(1.5) zone edge 4214.00 = 1.56R.
+#### `GV-DORM-P04-01` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
+> Source Dragonfly: C2 bullish closing above max(O1,C1) = 4199.90; at support; stop L1 - 10 pips x $0.10 = 4193.00; entry ask 4201.20; R 8.20; T_SR(1.5) zone edge 4214.00 = 1.56R.
 
-Tags: dormant, confirmation
+Tags: confirmation, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -112,10 +112,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20; 09-16 10:31:40 4214.00/4214.20
 - target(s): 4214.00
 - exit: TARGET net 64/41 (≈1.5610)R
 
-#### `GV-DORM-P04-02` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-02` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > C2 is a doji (close = open): 'fails if C2 is bearish or a doji' -> expired.
 
-Tags: dormant, confirmation, expiry
+Tags: confirmation, expiry, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -129,10 +129,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - variant: VARIANT_QUALIFIED
 - disposition: EXPIRED_NO_CONFIRMATION
 
-#### `GV-DORM-P04-03` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-03` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > NFP exactly at the signal time (T): inside the MAJOR window T-60..T+30 -> SKIPPED_NEWS.
 
-Tags: dormant, news
+Tags: news, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 10:30:00
 
 | # | open (UTC) | O | H | L | C |
@@ -147,10 +147,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - disposition: SKIPPED_NEWS
 - signal time: 2026-09-16T10:30:00Z
 
-#### `GV-DORM-P04-04` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-04` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > NFP at 10:00: signal 10:30 is exactly T+30: window end inclusive -> blocked.
 
-Tags: dormant, news
+Tags: news, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 10:00:00
 
 | # | open (UTC) | O | H | L | C |
@@ -165,10 +165,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - disposition: SKIPPED_NEWS
 - signal time: 2026-09-16T10:30:00Z
 
-#### `GV-DORM-P04-05` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-05` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > NFP at 09:59:59: signal 10:30:00 is T+30:01 -> outside -> trade.
 
-Tags: dormant, news
+Tags: news, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 09:59:59
 
 | # | open (UTC) | O | H | L | C |
@@ -181,10 +181,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 
-#### `GV-DORM-P04-06` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-06` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > NFP at 11:30: signal 10:30 is T-60 exactly -> inside the window start (inclusive).
 
-Tags: dormant, news
+Tags: news, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 11:30:00
 
 | # | open (UTC) | O | H | L | C |
@@ -199,10 +199,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 - disposition: SKIPPED_NEWS
 - signal time: 2026-09-16T10:30:00Z
 
-#### `GV-DORM-P04-07` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P04-07` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
 > NFP at 11:30:01: signal is T-60:01 -> outside -> trade.
 
-Tags: dormant, news
+Tags: news, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4193.60-4193.90] · zones_entry=[4214.00-4215.00] · news=NFP high USD 11:30:01
 
 | # | open (UTC) | O | H | L | C |
@@ -214,20 +214,4 @@ Ticks (bid/ask): 09-16 10:30:02 4201.00/4201.20
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
-
-#### `GV-P04-DIS` · `GT-DRAGONFLY-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P04-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4199.80 | 4200.00 | 4194.00 | 4199.90 |
-
-Ticks (bid/ask): 09-16 10:15:02 4199.90/4200.10
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

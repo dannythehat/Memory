@@ -1,6 +1,6 @@
 # P21 Falling Three Methods — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **38 vectors** (38 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **38 vectors** (38 firm)
 
 Strategies covered: `GT-FALLING3-BEAR-v1.0`
 

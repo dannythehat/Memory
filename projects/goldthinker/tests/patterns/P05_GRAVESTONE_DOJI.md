@@ -1,6 +1,6 @@
 # P05 Gravestone Doji — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **33 vectors** (1 dormant, 32 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **32 vectors** (32 firm)
 
 Strategies covered: `GT-GRAVESTONE-BEAR-v1.0`
 
@@ -92,10 +92,10 @@ Ticks (bid/ask): 09-16 10:15:02 4199.90/4200.10
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P05-01` · `GT-GRAVESTONE-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Source Gravestone: C2 closes below min(O1,C1) = 4200.10 (4199.00); at resistance; SELL at the bid; stop H1 + 10 pips x $0.10 = 4207.00; R 8.00; T_SR(1.5): nearest zone below, near edge = its top 4186.50 (12.50 = 1.56R).
+#### `GV-DORM-P05-01` · `GT-GRAVESTONE-BEAR-v1.0/SRC-PS` · M15
+> Source Gravestone: C2 closes below min(O1,C1) = 4200.10 (4199.00); at resistance; SELL at the bid; stop H1 + 10 pips x $0.10 = 4207.00; R 8.00; T_SR(1.5): nearest zone below, near edge = its top 4186.50 (12.50 = 1.56R).
 
-Tags: dormant, confirmation
+Tags: confirmation, pip-variant
 Context: atr=4 · trend=UP · zones_pre=[4206.10-4206.40] · zones_entry=[4185.00-4186.50]
 
 | # | open (UTC) | O | H | L | C |
@@ -112,20 +112,4 @@ Ticks (bid/ask): 09-16 10:30:02 4199.00/4199.20; 09-16 10:31:40 4186.30/4186.50
 - R: 8.00
 - target(s): 4186.50
 - exit: TARGET net 1.5625R
-
-#### `GV-P05-DIS` · `GT-GRAVESTONE-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P05-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.20 | 4206.00 | 4200.00 | 4200.10 |
-
-Ticks (bid/ask): 09-16 10:15:02 4199.90/4200.10
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

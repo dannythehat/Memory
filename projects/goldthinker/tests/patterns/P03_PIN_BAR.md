@@ -1,6 +1,6 @@
 # P03 Pin Bar — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **99 vectors** (2 dormant, 97 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **97 vectors** (97 firm)
 
 Strategies covered: `GT-PINBAR-BEAR-v1.0`, `GT-PINBAR-BULL-v1.0`
 
@@ -277,24 +277,6 @@ Ticks (bid/ask): 09-16 11:00:02 4200.30/4200.50
 - stop: 4206.20
 - R: 5.90
 
-### Variant `SRC-PS`
-
-#### `GV-P03-DISm` · `GT-PINBAR-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P03-Y01m (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4201.50 | 4206.00 | 4200.00 | 4200.50 |
-
-Ticks (bid/ask): 09-16 10:15:02 4200.30/4200.50
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
-
 ## `GT-PINBAR-BULL-v1.0`
 
 ### Variant `BASE`
@@ -562,10 +544,10 @@ Ticks (bid/ask): 09-16 11:00:02 4199.50/4199.70
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P03-01` · `GT-PINBAR-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. SRC-PS Pin Bar: needs AT_SUPPORT (no trend condition). Stop = wick tip - 12.5 pips x $0.10 = 4192.75; entry ask 4199.70; R 6.95; T_SWING(2.0): swing high 4214.00 = 2.06R.
+#### `GV-DORM-P03-01` · `GT-PINBAR-BULL-v1.0/SRC-PS` · M15
+> SRC-PS Pin Bar: needs AT_SUPPORT (no trend condition). Stop = wick tip - 12.5 pips x $0.10 = 4192.75; entry ask 4199.70; R 6.95; T_SWING(2.0): swing high 4214.00 = 2.06R.
 
-Tags: dormant, variant
+Tags: variant, pip-variant
 Context: atr=4 · trend=RANGE · zones_pre=[4193.50-4193.90] · swings=H4214.00
 
 | # | open (UTC) | O | H | L | C |
@@ -582,10 +564,10 @@ Ticks (bid/ask): 09-16 10:15:02 4199.50/4199.70; 09-16 10:16:40 4214.00/4214.20
 - target(s): 4214.00
 - exit: TARGET net 286/139 (≈2.0576)R
 
-#### `GV-DORM-P03-02` · `GT-PINBAR-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P03-02` · `GT-PINBAR-BULL-v1.0/SRC-PS` · M15
 > No support: not qualified.
 
-Tags: dormant, variant-not-qualified
+Tags: variant-not-qualified, pip-variant
 Context: atr=4 · trend=RANGE · swings=H4214.00
 
 | # | open (UTC) | O | H | L | C |
@@ -595,21 +577,5 @@ Context: atr=4 · trend=RANGE · swings=H4214.00
 Ticks (bid/ask): 09-16 10:15:02 4199.50/4199.70
 
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant: no event
-
-#### `GV-P03-DIS` · `GT-PINBAR-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P03-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4198.50 | 4200.00 | 4194.00 | 4199.50 |
-
-Ticks (bid/ask): 09-16 10:15:02 4199.50/4199.70
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
 - variant: no event
 

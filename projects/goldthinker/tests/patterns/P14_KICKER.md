@@ -1,6 +1,6 @@
 # P14 Kicker — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **97 vectors** (97 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **97 vectors** (97 firm)
 
 Strategies covered: `GT-KICKER-BEAR-v1.0`, `GT-KICKER-BULL-v1.0`
 

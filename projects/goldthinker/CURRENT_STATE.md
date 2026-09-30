@@ -80,10 +80,10 @@ which "balance" (see `DECISIONS.md`, Open).
 
 ## Next step
 
-`CANDLE_SPEC_V1.md` is at DRAFT 0.3.1 (Wave 1: 22 patterns plus 2 early-setup companions); the ambiguity phase is closed
-(D-038 accepted by ChatGPT, D-039). Golden test vector pack GV-0.2 (1,420 vectors, incl. end-to-end and tick-path vectors)
+`CANDLE_SPEC_V1.md` is at DRAFT 0.3.2 (Wave 1: 22 patterns plus 2 early-setup companions); the ambiguity phase is closed
+(D-038 accepted by ChatGPT, D-039). Golden test vector pack GV-0.2 (1,408 vectors, incl. end-to-end and tick-path vectors)
 is in `tests/` (start with `tests/README.md`; rulings in `tests/RULINGS.md`). Working rule (D-035): Claude and ChatGPT settle
 trading-research and engineering rules; the owner decides product/business choices and anything involving real money.
-Order of work (D-039): (1) `PIP_SRC_USD` from the sources' examples, (2) discovery-to-validation pass/fail rules,
+Order of work (D-039): (1) done: `PIP_SRC_USD = 0.10` confirmed (D-040), SRC-PS variants enabled, (2) discovery-to-validation pass/fail rules,
 (3) Portfolio Simulation rules, (4) build the detector against `golden_vectors.json` (needs the owner's go-ahead, D-005).
 After that: the Vantage demo account and a feed reliability test.

@@ -1,6 +1,6 @@
 # P19E Abandoned Baby Early — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **27 vectors** (27 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **27 vectors** (27 firm)
 
 Strategies covered: `GT-ABABYEARLY-BEAR-v1.0`, `GT-ABABYEARLY-BULL-v1.0`
 

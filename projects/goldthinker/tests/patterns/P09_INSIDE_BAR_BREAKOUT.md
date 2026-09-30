@@ -1,6 +1,6 @@
 # P09 Inside Bar Breakout — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **80 vectors** (2 dormant, 78 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **78 vectors** (78 firm)
 
 Strategies covered: `GT-INSIDE-BEAR-v1.0`, `GT-INSIDE-BULL-v1.0`
 
@@ -355,26 +355,6 @@ Ticks (bid/ask): 09-16 23:00:02 4188.80/4189.00
 - disposition: SKIPPED_SRC_NO_TARGET
 - signal time: 2026-09-16T22:00:00Z
 
-### Variant `SRC-PS`
-
-#### `GV-P09-DISm` · `GT-INSIDE-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P09-Y01m (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4202.00 | 4190.00 | 4192.00 |
-| 2 | 09-16 10:15 | 4196.00 | 4199.00 | 4193.00 | 4195.00 |
-| 3 | 09-16 10:30 | 4194.00 | 4195.00 | 4188.00 | 4189.00 |
-
-Ticks (bid/ask): 09-16 10:45:02 4188.80/4189.00
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
-
 ## `GT-INSIDE-BULL-v1.0`
 
 ### Variant `BASE`
@@ -711,10 +691,10 @@ Ticks (bid/ask): 09-16 23:00:02 4211.00/4211.20
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P09-01` · `GT-INSIDE-BULL-v1.0/SRC-PS` · H1 · **DORMANT**
-> DORMANT. Source Inside Bar breakout on H1: stop = opposite mother side - 3.5 pips x $0.10 = 4197.65; R 13.55; T_SR(1.5): 4232.00 = 1.535R.
+#### `GV-DORM-P09-01` · `GT-INSIDE-BULL-v1.0/SRC-PS` · H1
+> Source Inside Bar breakout on H1: stop = opposite mother side - 3.5 pips x $0.10 = 4197.65; R 13.55; T_SR(1.5): 4232.00 = 1.535R.
 
-Tags: dormant, variant
+Tags: variant, pip-variant
 Context: atr=4 · trend=RANGE · zones_entry=[4232.00-4233.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -733,10 +713,10 @@ Ticks (bid/ask): 09-16 13:00:02 4211.00/4211.20; 09-16 13:01:40 4232.00/4232.20
 - target(s): 4232.00
 - exit: TARGET net 416/271 (≈1.5351)R
 
-#### `GV-DORM-P09-02` · `GT-INSIDE-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P09-02` · `GT-INSIDE-BULL-v1.0/SRC-PS` · M15
 > M15 not in {H1,H4,D1,W1,MN1}.
 
-Tags: dormant, tf-gate
+Tags: tf-gate, pip-variant
 Context: atr=4 · trend=RANGE · zones_entry=[4232.00-4233.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -751,22 +731,4 @@ Ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
 - variant: no event
 - disposition: NOT_QUALIFIED
 - qualification_failures: TF_NOT_ALLOWED
-
-#### `GV-P09-DIS` · `GT-INSIDE-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P09-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4210.00 | 4198.00 | 4208.00 |
-| 2 | 09-16 10:15 | 4204.00 | 4207.00 | 4201.00 | 4205.00 |
-| 3 | 09-16 10:30 | 4206.00 | 4212.00 | 4205.00 | 4211.00 |
-
-Ticks (bid/ask): 09-16 10:45:02 4211.00/4211.20
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

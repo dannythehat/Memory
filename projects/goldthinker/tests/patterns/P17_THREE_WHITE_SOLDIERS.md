@@ -1,6 +1,6 @@
 # P17 Three White Soldiers — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **49 vectors** (49 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **49 vectors** (49 firm)
 
 Strategies covered: `GT-3WHITESOLDIERS-BULL-v1.0`
 

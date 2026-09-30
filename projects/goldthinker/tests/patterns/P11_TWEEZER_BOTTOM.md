@@ -1,6 +1,6 @@
 # P11 Tweezer Bottom — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **39 vectors** (1 dormant, 38 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **38 vectors** (38 firm)
 
 Strategies covered: `GT-TWEEZERBOTTOM-BULL-v1.0`
 
@@ -98,10 +98,10 @@ Ticks (bid/ask): 09-16 10:30:02 4205.00/4205.20
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P11-01` · `GT-TWEEZERBOTTOM-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Lows differ by 0.25: no canonical Tweezer Bottom, but the source variant (tol 0.30) qualifies. STOP_ENTRY buy trigger H2 = 4205.50; the first tick with ask >= 4205.50 fills at that ask 4205.60; stop min(L1,L2) - 3 pips x $0.10 = 4198.70; R 6.90; T_SWING(1.5) 4216.00 = 1.507R.
+#### `GV-DORM-P11-01` · `GT-TWEEZERBOTTOM-BULL-v1.0/SRC-PS` · M15
+> Lows differ by 0.25: no canonical Tweezer Bottom, but the source variant (tol 0.30) qualifies. STOP_ENTRY buy trigger H2 = 4205.50; the first tick with ask >= 4205.50 fills at that ask 4205.60; stop min(L1,L2) - 3 pips x $0.10 = 4198.70; R 6.90; T_SWING(1.5) 4216.00 = 1.507R.
 
-Tags: dormant, source-only-qualification, stop-entry
+Tags: source-only-qualification, stop-entry, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4198.50-4198.70] · swings=H4216.00
 
 | # | open (UTC) | O | H | L | C |
@@ -120,21 +120,4 @@ Ticks (bid/ask): 09-16 10:40:00 4205.40/4205.60; 09-16 10:50:00 4216.00/4216.20
 - R: 6.90
 - target(s): 4216.00
 - exit: TARGET net 104/69 (≈1.5072)R
-
-#### `GV-P11-DIS` · `GT-TWEEZERBOTTOM-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P11-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4205.00 | 4206.00 | 4199.00 | 4200.00 |
-| 2 | 09-16 10:15 | 4199.50 | 4205.50 | 4199.10 | 4205.00 |
-
-Ticks (bid/ask): 09-16 10:30:02 4205.00/4205.20
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

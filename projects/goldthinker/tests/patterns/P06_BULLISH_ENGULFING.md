@@ -1,6 +1,6 @@
 # P06 Bullish Engulfing — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **53 vectors** (1 dormant, 52 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **52 vectors** (52 firm)
 
 Strategies covered: `GT-ENGULF-BULL-v1.0`
 
@@ -227,10 +227,10 @@ Ticks (bid/ask): 09-16 12:00:02 4212.00/4212.20
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P06-01` · `GT-ENGULF-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Source-only qualification: trend RANGE (BASE not formed) but the lowest low 4203.00 is 0.30 from support -> 'DOWN OR AT_SUPPORT' holds. Stop = min(L1,L2) - 20 pips x $0.10 = 4201.00; R 11.20; T_SR(1.5): 4229.00 = 1.5R exactly.
+#### `GV-DORM-P06-01` · `GT-ENGULF-BULL-v1.0/SRC-PS` · M15
+> Source-only qualification: trend RANGE (BASE not formed) but the lowest low 4203.00 is 0.30 from support -> 'DOWN OR AT_SUPPORT' holds. Stop = min(L1,L2) - 20 pips x $0.10 = 4201.00; R 11.20; T_SR(1.5): 4229.00 = 1.5R exactly.
 
-Tags: dormant, source-only-qualification
+Tags: source-only-qualification, pip-variant
 Context: atr=4 · trend=RANGE · zones_pre=[4202.50-4202.70] · zones_entry=[4229.00-4230.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -247,23 +247,6 @@ Ticks (bid/ask): 09-16 10:30:02 4212.00/4212.20; 09-16 10:31:40 4229.00/4229.20
 - R: 11.20
 - target(s): 4229.00
 - exit: TARGET net 1.50R
-
-#### `GV-P06-DIS` · `GT-ENGULF-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P06-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4210.00 | 4211.00 | 4203.00 | 4204.00 |
-| 2 | 09-16 10:15 | 4203.50 | 4212.50 | 4203.00 | 4212.00 |
-
-Ticks (bid/ask): 09-16 10:30:02 4212.00/4212.20
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 
 ### Variant `SRC-SH`
 

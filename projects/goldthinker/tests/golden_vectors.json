@@ -1,9 +1,9 @@
 {
  "meta": {
   "pack": "GV-0.2",
-  "spec": "CANDLE_SPEC_V1.md Draft 0.3",
+  "spec": "CANDLE_SPEC_V1.md Draft 0.3.2",
   "generated": "2026-09-30",
-  "count": 1420,
+  "count": 1408,
   "fixtures": {
    "account": {
     "symbol": "XAUUSD",
@@ -19,8 +19,7 @@
    "calendar": "TEST FIXTURE (not Vantage's real calendar): market open Sun 23:00 UTC to Fri 22:00 UTC; daily pause Mon-Thu 22:00-23:00 UTC; server time UTC+1 (no DST) for D1/W1/MN1 boundaries",
    "arithmetic": "exact decimal/rational; ATR injected as 4.00 unless a vector states otherwise; trend/zones/swings/RSI injected in pattern vectors and computed from series in the global vectors",
    "status_legend": {
-    "FIRM": "the spec (with the ruled ambiguities in RULINGS.md) determines the answer",
-    "DORMANT": "pre-registered behaviour of a variant disabled by D-032; do not execute yet"
+    "FIRM": "the spec (with the ruled ambiguities in RULINGS.md) determines the answer"
    },
    "quantisation": "A-30 executable-price quantisation is applied to every asserted stop, target and trigger (see RULINGS.md)",
    "changes_from_gv_0_1": "all 29 ambiguities ruled; the blocked and provisional vectors are now FIRM; new vectors for A-30 quantisation, mfe_before_mae_h, qualification_failures, end-to-end integration; the 18 global vectors that GV-0.1 listed but omitted (ATR, size classes, swings, trend, ZN-10) are included"
@@ -77883,13 +77882,13 @@
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "source-only-qualification",
-    "confirmation"
+    "confirmation",
+    "pip-variant"
    ],
-   "why": "DORMANT (PIP_SRC_USD = 0.10 assumed). Source variant qualifies while BASE does NOT: trend RANGE (canonical prior state fails, shape only) but the low sits at support, so 'DOWN OR AT_SUPPORT' holds. Confirmation: C2 bullish, close 4201.50 > H1 4200.50. Signal at C2 completion; stop = L1 - 17.5 pips x $0.10 = 4192.25; entry ask 4201.70; R 9.45; target 2R = 4220.60.",
+   "why": "Source variant qualifies while BASE does NOT: trend RANGE (canonical prior state fails, shape only) but the low sits at support, so 'DOWN OR AT_SUPPORT' holds. Confirmation: C2 bullish, close 4201.50 > H1 4200.50. Signal at C2 completion; stop = L1 - 17.5 pips x $0.10 = 4192.25; entry ask 4201.70; R 9.45; target 2R = 4220.60.",
    "input": {
     "bars": [
      {
@@ -77958,18 +77957,17 @@
       "net_R": "2.00"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-02",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "confirmation"
+    "confirmation",
+    "pip-variant"
    ],
    "why": "Qualifies through the DOWN branch (no support zone): base formed too.",
    "input": {
@@ -78020,18 +78018,17 @@
      ],
      "stop": "4192.25"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-03",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "variant-not-qualified"
+    "variant-not-qualified",
+    "pip-variant"
    ],
    "why": "Trend UP and no support: neither branch true -> variant not qualified (Hanging Man candidate logged).",
    "input": {
@@ -78077,20 +78074,19 @@
     "variant": {
      "events": []
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-04",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "confirmation",
     "boundary",
-    "expiry"
+    "expiry",
+    "pip-variant"
    ],
    "why": "Confirmation close exactly at H1 (4200.50): needs C2close > H1 -> expired (no trade, no retry).",
    "input": {
@@ -78139,19 +78135,18 @@
      ],
      "disposition": "EXPIRED_NO_CONFIRMATION"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-05",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "confirmation",
-    "boundary"
+    "boundary",
+    "pip-variant"
    ],
    "why": "Confirmation close 4200.51 (one tick above H1): confirmed.",
    "input": {
@@ -78201,19 +78196,18 @@
       "TRADE"
      ]
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-06",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "confirmation",
-    "expiry"
+    "expiry",
+    "pip-variant"
    ],
    "why": "C2 is bearish: confirmation fails -> expired.",
    "input": {
@@ -78262,19 +78256,18 @@
      ],
      "disposition": "EXPIRED_NO_CONFIRMATION"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P01-07",
    "kind": "pattern",
    "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "confirmation",
-    "pending"
+    "pending",
+    "pip-variant"
    ],
    "why": "Only C1 exists so far: the variant is qualified and waiting (no expiry before C2 completes).",
    "input": {
@@ -78310,20 +78303,19 @@
      ],
      "disposition": "PENDING_CONFIRMATION"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P02-01",
    "kind": "pattern",
    "strategy": "GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "confirmation"
+    "confirmation",
+    "pip-variant"
    ],
-   "why": "DORMANT. Source Shooting Star: confirmed by a bearish C2 closing below min(O1,C1)=4199.80 (4198.50). SELL at the bid 4198.50; stop = H1 + 20 pips x $0.10 = 4208.00; R 9.50; T_SWING(1.5): swing low 4184.00 = 1.53R.",
+   "why": "Source Shooting Star: confirmed by a bearish C2 closing below min(O1,C1)=4199.80 (4198.50). SELL at the bid 4198.50; stop = H1 + 20 pips x $0.10 = 4208.00; R 9.50; T_SWING(1.5): swing low 4184.00 = 1.53R.",
    "input": {
     "bars": [
      {
@@ -78393,18 +78385,17 @@
       "net_R": "29/19"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P02-02",
    "kind": "pattern",
    "strategy": "GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "session"
+    "session",
+    "pip-variant"
    ],
    "why": "Signal at 03:00 UTC (ASIA_ONLY): the source skips Asia-only shooting stars.",
    "input": {
@@ -78461,19 +78452,18 @@
      "disposition": "SKIPPED_SESSION_FILTER",
      "signal_time": "2026-09-16T03:00:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P02-03",
    "kind": "pattern",
    "strategy": "GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "source-only-qualification",
-    "session"
+    "session",
+    "pip-variant"
    ],
    "why": "Source-only qualification: trend DOWN (canonical fails) but the high (4206.00) is 0.20 below a resistance zone -> AT_RESISTANCE -> qualifies. Signal 07:15 UTC = 08:15 BST: London is open, so not skipped.",
    "input": {
@@ -78541,20 +78531,19 @@
      ],
      "signal_time": "2026-09-16T07:15:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P03-01",
    "kind": "pattern",
    "strategy": "GT-PINBAR-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "variant"
+    "variant",
+    "pip-variant"
    ],
-   "why": "DORMANT. SRC-PS Pin Bar: needs AT_SUPPORT (no trend condition). Stop = wick tip - 12.5 pips x $0.10 = 4192.75; entry ask 4199.70; R 6.95; T_SWING(2.0): swing high 4214.00 = 2.06R.",
+   "why": "SRC-PS Pin Bar: needs AT_SUPPORT (no trend condition). Stop = wick tip - 12.5 pips x $0.10 = 4192.75; entry ask 4199.70; R 6.95; T_SWING(2.0): swing high 4214.00 = 2.06R.",
    "input": {
     "bars": [
      {
@@ -78622,18 +78611,17 @@
       "net_R": "286/139"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P03-02",
    "kind": "pattern",
    "strategy": "GT-PINBAR-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "variant-not-qualified"
+    "variant-not-qualified",
+    "pip-variant"
    ],
    "why": "No support: not qualified.",
    "input": {
@@ -78679,20 +78667,19 @@
     "variant": {
      "events": []
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-01",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "confirmation"
+    "confirmation",
+    "pip-variant"
    ],
-   "why": "DORMANT. Source Dragonfly: C2 bullish closing above max(O1,C1) = 4199.90; at support; stop L1 - 10 pips x $0.10 = 4193.00; entry ask 4201.20; R 8.20; T_SR(1.5) zone edge 4214.00 = 1.56R.",
+   "why": "Source Dragonfly: C2 bullish closing above max(O1,C1) = 4199.90; at support; stop L1 - 10 pips x $0.10 = 4193.00; entry ask 4201.20; R 8.20; T_SR(1.5) zone edge 4214.00 = 1.56R.",
    "input": {
     "bars": [
      {
@@ -78768,19 +78755,18 @@
       "net_R": "64/41"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-02",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "confirmation",
-    "expiry"
+    "expiry",
+    "pip-variant"
    ],
    "why": "C2 is a doji (close = open): 'fails if C2 is bearish or a doji' -> expired.",
    "input": {
@@ -78841,18 +78827,17 @@
      ],
      "disposition": "EXPIRED_NO_CONFIRMATION"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-03",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "news"
+    "news",
+    "pip-variant"
    ],
    "why": "NFP exactly at the signal time (T): inside the MAJOR window T-60..T+30 -> SKIPPED_NEWS.",
    "input": {
@@ -78923,18 +78908,17 @@
      "disposition": "SKIPPED_NEWS",
      "signal_time": "2026-09-16T10:30:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-04",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "news"
+    "news",
+    "pip-variant"
    ],
    "why": "NFP at 10:00: signal 10:30 is exactly T+30: window end inclusive -> blocked.",
    "input": {
@@ -79005,18 +78989,17 @@
      "disposition": "SKIPPED_NEWS",
      "signal_time": "2026-09-16T10:30:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-05",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "news"
+    "news",
+    "pip-variant"
    ],
    "why": "NFP at 09:59:59: signal 10:30:00 is T+30:01 -> outside -> trade.",
    "input": {
@@ -79086,18 +79069,17 @@
       "TRADE"
      ]
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-06",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "news"
+    "news",
+    "pip-variant"
    ],
    "why": "NFP at 11:30: signal 10:30 is T-60 exactly -> inside the window start (inclusive).",
    "input": {
@@ -79168,18 +79150,17 @@
      "disposition": "SKIPPED_NEWS",
      "signal_time": "2026-09-16T10:30:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P04-07",
    "kind": "pattern",
    "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "news"
+    "news",
+    "pip-variant"
    ],
    "why": "NFP at 11:30:01: signal is T-60:01 -> outside -> trade.",
    "input": {
@@ -79249,20 +79230,19 @@
       "TRADE"
      ]
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P05-01",
    "kind": "pattern",
    "strategy": "GT-GRAVESTONE-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "confirmation"
+    "confirmation",
+    "pip-variant"
    ],
-   "why": "DORMANT. Source Gravestone: C2 closes below min(O1,C1) = 4200.10 (4199.00); at resistance; SELL at the bid; stop H1 + 10 pips x $0.10 = 4207.00; R 8.00; T_SR(1.5): nearest zone below, near edge = its top 4186.50 (12.50 = 1.56R).",
+   "why": "Source Gravestone: C2 closes below min(O1,C1) = 4200.10 (4199.00); at resistance; SELL at the bid; stop H1 + 10 pips x $0.10 = 4207.00; R 8.00; T_SR(1.5): nearest zone below, near edge = its top 4186.50 (12.50 = 1.56R).",
    "input": {
     "bars": [
      {
@@ -79337,20 +79317,19 @@
       "net_R": "1.5625"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P06-01",
    "kind": "pattern",
    "strategy": "GT-ENGULF-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "source-only-qualification"
+    "source-only-qualification",
+    "pip-variant"
    ],
-   "why": "DORMANT. Source-only qualification: trend RANGE (BASE not formed) but the lowest low 4203.00 is 0.30 from support -> 'DOWN OR AT_SUPPORT' holds. Stop = min(L1,L2) - 20 pips x $0.10 = 4201.00; R 11.20; T_SR(1.5): 4229.00 = 1.5R exactly.",
+   "why": "Source-only qualification: trend RANGE (BASE not formed) but the lowest low 4203.00 is 0.30 from support -> 'DOWN OR AT_SUPPORT' holds. Stop = min(L1,L2) - 20 pips x $0.10 = 4201.00; R 11.20; T_SR(1.5): 4229.00 = 1.5R exactly.",
    "input": {
     "bars": [
      {
@@ -79424,20 +79403,19 @@
       "net_R": "1.50"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P07-01",
    "kind": "pattern",
    "strategy": "GT-ENGULF-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "source-only-qualification"
+    "source-only-qualification",
+    "pip-variant"
    ],
-   "why": "DORMANT. Bearish source-only qualification: RANGE trend, highest high 4197.00 is 0.30 below resistance. SELL at the bid; stop max(H1,H2) + 20 pips x $0.10 = 4199.00; R 11.00; T_SR(1.5) nearest zone top 4171.00 = 1.545R.",
+   "why": "Bearish source-only qualification: RANGE trend, highest high 4197.00 is 0.30 below resistance. SELL at the bid; stop max(H1,H2) + 20 pips x $0.10 = 4199.00; R 11.00; T_SR(1.5) nearest zone top 4171.00 = 1.545R.",
    "input": {
     "bars": [
      {
@@ -79511,18 +79489,17 @@
       "net_R": "17/11"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P07-02",
    "kind": "pattern",
    "strategy": "GT-ENGULF-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "session"
+    "session",
+    "pip-variant"
    ],
    "why": "Signal 03:00 UTC (ASIA_ONLY): skipped.",
    "input": {
@@ -79584,20 +79561,19 @@
      "disposition": "SKIPPED_SESSION_FILTER",
      "signal_time": "2026-09-16T03:00:00Z"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P09-01",
    "kind": "pattern",
    "strategy": "GT-INSIDE-BULL-v1.0/SRC-PS",
    "timeframe": "H1",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "variant"
+    "variant",
+    "pip-variant"
    ],
-   "why": "DORMANT. Source Inside Bar breakout on H1: stop = opposite mother side - 3.5 pips x $0.10 = 4197.65; R 13.55; T_SR(1.5): 4232.00 = 1.535R.",
+   "why": "Source Inside Bar breakout on H1: stop = opposite mother side - 3.5 pips x $0.10 = 4197.65; R 13.55; T_SR(1.5): 4232.00 = 1.535R.",
    "input": {
     "bars": [
      {
@@ -79673,18 +79649,17 @@
       "net_R": "416/271"
      }
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P09-02",
    "kind": "pattern",
    "strategy": "GT-INSIDE-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
-    "tf-gate"
+    "tf-gate",
+    "pip-variant"
    ],
    "why": "M15 not in {H1,H4,D1,W1,MN1}.",
    "input": {
@@ -79747,21 +79722,20 @@
       "TF_NOT_ALLOWED"
      ]
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P10-01",
    "kind": "pattern",
    "strategy": "GT-TWEEZERTOP-BEAR-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "source-only-qualification",
-    "stop-entry"
+    "stop-entry",
+    "pip-variant"
    ],
-   "why": "DORMANT. Identity delta: highs differ by 0.25. Canonical tolerance max(0.03, 0.05*4) = 0.20 -> NO canonical shape; SRC-PS tolerance max(3 pips x $0.10 = 0.30, 0.20) = 0.30 -> the source variant qualifies with base_formed=false. STOP_ENTRY sell trigger L2 = 4198.50 (bid <= trigger); stop max(H1,H2) + 3 pips x $0.10 = 4206.30; R 7.80; T_SR(1.5) 4186.50 = 1.54R.",
+   "why": "Identity delta: highs differ by 0.25. Canonical tolerance max(0.03, 0.05*4) = 0.20 -> NO canonical shape; SRC-PS tolerance max(3 pips x $0.10 = 0.30, 0.20) = 0.30 -> the source variant qualifies with base_formed=false. STOP_ENTRY sell trigger L2 = 4198.50 (bid <= trigger); stop max(H1,H2) + 3 pips x $0.10 = 4206.30; R 7.80; T_SR(1.5) 4186.50 = 1.54R.",
    "input": {
     "bars": [
      {
@@ -79835,21 +79809,20 @@
      },
      "trigger": "4198.50"
     }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
+   }
   },
   {
    "id": "GV-DORM-P11-01",
    "kind": "pattern",
    "strategy": "GT-TWEEZERBOTTOM-BULL-v1.0/SRC-PS",
    "timeframe": "M15",
-   "status": "DORMANT",
+   "status": "FIRM",
    "tags": [
-    "dormant",
     "source-only-qualification",
-    "stop-entry"
+    "stop-entry",
+    "pip-variant"
    ],
-   "why": "DORMANT. Lows differ by 0.25: no canonical Tweezer Bottom, but the source variant (tol 0.30) qualifies. STOP_ENTRY buy trigger H2 = 4205.50; the first tick with ask >= 4205.50 fills at that ask 4205.60; stop min(L1,L2) - 3 pips x $0.10 = 4198.70; R 6.90; T_SWING(1.5) 4216.00 = 1.507R.",
+   "why": "Lows differ by 0.25: no canonical Tweezer Bottom, but the source variant (tol 0.30) qualifies. STOP_ENTRY buy trigger H2 = 4205.50; the first tick with ask >= 4205.50 fills at that ask 4205.60; stop min(L1,L2) - 3 pips x $0.10 = 4198.70; R 6.90; T_SWING(1.5) 4216.00 = 1.507R.",
    "input": {
     "bars": [
      {
@@ -79922,651 +79895,6 @@
       "net_R": "104/69"
      },
      "trigger": "4205.50"
-    }
-   },
-   "dormant_assumption": "PIP_SRC_USD = 0.10 (variant disabled by D-032; do not run until lifted)"
-  },
-  {
-   "id": "GV-P01-DIS",
-   "kind": "pattern",
-   "strategy": "GT-HAMMER-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P01-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4200.00",
-      "h": "4200.50",
-      "l": "4194.00",
-      "c": "4200.20"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4200.20",
-      "ask": "4200.40"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P02-DIS",
-   "kind": "pattern",
-   "strategy": "GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P02-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4200.00",
-      "h": "4206.00",
-      "l": "4199.50",
-      "c": "4199.80"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4199.60",
-      "ask": "4199.80"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P03-DIS",
-   "kind": "pattern",
-   "strategy": "GT-PINBAR-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P03-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4198.50",
-      "h": "4200.00",
-      "l": "4194.00",
-      "c": "4199.50"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4199.50",
-      "ask": "4199.70"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P03-DISm",
-   "kind": "pattern",
-   "strategy": "GT-PINBAR-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P03-Y01m (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4201.50",
-      "h": "4206.00",
-      "l": "4200.00",
-      "c": "4200.50"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4200.30",
-      "ask": "4200.50"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P04-DIS",
-   "kind": "pattern",
-   "strategy": "GT-DRAGONFLY-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P04-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4199.80",
-      "h": "4200.00",
-      "l": "4194.00",
-      "c": "4199.90"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4199.90",
-      "ask": "4200.10"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P05-DIS",
-   "kind": "pattern",
-   "strategy": "GT-GRAVESTONE-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P05-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4200.20",
-      "h": "4206.00",
-      "l": "4200.00",
-      "c": "4200.10"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:15:02Z",
-      "bid": "4199.90",
-      "ask": "4200.10"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P06-DIS",
-   "kind": "pattern",
-   "strategy": "GT-ENGULF-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P06-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4210.00",
-      "h": "4211.00",
-      "l": "4203.00",
-      "c": "4204.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4203.50",
-      "h": "4212.50",
-      "l": "4203.00",
-      "c": "4212.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:30:02Z",
-      "bid": "4212.00",
-      "ask": "4212.20"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P07-DIS",
-   "kind": "pattern",
-   "strategy": "GT-ENGULF-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P07-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4190.00",
-      "h": "4197.00",
-      "l": "4189.00",
-      "c": "4196.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4196.50",
-      "h": "4197.00",
-      "l": "4187.50",
-      "c": "4188.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:30:02Z",
-      "bid": "4187.80",
-      "ask": "4188.00"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P09-DIS",
-   "kind": "pattern",
-   "strategy": "GT-INSIDE-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P09-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4200.00",
-      "h": "4210.00",
-      "l": "4198.00",
-      "c": "4208.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4204.00",
-      "h": "4207.00",
-      "l": "4201.00",
-      "c": "4205.00"
-     },
-     {
-      "open_time": "2026-09-16T10:30:00Z",
-      "o": "4206.00",
-      "h": "4212.00",
-      "l": "4205.00",
-      "c": "4211.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:45:02Z",
-      "bid": "4211.00",
-      "ask": "4211.20"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P09-DISm",
-   "kind": "pattern",
-   "strategy": "GT-INSIDE-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P09-Y01m (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4200.00",
-      "h": "4202.00",
-      "l": "4190.00",
-      "c": "4192.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4196.00",
-      "h": "4199.00",
-      "l": "4193.00",
-      "c": "4195.00"
-     },
-     {
-      "open_time": "2026-09-16T10:30:00Z",
-      "o": "4194.00",
-      "h": "4195.00",
-      "l": "4188.00",
-      "c": "4189.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:45:02Z",
-      "bid": "4188.80",
-      "ask": "4189.00"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P10-DIS",
-   "kind": "pattern",
-   "strategy": "GT-TWEEZERTOP-BEAR-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P10-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4195.00",
-      "h": "4201.00",
-      "l": "4194.00",
-      "c": "4200.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4200.50",
-      "h": "4200.90",
-      "l": "4194.50",
-      "c": "4195.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:30:02Z",
-      "bid": "4194.80",
-      "ask": "4195.00"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "UP"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
-    }
-   }
-  },
-  {
-   "id": "GV-P11-DIS",
-   "kind": "pattern",
-   "strategy": "GT-TWEEZERBOTTOM-BULL-v1.0/SRC-PS",
-   "timeframe": "M15",
-   "status": "FIRM",
-   "tags": [
-    "disabled-variant"
-   ],
-   "why": "DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P11-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.",
-   "input": {
-    "bars": [
-     {
-      "open_time": "2026-09-16T10:00:00Z",
-      "o": "4205.00",
-      "h": "4206.00",
-      "l": "4199.00",
-      "c": "4200.00"
-     },
-     {
-      "open_time": "2026-09-16T10:15:00Z",
-      "o": "4199.50",
-      "h": "4205.50",
-      "l": "4199.10",
-      "c": "4205.00"
-     }
-    ],
-    "ticks": [
-     {
-      "time": "2026-09-16T10:30:02Z",
-      "bid": "4205.00",
-      "ask": "4205.20"
-     }
-    ],
-    "context": {
-     "atr": "4",
-     "trend": "DOWN"
-    },
-    "account": {},
-    "spread": null,
-    "ohlc_only_after_entry": false,
-    "bars_after_entry": null
-   },
-   "expected": {
-    "canonical": {
-     "events": [
-      "SHAPE_DETECTED",
-      "BASE_PATTERN_FORMED"
-     ]
-    },
-    "variant": {
-     "events": [],
-     "status": "DISABLED_PENDING_PIP_CONFIRMATION"
     }
    }
   },
@@ -91391,9 +90719,9 @@
    "status": "FIRM",
    "tags": [
     "hub",
-    "disabled-variant"
+    "source-variant-counters"
    ],
-   "why": "Hammer, two M15 occurrences: #1 trend DOWN (BASE trades and wins +2R); #2 trend RANGE at support (shape only for BASE; the SRC-PS variant would qualify but it is DISABLED_PENDING_PIP_CONFIRMATION). Canonical: shapes 2, base_formed 1. BASE: qualified 1, trades 1, closed 1, +2.00R. SRC-PS: status disabled, every counter 0.",
+   "why": "Hammer, two M15 occurrences: #1 trend DOWN (BASE trades and wins +2R); #2 trend RANGE at support (shape only for BASE; the source variant SRC-PS qualifies there because 'downtrend OR at support' holds). Canonical: shapes 2, base_formed 1. BASE: qualified 1, trades 1, closed 1, +2.00R. SRC-PS (enabled, D-040): qualified 2 (both occurrences), but no confirmation bar exists yet, so both sit in PENDING_CONFIRMATION: signals 0, trades 0. Its counters are separate from BASE.",
    "strategies": [
     "GT-HAMMER-BULL-v1.0/BASE",
     "GT-HAMMER-BULL-v1.0/SRC-PS"
@@ -91477,13 +90805,16 @@
       "pnl_pct": "2.00"
      },
      "GT-HAMMER-BULL-v1.0|M15|SRC-PS": {
-      "status": "DISABLED_PENDING_PIP_CONFIRMATION",
-      "qualified": 0,
+      "status": "ACTIVE",
+      "qualified": 2,
       "signals": 0,
       "trades": 0,
       "open": 0,
       "closed": 0,
-      "pnl_r": "0.00"
+      "pnl_r": "0.00",
+      "skips": {
+       "PENDING_CONFIRMATION": 2
+      }
      }
     }
    }

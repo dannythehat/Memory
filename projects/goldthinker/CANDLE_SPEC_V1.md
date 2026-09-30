@@ -1,6 +1,6 @@
-# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.3.1
+# GoldThinker — Candle Specification v1 (Wave 1) — DRAFT 0.3.2
 
-Status: **DRAFT 0.3.1, 2026-09-30.** Research specification; nothing is coded from it yet. Author: Claude; reviewer:
+Status: **DRAFT 0.3.2, 2026-09-30.** Research specification; nothing is coded from it yet. Author: Claude; reviewer:
 ChatGPT. Draft 0.3 applies the reviewer rulings on the 29 findings of the golden-vector pack GV-0.1 plus one new
 finding (A-30, executable-price quantisation); the ruling table is in section 4. Under the working rule of
 2026-09-30 (`DECISIONS.md` D-035) Claude and ChatGPT settle candlestick, mathematical, execution and testing rules
@@ -32,14 +32,17 @@ a constant name so a change is a version bump, never a silent edit.
 ### G0 Conventions, bars and indices
 
 - Prices are USD per ounce. Store `price_distance_usd`, never "pips".
-- **Source-pip conversion:** the sources quote gold "pips". Their numbers only make sense at
-  `PIP_SRC_USD = 0.10` **[ASSUMPTION, unconfirmed]**. It is used ONLY inside source-normalized variants
-  (`SRC-*`) to convert a source's distance to dollars (`pips x PIP_SRC_USD`). **No canonical (BASE)
-  pattern identity may depend on it.** Every variant whose rules use `PIP_SRC_USD` carries the status
-  `DISABLED_PENDING_PIP_CONFIRMATION`: not evaluated, no trades, no ledger; the hub shows it as disabled. They are
-  `SRC-PS` of P01, P02, P03, P04, P05, P06, P07, P09, P10, P11. BASE strategies and every other variant run
-  regardless. It is confirmed by deriving it from worked examples in the source pages (stated pips against the
-  actual XAUUSD move), NOT from the broker's pip convention; enabling is logged as a decision.
+- **Source-pip conversion (confirmed in 0.3.2, D-040):** the sources quote gold "pips". `PIP_SRC_USD = 0.10`
+  **[CONFIRMED FROM THE SOURCES]**: Pro-Scalper's own gold pip page defines "1 pip = $0.10 price move" (0.01 lot =
+  $0.10 per pip, 1.0 lot = $10.00 per pip), and the same site's Bullish Engulfing page pairs "a $6-12 per ounce swing
+  in a single hour" on H1 with "50-150 pips" of follow-through (= $5-15 at $0.10). Other values fail the same pages'
+  own numbers ($0.01 makes the 15-25 pip buffers smaller than the 0.20 test spread; $1.00 makes an H1 "20-35 pip" stop
+  larger than the $6-12 H1 swing). It is the sources' convention, not Vantage's. It is used ONLY inside
+  source-normalized variants (`SRC-*`) to convert a source's distance to dollars (`pips x PIP_SRC_USD`). **No canonical
+  (BASE) pattern identity may depend on it.** The ten `SRC-PS` variants that use it (P01, P02, P03, P04, P05, P06,
+  P07, P09, P10, P11) are **ENABLED** (the state `DISABLED_PENDING_PIP_CONFIRMATION` is retired). No source page gives a
+  worked entry/stop/target price example with pips, so the check is the definition plus the internal consistency
+  above; the value stays a named constant and any change is a new rule version (D-011).
 - Time is UTC internally. Timeframes (TF): M1, M5, M15, M30, H1, H4, D1, W1, MN1, built from the tick
   stream on the Vantage broker calendar [TO CONFIRM from the demo account: server timezone/DST, day boundary, week
   start, month boundary, daily rollover/pause window]. No empty bars for closed intervals.
@@ -93,8 +96,8 @@ Every candle passes through separate, individually logged events:
    `INVALIDATED_BEFORE_ENTRY`, `NOT_TRIGGERED_OTHER_SIDE` (P09: the breakout closed on the other side),
    `NO_SIGNAL_AMBIGUOUS_BOTH_SIDES` (P22), `SKIPPED_STALE_ENTRY`, `SKIPPED_ENTRY_AT_OR_BEYOND_STOP`,
    `SKIPPED_R_TOO_SMALL`, `SKIPPED_SRC_RR`, `SKIPPED_SRC_NO_TARGET`, `SKIPPED_TARGET_ALREADY_PASSED`,
-   `SKIPPED_SESSION_FILTER`, `SKIPPED_NEWS`, `SKIPPED_ROLLOVER`, `NOT_EVALUATED_DATA_GAP`, `NOT_EVALUATED_WARMUP`,
-   `DISABLED_PENDING_PIP_CONFIRMATION`. (`SKIPPED_TF_NOT_ALLOWED` is retired: the TF gate is the failure code
+   `SKIPPED_SESSION_FILTER`, `SKIPPED_NEWS`, `SKIPPED_ROLLOVER`, `NOT_EVALUATED_DATA_GAP`, `NOT_EVALUATED_WARMUP`.
+   (`DISABLED_PENDING_PIP_CONFIRMATION` is retired in 0.3.2; `SKIPPED_TF_NOT_ALLOWED` is retired: the TF gate is the failure code
    `TF_NOT_ALLOWED`.) A closed trade whose costs are incomplete is tagged `PENDING_COST_SPEC` (G9).
 
 **Hub counters - two levels so nothing is double counted:**
@@ -281,7 +284,7 @@ changes it; otherwise the base prior state is INHERITED (ruling A-05).
   SIGNAL has the same TF, direction and `signal_bar` (so Kicker Early and the completed Kicker share a signal cluster
   but not a formation cluster). Results are never pooled across TFs, variants or versions.
 - Size: about 32 sides x 9 TFs = 288 baseline strategies plus about 41 source-variant sides x up to 9 TFs = at most
-  about 369 more: **up to about 657 strategies** (disabled variants included until enabled). Survivors must clear the
+  about 369 more: **up to about 657 strategies** (the ten pip-dependent variants are enabled since 0.3.2). Survivors must clear the
   untouched validation stage before any real money.
 
 ### G12 Context recorded for every detection (never required unless a variant says so)
@@ -338,7 +341,7 @@ plus the stated prior state (G0b).
 23. **Sources:** master row 1; PS `/hammer-candlestick` (source 9); TV, SA, SH, CB.
 24. **Open:** "upper third" vs "upper 40%" in the source (this spec: 35%); `MIN_RANGE_SINGLE` and ratios [SPEC].
 25. PROPOSED v1.0 = fields 5+6+7.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Source deviation notes:** "initial bullish momentum" replaced by a close test; "15-20 pips" converted at an
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Source deviation notes:** "initial bullish momentum" replaced by a close test; "15-20 pips" converted at an
     assumed $0.10/pip; "downtrend or known support" implemented with the G3/G4 definitions.
 
 ### P02 SHOOTING STAR (bearish) — `GT-SHOOTINGSTAR-BEAR-v1.0`
@@ -357,7 +360,7 @@ plus the stated prior state (G0b).
 22. Red body preferred by source, not required.
 23. Master row 4; PS `/shooting-star` (source 10); TV, SH, CB.  24. Open: second target; size reduction.
 25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** open-based confirmation replaced by a close test; "reduced size" replaced by skip;
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** open-based confirmation replaced by a close test; "reduced size" replaced by skip;
     rally-origin target dropped; pips converted at $0.10.
 
 ### P03 PIN BAR (bullish, bearish) — `GT-PINBAR-BULL-v1.0`, `GT-PINBAR-BEAR-v1.0`
@@ -380,7 +383,7 @@ plus the stated prior state (G0b).
 23. Master row 5; PS `/pin-bar` (source 12); CB (source 15).
 24. Open: CB says 5-minute pin bars "lose money"; this spec still runs them (owner chose all TFs).
 25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** PS conservative 50%-retrace entry deferred; "body inside prior candle" dropped from
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** PS conservative 50%-retrace entry deferred; "body inside prior candle" dropped from
     identity; CB "8/21 MA, Fibonacci" location not used (S/R zones only); second targets dropped.
 
 ### P04 DRAGONFLY DOJI (bullish) — `GT-DRAGONFLY-BULL-v1.0`
@@ -396,7 +399,7 @@ plus the stated prior state (G0b).
 18-20. G12; as 17; none.  21. Subset of Bull Pin Bar; overlaps Hammer.
 22. Exact `O=C=H` not required (too strict).  23. Master row 8; PS `/dragonfly-doji`; SH, CB.
 24. Open: 5% tolerances [SPEC].  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** pips at $0.10; "buy limit at the level" alternative dropped; H4/D1 emphasis recorded only.
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** pips at $0.10; "buy limit at the level" alternative dropped; H4/D1 emphasis recorded only.
 
 ### P05 GRAVESTONE DOJI (bearish) — `GT-GRAVESTONE-BEAR-v1.0`
 
@@ -409,7 +412,7 @@ plus the stated prior state (G0b).
 17. **Filters:** `AT_RESISTANCE`. No session/TF rule in the source.  18-20. G12; none; none.
 21. Subset of Bear Pin Bar; overlaps Shooting Star.  22. Differs from Shooting Star only by near-zero body.
 23. Master row 9; PS `/gravestone-doji`; SH, CB.  24. Open: tolerances [SPEC].  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** pips at $0.10; sell-limit alternative dropped.
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** pips at $0.10; sell-limit alternative dropped.
 
 ### P06 BULLISH ENGULFING — `GT-ENGULF-BULL-v1.0`
 
@@ -432,7 +435,7 @@ plus the stated prior state (G0b).
 23. Master row 13; PS `/bullish-engulfing` (source 7); SH (source 4); CB (source 15); TV, SA.
 24. **Open:** SH's own text asks for both "enter at the close" and "third candle confirms".
 25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** PS "or at support" alternative implemented as `AT_SUPPORT`; PS second target dropped;
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** PS "or at support" alternative implemented as `AT_SUPPORT`; PS second target dropped;
     SH third-candle confirmation not used (entry-at-close reading); CB moving-average/Fibonacci locations not
     used; continuation reading deferred.
 
@@ -447,7 +450,7 @@ plus the stated prior state (G0b).
 17. **Filters:** SRC-PS prior state `UP OR AT_RESISTANCE`; skip `ASIA_ONLY`. SRC-CB mirrors P06.
 18-20. G12; as 17; none.  21. Outside Bar when wicks are engulfed too.  22. As P06.
 23. Master row 14; PS `/bearish-engulfing` (source 8); CB.  24. Open: DXY unavailable.  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** DXY correlation and RSI-divergence filters not enforced (no feed; recorded as
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** DXY correlation and RSI-divergence filters not enforced (no feed; recorded as
     unavailable); Fibonacci-extension location recorded only; pips at $0.10.
 
 ### P08 OUTSIDE BAR (bullish, bearish) — `GT-OUTSIDE-BULL-v1.0`, `GT-OUTSIDE-BEAR-v1.0`
@@ -494,7 +497,7 @@ plus the stated prior state (G0b).
 22. A bar that pokes outside the mother range but closes inside is not a breakout; it stays armed until
     expiry (and may be a Sweep & Reclaim, P22).
 23. Master row 16; PS `/inside-bar`; CB; TV, SH.  24. Open: order-based vs close-based entry.  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** buy-stop entry replaced by close-based entry; source pips at $0.10; news window uses
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** buy-stop entry replaced by close-based entry; source pips at $0.10; news window uses
     `F_NEWS_MAJOR`.
 
 ### P10 TWEEZER TOP (bearish) — `GT-TWEEZERTOP-BEAR-v1.0`
@@ -514,7 +517,7 @@ plus the stated prior state (G0b).
 18-20. G12; as 17; none.  21. Bearish Engulfing / Dark Cloud can share a bar.
 22. The canonical tolerance grows with ATR.  23. Master row 19; PS `/tweezer-top`; CB, SH.
 24. Open: 3-bar trigger expiry [SPEC].  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** the source's wider pip tolerance applies only inside SRC-PS; entry reading is a trigger
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** the source's wider pip tolerance applies only inside SRC-PS; entry reading is a trigger
     break; "small pullback" entry deferred.
 
 ### P11 TWEEZER BOTTOM (bullish) — `GT-TWEEZERBOTTOM-BULL-v1.0`
@@ -529,7 +532,7 @@ plus the stated prior state (G0b).
 17. **Filters:** `AT_SUPPORT`. Volume divergence (source) not usable - recorded only. SRC-PS identity delta as P10.
 18-20. G12; none; none.  21. Bullish Engulfing can share a bar.  22. As P10.
 23. Master row 20; PS `/tweezer-bottom`.  24. As P10.  25. PROPOSED v1.0.
-26. **SRC-PS is `DISABLED_PENDING_PIP_CONFIRMATION`** (uses `PIP_SRC_USD`, G0). **Deviation notes:** as P10; volume confirmation dropped.
+26. **SRC-PS is ENABLED** (uses `PIP_SRC_USD = 0.10`, confirmed in 0.3.2, G0). **Deviation notes:** as P10; volume confirmation dropped.
 
 ### P12 PIERCING LINE (bullish) — `GT-PIERCING-BULL-v1.0`
 
@@ -868,8 +871,7 @@ source supports it.
 
 1. **Rollover/pause window, swap table, tick size/value, contract specification and server calendar** come from the real Vantage
    demo account (fixtures are used until then).
-2. **`PIP_SRC_USD = 0.10`** to be derived from the sources' worked examples; until then the ten pip-dependent SRC-PS
-   variants stay disabled (G0).
+2. ~~`PIP_SRC_USD`~~ **confirmed 0.10 in 0.3.2 (D-040)**; the ten SRC-PS variants are enabled.
 3. **Validation-stage pass/fail rule** (day-block bootstrap, multiple-testing control) to be written before validation.
 4. **Portfolio Simulation rules** (sizing, exposure cap); until defined the hub's top figure is "Total Experimental P&L".
 5. **Not enforced in v1:** DXY, volume, RSI/MACD divergence, Fibonacci-location requirements, weekly-trend checks,
@@ -888,3 +890,4 @@ source supports it.
 - 0.3 (2026-09-30): applies the reviewer rulings on golden-vector pack GV-0.1 (A-01..A-29) plus A-30 executable-price
   quantisation; new notation (K1..K5); new event-model codes; pairs of patterns that differ in their sources stay different.
 - 0.3.1 (2026-09-30): reviewer accepted Claude's zone-death rule (D-038); wording on role changes made precise (roles change only via a later confirmed pivot); same-candle high/low pivot pair -> role AMBIGUOUS (vector GV-G-ZN-13). Ambiguity phase closed.
+- 0.3.2 (2026-09-30): `PIP_SRC_USD = 0.10` confirmed from the sources' own definition and internal consistency (D-040); the ten pip-dependent SRC-PS variants are enabled; `DISABLED_PENDING_PIP_CONFIRMATION` retired.

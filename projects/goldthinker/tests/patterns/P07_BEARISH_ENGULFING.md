@@ -1,6 +1,6 @@
 # P07 Bearish Engulfing — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **46 vectors** (2 dormant, 44 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **45 vectors** (45 firm)
 
 Strategies covered: `GT-ENGULF-BEAR-v1.0`
 
@@ -236,10 +236,10 @@ Ticks (bid/ask): 09-16 12:00:02 4187.80/4188.00
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P07-01` · `GT-ENGULF-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Bearish source-only qualification: RANGE trend, highest high 4197.00 is 0.30 below resistance. SELL at the bid; stop max(H1,H2) + 20 pips x $0.10 = 4199.00; R 11.00; T_SR(1.5) nearest zone top 4171.00 = 1.545R.
+#### `GV-DORM-P07-01` · `GT-ENGULF-BEAR-v1.0/SRC-PS` · M15
+> Bearish source-only qualification: RANGE trend, highest high 4197.00 is 0.30 below resistance. SELL at the bid; stop max(H1,H2) + 20 pips x $0.10 = 4199.00; R 11.00; T_SR(1.5) nearest zone top 4171.00 = 1.545R.
 
-Tags: dormant, source-only-qualification
+Tags: source-only-qualification, pip-variant
 Context: atr=4 · trend=RANGE · zones_pre=[4197.30-4197.50] · zones_entry=[4170.00-4171.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -257,10 +257,10 @@ Ticks (bid/ask): 09-16 10:30:02 4188.00/4188.20; 09-16 10:31:40 4170.80/4171.00
 - target(s): 4171.00
 - exit: TARGET net 17/11 (≈1.5455)R
 
-#### `GV-DORM-P07-02` · `GT-ENGULF-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P07-02` · `GT-ENGULF-BEAR-v1.0/SRC-PS` · M15
 > Signal 03:00 UTC (ASIA_ONLY): skipped.
 
-Tags: dormant, session
+Tags: session, pip-variant
 Context: atr=4 · trend=RANGE · zones_pre=[4197.30-4197.50] · zones_entry=[4170.00-4171.00]
 
 | # | open (UTC) | O | H | L | C |
@@ -274,21 +274,4 @@ Ticks (bid/ask): 09-16 03:00:02 4188.00/4188.20
 - variant: VARIANT_QUALIFIED, SIGNAL
 - disposition: SKIPPED_SESSION_FILTER
 - signal time: 2026-09-16T03:00:00Z
-
-#### `GV-P07-DIS` · `GT-ENGULF-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P07-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4190.00 | 4197.00 | 4189.00 | 4196.00 |
-| 2 | 09-16 10:15 | 4196.50 | 4197.00 | 4187.50 | 4188.00 |
-
-Ticks (bid/ask): 09-16 10:30:02 4187.80/4188.00
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

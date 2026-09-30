@@ -1,6 +1,6 @@
 # P02 Shooting Star — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **44 vectors** (3 dormant, 41 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **43 vectors** (43 firm)
 
 Strategies covered: `GT-SHOOTINGSTAR-BEAR-v1.0`
 
@@ -161,10 +161,10 @@ Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P02-01` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT. Source Shooting Star: confirmed by a bearish C2 closing below min(O1,C1)=4199.80 (4198.50). SELL at the bid 4198.50; stop = H1 + 20 pips x $0.10 = 4208.00; R 9.50; T_SWING(1.5): swing low 4184.00 = 1.53R.
+#### `GV-DORM-P02-01` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15
+> Source Shooting Star: confirmed by a bearish C2 closing below min(O1,C1)=4199.80 (4198.50). SELL at the bid 4198.50; stop = H1 + 20 pips x $0.10 = 4208.00; R 9.50; T_SWING(1.5): swing low 4184.00 = 1.53R.
 
-Tags: dormant, confirmation
+Tags: confirmation, pip-variant
 Context: atr=4 · trend=UP · swings=L4184.00
 
 | # | open (UTC) | O | H | L | C |
@@ -183,10 +183,10 @@ Ticks (bid/ask): 09-16 10:30:02 4198.50/4198.70; 09-16 10:31:40 4183.80/4184.00
 - target(s): 4184.00
 - exit: TARGET net 29/19 (≈1.5263)R
 
-#### `GV-DORM-P02-02` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P02-02` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15
 > Signal at 03:00 UTC (ASIA_ONLY): the source skips Asia-only shooting stars.
 
-Tags: dormant, session
+Tags: session, pip-variant
 Context: atr=4 · trend=UP · swings=L4184.00
 
 | # | open (UTC) | O | H | L | C |
@@ -201,10 +201,10 @@ Ticks (bid/ask): 09-16 03:00:02 4198.50/4198.70
 - disposition: SKIPPED_SESSION_FILTER
 - signal time: 2026-09-16T03:00:00Z
 
-#### `GV-DORM-P02-03` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P02-03` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15
 > Source-only qualification: trend DOWN (canonical fails) but the high (4206.00) is 0.20 below a resistance zone -> AT_RESISTANCE -> qualifies. Signal 07:15 UTC = 08:15 BST: London is open, so not skipped.
 
-Tags: dormant, source-only-qualification, session
+Tags: source-only-qualification, session, pip-variant
 Context: atr=4 · trend=DOWN · zones_pre=[4206.20-4207.00] · swings=L4184.00
 
 | # | open (UTC) | O | H | L | C |
@@ -218,20 +218,4 @@ Ticks (bid/ask): 09-16 07:15:02 4198.50/4198.70; 09-16 07:16:40 4183.80/4184.00
 - candidate: INVERTED_HAMMER
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - signal time: 2026-09-16T07:15:00Z
-
-#### `GV-P02-DIS` · `GT-SHOOTINGSTAR-BEAR-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P02-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=UP
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4206.00 | 4199.50 | 4199.80 |
-
-Ticks (bid/ask): 09-16 10:15:02 4199.60/4199.80
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

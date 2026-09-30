@@ -1,6 +1,6 @@
 # P01 Hammer — golden test vectors
 
-Spec: `CANDLE_SPEC_V1.md` Draft 0.3.1 · vector pack GV-0.2 · **54 vectors** (7 dormant, 47 firm)
+Spec: `CANDLE_SPEC_V1.md` Draft 0.3.2 · vector pack GV-0.2 · **53 vectors** (53 firm)
 
 Strategies covered: `GT-HAMMER-BULL-v1.0`
 
@@ -289,10 +289,16 @@ Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40
 
 ### Variant `SRC-PS`
 
-#### `GV-DORM-P01-01` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> DORMANT (PIP_SRC_USD = 0.10 assumed). Source variant qualifies while BASE does NOT: trend RANGE (canonical prior state fails, shape only) but the low sits at support, so 'DOWN OR AT_SUPPORT' holds. Confirmation: C2 bullish, close 4201.50 > H1 4200.50. Signal at C2 completion; stop = L1 - 17.5 pips x $0.10 = 4192.25; entry ask 4201.70; R 9.45; target 2R = 4220.60.
+#### Compact vectors (detection / boundary / context) — bars are O/H/L/C, one candle per `;`
 
-Tags: dormant, source-only-qualification, confirmation
+| ID | bars | trend | ATR | result | failing clause | note |
+|---|---|---|---|---|---|---|
+| `P01-07` | 4200.00/4200.50/4194.00/4200.20 | DOWN | 4 | canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED; variant: VARIANT_QUALIFIED; disposition: PENDING_CONFIRMATION | — | Only C1 exists so far: the variant is qualified and waiting (no expiry before C2 completes). |
+
+#### `GV-DORM-P01-01` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
+> Source variant qualifies while BASE does NOT: trend RANGE (canonical prior state fails, shape only) but the low sits at support, so 'DOWN OR AT_SUPPORT' holds. Confirmation: C2 bullish, close 4201.50 > H1 4200.50. Signal at C2 completion; stop = L1 - 17.5 pips x $0.10 = 4192.25; entry ask 4201.70; R 9.45; target 2R = 4220.60.
+
+Tags: source-only-qualification, confirmation, pip-variant
 Context: atr=4 · trend=RANGE · zones_pre=[4193.50-4193.90]
 
 | # | open (UTC) | O | H | L | C |
@@ -311,10 +317,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70; 09-16 10:31:40 4220.60/4220.80
 - target(s): 4220.60
 - exit: TARGET net 2.00R
 
-#### `GV-DORM-P01-02` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P01-02` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
 > Qualifies through the DOWN branch (no support zone): base formed too.
 
-Tags: dormant, confirmation
+Tags: confirmation, pip-variant
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -328,10 +334,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 - stop: 4192.25
 
-#### `GV-DORM-P01-03` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P01-03` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
 > Trend UP and no support: neither branch true -> variant not qualified (Hanging Man candidate logged).
 
-Tags: dormant, variant-not-qualified
+Tags: variant-not-qualified, pip-variant
 Context: atr=4 · trend=UP
 
 | # | open (UTC) | O | H | L | C |
@@ -345,10 +351,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70
 - candidate: HANGING_MAN
 - variant: no event
 
-#### `GV-DORM-P01-04` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P01-04` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
 > Confirmation close exactly at H1 (4200.50): needs C2close > H1 -> expired (no trade, no retry).
 
-Tags: dormant, confirmation, boundary, expiry
+Tags: confirmation, boundary, expiry, pip-variant
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -362,10 +368,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70
 - variant: VARIANT_QUALIFIED
 - disposition: EXPIRED_NO_CONFIRMATION
 
-#### `GV-DORM-P01-05` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P01-05` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
 > Confirmation close 4200.51 (one tick above H1): confirmed.
 
-Tags: dormant, confirmation, boundary
+Tags: confirmation, boundary, pip-variant
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -378,10 +384,10 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED, SIGNAL, TRADE
 
-#### `GV-DORM-P01-06` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
+#### `GV-DORM-P01-06` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
 > C2 is bearish: confirmation fails -> expired.
 
-Tags: dormant, confirmation, expiry
+Tags: confirmation, expiry, pip-variant
 Context: atr=4 · trend=DOWN
 
 | # | open (UTC) | O | H | L | C |
@@ -394,34 +400,4 @@ Ticks (bid/ask): 09-16 10:30:02 4201.50/4201.70
 - canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
 - variant: VARIANT_QUALIFIED
 - disposition: EXPIRED_NO_CONFIRMATION
-
-#### `GV-DORM-P01-07` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15 · **DORMANT**
-> Only C1 exists so far: the variant is qualified and waiting (no expiry before C2 completes).
-
-Tags: dormant, confirmation, pending
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant: VARIANT_QUALIFIED
-- disposition: PENDING_CONFIRMATION
-
-#### `GV-P01-DIS` · `GT-HAMMER-BULL-v1.0/SRC-PS` · M15
-> DISABLED_PENDING_PIP_CONFIRMATION (D-032): the BASE pattern forms exactly as in GV-P01-Y01 (canonical events are still logged), but this source variant depends on PIP_SRC_USD, so it emits NO variant events, opens NO trade and has no ledger. The BASE strategy on the same candle is unaffected.
-
-Tags: disabled-variant
-Context: atr=4 · trend=DOWN
-
-| # | open (UTC) | O | H | L | C |
-|---|---|---|---|---|---|
-| 1 | 09-16 10:00 | 4200.00 | 4200.50 | 4194.00 | 4200.20 |
-
-Ticks (bid/ask): 09-16 10:15:02 4200.20/4200.40
-
-- canonical: SHAPE_DETECTED, BASE_PATTERN_FORMED
-- variant status: DISABLED_PENDING_PIP_CONFIRMATION
-- variant: no event
 

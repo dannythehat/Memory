@@ -76,7 +76,7 @@ Expected counters:
 ```
 
 #### `GV-HUB-02`
-> Hammer, two M15 occurrences: #1 trend DOWN (BASE trades and wins +2R); #2 trend RANGE at support (shape only for BASE; the SRC-PS variant would qualify but it is DISABLED_PENDING_PIP_CONFIRMATION). Canonical: shapes 2, base_formed 1. BASE: qualified 1, trades 1, closed 1, +2.00R. SRC-PS: status disabled, every counter 0.
+> Hammer, two M15 occurrences: #1 trend DOWN (BASE trades and wins +2R); #2 trend RANGE at support (shape only for BASE; the source variant SRC-PS qualifies there because 'downtrend OR at support' holds). Canonical: shapes 2, base_formed 1. BASE: qualified 1, trades 1, closed 1, +2.00R. SRC-PS (enabled, D-040): qualified 2 (both occurrences), but no confirmation bar exists yet, so both sit in PENDING_CONFIRMATION: signals 0, trades 0. Its counters are separate from BASE.
 
 **Occurrence 1** (M15) — context: atr=4 · trend=DOWN
 bars: 4200.00/4200.50/4194.00/4200.20
@@ -110,13 +110,16 @@ Expected counters:
    "pnl_pct": "2.00"
   },
   "GT-HAMMER-BULL-v1.0|M15|SRC-PS": {
-   "status": "DISABLED_PENDING_PIP_CONFIRMATION",
-   "qualified": 0,
+   "status": "ACTIVE",
+   "qualified": 2,
    "signals": 0,
    "trades": 0,
    "open": 0,
    "closed": 0,
-   "pnl_r": "0.00"
+   "pnl_r": "0.00",
+   "skips": {
+    "PENDING_CONFIRMATION": 2
+   }
   }
  }
 }
