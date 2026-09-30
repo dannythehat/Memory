@@ -138,16 +138,22 @@ of the high/low. Other patterns: wait for a confirming next candle. **Stops:** o
 `investing.com/commodities/gold-candlestick`: live Gold futures chart (GCZ6, ~4,205 at fetch time)
 with an automatic pattern scanner (extracted by a small model, wording not verified). Table of
 about 60 detected patterns per view (Hanging Man, Morning Star, Bullish Engulfing, etc.), columns:
-pattern, timeframe (15 min to 1 month), **"reliability" rating** (values seen from 2 to 67),
-candles ago, timestamp.
+pattern, timeframe (15 min to 1 month), reliability, candles ago, timestamp.
 
-- The reliability number is **not defined on the page** as fetched, and no hit rate, sample size
-  or backtest is shown. Do not assume it is a measured win rate.
+- **CORRECTION (owner pasted the raw page, same day):** the earlier extraction said reliability
+  values ran from 2 to 67. That was wrong. Those numbers are the **"Candles Ago"** column. In the
+  pasted text the **Reliability column is empty** (probably icons/stars that did not copy), so its
+  scale is unknown. No hit rate, sample size or backtest is shown anywhere on the page.
+- The raw page shows the scanner tagging one candle with several patterns at once, including
+  opposite ones (1H candle of Sep 29 02:00: Shooting Star bearish + Inverted Hammer + Three
+  Outside Up bullish). Patterns fire constantly and conflict, so any test must report trigger
+  frequency and cannot treat a pattern's presence as rare or informative by default.
+- Page footer prohibits using, storing or reproducing its data without written permission. Do
+  not scrape or store this scanner's output.
 - This is the closest thing to the product the owner asked about ("many candle reader apps that
   people love"). It shows what the market sells: an always-on scanner across many timeframes.
-- Possible later use: its output could be checked against what price actually did next, as an
-  outside benchmark for our own pattern tests. Not attempted; scraping or reusing its data would
-  need the site's terms checked first.
+- Not usable as a data source: terms forbid storing/reproducing its data. Our own detector on
+  our own candles is the only route.
 
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
