@@ -103,3 +103,16 @@ Every row above leans on these; each one needs one fixed value, chosen once, or 
 - Harami: SA/SH want a confirming later candle and a prior trend; PS wants confirmation and H4.
 - Timeframe advice differs by candle (Kicker: not below H4; Harami: not M5/M15; Inside bar: not M5).
   Owner chose all timeframes, so these become claims the paper results can check.
+
+## Candidate answers for the shared definitions (from source 14, Ryan GPFX; owner to accept or change)
+
+- **Trend (item 2):** uptrend = a sequence of higher highs and higher lows, downtrend = lower highs
+  and lower lows, otherwise sideways. Needs swing points defined numerically (how many bars each
+  side makes a swing).
+- **Support/resistance (item 3):** treat as zones. Strength from repeated rejections (long wicks) and
+  retests; H1 and above counts as strong, M30 and below as weak. A level only breaks when a candle
+  BODY closes beyond it; a wick-only poke is a rejection. A broken level flips role.
+- **Breakout rule:** body close beyond the previous high/low.
+- **Same shape, two meanings:** the guide reads an engulfing candle as a continuation signal in a
+  trend and a reversal against it. The master list currently treats each as reversal-only; flag for
+  the owner when defining engulfing.

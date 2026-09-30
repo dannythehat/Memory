@@ -281,3 +281,32 @@ Methods) imply trading WITH the move, the opposite of the reversal group, so the
 differ in kind, not just direction.
 
 All 18 remaining pages were read on 2026-09-30 (the Marubozu page lives at `/candlestick-patterns/marubozu-candlestick`). Their rules are merged into `MASTER_CANDLE_LIST.md`; per-page extracts were not kept separately.
+
+### Source 14 — "Gold Trading Guide" by Ryan GPFX / Golden Pips FX Education (owner-supplied PDF, 2026-09-30)
+
+40-page beginner guide, mostly chart images. **Text only was read** (18.5k characters via pypdf);
+the chart images were not inspected (no PDF renderer in the sandbox). Educator with a Telegram
+channel and Facebook page; no results data. One unsupported claim: candlestick patterns are
+"confirmed by studies" to have "high predictive value" (no study cited).
+
+- **Candles covered (text only, no stop/target/entry numbers):** Bullish and Bearish Engulfing,
+  Hammer ("Pin Bar"), Shooting Star ("Bearish Pin Bar"), Morning Star, Evening Star. Notable:
+  a bullish engulfing in an **uptrend** is called a continuation signal, in a downtrend a reversal
+  (so the same shape has two meanings depending on trend). Morning star: 3rd candle gaps up and
+  closes above the midpoint of the 1st. Evening star: 2nd candle can be any colour or a doji.
+- **Trend:** three states (uptrend, downtrend, sideways) defined by higher-high/higher-low vs
+  lower-high/lower-low sequences. Best candidate so far for the "trend" definition.
+- **Support/resistance = zones, not lines.** Strength = number of retests and rejections (long
+  wicks); found on H1 and above = strong, M30 and below = weak; bigger timeframe = stronger. Support
+  broken becomes resistance and vice versa (flip). Always look left for the nearest level.
+- **Breakout:** only when a candle **body closes** beyond the previous high/low; a wick-only
+  break is a rejection, not a breakout. Close beyond previous high = buy signal, previous low =
+  sell signal; the guide says a breakout is not confirmation by itself.
+- **Trendlines:** major trendline on a bigger timeframe for direction, minor on a smaller one for
+  entry (scalping: M30/M15 major, M1/M5/M15 minor; intraday: D1 major, H1/H4 minor; swing:
+  weekly/monthly major, D1/weekly minor — the page's own examples are inconsistent). Draw
+  shadow-to-shadow for lower risk. Buy at support/RBS trendline, sell at resistance/SBR trendline;
+  exit if a candle closes outside the trendline.
+- **Error in the source:** says to "check volume using the ATR indicator". ATR measures range, not
+  volume. Relevant because candle-size rules elsewhere use ATR.
+- Chapter 3's chart patterns (continuation vs reversal) are text-only introductions.
