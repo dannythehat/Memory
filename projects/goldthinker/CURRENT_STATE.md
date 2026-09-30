@@ -43,6 +43,27 @@ result therefore depends on choices we make. The article's thumbnail also shows 
 patterns (morning/evening star, harami, engulfing, tweezer top/bottom, hammer, hanging man,
 inverted hammer, shooting star) — a different list from the article body.
 
+### Source 2 — FTMO Academy, "Bollinger Bands: Calculation & Trading Strategies" (2026-09-30)
+
+Extracted (small-model summary, not verbatim). Bands = SMA(20) ± 2 standard deviations; multiplier
+adjustable (says at least 2.1 for a 50-period average, below 2 for shorter periods).
+
+| Strategy | Article rules |
+|---|---|
+| Squeeze breakout | Both bands squeezed, then a break of one band: upper break = long, lower break = short. "Squeeze" is not quantified. No stop, exit or target. |
+| Band-touch reversal | Touch of a band, then wait for a confirming candle (bearish after upper touch, bullish after lower touch). No stop, exit or target. |
+
+Article's own caveats: a band touch is not an automatic signal, price can stay outside the bands
+in strong trends, and it recommends confirming with VWAP, RSI, ATR or price action. **No
+win rates or performance claims.** It is a prop-firm education page reached via a paid ad, so
+treat it as marketing-adjacent teaching material, not evidence. The formula is described in
+"days", so the daily-chart setup is not testable on our ~42 days of data; intraday versions
+would be our own extension, not the article's.
+
+Both strategies here are direction-of-move opposites (breakout follows the break, reversal
+fades the touch), so a backtest must treat them as separate hypotheses. "Squeeze" needs a
+fixed numeric definition (e.g. bandwidth percentile) before it can be tested.
+
 Owner is continuing to collect research. **Do not run backtests until the owner says the
 research phase is done and the rules are confirmed.**
 
