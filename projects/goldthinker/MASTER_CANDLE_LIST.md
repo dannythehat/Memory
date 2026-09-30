@@ -1,18 +1,18 @@
 # GoldThinker — Master candle list (draft for owner review)
 
-Built 2026-09-30 from all 13 research sources. **40 candle types; 51 direction-specific versions**
+Built 2026-09-30 from all 13 research sources. **41 candle types; 53 direction-specific versions**
 once bullish and bearish are counted separately (matches the owner's "around 50").
 
 Rules below are what the sources say, not decided. Sources: PS = Pro-Scalper.com pages (vendor of
 MT5 gold EAs; extracts by a small model, not verbatim), TV = TradingView post, SA = Seeking Alpha,
-SH = Shankar A.G. notes, INV = Investing.com scanner (names only). **No source gives results data.**
+SH = Shankar A.G. notes, INV = Investing.com scanner (names only), CB = The Candlestick Trading Bible (source 15, added later; adds psychology, the trend+level+signal framework and four strategies to rows 1, 4, 5, 6, 8, 9, 13, 14, 16, 17, 19, 20, 25, 27, but no new numbers). **No source gives results data.**
 "Confirm" = a confirmation candle the source requires; it must be defined using only information
 known at entry.
 
 Plan status: **FULL** = a source gives entry + stop + target. **PARTIAL** = shape and/or some of
 entry/stop/target. **NONE** = only the name is known; rules still to be gathered.
 
-Counts: 21 FULL, 10 PARTIAL, 9 NONE.
+Counts: 22 FULL, 10 PARTIAL, 9 NONE.
 
 ## Single-candle
 
@@ -116,3 +116,17 @@ Every row above leans on these; each one needs one fixed value, chosen once, or 
 - **Same shape, two meanings:** the guide reads an engulfing candle as a continuation signal in a
   trend and a reversal against it. The master list currently treats each as reversal-only; flag for
   the owner when defining engulfing.
+
+## Added after reading the Candlestick Trading Bible (CB, source 15)
+
+| # | Candle | Side | Shape | Trade plan | Status | Src |
+|---|---|---|---|---|---|---|
+| 41 | Inside Bar False Breakout | both | An inside bar whose range is broken, then price reverses and closes back inside the mother bar's range. Bearish version in an uptrend / at resistance, bullish in a downtrend / at support | Enter after the close of the break bar; stop beyond the break bar; target next support/resistance; min 2:1; best at S/R, Fib 50/61, 21 MA, trendlines | FULL | CB |
+
+Extra rules CB gives for existing rows (owner to accept or change):
+- **Pin bar (5):** aggressive entry at the pin bar close, or conservative at 50% retracement of the pin bar's range; stop beyond the tail; target next level.
+- **Engulfing (13, 14):** enter right after the signal, stop beyond the pattern, target the next level, min 2:1. Needs a definable trend. Also read as a continuation signal when with the trend.
+- **Inside bar (16):** trend entry on the break of the mother bar (stop on the other side of the mother candle); after a level break, wait for the inside bar's own break.
+- **Timeframes:** CB says 1H/4H/daily only; 5-minute pin bars and engulfing bars "will lose your money". Owner chose all timeframes, so this is a claim the paper results can check.
+- **Markets:** trades only trending or clean-range markets; choppy markets (no identifiable levels) are skipped. Needs a numeric test for "choppy".
+- **Indicators it uses:** 8 and 21 SMA (daily/4H) as dynamic support/resistance in trends; Fibonacci 50% and 61%; Bollinger Bands as confirmation in ranges only.

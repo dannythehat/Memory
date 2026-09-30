@@ -53,9 +53,9 @@ It has no production or broker authority. Do not import it into either project's
 - Within the wider business, provider selection is the measured edge so far (30-day real P&L
   checked 2026-09-29: TIG's Asia Trades +$575, FXTradingVision +$453).
 
-## Research collected so far (12 sources, all 2026-09-30)
+## Research collected so far (15 sources, all 2026-09-30)
 
-Full extracts are in `RESEARCH_SOURCES.md`; the merged candle list (40 types, 51 versions, with status of each plan and the shared definitions still to settle) is in `MASTER_CANDLE_LIST.md`. Vendor and article pages give pattern shapes, entries,
+Full extracts are in `RESEARCH_SOURCES.md`; the merged candle list (41 types, 53 versions, with status of each plan and the shared definitions still to settle) is in `MASTER_CANDLE_LIST.md`. Vendor and article pages give pattern shapes, entries,
 stops and targets; none gives results data, which is why the plan is to generate the results by
 paper trading. Recurring themes: every page defers the trade to a confirmation candle (must be
 defined using only information available at entry); "location" (support, round numbers,

@@ -310,3 +310,74 @@ channel and Facebook page; no results data. One unsupported claim: candlestick p
 - **Error in the source:** says to "check volume using the ATR indicator". ATR measures range, not
   volume. Relevant because candle-size rules elsewhere use ATR.
 - Chapter 3's chart patterns (continuation vs reversal) are text-only introductions.
+
+### Source 15 — "The Candlestick Trading Bible" (169-page scanned ebook, owner-supplied via Google Drive, 2026-09-30)
+
+Read in full: every page turned into text with OCR and read start to finish (about 138,000
+characters; OCR quality good). The chart images themselves were **not** inspected, only the text
+around them; page 116 has no text (image only). Author is anonymous; the book credits the
+"invented by Homma Munehisa" (an 18th-century rice trader) as branding, but the methods are modern
+price-action trading (pin bar, inside bar), not Homma's. Claims such as "$10 billion", "20 years
+of trading", "research has confirmed high predictive value" are stated without evidence. No P&L or
+trade record from the author.
+
+**Structure:** candle anatomy -> 12 candle descriptions (psychology, no numbers) -> market
+structure -> top-down analysis -> four strategies (pin bar, engulfing bar, inside bar, inside bar
+false breakout) -> trade examples -> money management. It teaches ONE framework: **trend + level +
+signal**.
+
+**The framework**
+- **Trend:** higher highs/higher lows = up, lower highs/lower lows = down, otherwise ranging.
+  Judge trend on 4H, daily or weekly, "never on smaller time frames". Trends occur about 30% of
+  the time; markets range more than 70% (page 125). "Choppy" markets (no identifiable levels): stay
+  away.
+- **Timeframes:** primary 1H, 4H, daily. Says pin bars and engulfing bars on 5-minute "will lose
+  your money" (noise). Top-down: trading 4H means checking weekly then daily first; trading 1H means
+  checking daily first. A higher-timeframe level can override a lower-timeframe signal (worked
+  example: a daily pin bar failed under a weekly resistance).
+- **Levels:** support/resistance from swing points (old swing becomes the other role); trendlines
+  from at least 2 swing points on 4H/daily; supply/demand zones (strong move away from the zone,
+  good reward, daily/4H); **8 and 21 simple moving averages** as dynamic support/resistance in
+  trends only (not in ranges); **Fibonacci 50% and 61% retracements**; Bollinger Bands only as a
+  confirmation in ranges. Enter with the trend after a pullback to a level (buy at the start of the
+  impulsive move, not the retracement). Counter-trend only for experienced traders.
+- **Confluence:** one or two extra factors at a level plus a good signal is "quite enough".
+- **Range trading:** a range needs at least 2 touches of support and 2 of resistance; trade from the
+  boundaries, not inside; three ways: bounce at the boundary, breakout, or pullback after breakout.
+
+**Strategies (entries, stops, targets)**
+1. **Pin bar:** wick long, body small, rejection at a level in trend direction. Aggressive entry
+   right after the pin bar closes; conservative entry at 50% retracement of the pin bar's range
+   (can give over 5:1, but the market sometimes never retraces). Stop beyond the long tail; target
+   the next support/resistance. Bullish white body / bearish black body slightly stronger.
+2. **Engulfing bar:** needs a definable trend, first body fully engulfed by second, second body the
+   opposite colour (Steve Nison's three criteria). Take the order immediately after the signal,
+   stop beyond the pattern, target the next level, minimum 2:1 (example with 3:1). Works with
+   moving averages (8/21 SMA on daily/4H), Fib 50/61, trendlines, supply/demand, and in ranges.
+   Says a bullish engulfing in an uptrend is a continuation signal, at the end of a downtrend a
+   reversal.
+3. **Inside bar:** mother candle big, second candle inside it. Trend: enter on the break of the
+   mother bar in trend direction, stop on the other side of the mother candle, target the next
+   level. After a level breaks, wait for the inside bar's break before entering (avoids the false
+   breakout). Prefers daily/4H; only from key levels with confluence.
+4. **Inside bar false breakout (new candle type, added to master list):** price breaks out of the
+   inside bar, then quickly reverses and closes back inside the mother bar's range. Bearish version
+   in an uptrend or at resistance, bullish in a downtrend or at support. Entry after the close of
+   the break bar, stop beyond it, target the next level. Key levels: S/R, supply/demand, Fib 50/61,
+   21 MA and trendlines in trends, horizontal levels in ranges. Explained as stop-hunting by large
+   players; the book admits a false breakout "doesn't happen every time".
+
+**Money management:** minimum 2:1 reward-to-risk; risk at most 2% per trade, 1% for beginners;
+always use a real stop (no mental stops); position sizing by dollars risked, not pips. Worked
+example: 3:1 payoff with 3 wins in 10 still profitable. (This matches the owner's 1% rule.)
+
+**The only quoted statistics in the whole book** (attributed to Thomas Bulkowski, unverified here,
+pages 138-139): a bearish inside bar in a bull market signals a bearish reversal about 65% of the
+time; a bullish continuation about 52%; a bullish abandoned baby is a bullish reversal 70% of the
+time in bull markets and 55% in bear markets. Source data and market (likely stocks) not stated.
+
+**What it does NOT contain:** Belt Hold, Doji Star, Three Inside/Outside Up/Down, Three Line Strike,
+Advance Block, Upside Gap Three Methods (the 9 still-empty candles), plus Marubozu, Kicker,
+Piercing Line, Dark Cloud Cover, Three White Soldiers/Black Crows, Rising/Falling Three Methods.
+The book has almost no gold-specific content (a few XAUUSD/GOLD example charts at old price levels)
+and no numeric thresholds (only "shadow about twice the body" for the shooting star).
