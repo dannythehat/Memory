@@ -1,94 +1,71 @@
 # GoldThinker — Current State
 
-Created: **2026-09-30**. Status: **FOUNDATIONS AGREED (D-005, 2026-09-30) — detector build ready to start; nothing built yet; no code repo exists.**
+**Updated:** 2026-10-01  
+**Authoritative status:** `PROJECT_STATUS.md`  
+**Gated roadmap:** `BUILD_CALENDAR.md`  
+**Current build day:** **Day 8 of 15 — Real-data differential audit + steady-state performance — IN PROGRESS**
 
-GoldThinker is the owner's project for a gold (XAUUSD) candlestick trader. It is a **separate
-system** from AIDY and Super Signals: own data feed, own database, own code. The owner said
-explicitly (2026-09-30) "Fuck Aidy... this is new" — do not build on AIDY's data or loop.
-It has no production or broker authority. Do not import it into either project's state.
+GoldThinker is completely separate from AIDY and Super Signals. It has its own Vantage feed, database, code, research clocks and result ledgers. No Super Signals resource is reused.
 
-## The vision (owner's words, agreed 2026-09-30)
+## Current position
 
-1. GoldThinker monitors gold **24/7, Monday to Friday (until the Friday close)** on a server with
-   a database, using a live market feed (Vantage candles, or other tools).
-2. He is taught **every candle type (~50)**, each with an exact definition and a best-practice
-   trade plan. Images of candle types can be supplied as examples.
-3. When the market shows a candle type, he **places the paper trade(s) that candle's plan calls
-   for**. Every candle type fires whenever it appears, including rare ones (some occur monthly).
-4. Results are **recorded per candle type** and reviewed after **1 month, then 2, then 3**.
-5. Only the **profitable, tried-and-tested candle types are kept**. **Only then does he go live.**
-   Nothing goes live before that.
+Days 1-7 of the gated build calendar are accepted. We do **not** move to Day 9 until Day 8 passes its full acceptance gate.
 
-## Decisions made by the owner (2026-09-30)
+The core research machine is substantially built:
 
-- **Paper trades are recorded in both places:** GoldThinker's own database AND a Vantage demo
-  account.
-- **Rule conflicts between sources:** owner says this "won't happen" — he settles one rule set per
-  candle. (Note: the collected sources already differ in details, e.g. hammer body "upper third" vs
-  "upper 40%". Claude will flag each difference to him when a candle is defined so he chooses.)
-- **Timeframes: all.**
-- **Trade size: 1% risk per paper trade, fixed, for easy calculation.**
-- **Rules-based, same candle = same trade.** Owner is unsure whether AI may be needed "to read or
-  look for candle types". Claude's recommendation (not yet confirmed by owner): rules-only for the
-  trading step so every trade is repeatable and explainable; AI used at build time to read
-  images/articles and check the definitions. Revisit if some candle types cannot be expressed in
-  numbers.
+- research/source foundations and Candle Spec Draft 0.3.2;
+- deterministic ambiguity rulings A-01..A-30;
+- 1,408 pattern-family vectors, 24 portfolio vectors, 10 validation vectors;
+- dedicated Vantage demo account and credential-free real broker specification;
+- own SQLite tick store, broker-wall clock normalisation, dedupe/resume/reconnect;
+- own BID/ASK candles built from ticks;
+- native-MT5 reconciliation and per-timeframe gate;
+- exact production core calculations;
+- Wave-1 production pattern detectors, BASE/SOURCE-NORMALIZED variants, virtual execution, RAW measurements, overlap clusters and hub counters;
+- per-strategy research clocks and point-in-time news vintages;
+- live research detector loop, event persistence, catch-up and read-only reporting;
+- independent production-vs-reference real-data audit and steady-state benchmark.
 
-## Not yet decided
+The finished product still needs:
 
-- Live data source: owner points to Vantage's live gold chart. Claude had proposed a separate
-  Vantage demo account connected through MetaAPI (not the trading account, so it cannot affect live
-  trading) — owner has not agreed to that; he said not to jump ahead. Secrets must never be pasted
-  into chat.
-- Hosting/server, database, how the owner views it (web page or Telegram), the full candle list,
-  and each candle's exact trade plan (entry, stop, target, direction).
-- Whether the owner's three friends who read gold will share rules or trade history.
-- The owner is consulting ChatGPT on the design and will bring its input back.
+- Day 8 final acceptance;
+- runtime packaging/supervision;
+- production Portfolio Simulation;
+- production validation engine;
+- Vantage demo execution mirror and reconciliation;
+- Hub backend/API and owner-facing UI;
+- final full-system launch acceptance.
 
-## Prior evidence (context, not a verdict)
+## Latest local evidence
 
-- Not re-verified this session: AIDY's own price-structure experts scored at or below coin-flip on
-  42 days of gold (see `projects/aidy/CURRENT_STATE.md`, 2026-09-23). That tested AIDY's experts
-  only; the owner's plan is to find out from forward paper results.
-- Within the wider business, provider selection is the measured edge so far (30-day real P&L
-  checked 2026-09-29: TIG's Asia Trades +$575, FXTradingVision +$453).
+- **120 local unit tests passed** on the current D-058 build.
+- GoldThinker's Vantage tick recorder was restarted successfully and reported `feed connected`.
+- Earlier real detector snapshot stored **655 occurrences, including 78 virtual trades**; no broker orders were sent.
+- The first real differential audit was rejected because the audit itself starved later positions of ticks. The harness was then corrected with complete tick coverage, independent raw-SQL reference loaders, `INPUT_MISMATCH`, population completeness and staleness guards.
+- Latest benchmark attempt processed backlog caused by the recorder previously being down: **151 new bars, 8,679 evaluations, 1,184 stored results, 394.1 s**. That is not accepted as steady state. A clean rerun requires a continuously running recorder and cleared backlog.
 
-## Research collected so far (15 sources, all 2026-09-30)
+## Day 8 desired outcome
 
-Rules are consolidated in `CANDLE_SPEC_V1.md`; full extracts are in `RESEARCH_SOURCES.md`; the merged candle list (41 types, 53 versions, with status of each plan and the shared definitions still to settle) is in `MASTER_CANDLE_LIST.md`. Vendor and article pages give pattern shapes, entries,
-stops and targets; none gives results data, which is why the plan is to generate the results by
-paper trading. Recurring themes: every page defers the trade to a confirmation candle (must be
-defined using only information available at entry); "location" (support, round numbers,
-Fibonacci) is what they say matters and is the least defined; almost every page says to avoid or
-shrink the Asian session (a filter to record and compare, not assume).
+Day 8 is complete only when:
 
-## Hub (owner requirement, 2026-09-30)
+1. full local suite passes;
+2. recorder writes fresh ticks continuously;
+3. backlog is cleared before timing;
+4. benchmark observes 3/3 genuine M1 completions and returns PASS with the desired target of <15 s slowest cycle;
+5. differential audit runs LAST and returns zero input mismatches, zero production/reference semantic mismatches, zero stored-vs-recomputed semantic differences, complete stored-population coverage, actual trade paths exercised and no event mutation during the audit;
+6. newly active H4/D1 clocks are included in independent audit coverage before claiming full detector audit acceptance;
+7. final reports are reviewed before they are committed as accepted evidence.
 
-A hub/site the owner can open at any time: every candlestick we use, every trade logged when it happens,
-which candles traded and when, P&L in dollars and percentages, how many times each formed, latest stats
-per candle, balance continuously updated and broken down per candlestick, daily profit and loss, and
-which candles made or lost what. Each candle has its own page with an image of the exact candle, how it
-works, and its information. Built on the same database as the paper engine; not built yet. Open question:
-which "balance" (see `DECISIONS.md`, Open).
+**Until this passes: no Portfolio Simulation implementation is accepted and no Vantage demo orders are enabled.**
 
-## Boundaries
+## Launch meaning
 
-- Paper trading only until the owner decides otherwise after the 1/2/3-month reviews.
-- No connection to the Super Signals live trading account or its MetaAPI connection.
-- No claim of edge, "profitable" or "validated" without evidence per root `AGENTS.md`.
-- Do not build or set up infrastructure until the owner says the foundations are agreed.
+**Full Research/Paper Launch** is the end of Build Day 15: continuous feed/detector, strategy evidence, Portfolio Simulation, dedicated Vantage demo mirror and owner Hub work without manual coding intervention.
 
-## Next step
+**Real-money Live** is not part of the 15 build days. The owner requirement remains: discovery reviews at months 1/2/3, freeze survivors, then untouched post-freeze validation under `VALIDATION_RULES.md`. Only a validated PASS-STRONG candidate may ever be presented to the owner for a real-money decision.
 
-The research foundations are agreed (D-005, on ChatGPT's forwarded message; revocable by the owner): `CANDLE_SPEC_V1.md` DRAFT 0.3.2, `VALIDATION_RULES.md` v0.3, `PORTFOLIO_RULES.md` v0.2, and the test packs in `tests/` (start with `tests/README.md`): pattern pack GV-0.2 (1,408 vectors), portfolio pack GVP-0.2 (24), validation pack GVV-0.1 (10); all reproduce with zero mismatches against the scratch calculators.
-Working rule (D-035): Claude and ChatGPT settle trading-research and engineering rules; the owner decides product/business choices and anything involving real money.
-**Repository:** `dannythehat/GoldThinker` (created by the owner; primary home; start a new session with its `CLAUDE.md` and `HANDOVER.md`). Next: build pure functions first and accept each piece only when it reproduces the golden vectors exactly. After the detector: the MT5 account query (hedging/netting, contract size, tick value, margin, costs, EURUSD feed), a feed reliability test, then the Vantage mirror.
+## Governance
 
-**Update (2026-09-30 night):** live Vantage feed running; own tick-built candles reproduce native MT5 exactly on M1-D1; timeframes M1-D1 enabled for detection (W1/MN1 pending their first exact bar); first production code (`src/goldthinker/core/`) reproduces all 51 global golden vectors; pattern detectors are next. No demo/live execution until live detector output is audited (D-047/D-048).
+A Build Day is a gated engineering phase, not automatically one 24-hour period. Several completed phases can occur on the same date; a failed/incomplete phase can take several dates. **No next Build Day is accepted until the current day's code, tests and evidence have passed and been reviewed.**
 
-**Update (late night):** production pattern detectors, variants, execution, RAW, clusters and hub counters reproduce all golden vectors (D-050); feed gate and per-strategy research clocks separated (D-049). Next: live detector loop, portfolio/validation functions, then audit of live detections; no demo execution yet.
-
-**Update (2026-09-30, night, later):** Windows portability and test isolation fixed (D-051, D-052). Live detector loop built (`goldthinker.live`, D-053): evaluates enabled timeframes over own completed candles with the golden-tested production code and stores events; four proposals await ChatGPT; audit on real data still to do; no demo execution.
-
-
-**Update (D-054):** ChatGPT's five rulings on the live loop applied (fixed RSI sequence, news feed + coverage, gap scope, EUR/reference sizing, commission unknown != zero). Live loop not yet run on the real research database; next is the first real run, inspection and the reference-vs-production audit. No demo execution.
+Read `BUILD_CALENDAR.md` for Day 1 through Day 15 and `DECISIONS.md` for the full decision history.
