@@ -878,5 +878,26 @@
       "holdout_open": false,
       "purpose": "Freeze final Build 5 after development+validation completion until owner explicitly starts the proper holdout exam."
     }
+  },
+  "incident_2026_10_01_demo_compromise": {
+    "verified_at_utc": "2026-10-01T08:10:00Z",
+    "status": "PRODUCTION_VERIFIED_APP_DISPLAY_WAITING_OWNER_CONFIRMATION",
+    "pr": 257,
+    "merge_sha": "9d856f12c1fc7fcd163b1503437f013625019979",
+    "render_deploy": "dep-dav16rfpn0mc739kmq3g",
+    "render_service": "srv-d9qmcgks728c73a555m0",
+    "alembic_head": "0125_incident_20261001_override",
+    "override": {
+      "incident_key": "incident-2026-10-01-demo-compromise",
+      "reporting_date": "2026-10-01",
+      "timezone": "Europe/Sofia",
+      "realised_cash_pnl": 384.84,
+      "cutoff_at": "2026-10-01T07:45:00Z"
+    },
+    "super_signals_own_exits_before_cutoff": -97.51,
+    "demo_balance_sequence": "2309.66 -> 21.74 (07:11-07:23Z) -> 2300.00 (07:38Z)",
+    "broker_authority_changed": false,
+    "risk_sizing_changed": false,
+    "live_money_authority_changed": false
   }
 }

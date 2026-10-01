@@ -1,5 +1,9 @@
 # Super Signals — Current State
 
+## Demo-account compromise + reporting override — PRODUCTION VERIFIED (2026-10-01)
+
+Production branch `feature/day-10-shared-telegram-sources` now includes Super Signals PR #257, merge SHA `9d856f12c1fc7fcd163b1503437f013625019979`; Render deploy `dep-dav16rfpn0mc739kmq3g` LIVE at `2026-10-01T08:05:03Z`; production Alembic head `0125_incident_20261001_override`. The owner's Vantage demo (ending 1913) was traded from outside Super Signals between 07:11 and 07:23 UTC (balance 2,309.66 -> 21.74) and was restored to 2,300.00 by Vantage. Migration 0125 adds an audited reporting override for the Sofia day 2026-10-01: reviewed cash **+384.84**, cutoff 07:45Z, reason text disclosing that it includes account movement not made by Super Signals trades (Super Signals' own pre-cutoff exits netted -97.51). Reporting layer only; broker evidence, balances and risk sizing untouched. Public website already showed +384.84 (equity based). Full detail: `handovers/2026-10-01-demo-account-compromise-reporting-override.md`. WAITING: owner confirmation of the app Today strip on screen, and the owner's Vantage login/trade-history review.
+
 ## AIDY canonical Gold toolbox consumer — LIVE (2026-09-21)
 
 Production branch `feature/day-10-shared-telegram-sources` now includes Super Signals PR #240, merge SHA `f33a83ffa965b4b42ab2cd579b6012ba85a601f6`. Render deploy `dep-daoaeau8bjmc73b6mmeg` finished LIVE at `2026-09-21T03:42:19.642122Z`. Live reasoning now uses `aidy_live_toolbox_manifest_v2` and prompt `aidy_reasoning_prompt_v14_gold_toolbox`, consuming the standalone AIDY `aidy_gold_toolbox_manifest_v1` capability catalogue. Post-deploy log proved `AIDY Provider Context live probe READY`. The catalogue informs AIDY of the wider arsenal without falsely marking research-only/disconnected evidence as callable. No provider routing, best-side policy, 1% risk, MT5/MetaAPI execution, or live authority changed.
