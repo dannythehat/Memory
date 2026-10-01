@@ -11,17 +11,18 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 
 - **Post-fix unit suite: 121/121 PASS in 68.656 s**, including `test_expensive_evaluation_phase_is_read_only`.
 - Post-fix feed check: **+86 XAUUSD ticks in 15 s**, latest UTC +15.989 s, spread 21/21.7/29 points, crossed quotes 0, quiet periods 0.
-- **Concurrent feed survival now proven:** during the next heavy benchmark catch-up the recorder remained alive and added **4,093 fresh ticks**; the prior `database is locked` crash did not recur.
-- The benchmark observed **3/3 genuine M1 completions**. Completion cycles were **15.0 s, 9.9 s, 14.6 s**.
-- The benchmark verdict was still **FAIL** because its row labelled `idle, 0 new bars` actually processed **12 new bars** (9 M1, 2 M5, 1 M15) and took **36.9 s**. Those bars accumulated while the preceding long catch-up was running, so this was a contaminated catch-up sample rather than a genuine idle steady-state measurement.
-- Detector is now at the live edge. **Next action: rerun the 3/3 benchmark immediately with recorder left running.** Day-8 performance acceptance remains strict: clean PASS and slowest genuine steady-state cycle **<15 s**. If a clean completion cycle is >=15 s, optimize before acceptance.
+- **Concurrent feed survival proven:** during heavy benchmark catch-up the recorder remained alive and added **4,093 fresh ticks**; the prior `database is locked` crash did not recur.
+- First post-fix 3/3 benchmark had a contaminated nominal idle row that actually processed 12 new bars, so its 36.9 s FAIL was not a genuine steady-state idle sample.
+- **Clean live-edge benchmark:** 3/3 genuine M1 completions, **1,175 fresh ticks**, genuine idle **5.2 s with 0 new bars**, completion cycles **12.3 s / 6.8 s / 17.3 s**, verdict **WARN** because the slowest genuine cycle exceeded the <15 s Day-8 target.
+- The 17.3 s cycle was mostly detector time (**15.72 s**); timeframe timings were roughly M1 4.4 s, M5 0.2 s, M15 0.5 s, M30 5.8 s, H1 4.8 s. If repeated, optimise M30/H1 open-occurrence/tick-loading work.
+- **Next action:** one more clean 3/3 benchmark immediately at the live edge with recorder running. PASS if all genuine cycles are <15 s. If another WARN/FAIL occurs, optimise before acceptance.
 
 ## Day 8 acceptance gate
 
 1. Unit suite — **PASS: 121/121.**
-2. Recorder survives concurrent detector workload — **PASS: +4,093 ticks during heavy catch-up; no lock crash.**
-3. Backlog cleared/live edge — **PASS for current state; rerun immediately.**
-4. Real steady-state benchmark — **3/3 observed, but clean PASS still required because the measured idle row contained 12 new bars; completion timings 15.0/9.9/14.6 s.**
+2. Recorder survives concurrent detector workload — **PASS: +4,093 ticks during catch-up and +1,175 during the clean benchmark; no lock crash.**
+3. Backlog cleared/live edge — **PASS: clean idle sample had 0 new bars, 5.2 s.**
+4. Real steady-state benchmark — **3/3 observed with fresh ticks, but current clean verdict WARN due one 17.3 s cycle; one more clean run required, optimise if repeated.**
 5. Final differential audit LAST — still pending; must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
 6. H4/D1 independent calendar/label audit if clocks active; W1/MN1 remain disabled until exact-bar acceptance.
 7. Review reports before final evidence commit.
