@@ -9,23 +9,23 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 
 ## Latest verified local evidence
 
-- **Owner-machine unit suite before latest fix: 124/124 PASS in 66.569 s.**
+- **Current owner-machine unit suite: 125/125 PASS in 54.867 s.** This includes the new early-return canonical-side regression plus the prior H4/D1 and detector-lock regressions.
 - Recorder/feed concurrency fix is proven under heavy load; no repeat of `sqlite3.OperationalError: database is locked`.
 - **Follow-up live-edge benchmark PASSED:** **3/3 real M1 completions**, **1,418 fresh ticks**, slowest measured cycle **13.1 s**; completion cycles **13.1 / 7.7 / 10.3 s**.
 - Independent H4/D1 post-break labelling is unit-tested: 01:00 reopen -> H4/D1 00:00, H1 and lower 01:00.
-- The full differential run reached 43,000 M1 comparisons with 0 mismatches, then accumulated **12,711 M1 mismatches** before moving to M5; observed M5 work did not add mismatches.
-- Quick diagnostic `M1 --last 3` produced **171/171 mismatches**, all the same field: production `.canonical.side` = BULL/BEAR/NEUTRAL vs independent reference `<absent>`. All 171 were gap/warm-up early-return rows with 0 detections/signals/trades.
-- **Root cause:** production defines canonical side from the strategy unit before readiness/data-gap checks; the scratch reference historically added it only after detection. Thus early `NOT_EVALUATED_WARMUP` / `NOT_EVALUATED_DATA_GAP` outputs were schema-incomplete on the reference side. This is an audit/reference defect, not evidence of production semantic divergence for those rows.
-- **Fix `6fbcd8f` + regression `3271d75`:** independent reference now retains strategy side on early returns, deriving it independently from its own strategy id (`NEUTRAL` for P08/P09). Added BULL/BEAR/NEUTRAL early-return regression coverage.
-- **Next:** pull latest, rerun full suite (expected **125 tests**), then rerun `py -m goldthinker.audit.real_differential --tf M1 --last 3`. It must return 0 mismatches before any full multi-timeframe audit rerun.
+- The first full differential run reached 43,000 M1 comparisons with 0 mismatches, then accumulated **12,711 M1 mismatches** before moving to M5; observed M5 work did not add mismatches.
+- Quick diagnostic `M1 --last 3` produced **171/171 mismatches**, all the same field: production `.canonical.side` = BULL/BEAR/NEUTRAL vs independent reference absent. All 171 were gap/warm-up early-return rows with 0 detections/signals/trades.
+- **Root cause + fix:** the scratch reference added canonical side only after detection, while production defines it before readiness/data-gap exits. Fix `6fbcd8f` retains strategy side on reference early returns, independently derived from the reference strategy id; regression `3271d75` covers BULL/BEAR/NEUTRAL.
+- **Targeted post-fix verification PASS:** the exact `M1 --last 3` window now reports **171 compared, 0 mismatches, 0 stored-vs-recomputed differences, 0 input errors, 0 stored occurrences not reached**.
+- **Next:** keep DB frozen; run the complete M1 population first. If M1 passes, run M5/M15/M30/H1/H4/D1. Final Day-8 acceptance still requires zero semantic/input/stored differences, complete stored-population coverage, real trade paths, and no event mutation across the full accepted set.
 
 ## Day 8 acceptance gate
 
-1. Unit suite — **124/124 pre-fix PASS; rerun latest, expected 125.**
+1. Unit suite — **PASS: 125/125 in 54.867 s.**
 2. Recorder survives concurrent detector workload — **PASS.**
 3. Backlog/live-edge condition — **PASS.**
 4. Real steady-state benchmark — **PASS: 3/3, +1,418 fresh ticks, slowest 13.1 s.**
-5. Final differential audit — **blocked pending validation of the reference early-return side fix, then full rerun.**
+5. Final differential audit — **IN PROGRESS:** targeted failing window is now clean; full-population rerun still required.
 6. H4/D1 independent calendar/label audit — **PASS at unit/regression level; include in final real-data audit.** W1/MN1 remain disabled until exact-bar acceptance.
 7. Review reports before final evidence commit — **pending**.
 
