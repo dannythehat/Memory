@@ -9,23 +9,21 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 
 ## Latest verified local evidence
 
-- **Post-fix unit suite: 121/121 PASS in 68.656 s**, including `test_expensive_evaluation_phase_is_read_only`.
+- **Current owner-machine unit suite: 124/124 PASS in 66.569 s.** The three independent H4/D1 post-break tests passed: 01:00 reopen grid labels, D1 midnight label retention, and H4 midnight label retention.
 - Recorder/feed concurrency fix is proven under heavy load; no repeat of `sqlite3.OperationalError: database is locked`.
 - First clean live-edge benchmark was WARN: 3/3 completions, 1,175 fresh ticks, completion cycles 12.3 / 6.8 / 17.3 s.
 - **Follow-up live-edge benchmark PASSED:** **3/3 real M1 completions**, **1,418 fresh ticks**, slowest measured cycle **13.1 s**; completion cycles **13.1 / 7.7 / 10.3 s**. Performance gate is accepted.
-- Before the final differential audit, the H4/D1 audit hole was addressed. H4 already has active research evaluations, while the old independent reference deliberately excluded H4/D1 because it reopened after the daily break at 01:00 instead of retaining Vantage's 00:00 grid label.
-- **Audit-only fix `88f6599`:** independent reference now derives post-break labels from broker wall-clock grid itself (01:00 reopen -> H4/D1 00:00; H1 and below 01:00), without calling production timeframe code.
-- **Regression tests `23ca3a1`:** three independent H4/D1 post-break chain/label tests added. Production trading/detector logic unchanged.
-- **Next action:** owner machine pulls latest, reruns full suite (expected **124 tests**), then freezes live input and runs the final differential audit across M1/M5/M15/M30/H1/H4/D1. W1/MN1 remain pending/disabled.
+- H4/D1 audit-only extension is unit-tested and accepted. The independent reference derives Vantage post-break labels itself (01:00 reopen -> H4/D1 00:00; H1 and below 01:00), without calling production timeframe code.
+- **Next action:** freeze DB input and run the final real differential audit explicitly across M1/M5/M15/M30/H1/H4/D1. W1/MN1 remain pending/disabled.
 
 ## Day 8 acceptance gate
 
-1. Unit suite — **121/121 pre-extension PASS; rerun required after H4/D1 audit-only extension, expected 124.**
+1. Unit suite — **PASS: 124/124 in 66.569 s.**
 2. Recorder survives concurrent detector workload — **PASS.**
 3. Backlog/live-edge condition — **PASS.**
 4. Real steady-state benchmark — **PASS: 3/3, +1,418 fresh ticks, slowest 13.1 s.**
-5. Final differential audit — **pending**, must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
-6. H4/D1 independent calendar/label audit — **implemented, pending owner-machine tests + final audit inclusion.** W1/MN1 remain disabled until exact-bar acceptance.
+5. Final differential audit — **pending now**; must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
+6. H4/D1 independent calendar/label audit — **PASS at unit/regression level; include in final real-data audit.** W1/MN1 remain disabled until exact-bar acceptance.
 7. Review reports before final evidence commit.
 
 **No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
