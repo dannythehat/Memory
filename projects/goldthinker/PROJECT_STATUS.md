@@ -1,9 +1,9 @@
 # GoldThinker — Project Status
 
 **Last updated:** 2026-10-01  
-**Authoritative build state:** this file + `BUILD_CALENDAR.md`  
+**Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
 **Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current code head reviewed:** GoldThinker current Day-8 branch after documentation updates  
+**Current GoldThinker fix:** `b697841` — detector DB-lock fix + regression test
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
@@ -11,32 +11,30 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 
 Seven gated build days are accepted. **Day 8 is not complete and we do not move to Day 9 until its acceptance gate passes.**
 
-The difficult candle/research logic is substantially built: broker/feed foundations, tick-built candles, timeframe gates, exact core calculations, Wave-1 production pattern detectors and variants, virtual execution/RAW, research clocks, the live detector loop, news vintages and the differential-audit framework all exist.
-
-The finished product is not yet complete. Production Portfolio Simulation, the production validation engine, the Vantage demo execution mirror, unattended runtime packaging, and the full Hub/UI still remain.
-
 ## Latest verified local evidence
 
-- **Unit-test gate independently rechecked 2026-10-01:** `py -m unittest discover -s tests_unit -v` completed **120/120 tests PASS in 52.386 s**. The synthetic benchmark tests also behaved as designed: one deliberate `INCOMPLETE` and one deliberate `PASS`; those blocks are fixtures, not live evidence.
-- **Candle build rechecked in isolation:** **0.325 s**, `m1_bars_touched: 0`; the DB held 2,967 complete M1 bars at that point.
-- **Detector steady/catch-up state rechecked in isolation:** **6.45 s total**, with **0 new bars** on M1/M5/M15/M30/H1, 27 open/pending occurrences re-evaluated and no backlog work. This proves the earlier 394.1 s cycle was backlog processing rather than normal steady-state cost.
-- **Earlier live benchmark attempt:** `INCOMPLETE`, not FAIL. It waited the full **300 s** for completion 1/3 and observed **0 new M1 completions and 0 fresh ticks**. The idle benchmark cycle itself took **6.1 s** (5.98 s detection), inside the Day-8 <15 s target, but no live completion was observed so the benchmark could not pass.
-- **Fresh tick feed is now independently verified:** two `goldthinker.feed.report` snapshots 15 seconds apart showed XAUUSD tick count rising from **1,701,290 to 1,701,422** (**+132 ticks**) and latest stored UTC advancing from **1790832584698 to 1790832601067 ms** (**+16.369 s**). Spread remained healthy at min/avg/max **21/21.7/29 points**, with **0 crossed quotes**. This proves the recorder is currently writing fresh market data to the GoldThinker DB.
-- Therefore the current next action is to rerun the **3/3 real M1 steady-state benchmark while the verified recorder continues writing**, then run the full differential audit LAST if and only if the benchmark passes.
-- Earlier real detector run stored **655 occurrences, including 78 virtual trades**. No broker orders were sent.
-- The first real differential audit was deliberately rejected because its shared tick input had been truncated, making the trade layer vacuous. The audit was hardened in GoldThinker commits `c0c8d89`, `a2cbcf1` and `0eef777` with complete tick coverage, independent raw-SQL reference loaders, `INPUT_MISMATCH`, stored-population completeness, staleness protection and an honest benchmark.
+- Full pre-fix Windows unit suite: **120/120 PASS in 52.386 s**.
+- Candle build in isolation: **0.325 s**.
+- Idle detector cycle after backlog clearance: initially **6.45 s**, later true benchmark idle **4.3 s**; both are inside the <15 s target.
+- Fresh feed was independently verified before the long catch-up: XAUUSD ticks rose **1,701,290 -> 1,701,422 (+132) in 15 s**, latest UTC advanced 16.369 s, spread **21/21.7/29 points**, crossed quotes 0.
+- The long benchmark then replayed the backlog in 40-M1-bar chunks and eventually reached idle, but the recorder died before the live 3/3 measurement. The benchmark ended `INCOMPLETE` with 0 new M1 completions.
+- **Confirmed recorder traceback:** `sqlite3.OperationalError: database is locked` from `Store.insert_ticks()` while the detector catch-up was running.
+- **Root cause:** `live.detector.run_cycle()` wrote `strategy_events` inside the expensive evaluation loop and committed only at the end of the timeframe. After the first event write, SQLite kept the write transaction for the rest of a 2–3 minute M1 chunk, starving the independent recorder until its 30 s timeout expired.
+- **Fix committed in GoldThinker `b697841`:** detector evaluation is now read-only; noteworthy event rows are buffered and flushed atomically with the detector cursor only after the timeframe evaluation finishes. This retains chunk atomicity/idempotence while reducing the writer-lock window from minutes to the short final DB flush.
+- New regression test: `tests_unit/test_detector_db_lock.py` verifies the detector connection is not in a write transaction during expensive strategy evaluation.
+- GoldThinker status documentation was updated after the code fix. **The fix is not yet accepted** until it is pulled and retested on the owner machine.
 
-## Day 8 acceptance gate — all must pass
+## Day 8 acceptance gate
 
-1. Full local unit suite passes. **CURRENT: PASS — 120/120 in 52.386 s.**
-2. Vantage recorder writes fresh ticks continuously. **CURRENT: PASS — +132 XAUUSD ticks in 15 s and latest UTC advanced 16.369 s.**
-3. Detector backlog is cleared before measurement. **CURRENT: PASS — isolated detector cycle had 0 new bars/backlog and completed in 6.45 s.**
-4. Steady-state benchmark observes **3/3 real M1 completions** with fresh ticks and returns PASS; desired target is slowest cycle under 15 s. **CURRENT: TO RERUN NOW WITH VERIFIED FRESH FEED.**
-5. Final real differential audit runs **after** the benchmark and reports 0 input mismatches, 0 production/reference semantic mismatches, 0 stored-vs-recomputed semantic differences, complete stored-population coverage, actual trade paths exercised, and no strategy-event mutation during the audit.
-6. H4/D1 cannot be called fully audited once they have active research clocks unless their independent calendar/labelling audit is included. W1/MN1 remain disabled until their own exact tick-built/native-bar acceptance gate passes.
-7. Reports are reviewed before they are committed as final evidence.
+1. Unit suite — **pre-fix PASS 120/120; post-fix rerun required.**
+2. Recorder writes fresh ticks continuously while detector is active — **pre-fix FAILED under heavy catch-up due confirmed DB lock; post-fix retest required.**
+3. Backlog cleared before measurement — clear any small new backlog after pulling/restarting.
+4. Real steady-state benchmark — must observe **3/3 M1 completions**, fresh ticks >0, PASS, slowest cycle <15 s.
+5. Final differential audit LAST — 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, all stored occurrences reached, real trades exercised, no event mutation during audit.
+6. H4/D1 independent calendar/label audit if their clocks are active; W1/MN1 remain disabled until their own exact-bar acceptance.
+7. Review reports before committing final evidence.
 
-**No Portfolio Simulation and no Vantage demo orders before this gate is clean.**
+**No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
 
 ## Accepted build days
 
@@ -59,8 +57,6 @@ The finished product is not yet complete. Production Portfolio Simulation, the p
 - Day 14 — Hub UI + candle pages + operational views
 - Day 15 — Full-system launch acceptance and research-start manifest
 
-See `BUILD_CALENDAR.md` for the exact purpose, build work and acceptance gate for every day.
-
 ## Launch definitions
 
 **Full Research/Paper Launch** = end of Day 15: continuous feed/detector, strategy evidence, Portfolio Simulation, dedicated Vantage demo mirror and owner Hub functioning without manual coding intervention.
@@ -69,4 +65,4 @@ See `BUILD_CALENDAR.md` for the exact purpose, build work and acceptance gate fo
 
 ## Progress rule
 
-A Build Day is a **gated engineering phase, not necessarily one 24-hour calendar day**. Multiple completed phases may occur on one date and one difficult phase may span several dates. A day is complete only when its documented tests and evidence pass. **No next-day work is accepted while the current day is failed, incomplete or unreviewed.**
+A Build Day is a **gated engineering phase, not necessarily one 24-hour calendar day**. A day is complete only when its documented tests and evidence pass. **No next-day work is accepted while the current day is failed, incomplete or unreviewed.**
