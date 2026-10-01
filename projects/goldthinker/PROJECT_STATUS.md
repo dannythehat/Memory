@@ -3,7 +3,7 @@
 **Last updated:** 2026-10-01  
 **Authoritative build state:** this file + `BUILD_CALENDAR.md`  
 **Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current code head reviewed:** GoldThinker `0eef777` before the status/calendar documentation update  
+**Current code head reviewed:** GoldThinker current Day-8 branch after documentation updates  
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
@@ -17,15 +17,17 @@ The finished product is not yet complete. Production Portfolio Simulation, the p
 
 ## Latest verified local evidence
 
-- Windows unit suite: **120 tests passed** on the current D-058 build.
+- **Unit-test gate independently rechecked 2026-10-01:** `py -m unittest discover -s tests_unit -v` completed **120/120 tests PASS in 52.386 s**. This proves the earlier ~10-hour stalled final-audit run was **not a persistent unit-test failure or normal unit-test duration**.
+- The verbose run also confirmed the synthetic benchmark verdict tests behave as designed: one deliberate `INCOMPLETE` case and one deliberate `PASS` case. Those printed benchmark blocks are unit-test fixtures, not live Day-8 evidence.
 - Dedicated GoldThinker Vantage recorder has been restarted successfully and reported `feed connected`.
 - Earlier real detector run stored **655 occurrences, including 78 virtual trades**. No broker orders were sent.
 - The first real differential audit was deliberately rejected because its shared tick input had been truncated, making the trade layer vacuous. The audit was hardened in GoldThinker commits `c0c8d89`, `a2cbcf1` and `0eef777` with complete tick coverage, independent raw-SQL reference loaders, `INPUT_MISMATCH`, stored-population completeness, staleness protection and an honest benchmark.
-- Latest benchmark attempt was **not a steady-state result** because the recorder had previously been down and the detector had to clear a backlog. The measured cycle processed **151 new bars, 8,679 evaluations and 1,184 stored results in 394.1 s**. The idle cycle was 2.1 s. That backlog run correctly failed the steady-state gate. A clean rerun with the recorder continuously connected is the current task.
+- Latest real benchmark attempt was **not a steady-state result** because the recorder had previously been down and the detector had to clear a backlog. The measured cycle processed **151 new bars, 8,679 evaluations and 1,184 stored results in 394.1 s**. The idle cycle was 2.1 s. That backlog run correctly failed the steady-state gate.
+- A later `final_audit.ps1` invocation appeared to sit for roughly **10 hours**. Because the isolated verbose unit suite completes in ~52 s, the next Day-8 diagnostic task is to isolate the post-test stage (candle build, detector catch-up, live benchmark or final differential audit) instead of treating the unit suite itself as the blocker.
 
 ## Day 8 acceptance gate — all must pass
 
-1. Full local unit suite passes.
+1. Full local unit suite passes. **CURRENT: PASS — 120/120 in 52.386 s.**
 2. Vantage recorder writes fresh ticks continuously.
 3. Detector backlog is cleared before measurement.
 4. Steady-state benchmark observes **3/3 real M1 completions** with fresh ticks and returns PASS; desired target is slowest cycle under 15 s.
