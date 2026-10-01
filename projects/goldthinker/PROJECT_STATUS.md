@@ -3,28 +3,29 @@
 **Last updated:** 2026-10-01  
 **Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
 **Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current GoldThinker fix under validation:** `b697841` — detector DB-lock fix + regression test
+**Current GoldThinker Day-8 audit head:** `23ca3a1` — independent H4/D1 post-break labelling + regression tests
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
 ## Latest verified local evidence
 
 - **Post-fix unit suite: 121/121 PASS in 68.656 s**, including `test_expensive_evaluation_phase_is_read_only`.
-- Post-fix feed check: **+86 XAUUSD ticks in 15 s**, latest UTC +15.989 s, spread 21/21.7/29 points, crossed quotes 0, quiet periods 0.
-- **Concurrent feed survival proven:** during heavy benchmark catch-up the recorder remained alive and added **4,093 fresh ticks**; the prior `database is locked` crash did not recur.
-- First post-fix 3/3 benchmark had a contaminated nominal idle row that actually processed 12 new bars, so its 36.9 s FAIL was not a genuine steady-state idle sample.
-- Clean live-edge benchmark #1: **3/3 genuine M1 completions, 1,175 fresh ticks**, genuine idle 5.2 s with 0 new bars, completion cycles 12.3 / 6.8 / 17.3 s, verdict WARN because one cycle exceeded the <15 s target.
-- **Clean live-edge benchmark #2 PASSED:** 3/3 genuine M1 completions, **1,418 fresh ticks**, slowest measured cycle **13.1 s**. Completion cycles were **13.1 / 7.7 / 10.3 s**. The nominal idle cycle took 7.9 s and one M1 bar completed during it; this did not invalidate the explicit 3/3 post-completion measurements, all of which were below target.
-- **Performance and concurrent-feed gates are accepted.** Next action is the final real differential audit, run last with no detector cycle mutating `strategy_events` while it executes.
+- Recorder/feed concurrency fix is proven under heavy load; no repeat of `sqlite3.OperationalError: database is locked`.
+- First clean live-edge benchmark was WARN: 3/3 completions, 1,175 fresh ticks, completion cycles 12.3 / 6.8 / 17.3 s.
+- **Follow-up live-edge benchmark PASSED:** **3/3 real M1 completions**, **1,418 fresh ticks**, slowest measured cycle **13.1 s**; completion cycles **13.1 / 7.7 / 10.3 s**. Performance gate is accepted.
+- Before the final differential audit, the H4/D1 audit hole was addressed. H4 already has active research evaluations, while the old independent reference deliberately excluded H4/D1 because it reopened after the daily break at 01:00 instead of retaining Vantage's 00:00 grid label.
+- **Audit-only fix `88f6599`:** independent reference now derives post-break labels from broker wall-clock grid itself (01:00 reopen -> H4/D1 00:00; H1 and below 01:00), without calling production timeframe code.
+- **Regression tests `23ca3a1`:** three independent H4/D1 post-break chain/label tests added. Production trading/detector logic unchanged.
+- **Next action:** owner machine pulls latest, reruns full suite (expected **124 tests**), then freezes live input and runs the final differential audit across M1/M5/M15/M30/H1/H4/D1. W1/MN1 remain pending/disabled.
 
 ## Day 8 acceptance gate
 
-1. Unit suite — **PASS: 121/121.**
-2. Recorder survives concurrent detector workload — **PASS: +4,093 ticks during heavy catch-up, +1,175 during the WARN benchmark, +1,418 during the PASS benchmark; no lock crash.**
+1. Unit suite — **121/121 pre-extension PASS; rerun required after H4/D1 audit-only extension, expected 124.**
+2. Recorder survives concurrent detector workload — **PASS.**
 3. Backlog/live-edge condition — **PASS.**
-4. Real steady-state benchmark — **PASS: 3/3 M1 completions, +1,418 fresh ticks, slowest 13.1 s; completion cycles 13.1/7.7/10.3 s.**
-5. Final differential audit LAST — **pending now**; must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
-6. H4/D1 independent calendar/label audit if clocks active; W1/MN1 remain disabled until exact-bar acceptance.
+4. Real steady-state benchmark — **PASS: 3/3, +1,418 fresh ticks, slowest 13.1 s.**
+5. Final differential audit — **pending**, must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
+6. H4/D1 independent calendar/label audit — **implemented, pending owner-machine tests + final audit inclusion.** W1/MN1 remain disabled until exact-bar acceptance.
 7. Review reports before final evidence commit.
 
 **No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
