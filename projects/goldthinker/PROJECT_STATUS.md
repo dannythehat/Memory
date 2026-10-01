@@ -3,7 +3,7 @@
 **Last updated:** 2026-10-01  
 **Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
 **Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current GoldThinker fix:** `b697841` — detector DB-lock fix + regression test
+**Current GoldThinker fix under validation:** `b697841` — detector DB-lock fix + regression test
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
@@ -13,22 +13,21 @@ Seven gated build days are accepted. **Day 8 is not complete and we do not move 
 
 ## Latest verified local evidence
 
-- Full pre-fix Windows unit suite: **120/120 PASS in 52.386 s**.
+- **Post-fix Windows unit suite: 121/121 PASS in 68.656 s.** The new regression `test_expensive_evaluation_phase_is_read_only` passed, proving the detector no longer enters a write transaction during its expensive evaluation phase.
 - Candle build in isolation: **0.325 s**.
 - Idle detector cycle after backlog clearance: initially **6.45 s**, later true benchmark idle **4.3 s**; both are inside the <15 s target.
-- Fresh feed was independently verified before the long catch-up: XAUUSD ticks rose **1,701,290 -> 1,701,422 (+132) in 15 s**, latest UTC advanced 16.369 s, spread **21/21.7/29 points**, crossed quotes 0.
+- Fresh feed was independently verified before the lock failure: XAUUSD ticks rose **1,701,290 -> 1,701,422 (+132) in 15 s**, latest UTC advanced 16.369 s, spread **21/21.7/29 points**, crossed quotes 0.
 - The long benchmark then replayed the backlog in 40-M1-bar chunks and eventually reached idle, but the recorder died before the live 3/3 measurement. The benchmark ended `INCOMPLETE` with 0 new M1 completions.
 - **Confirmed recorder traceback:** `sqlite3.OperationalError: database is locked` from `Store.insert_ticks()` while the detector catch-up was running.
 - **Root cause:** `live.detector.run_cycle()` wrote `strategy_events` inside the expensive evaluation loop and committed only at the end of the timeframe. After the first event write, SQLite kept the write transaction for the rest of a 2–3 minute M1 chunk, starving the independent recorder until its 30 s timeout expired.
 - **Fix committed in GoldThinker `b697841`:** detector evaluation is now read-only; noteworthy event rows are buffered and flushed atomically with the detector cursor only after the timeframe evaluation finishes. This retains chunk atomicity/idempotence while reducing the writer-lock window from minutes to the short final DB flush.
-- New regression test: `tests_unit/test_detector_db_lock.py` verifies the detector connection is not in a write transaction during expensive strategy evaluation.
-- GoldThinker status documentation was updated after the code fix. **The fix is not yet accepted** until it is pulled and retested on the owner machine.
+- **The code fix has now passed its complete unit/regression gate.** Remaining proof is operational: restart the recorder, verify ticks keep advancing while detector/benchmark work runs, then obtain the required 3/3 live M1 benchmark.
 
 ## Day 8 acceptance gate
 
-1. Unit suite — **pre-fix PASS 120/120; post-fix rerun required.**
-2. Recorder writes fresh ticks continuously while detector is active — **pre-fix FAILED under heavy catch-up due confirmed DB lock; post-fix retest required.**
-3. Backlog cleared before measurement — clear any small new backlog after pulling/restarting.
+1. Unit suite — **PASS: 121/121 in 68.656 s post-fix, including the DB-lock regression.**
+2. Recorder writes fresh ticks continuously while detector is active — **post-fix operational retest required.**
+3. Backlog cleared before measurement — clear any new backlog after recorder restart.
 4. Real steady-state benchmark — must observe **3/3 M1 completions**, fresh ticks >0, PASS, slowest cycle <15 s.
 5. Final differential audit LAST — 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, all stored occurrences reached, real trades exercised, no event mutation during audit.
 6. H4/D1 independent calendar/label audit if their clocks are active; W1/MN1 remain disabled until their own exact-bar acceptance.
