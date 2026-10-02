@@ -15,8 +15,9 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 - **Full M1 semantic differential evidence:** 55,722 positions, 0 production/reference semantic mismatches, 0 input errors, all 5,716 stored occurrences re-found, 437 real trade paths. The only failure was 14 stale stored RAW horizons.
 - RAW persistence root cause fixed: BASE/BASE-EARLY rows no longer become terminal before h1/h3/h5/h10/h20 mature. Production fix `19c78e8`, repair command `d8bdaf2`, regression `b7525bb`.
 - **Repair validation PASS:** first repair scan reopened **247** stale BASE RAW rows; `python -m goldthinker.live.run --once` completed normally (12,223 evaluations / 2,157 stored updates); second repair scan returned **0 stale BASE RAW rows**.
-- Next M1 verification should be a focused stored-consistency check, not another blind multi-hour semantic rerun, because the 55,722-position semantic population already passed and the subsequent code change touched persistence/terminality rather than evaluation semantics.
-- Remaining real differential acceptance still required for M5/M15/M30/H1/H4/D1. H4/D1 independent calendar/label regressions already pass. W1/MN1 remain disabled.
+- M1 semantic population is accepted as clean; the persistence repair has been validated to zero stale rows, with a focused stored-consistency check retained for final Day-8 evidence rather than another blind 55k-position rerun.
+- **Full M5 differential PASS:** **12,900 positions**, 0 semantic mismatches, 0 stored-vs-recomputed, 0 input errors, all **1,663 stored occurrences re-found**; 750 detections, 381 shapes, 168 formed, 335 signals, **153 trades**. Runtime 2,356.5 s.
+- Remaining real differential acceptance required for **M15/M30/H1/H4/D1**. H4/D1 independent calendar/label regressions already pass. W1/MN1 remain disabled.
 
 ## Day 8 acceptance gate
 
@@ -24,9 +25,10 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 2. Recorder concurrency — **PASS.**
 3. Backlog/live-edge — **PASS.**
 4. Steady-state benchmark — **PASS.**
-5. M1 semantic differential — **PASS evidence:** 55,722/55,722, 0 mismatches, 437 trades; stale RAW history repaired to zero, focused stored consistency still pending.
-6. M5/M15/M30/H1/H4/D1 differential — **pending.**
-7. Report review/final evidence commit — **pending.**
+5. M1 semantic differential — **PASS evidence:** 55,722/55,722, 0 mismatches, 437 trades; stale RAW history repaired to zero, focused stored consistency retained for final evidence.
+6. M5 differential — **PASS:** 12,900 positions, 0 mismatches, 0 stored-vs-recomputed, 0 input errors, 1,663/1,663 stored occurrences, 153 trades.
+7. M15/M30/H1/H4/D1 differential — **pending.**
+8. Report review/final evidence commit — **pending.**
 
 **No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
 
