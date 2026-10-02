@@ -1,33 +1,36 @@
 # GoldThinker — Project Status
 
-**Last updated:** 2026-10-01  
+**Last updated:** 2026-10-02  
 **Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
 **Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current GoldThinker Day-8 fix:** `3271d75` — reference gap/warm-up canonical-side identity + regression test
+**Current GoldThinker Day-8 fix:** `b7525bb` — BASE RAW horizon maturation + stale-row repair regression
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
 ## Latest verified local evidence
 
-- **Current owner-machine unit suite: 125/125 PASS in 54.867 s.** This includes the new early-return canonical-side regression plus the prior H4/D1 and detector-lock regressions.
-- Recorder/feed concurrency fix is proven under heavy load; no repeat of `sqlite3.OperationalError: database is locked`.
-- **Follow-up live-edge benchmark PASSED:** **3/3 real M1 completions**, **1,418 fresh ticks**, slowest measured cycle **13.1 s**; completion cycles **13.1 / 7.7 / 10.3 s**.
-- Independent H4/D1 post-break labelling is unit-tested: 01:00 reopen -> H4/D1 00:00, H1 and lower 01:00.
-- The first full differential run reached 43,000 M1 comparisons with 0 mismatches, then accumulated **12,711 M1 mismatches** before moving to M5; observed M5 work did not add mismatches.
-- Quick diagnostic `M1 --last 3` produced **171/171 mismatches**, all the same field: production `.canonical.side` = BULL/BEAR/NEUTRAL vs independent reference absent. All 171 were gap/warm-up early-return rows with 0 detections/signals/trades.
-- **Root cause + fix:** the scratch reference added canonical side only after detection, while production defines it before readiness/data-gap exits. Fix `6fbcd8f` retains strategy side on reference early returns, independently derived from the reference strategy id; regression `3271d75` covers BULL/BEAR/NEUTRAL.
-- **Targeted post-fix verification PASS:** the exact `M1 --last 3` window now reports **171 compared, 0 mismatches, 0 stored-vs-recomputed differences, 0 input errors, 0 stored occurrences not reached**.
-- **Next:** keep DB frozen; run the complete M1 population first. If M1 passes, run M5/M15/M30/H1/H4/D1. Final Day-8 acceptance still requires zero semantic/input/stored differences, complete stored-population coverage, real trade paths, and no event mutation across the full accepted set.
+- Owner-machine suite before latest production fix: **125/125 PASS in 54.867 s**.
+- Recorder/feed concurrency: **PASS**; no repeat of SQLite writer-lock crash.
+- Live-edge performance: **PASS**, 3/3 M1 completions, +1,418 ticks, slowest 13.1 s.
+- Independent H4/D1 post-break labelling regressions: **PASS**.
+- Earlier 12,711 late-M1 semantic mismatches were an independent-reference early-return schema defect (`canonical.side` absent). The exact `M1 --last 3` failing window now passes 171/171 -> **0 mismatches** after fix `6fbcd8f` + regression `3271d75`.
+- **Full M1 rerun after reference fix:** **55,722 positions, 0 production/reference semantic mismatches, 0 input errors, all 5,716 stored occurrences re-found, 437 real trade paths.** Verdict still FAIL only because **14 stored-vs-fresh differences** remained.
+- All 14 are stale D-010 BASE RAW horizons: stored `h5/h10/h20` were NULL while fresh deterministic recomputation now has matured values. No canonical/variant/trade semantic disagreement remained.
+- Root cause: `live.detector.is_terminal()` could mark a formed BASE/BASE-EARLY row terminal before RAW h1/h3/h5/h10/h20 finished maturing, so the row was never re-evaluated.
+- **Production fix `19c78e8`:** formed BASE/BASE-EARLY occurrences remain non-terminal until every RAW horizon is present, even if the virtual trade already closed.
+- **Repair command `d8bdaf2`:** `python -m goldthinker.live.repair_raw` reopens historical prematurely-terminal BASE RAW rows; `python -m goldthinker.live.run --once` deterministically refreshes them.
+- **Regression `b7525bb`:** covers pending RAW terminal state, closed-trade RAW maturation and stale-row repair selection.
+- **Next:** pull latest, run full suite (expected **128 tests**). With recorder still stopped: run repair -> live run once -> repair again and require `reopened 0`. Then rerun full M1. If clean, run M5/M15/M30/H1/H4/D1.
 
 ## Day 8 acceptance gate
 
-1. Unit suite — **PASS: 125/125 in 54.867 s.**
+1. Unit suite — **125/125 pre-latest-fix PASS; rerun expected 128.**
 2. Recorder survives concurrent detector workload — **PASS.**
 3. Backlog/live-edge condition — **PASS.**
-4. Real steady-state benchmark — **PASS: 3/3, +1,418 fresh ticks, slowest 13.1 s.**
-5. Final differential audit — **IN PROGRESS:** targeted failing window is now clean; full-population rerun still required.
+4. Real steady-state benchmark — **PASS.**
+5. Final differential audit — **IN PROGRESS:** M1 production/reference semantics are clean; 14 stale stored RAW horizons exposed and are now fixed/repaired in code, pending owner-machine validation + fresh full M1 audit.
 6. H4/D1 independent calendar/label audit — **PASS at unit/regression level; include in final real-data audit.** W1/MN1 remain disabled until exact-bar acceptance.
-7. Review reports before final evidence commit — **pending**.
+7. Report review/final evidence commit — **pending**.
 
 **No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
 
