@@ -24,6 +24,34 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 
 **Day 8 verdict: ACCEPTED.**
 
+## Day 9 implementation — pending owner-machine validation
+
+- Installable editable package added via `pyproject.toml`; owner command is `goldthinker` and should work in a fresh PowerShell without manual `PYTHONPATH` after `py -m pip install -e .`.
+- Owner CLI now includes `start`, `stop`, `status`, `log`, `integrity`, `backup`, `restore`, and Windows `startup` commands.
+- Detached supervisor owns recorder and detector as separate workers; either worker is automatically restarted after an unexpected exit.
+- Cooperative per-worker stop files allow recorder feed sessions and detector DB connections to close cleanly before a hard-kill fallback.
+- `goldthinker start` refuses to launch over a manual recorder that appears to be actively writing fresh ticks.
+- Status heartbeat includes supervisor/worker PIDs and restart counts, newest live tick, newest completed M1, detector cursors, last successful detector cycle, strategy-event count and non-terminal count.
+- Recorder/detector logs rotate at 5 MB with five backups; supervisor lifecycle/restart log rotates separately.
+- SQLite online backup + SHA-256 sidecar + integrity/foreign-key verification implemented. Restore requires runtime stopped, explicit `--yes`, source integrity PASS and post-restore integrity PASS.
+- Windows logon recovery helper implemented with `goldthinker startup install|status|remove`.
+- Four Day-9 runtime unit tests added. **Expected next owner-machine full suite: 132 tests.**
+
+## Day 9 acceptance still required
+
+1. Pull/install and prove `goldthinker` works in a fresh PowerShell with no `PYTHONPATH`.
+2. Full suite PASS (expected 132).
+3. Migrate from legacy manual recorder to supervised runtime.
+4. Status shows supervisor + recorder + detector healthy with fresh tick/M1/detector heartbeat.
+5. Forced recorder crash auto-restarts without duplicate ticks.
+6. Forced detector crash auto-restarts without duplicate strategy events.
+7. `goldthinker stop` exits workers cooperatively.
+8. Integrity + backup + restore drill PASS.
+9. Windows startup task test PASS.
+10. Supervised soak completes without feed loss, DB lock, restart loop or stale detector.
+
+**No Portfolio Simulation and no Vantage demo orders until Day 9 is accepted.**
+
 ## Accepted build days
 
 - Day 1 — Research foundations
@@ -34,14 +62,6 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 - Day 6 — Wave-1 pattern/trade engine
 - Day 7 — Live research loop + real detections
 - Day 8 — Real-data differential audit + performance
-
-## Current build day
-
-### Day 9 — Runtime hardening + packaging — IN PROGRESS
-
-Requirements: installable package with no manual `PYTHONPATH`; one start/stop/status workflow; separate recorder/detector supervision; runtime heartbeat; structured rotating logs; DB backup/restore + integrity check; Windows reboot/startup recovery; restart/idempotence tests; supervised soak before acceptance.
-
-**No Portfolio Simulation and no Vantage demo orders until Day 9 is accepted.**
 
 ## Remaining build days
 
