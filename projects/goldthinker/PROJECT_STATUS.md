@@ -2,34 +2,27 @@
 
 **Last updated:** 2026-10-02  
 **Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
-**Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**
+**Current build day:** **Day 9 of 15 — Runtime hardening + packaging — IN PROGRESS**  
+**Day 8:** **ACCEPTED**
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
-## Latest verified local evidence
+## Day 8 final evidence
 
-- **Owner-machine unit suite:** **128/128 PASS in 52.750 s**.
-- Recorder/feed concurrency: **PASS**; no repeat of SQLite writer-lock crash.
-- Live-edge performance: **PASS**, 3/3 M1 completions, +1,418 ticks, slowest 13.1 s.
-- **M1 semantic differential evidence:** 55,722 positions, 0 semantic mismatches, 0 input errors, all 5,716 stored occurrences re-found, 437 real trade paths. Historical RAW persistence bug repaired: 247 stale BASE rows reopened/recomputed and follow-up scan returned 0 stale rows.
-- **M5 differential PASS:** 12,900 positions, 0 mismatches, 0 stored-vs-recomputed, 0 input errors, all 1,663 stored occurrences re-found, 153 trades.
-- **M15/M30/H1/H4 combined differential PASS:** 0 semantic mismatches, 0 stored-vs-recomputed differences, 0 input errors and 0 unreached stored occurrences. M15: 4,263 positions, 43 trades, 553/553 stored. M30: 2,153 positions, 12 trades, 267/267 stored. H1: 1,287 positions, 15 trades, 154/154 stored. H4: 72 positions, 0 trades, 12/12 stored.
-- **D1 in that report had 0 units / 0 positions / 0 stored occurrences**, meaning no D1 strategy research clocks were active in the DB snapshot. Day-8 rules require H4/D1 independent real-data coverage only when their clocks are active; H4 was active and passed. One quick D1 capability report remains to record why its clocks are not active and confirm the zero population is expected readiness rather than an omission.
-- W1/MN1 remain disabled.
+- Unit suite: **128/128 PASS in 52.750 s**.
+- Recorder/feed concurrency: PASS.
+- Steady-state benchmark: PASS — 3/3 genuine M1 completions, +1,418 fresh ticks, slowest 13.1 s.
+- M1 semantic differential: **55,722 positions, 0 production/reference mismatches, 0 input errors, 5,716/5,716 stored occurrences re-found, 437 trades**.
+- BASE RAW persistence defect fixed and regression-tested. Historical repair reopened 247 stale rows; deterministic recomputation completed; second repair scan returned **0 stale BASE RAW rows**.
+- M5 differential: PASS — 12,900 positions, 0 mismatches/stored differences/input errors/unreached, 1,663/1,663 stored, 153 trades.
+- M15 differential: PASS — 4,263 positions, 0 mismatches/stored differences/input errors/unreached, 553/553 stored, 43 trades.
+- M30 differential: PASS — 2,153 positions, 0 mismatches/stored differences/input errors/unreached, 267/267 stored, 12 trades.
+- H1 differential: PASS — 1,287 positions, 0 mismatches/stored differences/input errors/unreached, 154/154 stored, 15 trades.
+- H4 differential: PASS — 72 positions, 0 mismatches/stored differences/input errors/unreached, 12/12 stored. Independent H4/D1 post-break calendar regressions pass.
+- D1 has **0 research clocks by design**: only 3 complete D1 bars exist, only 1 post-enable, while strategy readiness requires 16–102 bars. Therefore no D1 strategy population is eligible yet; 0 audited units is expected, not a failure.
+- W1/MN1 remain disabled until their own exact tick-built/native-bar acceptance.
 
-## Day 8 acceptance gate
-
-1. Unit suite — **PASS: 128/128.**
-2. Recorder concurrency — **PASS.**
-3. Backlog/live-edge — **PASS.**
-4. Steady-state benchmark — **PASS.**
-5. M1 semantic differential + repaired RAW persistence — **PASS evidence.**
-6. M5 differential — **PASS.**
-7. M15/M30/H1/H4 differential — **PASS.**
-8. D1 readiness explanation — **one quick capability check pending**; no D1 clocks were active during the audit.
-9. Final report/evidence commit — **pending the D1 readiness check.**
-
-**No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
+**Day 8 verdict: ACCEPTED.**
 
 ## Accepted build days
 
@@ -40,11 +33,19 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 - Day 5 — Production core maths + research clocks
 - Day 6 — Wave-1 pattern/trade engine
 - Day 7 — Live research loop + real detections
+- Day 8 — Real-data differential audit + performance
+
+## Current build day
+
+### Day 9 — Runtime hardening + packaging — IN PROGRESS
+
+Requirements: installable package with no manual `PYTHONPATH`; one start/stop/status workflow; separate recorder/detector supervision; runtime heartbeat; structured rotating logs; DB backup/restore + integrity check; Windows reboot/startup recovery; restart/idempotence tests; supervised soak before acceptance.
+
+**No Portfolio Simulation and no Vantage demo orders until Day 9 is accepted.**
 
 ## Remaining build days
 
-- Day 8 — Real-data differential audit + performance — **IN PROGRESS (one D1 readiness check remains)**
-- Day 9 — Runtime hardening and packaging
+- Day 9 — Runtime hardening and packaging — IN PROGRESS
 - Day 10 — Production Portfolio Simulation
 - Day 11 — Production Validation Engine
 - Day 12 — Vantage demo execution mirror + reconciliation
