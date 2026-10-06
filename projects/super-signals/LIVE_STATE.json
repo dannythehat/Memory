@@ -899,5 +899,16 @@
     "broker_authority_changed": false,
     "risk_sizing_changed": false,
     "live_money_authority_changed": false
+  },
+  "telegram_group_replacement_20261001": {
+    "chat_id": -1004402233886,
+    "env": "SUPER_SIGNALS_TELEGRAM_PUBLISH_CHAT_ID",
+    "bot_role": "member",
+    "pr": 258,
+    "deploy": "dep-dav1v0npn0mc739nte6g",
+    "board_posted": true,
+    "board_pinned": false,
+    "pin_followup_branch": "claude/telegram-board-repin-after-repost (not merged)",
+    "verified_at_utc": "2026-10-06"
   }
 }

@@ -39,3 +39,12 @@ Status: PRODUCTION VERIFIED for the override row and public figures; app Today s
 ## Exact next step
 
 - Owner to confirm the app shows about +$380 for Today and finish the account-security checks above. If any later page still shows -$1,800, tell Claude which screen so the right surface can be fixed.
+
+## Addendum: Telegram group replaced (1-6 Oct 2026)
+
+- The owner deleted the Super Signals Telegram group by mistake and created a new supergroup. New chat id `-1004402233886`; Render env `SUPER_SIGNALS_TELEGRAM_PUBLISH_CHAT_ID` updated (merge mode) and redeployed. Bot token untouched.
+- Permission rule (`telegram_publisher._minimum_permissions_ok`): the bot must be a plain member, or an admin with none of change_info, delete_messages, invite_users, restrict_members, promote_members, manage_video_chats, manage_chat, manage_topics, edit_messages, manage_direct_messages. Admin with Post/Edit/Delete on is refused (403 on publish, `minimum_permissions_ok: false`). After the owner dismissed the bot's admin rights, the 08:54Z startup check reported member / `minimum_permissions_ok: true`. The check runs at startup, so a restart is needed after any permission change.
+- Bug found and fixed: `telegram_live_board_state` (single row id=1) kept the old group's message id (3586, chat -5314636936), so every board sync failed with 400 "message to edit not found". PR #258 (commit `df4838d`, deployed `dep-dav1v0npn0mc739nte6g`, live 08:56Z) reposts a fresh board when the stored `destination_chat_id` differs from the configured chat. Board message 4 was posted in the new group; status is `ready` as of 2026-10-06.
+- Known gap (owner chose to leave it): the board is not pinned. A plain member cannot pin ("not enough rights to manage pinned messages"). Pinning would need the bot as admin with only Pin Messages on (not in the broad-permission list) plus a follow-up fix so a reposted board clears the stale `pinned_at` (ready on branch `claude/telegram-board-repin-after-repost`, not merged, not deployed). `pinned_at` still shows 2026-08-12.
+- First signal post in the new group after the permission fix was not yet verified when this was written.
+- Owner is considering a $100 real (cent) account (2026-10-06); nothing was changed. No live-money authority given.
