@@ -1,33 +1,56 @@
 # GoldThinker — Project Status
 
-**Last updated:** 2026-10-01  
+**Last updated:** 2026-10-02  
 **Authoritative build state:** GoldThinker `docs/PROJECT_STATUS.md` + `docs/BUILD_CALENDAR.md`; this Memory copy mirrors the current state.  
-**Current build day:** **Day 8 of 15 — Real-data acceptance (D-058) — IN PROGRESS**  
-**Current GoldThinker fix under validation:** `b697841` — detector DB-lock fix + regression test
+**Current build day:** **Day 9 of 15 — Runtime hardening + packaging — IN PROGRESS**  
+**Day 8:** **ACCEPTED**
 
 GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or Super Signals. Its own database is the research source of truth. The dedicated Vantage MT5 demo account is a future execution mirror only.
 
-## Latest verified local evidence
+## Day 8 final evidence
 
-- **Post-fix unit suite: 121/121 PASS in 68.656 s**, including `test_expensive_evaluation_phase_is_read_only`.
-- Post-fix feed check: **+86 XAUUSD ticks in 15 s**, latest UTC +15.989 s, spread 21/21.7/29 points, crossed quotes 0, quiet periods 0.
-- **Concurrent feed survival proven:** during heavy benchmark catch-up the recorder remained alive and added **4,093 fresh ticks**; the prior `database is locked` crash did not recur.
-- First post-fix 3/3 benchmark had a contaminated nominal idle row that actually processed 12 new bars, so its 36.9 s FAIL was not a genuine steady-state idle sample.
-- **Clean live-edge benchmark:** 3/3 genuine M1 completions, **1,175 fresh ticks**, genuine idle **5.2 s with 0 new bars**, completion cycles **12.3 s / 6.8 s / 17.3 s**, verdict **WARN** because the slowest genuine cycle exceeded the <15 s Day-8 target.
-- The 17.3 s cycle was mostly detector time (**15.72 s**); timeframe timings were roughly M1 4.4 s, M5 0.2 s, M15 0.5 s, M30 5.8 s, H1 4.8 s. If repeated, optimise M30/H1 open-occurrence/tick-loading work.
-- **Next action:** one more clean 3/3 benchmark immediately at the live edge with recorder running. PASS if all genuine cycles are <15 s. If another WARN/FAIL occurs, optimise before acceptance.
+- Unit suite: **128/128 PASS in 52.750 s**.
+- Recorder/feed concurrency: PASS.
+- Steady-state benchmark: PASS — 3/3 genuine M1 completions, +1,418 fresh ticks, slowest 13.1 s.
+- M1 semantic differential: **55,722 positions, 0 production/reference mismatches, 0 input errors, 5,716/5,716 stored occurrences re-found, 437 trades**.
+- BASE RAW persistence defect fixed and regression-tested. Historical repair reopened 247 stale rows; deterministic recomputation completed; second repair scan returned **0 stale BASE RAW rows**.
+- M5 differential: PASS — 12,900 positions, 0 mismatches/stored differences/input errors/unreached, 1,663/1,663 stored, 153 trades.
+- M15 differential: PASS — 4,263 positions, 0 mismatches/stored differences/input errors/unreached, 553/553 stored, 43 trades.
+- M30 differential: PASS — 2,153 positions, 0 mismatches/stored differences/input errors/unreached, 267/267 stored, 12 trades.
+- H1 differential: PASS — 1,287 positions, 0 mismatches/stored differences/input errors/unreached, 154/154 stored, 15 trades.
+- H4 differential: PASS — 72 positions, 0 mismatches/stored differences/input errors/unreached, 12/12 stored. Independent H4/D1 post-break calendar regressions pass.
+- D1 has **0 research clocks by design**: only 3 complete D1 bars exist, only 1 post-enable, while strategy readiness requires 16–102 bars. Therefore no D1 strategy population is eligible yet; 0 audited units is expected, not a failure.
+- W1/MN1 remain disabled until their own exact tick-built/native-bar acceptance.
 
-## Day 8 acceptance gate
+**Day 8 verdict: ACCEPTED.**
 
-1. Unit suite — **PASS: 121/121.**
-2. Recorder survives concurrent detector workload — **PASS: +4,093 ticks during catch-up and +1,175 during the clean benchmark; no lock crash.**
-3. Backlog cleared/live edge — **PASS: clean idle sample had 0 new bars, 5.2 s.**
-4. Real steady-state benchmark — **3/3 observed with fresh ticks, but current clean verdict WARN due one 17.3 s cycle; one more clean run required, optimise if repeated.**
-5. Final differential audit LAST — still pending; must show 0 input mismatches, 0 semantic mismatches, 0 stored-vs-recomputed differences, complete stored-population coverage, real trades exercised, and no event mutation.
-6. H4/D1 independent calendar/label audit if clocks active; W1/MN1 remain disabled until exact-bar acceptance.
-7. Review reports before final evidence commit.
+## Day 9 implementation — pending owner-machine validation
 
-**No Portfolio Simulation and no Vantage demo orders before Day 8 is clean.**
+- Installable editable package added via `pyproject.toml`; owner command is `goldthinker` and should work in a fresh PowerShell without manual `PYTHONPATH` after `py -m pip install -e .`.
+- Owner CLI now includes `start`, `stop`, `status`, `log`, `integrity`, `backup`, `restore`, and Windows `startup` commands.
+- Detached supervisor owns recorder and detector as separate workers; either worker is automatically restarted after an unexpected exit.
+- Cooperative per-worker stop files allow recorder feed sessions and detector DB connections to close cleanly before a hard-kill fallback.
+- `goldthinker start` refuses to launch over a manual recorder that appears to be actively writing fresh ticks.
+- Status heartbeat includes supervisor/worker PIDs and restart counts, newest live tick, newest completed M1, detector cursors, last successful detector cycle, strategy-event count and non-terminal count.
+- Recorder/detector logs rotate at 5 MB with five backups; supervisor lifecycle/restart log rotates separately.
+- SQLite online backup + SHA-256 sidecar + integrity/foreign-key verification implemented. Restore requires runtime stopped, explicit `--yes`, source integrity PASS and post-restore integrity PASS.
+- Windows logon recovery helper implemented with `goldthinker startup install|status|remove`.
+- Four Day-9 runtime unit tests added. **Expected next owner-machine full suite: 132 tests.**
+
+## Day 9 acceptance still required
+
+1. Pull/install and prove `goldthinker` works in a fresh PowerShell with no `PYTHONPATH`.
+2. Full suite PASS (expected 132).
+3. Migrate from legacy manual recorder to supervised runtime.
+4. Status shows supervisor + recorder + detector healthy with fresh tick/M1/detector heartbeat.
+5. Forced recorder crash auto-restarts without duplicate ticks.
+6. Forced detector crash auto-restarts without duplicate strategy events.
+7. `goldthinker stop` exits workers cooperatively.
+8. Integrity + backup + restore drill PASS.
+9. Windows startup task test PASS.
+10. Supervised soak completes without feed loss, DB lock, restart loop or stale detector.
+
+**No Portfolio Simulation and no Vantage demo orders until Day 9 is accepted.**
 
 ## Accepted build days
 
@@ -38,17 +61,17 @@ GoldThinker is a new, separate XAUUSD research system. It does not use AIDY or S
 - Day 5 — Production core maths + research clocks
 - Day 6 — Wave-1 pattern/trade engine
 - Day 7 — Live research loop + real detections
+- Day 8 — Real-data differential audit + performance
 
 ## Remaining build days
 
-- Day 8 — Real-data differential audit + performance — **IN PROGRESS**
-- Day 9 — Runtime hardening and packaging
+- Day 9 — Runtime hardening and packaging — IN PROGRESS
 - Day 10 — Production Portfolio Simulation
 - Day 11 — Production Validation Engine
 - Day 12 — Vantage demo execution mirror + reconciliation
 - Day 13 — Hub data/API layer
 - Day 14 — Hub UI + candle pages + operational views
-- Day 15 — Full-system launch acceptance and research-start manifest
+- Day 15 — Full-system launch acceptance + research-start manifest
 
 ## Launch definitions
 
