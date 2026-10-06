@@ -48,3 +48,9 @@ Status: PRODUCTION VERIFIED for the override row and public figures; app Today s
 - Known gap (owner chose to leave it): the board is not pinned. A plain member cannot pin ("not enough rights to manage pinned messages"). Pinning would need the bot as admin with only Pin Messages on (not in the broad-permission list) plus a follow-up fix so a reposted board clears the stale `pinned_at` (ready on branch `claude/telegram-board-repin-after-repost`, not merged, not deployed). `pinned_at` still shows 2026-08-12.
 - First signal post in the new group after the permission fix was not yet verified when this was written.
 - Owner is considering a $100 real (cent) account (2026-10-06); nothing was changed. No live-money authority given.
+
+## Addendum: ledger vs public line (2026-10-06)
+
+- Owner reviewed the account since start. Public equity line (1,000 on 6 Aug, 1,517.23 verified from 31 Aug, 2,667.75 on 6 Oct) matches the owner's Vantage check.
+- `broker_deals` for the main demo (9bcef441, 11 Aug to 6 Oct) holds 1,963 closing deals: 1,061 wins / 718 losses / 184 zero, gross +9,474.29 / -9,315.87, net trades +158.42 plus swap +9.14, plus +578.22 balance entries. That explains only about 746 of the +1,668 equity growth since 1,000.
+- Owner explained why: on some days Vantage / MetaApi was down, so those days were updated manually. `broker_deals` is therefore incomplete and must not be used alone as proof of performance. The public equity line is the account record; the ledger is partial.
