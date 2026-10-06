@@ -36,6 +36,10 @@ An agent must verify live facts against the real project repository/data before 
 - [`projects/aidy/`](projects/aidy/) — AIDY Gold Signals / intelligence system.
 - [`projects/super-signals/`](projects/super-signals/) — Super Signals private app and Provider Lab.
 
+Not covered here: **GoldThinker** (the owner's separate XAUUSD candlestick paper-trading system, repo `dannythehat/GoldThinker`). It keeps
+its own memory in that repository: start with its `CLAUDE.md`, then `HANDOVER.md` ("START HERE"), then the latest `docs/handovers/` file.
+Do not mix GoldThinker state into this repository.
+
 ## Start here
 
 For any project session, read in this order:
